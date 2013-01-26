@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Kal/Kal.h>
 
-@interface CalendarViewController : UIViewController
+@interface CalendarViewController : UIViewController <KalDataSource, KalViewDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

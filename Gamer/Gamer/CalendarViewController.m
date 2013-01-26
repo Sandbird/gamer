@@ -7,6 +7,7 @@
 //
 
 #import "CalendarViewController.h"
+#import "CalendarCell.h"
 
 @interface CalendarViewController ()
 
@@ -14,25 +15,83 @@
 
 @implementation CalendarViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+- (void)viewDidLoad{
+	[super viewDidLoad];
+	
+	[self.navigationItem setTitle:@""];
+	
+	KalViewController *calendar = [[KalViewController alloc] init];
+	[calendar.tableView setDelegate:self];
+	[calendar.tableView setDataSource:self];
+	
+//	[self.navigationController setViewControllers:@[calendar, self]];
+	
+	NSMutableArray *viewControllers = self.navigationController.viewControllers.mutableCopy;
+	[viewControllers insertObject:calendar atIndex:0];
+	[self.navigationController setViewControllers:viewControllers];
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
+- (void)didReceiveMemoryWarning{
+	[super didReceiveMemoryWarning];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark -
+#pragma mark Kal
+
+- (void)presentingDatesFrom:(NSDate *)fromDate to:(NSDate *)toDate delegate:(id<KalDataSourceCallbacks>)delegate{
+	
+}
+
+- (NSArray *)markedDatesFrom:(NSDate *)fromDate to:(NSDate *)toDate{
+	return nil;
+}
+
+- (void)loadItemsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate{
+	
+}
+
+- (void)removeAllItems{
+	
+}
+
+- (void)showPreviousMonth{
+	
+}
+
+- (void)showFollowingMonth{
+	
+}
+
+- (void)didSelectDate:(KalDate *)date{
+	
+}
+
+#pragma mark -
+#pragma mark TableView
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+	return 3;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	return 88;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CalendarCell"];
+	
+	if (!cell) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CalendarCell"];
+	
+	[cell.textLabel setText:@"Gears of War: Judgement"];
+	[cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+	
+	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+//	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+//	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
 }
 
 @end
