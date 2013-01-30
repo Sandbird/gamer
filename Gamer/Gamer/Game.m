@@ -15,7 +15,7 @@
 
 @dynamic coverImage;
 @dynamic metascore;
-@dynamic name;
+@dynamic title;
 @dynamic overview;
 @dynamic releaseDate;
 @dynamic trailerURL;

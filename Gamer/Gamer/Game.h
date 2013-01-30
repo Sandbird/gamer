@@ -15,7 +15,7 @@
 
 @property (nonatomic, retain) NSData * coverImage;
 @property (nonatomic, retain) NSNumber * metascore;
-@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * overview;
 @property (nonatomic, retain) NSDate * releaseDate;
 @property (nonatomic, retain) NSString * trailerURL;

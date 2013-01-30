@@ -1,17 +1,17 @@
 
-COCOAPODS: 0.16.0
-
 PODS: 
-- AFNetworking (1.0)
-- Kal (1.0rc1)
-- MagicalRecord (2.0.8)
+- AFNetworking (1.1.0)
+- MagicalRecord (2.1)
+- TapkuLibrary (2.1)
 
 SPEC CHECKSUMS: 
-  AFNetworking: 204f4b3d3a3ea7b38737c3fbf2646ba8c9719eea
-  MagicalRecord: daa15d6c83bd7d30e074c8923e53c64248ae6930
-  Kal: 1662d563939f65065f878ac82a90bb34863634ef
+  MagicalRecord: aedbebe987d02d1215718a904c93d7965e48e398
+  TapkuLibrary: 1c6a03ce9d5928b71a5549c68d605856cc0bf79a
+  AFNetworking: 761a418233d280c1e0580bcb76ff9cb4c3073d17
 
 DEPENDENCIES: 
-- AFNetworking (= 1.0)
-- Kal (= 1.0rc1)
-- MagicalRecord (= 2.0.8)
+- AFNetworking
+- MagicalRecord
+- TapkuLibrary
+
+COCOAPODS: 0.16.1

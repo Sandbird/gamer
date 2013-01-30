@@ -3,9 +3,9 @@
     <entity name="Game" representedClassName="Game" syncable="YES">
         <attribute name="coverImage" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="metascore" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="releaseDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="trailerURL" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="genres" optional="YES" toMany="YES" minCount="1" maxCount="2" deletionRule="Nullify" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
         <relationship name="platforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="games" inverseEntity="Platform" syncable="YES"/>

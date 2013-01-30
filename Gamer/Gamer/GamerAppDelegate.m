@@ -15,6 +15,9 @@
 	[MagicalRecord setupCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
+	[[UINavigationBar appearance] setTitleTextAttributes:@{UITextAttributeFont:[UIFont fontWithName:@"HelveticaNeue" size:20]}];
+	[[UITabBarItem appearance] setTitleTextAttributes:@{UITextAttributeFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:12]} forState:UIControlStateNormal];
+	
     return YES;
 }
 							

@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Game.h"
 
 @interface GameViewController : UIViewController
+
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
+
+@property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
+
+@property (nonatomic, strong) Game *game;
 
 @end

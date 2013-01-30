@@ -2,12 +2,11 @@
 //  CalendarViewController.m
 //  Gamer
 //
-//  Created by Caio Mello on 1/2/13.
+//  Created by Caio Mello on 1/30/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
 #import "CalendarViewController.h"
-#import "CalendarCell.h"
 
 @interface CalendarViewController ()
 
@@ -16,54 +15,39 @@
 @implementation CalendarViewController
 
 - (void)viewDidLoad{
-	[super viewDidLoad];
+    [super viewDidLoad];
 	
-	[self.navigationItem setTitle:@""];
-	
-	KalViewController *calendar = [[KalViewController alloc] init];
-	[calendar.tableView setDelegate:self];
-	[calendar.tableView setDataSource:self];
-	
-//	[self.navigationController setViewControllers:@[calendar, self]];
-	
-	NSMutableArray *viewControllers = self.navigationController.viewControllers.mutableCopy;
-	[viewControllers insertObject:calendar atIndex:0];
-	[self.navigationController setViewControllers:viewControllers];
-	[self.navigationController popViewControllerAnimated:YES];
+	TKCalendarMonthView *calendarView = [[TKCalendarMonthView alloc] initWithSundayAsFirst:YES];
+	[calendarView setDataSource:self];
+	[calendarView setDelegate:self];
+	[calendarView selectDate:[NSDate date]];
+	[self.view addSubview:calendarView];
 }
 
 - (void)didReceiveMemoryWarning{
-	[super didReceiveMemoryWarning];
+    [super didReceiveMemoryWarning];
 }
 
 #pragma mark -
-#pragma mark Kal
+#pragma mark Calendar
 
-- (void)presentingDatesFrom:(NSDate *)fromDate to:(NSDate *)toDate delegate:(id<KalDataSourceCallbacks>)delegate{
+- (void)calendarMonthView:(TKCalendarMonthView *)monthView didSelectDate:(NSDate *)date{
 	
 }
 
-- (NSArray *)markedDatesFrom:(NSDate *)fromDate to:(NSDate *)toDate{
+- (NSArray *)calendarMonthView:(TKCalendarMonthView *)monthView marksFromDate:(NSDate *)startDate toDate:(NSDate *)lastDate{
 	return nil;
 }
 
-- (void)loadItemsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate{
+- (void)calendarMonthView:(TKCalendarMonthView *)monthView monthDidChange:(NSDate *)month animated:(BOOL)animated{
 	
 }
 
-- (void)removeAllItems{
-	
+- (BOOL)calendarMonthView:(TKCalendarMonthView *)monthView monthShouldChange:(NSDate *)month animated:(BOOL)animated{
+	return YES;
 }
 
-- (void)showPreviousMonth{
-	
-}
-
-- (void)showFollowingMonth{
-	
-}
-
-- (void)didSelectDate:(KalDate *)date{
+- (void)calendarMonthView:(TKCalendarMonthView *)monthView monthWillChange:(NSDate *)month animated:(BOOL)animated{
 	
 }
 
@@ -71,27 +55,18 @@
 #pragma mark TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return 3;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	return 88;
+	return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CalendarCell"];
-	
-	if (!cell) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CalendarCell"];
-	
-	[cell.textLabel setText:@"Gears of War: Judgement"];
-	[cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-	
+	[cell.textLabel setText:@"Test"];
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-//	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
 }
 
 @end
