@@ -15,5 +15,6 @@
 	#import <MobileCoreServices/MobileCoreServices.h>
 	#import <AFNetworking/AFNetworking.h>
 	#define MR_SHORTHAND
+	#define MR_ENABLE_ACTIVE_RECORD_LOGGING 0
 	#import <MagicalRecord/CoreData+MagicalRecord.h>
 #endif

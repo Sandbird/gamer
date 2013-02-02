@@ -15,7 +15,11 @@
 	[MagicalRecord setupCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
+	[[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBarBackground"] forBarMetrics:UIBarMetricsDefault];
 	[[UINavigationBar appearance] setTitleTextAttributes:@{UITextAttributeFont:[UIFont fontWithName:@"HelveticaNeue" size:20]}];
+	
+	[[UITabBar appearance] setBackgroundImage:[UIImage imageNamed:@"TabBarBackground"]];
+	[[UITabBar appearance] setSelectionIndicatorImage:[UIImage imageNamed:@"TabBarSelectionIndicator"]];
 	[[UITabBarItem appearance] setTitleTextAttributes:@{UITextAttributeFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:12]} forState:UIControlStateNormal];
 	
     return YES;

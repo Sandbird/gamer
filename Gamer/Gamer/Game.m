@@ -2,7 +2,7 @@
 //  Game.m
 //  Gamer
 //
-//  Created by Caio Mello on 1/26/13.
+//  Created by Caio Mello on 2/2/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -15,10 +15,11 @@
 
 @dynamic coverImage;
 @dynamic metascore;
-@dynamic title;
 @dynamic overview;
 @dynamic releaseDate;
+@dynamic title;
 @dynamic trailerURL;
+@dynamic summary;
 @dynamic genres;
 @dynamic platforms;
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2057" systemVersion="12C60" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Game" representedClassName="Game" syncable="YES">
         <attribute name="coverImage" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="metascore" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="releaseDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="trailerURL" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="genres" optional="YES" toMany="YES" minCount="1" maxCount="2" deletionRule="Nullify" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
@@ -20,7 +21,7 @@
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="platforms" inverseEntity="Game" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Game" positionX="-63" positionY="-18" width="128" height="163"/>
+        <element name="Game" positionX="-63" positionY="-18" width="128" height="178"/>
         <element name="Genre" positionX="-263" positionY="36" width="128" height="73"/>
         <element name="Platform" positionX="117" positionY="26" width="128" height="88"/>
     </elements>
