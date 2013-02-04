@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GamesViewController : UIViewController
+@interface GamesViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
+
+@property (nonatomic, strong) NSMutableArray *games;
 
 @end

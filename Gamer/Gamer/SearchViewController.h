@@ -14,4 +14,8 @@
 
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 
+@property (nonatomic, strong) NSMutableArray *results;
+
+@property (nonatomic, strong) AFJSONRequestOperation *previousOperation;
+
 @end

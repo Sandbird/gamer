@@ -1,19 +1,19 @@
 //
-//  Genre.m
+//  Publisher.m
 //  Gamer
 //
 //  Created by Caio Mello on 2/3/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "Genre.h"
+#import "Publisher.h"
 #import "Game.h"
 
 
-@implementation Genre
+@implementation Publisher
 
-@dynamic name;
 @dynamic identifier;
-@dynamic games;
+@dynamic name;
+@dynamic game;
 
 @end

@@ -1,19 +1,19 @@
 //
-//  Genre.m
+//  SimilarGames.m
 //  Gamer
 //
 //  Created by Caio Mello on 2/3/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "Genre.h"
+#import "SimilarGames.h"
 #import "Game.h"
 
 
-@implementation Genre
+@implementation SimilarGames
 
-@dynamic name;
+@dynamic title;
 @dynamic identifier;
-@dynamic games;
+@dynamic game;
 
 @end
