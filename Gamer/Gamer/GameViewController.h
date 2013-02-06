@@ -18,22 +18,20 @@
 
 @property (nonatomic, strong) IBOutlet UIView *coverImageShadowView;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
-
 @property (nonatomic, strong) IBOutlet UIView *metascoreView;
 @property (nonatomic, strong) IBOutlet UILabel *metascoreLabel;
 
+@property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreFirstLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreSecondLabel;
-
-@property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
-
-@property (nonatomic, strong) IBOutlet UITextView *summaryTextView;
+@property (nonatomic, strong) IBOutlet UILabel *platformFirstLabel;
+@property (nonatomic, strong) IBOutlet UILabel *platformSecondLabel;
+@property (nonatomic, strong) IBOutlet UILabel *developerLabel;
+@property (nonatomic, strong) IBOutlet UILabel *publisherLabel;
 
 @property (nonatomic, strong) IBOutlet UIView *overviewContentView;
 @property (nonatomic, strong) IBOutlet UITextView *overviewTextView;
-
 @property (nonatomic, strong) IBOutlet UIView *screenshotsContentView;
-
 @property (nonatomic, strong) IBOutlet UIView *trailerContentView;
 @property (nonatomic, strong) IBOutlet UIButton *trailerButton;
 

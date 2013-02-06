@@ -11,6 +11,8 @@
 #import "Game.h"
 #import "Genre.h"
 #import "Platform.h"
+#import "Developer.h"
+#import "Publisher.h"
 #import "GameViewController.h"
 
 static NSInteger selectedRow;
@@ -33,6 +35,8 @@ static NSInteger selectedRow;
 	[Game truncateAll];
 	[Genre truncateAll];
 	[Platform truncateAll];
+	[Developer truncateAll];
+	[Publisher truncateAll];
 	[context0 saveToPersistentStoreAndWait];
 	
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
@@ -60,8 +64,7 @@ static NSInteger selectedRow;
 	
 	_game0 = [[Game alloc] initWithEntity:[NSEntityDescription entityForName:@"Game" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 	[_game0 setTitle:@"Gears of War: Judgment"];
-	[_game0 setSummary:@"Damon Baird stands trial in this Gears of War side story from Epic-owned developer, People Can Fly."];
-	[_game0 setOverview:@"Gears of War: Judgment is an upcoming entry in the Gears of War series being developed by Epic Games and People Can Fly; PCF is handling the single-player campaign, while Epic is working on the multiplayer. The game is set fourteen years before the events of the first Gears of War, and will focus on the characters Damon Baird and Augustus Cole along with two new-to-the-series squadmates, Sofia Hendrick and Garron Paduk, all of whom form Kilo Squad. The game will be told via flashbacks as Baird is on trial, with narration from his testimony framing the action. After finishing things the traditional way, players will be able to go back and play missions in Declassified mode, which tweaks things even further by having Baird remember things differently."];
+	[_game0 setOverview:@"Damon Baird stands trial in this Gears of War side story from Epic-owned developer, People Can Fly."];
 	[_game0 setTrailerURL:@"http://www.youtube.com/embed/IMJE29o8NS8?wmode=opaque"];
 	[_game0 setReleaseDate:[_dateFormatter dateFromString:@"19/03/2013"]];
 	[_game0 addGenresObject:[Genre findFirstByAttribute:@"name" withValue:@"Action"]];

@@ -16,7 +16,6 @@
         <attribute name="metascore" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="releaseDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="trailerURL" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="developers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Developer" inverseName="game" inverseEntity="Developer" syncable="YES"/>
@@ -53,13 +52,13 @@
         <relationship name="game" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="similarGames" inverseEntity="Game" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Game" positionX="-63" positionY="-18" width="128" height="268"/>
-        <element name="Genre" positionX="-290" positionY="146" width="128" height="88"/>
-        <element name="Platform" positionX="187" positionY="32" width="128" height="103"/>
-        <element name="Screenshot" positionX="133" positionY="260" width="128" height="73"/>
         <element name="Developer" positionX="117" positionY="-126" width="128" height="88"/>
         <element name="Franchise" positionX="-263" positionY="-25" width="128" height="88"/>
+        <element name="Game" positionX="-63" positionY="-18" width="128" height="253"/>
+        <element name="Genre" positionX="-290" positionY="146" width="128" height="88"/>
+        <element name="Platform" positionX="187" positionY="32" width="128" height="103"/>
         <element name="Publisher" positionX="-90" positionY="-171" width="128" height="88"/>
+        <element name="Screenshot" positionX="133" positionY="260" width="128" height="73"/>
         <element name="SimilarGames" positionX="-252" positionY="281" width="128" height="88"/>
     </elements>
 </model>

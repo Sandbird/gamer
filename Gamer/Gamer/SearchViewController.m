@@ -51,7 +51,10 @@ static NSInteger selectedRow;
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[_previousOperation cancel];
-	[self requestSearchResultsWithQuery:[searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
+	
+	NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+		
+	[self requestSearchResultsWithQuery:query];
 }
 
 #pragma mark -
@@ -84,7 +87,9 @@ static NSInteger selectedRow;
 - (void)requestSearchResultsWithQuery:(NSString *)query{
 	[_results removeAllObjects];
 	
-	NSString *url = [NSString stringWithFormat:@"http://api.giantbomb.com/search/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&limit=20&field_list=name,id&resources=game&format=json&query=%@", query];
+//	NSLog(@"Query: %@", query);
+	
+	NSString *url = [NSString stringWithFormat:@"http://api.giantbomb.com/search/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&limit=10&field_list=name,id&resources=game&format=json&query=%@", query];
 	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"GET"];

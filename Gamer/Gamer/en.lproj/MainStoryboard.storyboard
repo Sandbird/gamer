@@ -109,9 +109,11 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="mWS-Tb-Bhf">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="367"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <inset key="contentInset" minX="0.0" minY="0.0" maxX="0.0" maxY="167"/>
+                                <inset key="scrollIndicatorInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="167"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SearchCell" id="qzP-j2-0yW">
                                         <rect key="frame" x="0.0" y="22" width="320" height="44"/>
@@ -264,7 +266,7 @@
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                             </view>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="2393000-gow_judgment_vert_rgb_large.jpg" id="VEP-gp-SO4">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="VEP-gp-SO4">
                                                 <rect key="frame" x="20" y="20" width="150" height="188"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -273,7 +275,7 @@
                                                 <rect key="frame" x="200" y="30" width="80" height="80"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
-                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="100" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zbY-2C-gaJ">
+                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="90" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zbY-2C-gaJ">
                                                         <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="40"/>
@@ -290,14 +292,14 @@
                                                 </subviews>
                                                 <color key="backgroundColor" red="0.31372549019607843" green="0.58823529411764708" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             </view>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Action" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="C7L-0W-tpP">
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Action" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="C7L-0W-tpP">
                                                 <rect key="frame" x="200" y="216" width="100" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Shooter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="WJL-E7-Ou1">
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Shooter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="WJL-E7-Ou1">
                                                 <rect key="frame" x="200" y="248" width="100" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>
@@ -318,13 +320,6 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" text="Damon Baird stands trial in this Gears of War side story from Epic-owned developer, People Can Fly." id="Lau-we-KVV" userLabel="Summary Text View">
-                                                <rect key="frame" x="20" y="280" width="280" height="72"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                            </textView>
                                             <view autoresizesSubviews="NO" contentMode="scaleToFill" id="Pab-j7-EJb" userLabel="Overview Content View">
                                                 <rect key="frame" x="0.0" y="360" width="320" height="98"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -435,6 +430,34 @@
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                             </button>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Xbox 360" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="FoD-rK-MGw">
+                                                <rect key="frame" x="20" y="281" width="109" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="PlayStation 3" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Gys-ef-Kw7">
+                                                <rect key="frame" x="20" y="305" width="118" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Epic" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="G2s-Fp-oX9">
+                                                <rect key="frame" x="188" y="281" width="103" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Microsoft" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="fu9-PA-cH1">
+                                                <rect key="frame" x="188" y="316" width="103" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
@@ -451,16 +474,19 @@
                         <outlet property="contentView" destination="oBH-Yi-fWy" id="mL0-lN-a28"/>
                         <outlet property="coverImageShadowView" destination="PoA-iG-QQl" id="KYs-UD-IE1"/>
                         <outlet property="coverImageView" destination="VEP-gp-SO4" id="rwn-SX-b0U"/>
+                        <outlet property="developerLabel" destination="G2s-Fp-oX9" id="eqE-qf-PCp"/>
                         <outlet property="genreFirstLabel" destination="C7L-0W-tpP" id="qzA-iI-mFP"/>
                         <outlet property="genreSecondLabel" destination="WJL-E7-Ou1" id="WfE-F6-4eH"/>
                         <outlet property="metascoreLabel" destination="zbY-2C-gaJ" id="Xpv-D3-3bx"/>
                         <outlet property="metascoreView" destination="d0u-5V-b2M" id="ygx-5P-wGy"/>
                         <outlet property="overviewContentView" destination="Pab-j7-EJb" id="axc-Xd-sH2"/>
                         <outlet property="overviewTextView" destination="hA1-3a-eNk" id="4MG-L2-ahA"/>
+                        <outlet property="platformFirstLabel" destination="FoD-rK-MGw" id="eax-DY-94m"/>
+                        <outlet property="platformSecondLabel" destination="Gys-ef-Kw7" id="9g1-tH-9Fx"/>
+                        <outlet property="publisherLabel" destination="fu9-PA-cH1" id="rDb-nA-AIq"/>
                         <outlet property="releaseDateLabel" destination="9Bm-nk-6Of" id="Wu2-MD-n02"/>
                         <outlet property="screenshotsContentView" destination="apF-ar-Exg" id="0Qd-7Z-1Hh"/>
                         <outlet property="scrollView" destination="ExM-6H-4V2" id="umn-hp-pVw"/>
-                        <outlet property="summaryTextView" destination="Lau-we-KVV" id="4o3-oT-7fx"/>
                         <outlet property="trailerButton" destination="kQ6-Ai-KNL" id="YMK-Cu-7ag"/>
                         <outlet property="trailerContentView" destination="0VT-qV-zDs" id="xL0-Lm-BxH"/>
                     </connections>
@@ -652,19 +678,23 @@
         <class className="GameViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GameViewController.h"/>
             <relationships>
+                <relationship kind="action" name="trailerButtonPressAction:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="coverImageShadowView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="coverImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="developerLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="genreFirstLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="genreSecondLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="metascoreLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="metascoreView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="overviewContentView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="overviewTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="platformFirstLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="platformSecondLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="publisherLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="releaseDateLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="screenshotsContentView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="summaryTextView" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="trailerButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="trailerContentView" candidateClass="UIView"/>
             </relationships>
@@ -693,6 +723,7 @@
         <class className="ReleasesViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ReleasesViewController.h"/>
             <relationships>
+                <relationship kind="action" name="addBarButtonPressAction:" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
             </relationships>
         </class>
@@ -712,6 +743,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="4ob-4Z-dqu"/>
+        <segue reference="89P-dg-8XD"/>
     </inferredMetricsTieBreakers>
 </document>
