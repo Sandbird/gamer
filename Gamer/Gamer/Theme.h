@@ -1,5 +1,5 @@
 //
-//  Publisher.h
+//  Theme.h
 //  Gamer
 //
 //  Created by Caio Mello on 2/6/13.
@@ -11,15 +11,14 @@
 
 @class Game;
 
-@interface Publisher : NSManagedObject
+@interface Theme : NSManagedObject
 
 @property (nonatomic, retain) NSString * identifier;
 @property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSSet *games;
 @end
 
-@interface Publisher (CoreDataGeneratedAccessors)
+@interface Theme (CoreDataGeneratedAccessors)
 
 - (void)addGamesObject:(Game *)value;
 - (void)removeGamesObject:(Game *)value;

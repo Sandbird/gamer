@@ -1,20 +1,20 @@
 //
-//  Platform.m
+//  SimilarGame.m
 //  Gamer
 //
 //  Created by Caio Mello on 2/6/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "Platform.h"
+#import "SimilarGame.h"
 #import "Game.h"
 
 
-@implementation Platform
+@implementation SimilarGame
 
 @dynamic identifier;
+@dynamic title;
 @dynamic image;
-@dynamic name;
-@dynamic games;
+@dynamic game;
 
 @end

@@ -28,6 +28,10 @@
 @property (nonatomic, strong) IBOutlet UILabel *platformSecondLabel;
 @property (nonatomic, strong) IBOutlet UILabel *developerLabel;
 @property (nonatomic, strong) IBOutlet UILabel *publisherLabel;
+@property (nonatomic, strong) IBOutlet UILabel *franchiseFirstLabel;
+@property (nonatomic, strong) IBOutlet UILabel *franchiseSecondLabel;
+@property (nonatomic, strong) IBOutlet UILabel *themeFirstLabel;
+@property (nonatomic, strong) IBOutlet UILabel *themeSecondLabel;
 
 @property (nonatomic, strong) IBOutlet UIView *overviewContentView;
 @property (nonatomic, strong) IBOutlet UITextView *overviewTextView;
