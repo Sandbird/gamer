@@ -7,6 +7,13 @@
 //
 
 #import "SettingsViewController.h"
+#import "Game.h"
+#import "Genre.h"
+#import "Platform.h"
+#import "Developer.h"
+#import "Publisher.h"
+#import "Franchise.h"
+#import "Theme.h"
 
 @interface SettingsViewController ()
 
@@ -46,6 +53,18 @@
 	// WDogs: 38538
 	
 	[self requestGameWithIdentifier:@"38481"];
+}
+
+- (IBAction)clearDatabaseButtonPressAction:(UIButton *)sender{
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+	[Game truncateAll];
+	[Genre truncateAll];
+	[Platform truncateAll];
+	[Developer truncateAll];
+	[Publisher truncateAll];
+	[Franchise truncateAll];
+	[Theme truncateAll];
+	[context saveToPersistentStoreAndWait];
 }
 
 @end

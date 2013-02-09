@@ -43,11 +43,12 @@
 	[_metascoreView.layer setShadowOffset:CGSizeMake(0, 0)];
 	
 	_dateFormatter = [[NSDateFormatter alloc] init];
+	[_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	[_dateFormatter setDateFormat:@"dd/MM/yyyy"];
 	
 	// Set data
 	[_coverImageView setImage:[UIImage imageWithData:_game.image]];
-	[_releaseDateLabel setText:[_dateFormatter stringFromDate:_game.releaseDate]];
+	[_releaseDateLabel setText:_game.releaseDateText];
 	if (_game.genres.count > 0) [_genreFirstLabel setText:[[_game.genres allObjects][0] name]];
 	if (_game.genres.count > 1) [_genreSecondLabel setText:[[_game.genres allObjects][1] name]];
 	if (_game.platforms.count > 0) [_platformFirstLabel setText:[[_game.platforms allObjects][0] name]];
@@ -83,11 +84,11 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d - Game", self, response.statusCode);
+		NSLog(@"Success in %@ - Status code: %d", self, response.statusCode);
 		
-		NSLog(@"%@", JSON);
+//		NSLog(@"%@", JSON);
 		
-		[_dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+		[_dateFormatter setDateFormat:@"yyyy-MM-dd"];
 		
 		NSDictionary *results = JSON[@"results"];
 		
@@ -104,23 +105,33 @@
 		// videos
 		
 		// Release date
-		NSString *releaseDate = (results[@"original_release_date"] != [NSNull null]) ? results[@"original_release_date"] : nil;
+		NSString *releaseDate = (results[@"original_release_date"] != [NSNull null]) ? [results[@"original_release_date"] componentsSeparatedByString:@" "][0] : nil;
 		NSString *month = (results[@"expected_release_month"] != [NSNull null]) ? results[@"expected_release_month"] : nil;
 		NSString *quarter = (results[@"expected_release_quarter"] != [NSNull null]) ? results[@"expected_release_quarter"] : nil;
 		NSString *year = (results[@"expected_release_year"] != [NSNull null]) ? results[@"expected_release_year"] : nil;
+		NSLog(@"%@", releaseDate);
+		NSCalendar *calendar = [NSCalendar currentCalendar];
+		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 		
-		NSDateComponents *components = [[NSCalendar currentCalendar] components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+		NSDateComponents *components = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 		
 		if (releaseDate){
-			[_game setReleaseDate:[_dateFormatter dateFromString:releaseDate]];
-			[_dateFormatter setDateFormat:@"dd/MM/yyyy"];
-			[_game setReleaseDateText:[_dateFormatter stringFromDate:_game.releaseDate]];
+			NSDateComponents *releaseComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[_dateFormatter dateFromString:releaseDate]];
+			NSLog(@"%@", [_dateFormatter dateFromString:releaseDate]);
+			NSDate *date = [calendar dateFromComponents:releaseComponents];
+			[_game setReleaseDate:date];
+			NSLog(@"%@", _game.releaseDate);
+			NSLog(@"%@", date);
+			NSLog(@"%@", [_dateFormatter stringFromDate:_game.releaseDate]);
+			[_dateFormatter setDateFormat:@"dd MMM yyyy"];
+			NSLog(@"%@", [_dateFormatter stringFromDate:_game.releaseDate]);
+			[_game setReleaseDateText:[_dateFormatter stringFromDate:date]];
 		}
 		else if (month){
 			[components setMonth:[month integerValue]];
 			[components setQuarter:[quarter integerValue]];
 			[components setYear:[year integerValue]];
-			NSDate *date = [[NSCalendar currentCalendar] dateFromComponents:components];
+			NSDate *date = [calendar dateFromComponents:components];
 			[_game setReleaseDate:date];
 			[_dateFormatter setDateFormat:@"MMM yyyy"];
 			[_game setReleaseDateText:[_dateFormatter stringFromDate:date]];
@@ -129,7 +140,7 @@
 			[components setMonth:1];
 			[components setQuarter:[quarter integerValue]];
 			[components setYear:[year integerValue]];
-			NSDate *date = [[NSCalendar currentCalendar] dateFromComponents:components];
+			NSDate *date = [calendar dateFromComponents:components];
 			[_game setReleaseDate:date];
 			[_dateFormatter setDateFormat:@"QQQ yyyy"];
 			[_game setReleaseDateText:[_dateFormatter stringFromDate:date]];
@@ -138,11 +149,14 @@
 			[components setMonth:1];
 			[components setQuarter:1];
 			[components setYear:[year integerValue]];
-			NSDate *date = [[NSCalendar currentCalendar] dateFromComponents:components];
+			NSDate *date = [calendar dateFromComponents:components];
 			[_game setReleaseDate:date];
 			[_dateFormatter setDateFormat:@"yyyy"];
 			[_game setReleaseDateText:[_dateFormatter stringFromDate:date]];
 		}
+		
+		NSLog(@"%@", _game.releaseDate);
+		NSLog(@"%@", _game.releaseDateText);
 		
 		// Genre
 		for (NSDictionary *genreDictionary in results[@"genres"]){
@@ -220,7 +234,7 @@
 		
 		[self setInterfaceElementsWithGame:_game];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-		NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
+		NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, response.statusCode, error.description);
 	}];
 	[operation start];
 }
@@ -232,7 +246,7 @@
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
 		[_game setImage:UIImagePNGRepresentation(image)];
 		[_coverImageView setImage:image];
-		NSLog(@"image: %.2fx%.2f", image.size.width, image.size.height);
+//		NSLog(@"image: %.2fx%.2f", image.size.width, image.size.height);
 	}];
 	[operation start];
 }

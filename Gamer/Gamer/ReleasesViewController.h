@@ -14,6 +14,11 @@
 
 @property (nonatomic, strong) NSMutableArray *games;
 
-@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSMutableArray *gamesReleasingThisMonth;
+@property (nonatomic, strong) NSMutableArray *gamesReleasingNextMonth;
+@property (nonatomic, strong) NSMutableArray *gamesReleasingThisQuarter;
+@property (nonatomic, strong) NSMutableArray *gamesReleasingNextQuarter;
+@property (nonatomic, strong) NSMutableArray *gamesReleasingThisYear;
+@property (nonatomic, strong) NSMutableArray *gamesReleasingNextYear;
 
 @end

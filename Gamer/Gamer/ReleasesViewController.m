@@ -29,34 +29,19 @@ static NSInteger selectedRow;
     [super viewDidLoad];
 	
 	_games = [[NSMutableArray alloc] init];
-	
-	_dateFormatter = [[NSDateFormatter alloc] init];
-	[_dateFormatter setDateFormat:@"dd/MM/yyyy"];
-	
-//	NSManagedObjectContext *context0 = [NSManagedObjectContext contextForCurrentThread];
-//	[Game truncateAll];
-//	[Genre truncateAll];
-//	[Platform truncateAll];
-//	[Developer truncateAll];
-//	[Publisher truncateAll];
-//	[Franchise truncateAll];
-//	[Theme truncateAll];
-//	[context0 saveToPersistentStoreAndWait];
-	
-	_games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
+	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
 	[_tableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	_games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
-	
-	[_games sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		NSDate *obj1ReleaseDate = [(Game *)obj1 releaseDate];
-		NSDate *obj2ReleaseDate = [(Game *)obj2 releaseDate];
-		return [obj1ReleaseDate compare:obj2ReleaseDate];
-	}];
-	
+	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
 	[_tableView reloadData];
+	
+//	[_games sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+//		NSDate *obj1ReleaseDate = [(Game *)obj1 releaseDate];
+//		NSDate *obj2ReleaseDate = [(Game *)obj2 releaseDate];
+//		return [obj1ReleaseDate compare:obj2ReleaseDate];
+//	}];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -65,6 +50,14 @@ static NSInteger selectedRow;
 
 #pragma mark -
 #pragma mark TableView
+
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+//	
+//}
+//
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+//	
+//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	return _games.count;
@@ -75,10 +68,20 @@ static NSInteger selectedRow;
 	
 	Game *game = _games[indexPath.row];
 	
+//	if ([game.title rangeOfString:@":"].location == NSNotFound){
+//		[cell.titleLabel setText:game.title];
+//	}
+//	else{
+//		[cell.titleLabel setText:[[game.title componentsSeparatedByString:@": "][0] stringByAppendingString:@":"]];
+//	}
+	
 	[cell.titleLabel setText:game.title];
+	[cell.titleLabel sizeToFit];
 	[cell.dateLabel setText:game.releaseDateText];
+//	if (cell.titleLabel.frame.size.height < 40)
+//		[cell.dateLabel setFrame:CGRectMake(cell.dateLabel.frame.origin.x, cell.titleLabel.frame.origin.y + cell.titleLabel.frame.size.height, cell.dateLabel.frame.size.width, cell.dateLabel.frame.size.height)];
 	[cell.imageView setImage:[UIImage imageWithData:game.image scale:10]];
-	NSLog(@"%.2f x %.2f", cell.imageView.image.size.width, cell.imageView.image.size.height);
+//	NSLog(@"%.2f x %.2f", cell.imageView.image.size.width, cell.imageView.image.size.height);
 	return cell;
 }
 
@@ -103,6 +106,9 @@ static NSInteger selectedRow;
 	[_games removeObjectAtIndex:indexPath.row];
 	[tableView reloadData];
 }
+
+#pragma mark -
+#pragma mark Custom
 
 #pragma mark -
 #pragma mark Actions

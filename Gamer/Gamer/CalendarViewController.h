@@ -8,9 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <TapkuLibrary/TapkuLibrary.h>
+#import "Game.h"
 
 @interface CalendarViewController : UIViewController <TKCalendarMonthViewDataSource, TKCalendarMonthViewDelegate, UITableViewDataSource, UITableViewDelegate>
 
+@property (nonatomic, strong) TKCalendarMonthView *calendarView;
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
+
+@property (nonatomic, strong) NSMutableArray *games;
+@property (nonatomic, strong) NSMutableArray *selectedDayGames;
 
 @end

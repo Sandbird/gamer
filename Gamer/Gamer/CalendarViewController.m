@@ -7,6 +7,9 @@
 //
 
 #import "CalendarViewController.h"
+#import "GameViewController.h"
+
+static NSInteger selectedRow;
 
 @interface CalendarViewController ()
 
@@ -17,11 +20,26 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	TKCalendarMonthView *calendarView = [[TKCalendarMonthView alloc] initWithSundayAsFirst:YES];
-	[calendarView setDataSource:self];
-	[calendarView setDelegate:self];
-	[calendarView selectDate:[NSDate date]];
-	[self.view addSubview:calendarView];
+	_calendarView = [[TKCalendarMonthView alloc] initWithSundayAsFirst:NO];
+	[_calendarView setDataSource:self];
+	[_calendarView setDelegate:self];
+	[_calendarView selectDate:[NSDate date]];
+	[self.view addSubview:_calendarView];
+	
+	_games = [[NSMutableArray alloc] init];
+	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
+	
+	_selectedDayGames = [[NSMutableArray alloc] init];
+	
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
+	
+	[_calendarView selectDate:[NSDate date]];
+	[_calendarView reload];
+	
+	[_tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -32,15 +50,46 @@
 #pragma mark Calendar
 
 - (void)calendarMonthView:(TKCalendarMonthView *)monthView didSelectDate:(NSDate *)date{
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	NSDateComponents *components = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:date];
+	NSDate *calendarDate = [calendar dateFromComponents:components];
 	
+	_selectedDayGames = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"releaseDate == %@ && track == %@", calendarDate, @(YES)]].mutableCopy;
+	
+	[_tableView reloadData];
 }
 
 - (NSArray *)calendarMonthView:(TKCalendarMonthView *)monthView marksFromDate:(NSDate *)startDate toDate:(NSDate *)lastDate{
-	return nil;
-}
-
-- (void)calendarMonthView:(TKCalendarMonthView *)monthView monthDidChange:(NSDate *)month animated:(BOOL)animated{
+	NSMutableArray *monthDates = [[NSMutableArray alloc] init];
 	
+	for (Game *game in _games)
+		if ([game.releaseDate compare:startDate] == NSOrderedDescending && [game.releaseDate compare:lastDate] == NSOrderedAscending)
+			[monthDates addObject:game.releaseDate];
+	
+	NSMutableArray *marks = [[NSMutableArray alloc] init];
+	
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	NSDateComponents *components = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:startDate];
+	NSDate *date = [calendar dateFromComponents:components];
+	
+	NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
+	[offsetComponents setDay:1];
+	
+	while (YES){
+		if ([date compare:lastDate] == NSOrderedDescending)
+			break;
+		
+		if ([monthDates containsObject:date])
+			[marks addObject:@(YES)];
+		else
+			[marks addObject:@(NO)];
+		
+		date = [calendar dateByAddingComponents:offsetComponents toDate:date options:nil];
+	}
+	
+	return marks;
 }
 
 - (BOOL)calendarMonthView:(TKCalendarMonthView *)monthView monthShouldChange:(NSDate *)month animated:(BOOL)animated{
@@ -48,6 +97,13 @@
 }
 
 - (void)calendarMonthView:(TKCalendarMonthView *)monthView monthWillChange:(NSDate *)month animated:(BOOL)animated{
+	NSLog(@"monthWillChange");
+	[_calendarView reload];
+	[_selectedDayGames removeAllObjects];
+	[_tableView reloadData];
+}
+
+- (void)calendarMonthView:(TKCalendarMonthView *)monthView monthDidChange:(NSDate *)month animated:(BOOL)animated{
 	
 }
 
@@ -55,18 +111,32 @@
 #pragma mark TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return 1;
+	return _selectedDayGames.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CalendarCell"];
-	[cell.textLabel setText:@"Test"];
+	
+	Game *game = _selectedDayGames[indexPath.row];
+	[cell.textLabel setText:game.title];
+	
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	selectedRow = indexPath.row;
+	
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
+}
+
+#pragma mark -
+#pragma mark Actions
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+	GameViewController *destination = segue.destinationViewController;
+	[destination setGame:_games[selectedRow]];
 }
 
 @end

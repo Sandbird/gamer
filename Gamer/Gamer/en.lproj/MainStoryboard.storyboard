@@ -40,22 +40,22 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="releasesCell" id="0mt-yH-MOx" userLabel="Releases Cell" customClass="ReleasesCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="releasesCell" id="0mt-yH-MOx" userLabel="Releases Cell" customClass="ReleasesCell">
                                         <rect key="frame" x="0.0" y="88" width="320" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="300" height="79"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Gears of War" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hPC-K1-Sps">
-                                                    <rect key="frame" x="69" y="5" width="211" height="21"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Gears of War: Judgment" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hPC-K1-Sps">
+                                                    <rect key="frame" x="69" y="5" width="231" height="42"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="18"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="25/01/2013" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Z9B-Co-63s">
-                                                    <rect key="frame" x="69" y="34" width="111" height="30"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="22 Feb 2013" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Z9B-Co-63s">
+                                                    <rect key="frame" x="69" y="55" width="111" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -150,7 +150,7 @@
             </objects>
             <point key="canvasLocation" x="2081" y="-968"/>
         </scene>
-        <!--Games View Controller - My Games-->
+        <!--Games View Controller - Library-->
         <scene sceneID="ECc-MU-pwB">
             <objects>
                 <viewController id="k1z-Oq-UEO" customClass="GamesViewController" sceneMemberID="viewController">
@@ -194,16 +194,16 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="My Games" id="WfF-Sx-4Nh"/>
+                    <navigationItem key="navigationItem" title="Library" id="WfF-Sx-4Nh"/>
                     <connections>
                         <segue destination="YlO-as-Egd" kind="push" identifier="GameSegue" id="4ob-4Z-dqu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sld-iq-j3c" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1553" y="-301"/>
+            <point key="canvasLocation" x="1553" y="377"/>
         </scene>
-        <!--Calendar View Controller - Top Games-->
+        <!--Calendar View Controller - Tracking-->
         <scene sceneID="A4U-3w-4UL">
             <objects>
                 <viewController id="wzX-h5-tdK" customClass="CalendarViewController" sceneMemberID="viewController">
@@ -243,15 +243,15 @@
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Top Games" id="TSv-OK-W1i"/>
+                    <navigationItem key="navigationItem" title="Tracking" id="TSv-OK-W1i"/>
                     <connections>
                         <outlet property="tableView" destination="46V-nB-5LL" id="jxL-98-rVe"/>
-                        <segue destination="YlO-as-Egd" kind="push" identifier="GameSegue" id="iR3-LN-dzK"/>
+                        <segue destination="YlO-as-Egd" kind="push" identifier="GameSegue" id="uGV-QD-0a2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2OJ-mE-awF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1553" y="379"/>
+            <point key="canvasLocation" x="1553" y="-301"/>
         </scene>
         <!--Game View Controller - Title-->
         <scene sceneID="Qjn-4U-NmV">
@@ -500,6 +500,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <connections>
                         <outlet property="contentView" destination="oBH-Yi-fWy" id="mL0-lN-a28"/>
                         <outlet property="coverImageShadowView" destination="PoA-iG-QQl" id="KYs-UD-IE1"/>
@@ -527,7 +528,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5YG-bk-mdU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2625" y="-301"/>
+            <point key="canvasLocation" x="2623" y="-301"/>
         </scene>
         <!--Settings View Controller - Settings-->
         <scene sceneID="hkb-0n-y9c">
@@ -588,6 +589,21 @@
                                     <action selector="testButtonPressAction:" destination="pKF-tF-Sle" eventType="touchUpInside" id="VEK-sC-HdQ"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="eql-xh-0rX">
+                                <rect key="frame" x="80" y="264" width="164" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="CLEAR DATABASE">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="clearDatabaseButtonPressAction:" destination="pKF-tF-Sle" eventType="touchUpInside" id="ExW-wt-OHE"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -609,9 +625,9 @@
                     </tabBar>
                     <connections>
                         <segue destination="8no-6N-Ora" kind="relationship" relationship="viewControllers" id="YyG-ck-tLf"/>
-                        <segue destination="FaO-c4-k1i" kind="relationship" relationship="viewControllers" id="aTA-Qx-4ZT"/>
-                        <segue destination="DCy-y9-WuJ" kind="relationship" relationship="viewControllers" id="jQY-Yp-FPw"/>
-                        <segue destination="7xj-Ha-l7Q" kind="relationship" relationship="viewControllers" id="yPi-yk-uhN"/>
+                        <segue destination="dZ7-7G-nW2" kind="relationship" relationship="viewControllers" id="I4m-hW-vsp"/>
+                        <segue destination="FaO-c4-k1i" kind="relationship" relationship="viewControllers" id="h8T-3e-dCt"/>
+                        <segue destination="7xj-Ha-l7Q" kind="relationship" relationship="viewControllers" id="vog-J3-PQI"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SsV-LY-yu7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -656,7 +672,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NVY-3m-SmF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1027" y="-301"/>
+            <point key="canvasLocation" x="1027" y="377"/>
         </scene>
         <!--Navigation Controller - Settings-->
         <scene sceneID="eoJ-20-pCQ">
@@ -679,24 +695,24 @@
             <point key="canvasLocation" x="1027" y="1043"/>
         </scene>
         <!--Navigation Controller - Calendar-->
-        <scene sceneID="ckd-3L-7eX">
+        <scene sceneID="Y2Y-1h-Ffw">
             <objects>
-                <navigationController id="DCy-y9-WuJ" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Calendar" id="bhG-tP-3eG"/>
+                <navigationController id="dZ7-7G-nW2" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Calendar" id="bYi-hz-nej"/>
                     <toolbarItems/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="JSy-rF-c9d">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="klM-TJ-vi5">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="wzX-h5-tdK" kind="relationship" relationship="rootViewController" id="957-s2-CKu"/>
+                        <segue destination="wzX-h5-tdK" kind="relationship" relationship="rootViewController" id="g4O-DG-jjw"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Coh-qJ-vEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hIX-aa-GBZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1027" y="379"/>
+            <point key="canvasLocation" x="1027" y="-301"/>
         </scene>
     </scenes>
     <classes>
@@ -709,6 +725,8 @@
         <class className="GameViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GameViewController.h"/>
             <relationships>
+                <relationship kind="action" name="trackButtonPressAction:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="trailerButtonPressAction:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="coverImageShadowView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="coverImageView" candidateClass="UIImageView"/>

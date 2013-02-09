@@ -117,7 +117,6 @@ static NSInteger selectedRow;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameViewController *destination = segue.destinationViewController;
-	
 	[destination setSearchResult:_results[selectedRow]];
 }
 
