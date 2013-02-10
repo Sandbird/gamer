@@ -19,6 +19,9 @@
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="releaseDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="releaseDateText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="releaseMonth" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="releaseQuarter" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="releaseYear" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="track" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="trailerURL" optional="YES" attributeType="String" syncable="YES"/>
@@ -66,10 +69,10 @@
     <elements>
         <element name="Developer" positionX="117" positionY="-126" width="128" height="103"/>
         <element name="Franchise" positionX="-263" positionY="-25" width="128" height="103"/>
-        <element name="Game" positionX="-63" positionY="-18" width="128" height="298"/>
+        <element name="Game" positionX="-63" positionY="-54" width="128" height="343"/>
         <element name="Genre" positionX="-290" positionY="146" width="128" height="88"/>
         <element name="Platform" positionX="187" positionY="32" width="128" height="103"/>
-        <element name="Publisher" positionX="-72" positionY="-171" width="128" height="103"/>
+        <element name="Publisher" positionX="-72" positionY="-202" width="128" height="103"/>
         <element name="Screenshot" positionX="133" positionY="260" width="128" height="73"/>
         <element name="SimilarGame" positionX="-252" positionY="281" width="128" height="103"/>
         <element name="Theme" positionX="-54" positionY="333" width="128" height="88"/>
