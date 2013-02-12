@@ -43,11 +43,13 @@
 	[_metascoreView.layer setShadowOffset:CGSizeMake(0, 0)];
 	
 	_dateFormatter = [[NSDateFormatter alloc] init];
+	[_dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
 	[_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	[_dateFormatter setDateFormat:@"dd/MM/yyyy"];
 	
 	// If coming from search load game from database
 	if (_searchResult){
+		[self.navigationItem setTitle:[_searchResult.title componentsSeparatedByString:@":"][0]];
 		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
 		if (game)
 			_game = game;
@@ -58,6 +60,7 @@
 		[self requestGameWithIdentifier:_game.identifier];
 	
 	// Set data
+	[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
 	[_coverImageView setImage:[UIImage imageWithData:_game.image]];
 	[_releaseDateLabel setText:_game.releaseDateText];
 	if (_game.genres.count > 0) [_genreFirstLabel setText:[[_game.genres allObjects][0] name]];
@@ -78,6 +81,14 @@
 
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+	if ([_game.track isEqual:@(NO)]){
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", _game.identifier] inContext:context];
+		[context saveToPersistentStoreAndWait];
+	}
 }
 
 #pragma mark -
@@ -128,7 +139,7 @@
 		
 		NSCalendar *calendar = [NSCalendar currentCalendar];
 		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-		NSDateComponents *components = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+		NSDateComponents *components = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 		
 		if (releaseDate){
 			NSDateComponents *releaseComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[_dateFormatter dateFromString:releaseDate]];
@@ -148,7 +159,8 @@
 			[_game setReleaseDateText:[_dateFormatter stringFromDate:date]];
 		}
 		else if (month){
-			[components setMonth:[month integerValue]];
+			[components setMonth:[month integerValue] + 1];
+			[components setDay:0];
 			if ([month integerValue] <= 3) [components setQuarter:1];
 			else if ([month integerValue] >= 4 && [month integerValue] <= 6) [components setQuarter:2];
 			else if ([month integerValue] >= 7 && [month integerValue] <= 9) [components setQuarter:3];
@@ -160,12 +172,13 @@
 			[_game setReleaseMonth:@(components.month)];
 			[_game setReleaseQuarter:@(components.quarter)];
 			[_game setReleaseYear:@(components.year)];
-			[_dateFormatter setDateFormat:@"MMM yyyy"];
+			[_dateFormatter setDateFormat:@"MMMM yyyy"];
 			[_game setReleaseDateText:[_dateFormatter stringFromDate:date]];
 		}
 		else if (quarter){
 			[components setQuarter:[quarter integerValue]];
-			[components setMonth:[quarter integerValue] * 3];
+			[components setMonth:([quarter integerValue] * 3) + 1];
+			[components setDay:0];
 			[components setYear:[year integerValue]];
 			
 			NSDate *date = [calendar dateFromComponents:components];
@@ -179,7 +192,8 @@
 		else{
 			[components setYear:[year integerValue]];
 			[components setQuarter:4];
-			[components setMonth:12];
+			[components setMonth:13];
+			[components setDay:0];
 			
 			NSDate *date = [calendar dateFromComponents:components];
 			[_game setReleaseDate:date];
@@ -189,6 +203,12 @@
 			[_dateFormatter setDateFormat:@"yyyy"];
 			[_game setReleaseDateText:[_dateFormatter stringFromDate:date]];
 		}
+		
+//		NSLog(@"%@", _game.releaseDate);
+//		NSLog(@"%@", _game.releaseDateText);
+//		NSLog(@"%@", _game.releaseMonth);
+//		NSLog(@"%@", _game.releaseQuarter);
+//		NSLog(@"%@", _game.releaseYear);
 		
 		// Genre
 		for (NSDictionary *genreDictionary in results[@"genres"]){
@@ -276,10 +296,18 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
-		[_game setImage:UIImagePNGRepresentation(image)];
+		UIImage *imageLarge = [self imageWithImage:image scaledToWidth:300];
+		UIImage *imageSmall = [self imageWithImage:image scaledToWidth:200];
+		
+		[_game setImage:UIImagePNGRepresentation(imageLarge)];
+		[_game setImageSmall:UIImagePNGRepresentation(imageSmall)];
 		[_coverImageView setImage:image];
-//		NSLog(@"image: %.2fx%.2f", image.size.width, image.size.height);
+		
+//		NSLog(@"image:      %.2fx%.2f", image.size.width, image.size.height);
+//		NSLog(@"imageLarge: %.2fx%.2f", imageLarge.size.width, imageLarge.size.height);
+//		NSLog(@"imageSmall: %.2fx%.2f", imageSmall.size.width, imageSmall.size.height);
 	}];
+	
 	[operation start];
 }
 
@@ -287,6 +315,7 @@
 #pragma mark Custom
 
 - (void)setInterfaceElementsWithGame:(Game *)game{
+	[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
 	[_releaseDateLabel setText:game.releaseDateText];
 	if (_game.genres.count > 0) [_genreFirstLabel setText:[[game.genres allObjects][0] name]];
 	if (_game.genres.count > 1) [_genreSecondLabel setText:[[game.genres allObjects][1] name]];
@@ -301,6 +330,20 @@
 	[_overviewTextView setText:game.overview];
 	
 	[self resizeContentViewsAndScrollView];
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToWidth:(float)width{
+	float scaleFactor = width/image.size.width;
+	
+	float newWidth = image.size.width * scaleFactor;
+	float newHeight = image.size.height * scaleFactor;
+	
+	UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight));
+	[image drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
+	
+	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	return newImage;
 }
 
 - (void)resizeContentViewsAndScrollView{

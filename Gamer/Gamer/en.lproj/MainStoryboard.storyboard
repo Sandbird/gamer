@@ -17,28 +17,45 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="releasesSection" rowHeight="44" id="w8l-2S-hlO" userLabel="Section Cell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="releasesSectionCell" rowHeight="44" id="w8l-2S-hlO" userLabel="Section Cell" customClass="ReleasesSectionCell">
                                         <rect key="frame" x="0.0" y="44" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" id="jd6-7b-OMY">
+                                                <view contentMode="scaleToFill" id="jd6-7b-OMY" userLabel="Content View">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                    <subviews>
+                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Section" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rp6-1G-68I" userLabel="Title Label">
+                                                            <rect key="frame" x="47" y="11" width="217" height="21"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </label>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="z1S-6M-vLA" userLabel="Icon Image View">
+                                                            <rect key="frame" x="5" y="5" width="34" height="34"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </imageView>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="wZG-XD-kkJ">
+                                                            <rect key="frame" x="272" y="8" width="28" height="28"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <gestureRecognizers/>
                                                 </view>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Section" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rp6-1G-68I" userLabel="Title Label">
-                                                    <rect key="frame" x="20" y="11" width="280" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                </label>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <connections>
+                                            <outlet property="contentView" destination="jd6-7b-OMY" id="Zrx-1O-D3d"/>
+                                            <outlet property="hideIndicator" destination="wZG-XD-kkJ" id="6Eq-Qc-bkN"/>
+                                            <outlet property="iconImageView" destination="z1S-6M-vLA" id="8XR-ia-Xlm"/>
+                                            <outlet property="titleLabel" destination="rp6-1G-68I" id="eoz-Nm-FQg"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="releasesCell" id="0mt-yH-MOx" userLabel="Releases Cell" customClass="ReleasesCell">
                                         <rect key="frame" x="0.0" y="88" width="320" height="80"/>
@@ -61,22 +78,17 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </label>
-                                                <view contentMode="scaleToFill" id="W3a-vW-ag4">
-                                                    <rect key="frame" x="5" y="5" width="56" height="70"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                </view>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="tFd-vJ-mAH">
                                                     <rect key="frame" x="5" y="5" width="56" height="70"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <connections>
+                                            <outlet property="coverImageView" destination="tFd-vJ-mAH" id="0ug-zb-Cjz"/>
                                             <outlet property="dateLabel" destination="Z9B-Co-63s" id="vXv-Rs-DVZ"/>
-                                            <outlet property="imageView" destination="tFd-vJ-mAH" id="Rbm-t0-1Mr"/>
                                             <outlet property="titleLabel" destination="hPC-K1-Sps" id="bJ4-3T-19K"/>
                                         </connections>
                                     </tableViewCell>
@@ -277,7 +289,7 @@
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="VEP-gp-SO4">
                                                 <rect key="frame" x="20" y="20" width="160" height="200"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </imageView>
                                             <view contentMode="scaleToFill" id="d0u-5V-b2M" userLabel="Metascore View">
                                                 <rect key="frame" x="200" y="30" width="80" height="80"/>
@@ -715,80 +727,6 @@
             <point key="canvasLocation" x="1027" y="-301"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CalendarViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CalendarViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="GameViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GameViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="trackButtonPressAction:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="trailerButtonPressAction:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="coverImageShadowView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="coverImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="developerLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="franchiseFirstLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="franchiseSecondLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="genreFirstLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="genreSecondLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="metascoreLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="metascoreView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="overviewContentView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="overviewTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="platformFirstLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="platformSecondLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="publisherLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="releaseDateLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="screenshotsContentView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="themeFirstLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="themeSecondLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="trailerButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="trailerContentView" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="GamesCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GamesCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="GamesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GamesViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="ReleasesCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ReleasesCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="dateLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="ReleasesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ReleasesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="addBarButtonPressAction:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="SearchViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SearchViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="SettingsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
