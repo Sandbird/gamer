@@ -23,7 +23,6 @@ static NSInteger selectedRow;
 	_calendarView = [[TKCalendarMonthView alloc] initWithSundayAsFirst:NO];
 	[_calendarView setDataSource:self];
 	[_calendarView setDelegate:self];
-	[_calendarView selectDate:[NSDate date]];
 	[self.view addSubview:_calendarView];
 	
 	_games = [[NSMutableArray alloc] init];
@@ -31,12 +30,14 @@ static NSInteger selectedRow;
 	
 	_selectedDayGames = [[NSMutableArray alloc] init];
 	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[_calendarView selectDate:[NSDate date]];
+	});
 }
 
 - (void)viewWillAppear:(BOOL)animated{
 	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
 	
-	[_calendarView selectDate:[NSDate date]];
 	[_calendarView reload];
 	
 	[_tableView reloadData];
@@ -55,7 +56,7 @@ static NSInteger selectedRow;
 	NSDateComponents *components = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:date];
 	NSDate *calendarDate = [calendar dateFromComponents:components];
 	
-	_selectedDayGames = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"releaseDate == %@ && track == %@", calendarDate, @(YES)]].mutableCopy;
+	_selectedDayGames = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"releaseDate == %@", calendarDate]].mutableCopy;
 	
 	[_tableView reloadData];
 }
@@ -97,7 +98,6 @@ static NSInteger selectedRow;
 }
 
 - (void)calendarMonthView:(TKCalendarMonthView *)monthView monthWillChange:(NSDate *)month animated:(BOOL)animated{
-	NSLog(@"monthWillChange");
 	[_calendarView reload];
 	[_selectedDayGames removeAllObjects];
 	[_tableView reloadData];
@@ -133,6 +133,10 @@ static NSInteger selectedRow;
 
 #pragma mark -
 #pragma mark Actions
+
+- (IBAction)todayButtonPressAction:(UIBarButtonItem *)sender{
+	[_calendarView selectDate:[NSDate date]];
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameViewController *destination = segue.destinationViewController;

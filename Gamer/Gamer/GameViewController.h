@@ -10,7 +10,7 @@
 #import "Game.h"
 #import "SearchResult.h"
 
-@interface GameViewController : UIViewController
+@interface GameViewController : UIViewController <UIActionSheetDelegate>
 
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 

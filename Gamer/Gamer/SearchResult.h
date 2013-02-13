@@ -2,7 +2,7 @@
 //  SearchResult.h
 //  Gamer
 //
-//  Created by Caio Mello on 2/6/13.
+//  Created by Caio Mello on 2/12/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 
 @interface SearchResult : NSObject
 
-@property (nonatomic, strong) NSString *identifier;
-@property (nonatomic, strong) NSString *title;
+@property (nonatomic, copy) NSString *identifier;
+@property (nonatomic, copy) NSString *title;
 
 @end

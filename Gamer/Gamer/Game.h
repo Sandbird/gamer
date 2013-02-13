@@ -36,6 +36,7 @@
 @property (nonatomic, retain) NSSet *screenshots;
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
+@property (nonatomic, retain) Platform *selectedPlatform;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)

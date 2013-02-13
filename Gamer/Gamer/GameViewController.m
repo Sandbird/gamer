@@ -60,23 +60,25 @@
 		[self requestGameWithIdentifier:_game.identifier];
 	
 	// Set data
-	[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
-	[_coverImageView setImage:[UIImage imageWithData:_game.image]];
-	[_releaseDateLabel setText:_game.releaseDateText];
-	if (_game.genres.count > 0) [_genreFirstLabel setText:[[_game.genres allObjects][0] name]];
-	if (_game.genres.count > 1) [_genreSecondLabel setText:[[_game.genres allObjects][1] name]];
-	if (_game.platforms.count > 0) [_platformFirstLabel setText:[[_game.platforms allObjects][0] name]];
-	if (_game.platforms.count > 1) [_platformSecondLabel setText:[[_game.platforms allObjects][1] name]];
-	[_developerLabel setText:[[_game.developers allObjects][0] name]];
-	[_publisherLabel setText:[[_game.publishers allObjects][0] name]];
-	if (_game.franchises.count > 0) [_franchiseFirstLabel setText:[[_game.franchises allObjects][0] name]];
-	if (_game.franchises.count > 1) [_franchiseSecondLabel setText:[[_game.franchises allObjects][1] name]];
-	if (_game.themes.count > 0) [_themeFirstLabel setText:[[_game.themes allObjects][0] name]];
-	if (_game.themes.count > 1) [_themeSecondLabel setText:[[_game.themes allObjects][1] name]];
-	[_overviewTextView setText:_game.overview];
-	[_overviewTextView setText:_game.overview];
+//	[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
+//	[_coverImageView setImage:[UIImage imageWithData:_game.image]];
+//	[_releaseDateLabel setText:_game.releaseDateText];
+//	if (_game.genres.count > 0) [_genreFirstLabel setText:[[_game.genres allObjects][0] name]];
+//	if (_game.genres.count > 1) [_genreSecondLabel setText:[[_game.genres allObjects][1] name]];
+//	if (_game.platforms.count > 0) [_platformFirstLabel setText:[[_game.platforms allObjects][0] name]];
+//	if (_game.platforms.count > 1) [_platformSecondLabel setText:[[_game.platforms allObjects][1] name]];
+//	[_developerLabel setText:[[_game.developers allObjects][0] name]];
+//	[_publisherLabel setText:[[_game.publishers allObjects][0] name]];
+//	if (_game.franchises.count > 0) [_franchiseFirstLabel setText:[[_game.franchises allObjects][0] name]];
+//	if (_game.franchises.count > 1) [_franchiseSecondLabel setText:[[_game.franchises allObjects][1] name]];
+//	if (_game.themes.count > 0) [_themeFirstLabel setText:[[_game.themes allObjects][0] name]];
+//	if (_game.themes.count > 1) [_themeSecondLabel setText:[[_game.themes allObjects][1] name]];
+//	[_overviewTextView setText:_game.overview];
+//	[_overviewTextView setText:_game.overview];
+//	
+//	[self resizeContentViewsAndScrollView];
 	
-	[self resizeContentViewsAndScrollView];
+	[self setInterfaceElementsWithGame:_game];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -84,11 +86,12 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
-	if ([_game.track isEqual:@(NO)]){
-		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", _game.identifier] inContext:context];
-		[context saveToPersistentStoreAndWait];
-	}
+	[self.navigationController popToRootViewControllerAnimated:NO];
+//	if ([_game.track isEqual:@(NO)]){
+//		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+//		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", _game.identifier] inContext:context];
+//		[context saveToPersistentStoreAndWait];
+//	}
 }
 
 #pragma mark -
@@ -285,6 +288,17 @@
 		[context saveToPersistentStoreAndWait];
 		
 		[self setInterfaceElementsWithGame:_game];
+		
+		NSDateComponents *todayComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+		
+		if ([_game.releaseDate compare:[calendar dateFromComponents:todayComponents]] >= NSOrderedSame){
+			UIBarButtonItem *trackButton = [[UIBarButtonItem alloc] initWithTitle:@"Track" style:UIBarButtonItemStylePlain target:self action:@selector(trackButtonPressAction)];
+			[self.navigationItem setRightBarButtonItem:trackButton animated:YES];
+		}
+		else if ([_game.releaseDate compare:[calendar dateFromComponents:todayComponents]] <= NSOrderedSame){
+			UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(saveButtonPressAction)];
+			[self.navigationItem setRightBarButtonItem:saveButton animated:YES];
+		}
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, response.statusCode, error.description);
 	}];
@@ -299,8 +313,11 @@
 		UIImage *imageLarge = [self imageWithImage:image scaledToWidth:300];
 		UIImage *imageSmall = [self imageWithImage:image scaledToWidth:200];
 		
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		[_game setImage:UIImagePNGRepresentation(imageLarge)];
 		[_game setImageSmall:UIImagePNGRepresentation(imageSmall)];
+		[context saveToPersistentStoreAndWait];
+		
 		[_coverImageView setImage:image];
 		
 //		NSLog(@"image:      %.2fx%.2f", image.size.width, image.size.height);
@@ -309,6 +326,29 @@
 	}];
 	
 	[operation start];
+}
+
+#pragma mark -
+#pragma mark ActionSheet
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+	if (buttonIndex != actionSheet.cancelButtonIndex){
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		
+		if ([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Track"]){
+			[_game setSelectedPlatform:[_game.platforms allObjects][buttonIndex]];
+			[_game setTrack:@(YES)];
+			[context saveToPersistentStoreAndWait];
+			[self.navigationController popToRootViewControllerAnimated:YES];
+		}
+		else if ([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Save"]){
+			[_game setSelectedPlatform:[_game.platforms allObjects][buttonIndex]];
+			[_game setTrack:@(NO)];
+			[context saveToPersistentStoreAndWait];
+			
+			[self.tabBarController setSelectedIndex:2];
+		}
+	}
 }
 
 #pragma mark -
@@ -358,20 +398,57 @@
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)trackButtonPressAction:(UIBarButtonItem *)sender{
-	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-	[_game setTrack:@(YES)];
-	[context saveToPersistentStoreAndWait];
-	
-	[self.navigationController popToRootViewControllerAnimated:YES];
+- (void)trackButtonPressAction{
+	if (_game.platforms.count > 1){
+		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+		
+		for (Platform *platform in [_game.platforms allObjects])
+			[actionSheet addButtonWithTitle:platform.name];
+		
+		[actionSheet addButtonWithTitle:@"Cancel"];
+		[actionSheet setCancelButtonIndex:_game.platforms.count];
+		
+		[actionSheet showInView:self.tabBarController.view];
+	}
+	else{
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		[_game setSelectedPlatform:[_game.platforms allObjects][0]];
+		[_game setTrack:@(YES)];
+		[context saveToPersistentStoreAndWait];
+		
+		[self.navigationController popToRootViewControllerAnimated:YES];
+	}
+}
+
+- (void)saveButtonPressAction{
+	if (_game.platforms.count > 1){
+		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+		
+		for (Platform *platform in [_game.platforms allObjects])
+			[actionSheet addButtonWithTitle:platform.name];
+		
+		[actionSheet addButtonWithTitle:@"Cancel"];
+		[actionSheet setCancelButtonIndex:_game.platforms.count];
+		
+		[actionSheet showInView:self.tabBarController.view];
+	}
+	else{
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		[_game setSelectedPlatform:[_game.platforms allObjects][0]];
+		[_game setTrack:@(NO)];
+		[context saveToPersistentStoreAndWait];
+		
+		[self.navigationController popToRootViewControllerAnimated:NO];
+		[self.tabBarController setSelectedIndex:2];
+	}
 }
 
 - (IBAction)trailerButtonPressAction:(UIButton *)sender{
-	MPMoviePlayerController *player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:_game.trailerURL]];
-	player.controlStyle=MPMovieControlStyleDefault;
-	player.shouldAutoplay=YES;
-	[self.view addSubview:player.view];
-	[player setFullscreen:YES animated:YES];
+//	MPMoviePlayerController *player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:_game.trailerURL]];
+//	player.controlStyle=MPMovieControlStyleDefault;
+//	player.shouldAutoplay=YES;
+//	[self.view addSubview:player.view];
+//	[player setFullscreen:YES animated:YES];
 }
 
 @end

@@ -24,6 +24,7 @@
 #define nextQuarterTag 13
 #define thisYearTag 14
 #define nextYearTag 15
+#define releasedTag 16
 
 static NSInteger selectedSection;
 static NSInteger selectedRow;
@@ -54,6 +55,7 @@ static NSInteger selectedRow;
 	_gamesReleasingNextQuarter = [[NSMutableArray alloc] init];
 	_gamesReleasingThisYear = [[NSMutableArray alloc] init];
 	_gamesReleasingNextYear = [[NSMutableArray alloc] init];
+	_gamesReleased = [[NSMutableArray alloc] init];
 	
 	_thisMonthGestureRecognizer = [[UITapGestureRecognizer alloc] init];
 	[_thisMonthGestureRecognizer setDelegate:self];
@@ -72,6 +74,9 @@ static NSInteger selectedRow;
 	
 	_nextYearGestureRecognizer = [[UITapGestureRecognizer alloc] init];
 	[_nextYearGestureRecognizer setDelegate:self];
+	
+	_releasedGestureRecognizer = [[UITapGestureRecognizer alloc] init];
+	[_releasedGestureRecognizer setDelegate:self];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -86,6 +91,7 @@ static NSInteger selectedRow;
 	[self reloadArrayForSectionWithTag:nextQuarterTag removeFromParentArray:YES];
 	[self reloadArrayForSectionWithTag:thisYearTag removeFromParentArray:YES];
 	[self reloadArrayForSectionWithTag:nextYearTag removeFromParentArray:YES];
+	[self reloadArrayForSectionWithTag:releasedTag removeFromParentArray:YES];
 	
 	[_tableView reloadData];
 }
@@ -140,6 +146,12 @@ static NSInteger selectedRow;
 		[cell.titleLabel setText:@"Next year"];
 	}
 	
+	if (_games[section] == _gamesReleased){
+		[cell.contentView addGestureRecognizer:_releasedGestureRecognizer];
+		[cell.contentView setTag:releasedTag];
+		[cell.titleLabel setText:@"Released"];
+	}
+	
 	return cell.contentView;
 }
 
@@ -150,6 +162,7 @@ static NSInteger selectedRow;
 	if (_games[section] == _gamesReleasingNextQuarter) return _gamesReleasingNextQuarter.count;
 	if (_games[section] == _gamesReleasingThisYear) return _gamesReleasingThisYear.count;
 	if (_games[section] == _gamesReleasingNextYear) return _gamesReleasingNextYear.count;
+	if (_games[section] == _gamesReleased) return _gamesReleased.count;
 	return nil;
 }
 
@@ -163,12 +176,15 @@ static NSInteger selectedRow;
 	else if (_games[indexPath.section] == _gamesReleasingNextQuarter) game = _gamesReleasingNextQuarter[indexPath.row];
 	else if (_games[indexPath.section] == _gamesReleasingThisYear) game = _gamesReleasingThisYear[indexPath.row];
 	else if (_games[indexPath.section] == _gamesReleasingNextYear) game = _gamesReleasingNextYear[indexPath.row];
+	else if (_games[indexPath.section] == _gamesReleased) game = _gamesReleased[indexPath.row];
 	
 	[cell.titleLabel setText:game.title];
 //	[cell.titleLabel sizeToFit];
 	[cell.dateLabel setText:game.releaseDateText];
 	[cell.coverImageView setImage:[UIImage imageWithData:game.imageSmall]];
 //	NSLog(@"%.2f x %.2f", cell.coverImageView.image.size.width, cell.coverImageView.image.size.height);
+	
+	[cell.platformLabel setText:game.selectedPlatform.name];
 	
 	return cell;
 }
@@ -270,6 +286,16 @@ static NSInteger selectedRow;
 			}
 			gamesInSection = _gamesReleasingNextYear;
 			break;
+		case releasedTag:
+			if ([_games containsObject:_gamesReleased] && _gamesReleased.count == 0){
+				[self reloadArrayForSectionWithTag:releasedTag removeFromParentArray:NO];
+				for (Game *game in _gamesReleased)
+					[_indexPaths addObject:[NSIndexPath indexPathForRow:[_gamesReleased indexOfObject:game] inSection:[_games indexOfObject:_gamesReleased]]];
+				[_tableView insertRowsAtIndexPaths:_indexPaths withRowAnimation:UITableViewRowAnimationTop];
+				didInsertRows = YES;
+			}
+			gamesInSection = _gamesReleased;
+			break;
 		default:
 			break;
 	}
@@ -291,7 +317,7 @@ static NSInteger selectedRow;
 - (void)setTimePeriodForGamesInDatabase{
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	NSDateComponents *currentComponents = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+	NSDateComponents *currentComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	NSDateComponents *nextComponents = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	
 	if (currentComponents.month <= 3) [currentComponents setQuarter:1];
@@ -312,7 +338,9 @@ static NSInteger selectedRow;
 	
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	for (Game *game in allGames){
-		if ([game.releaseMonth isEqualToNumber:@(currentComponents.month)])
+		if ([game.releaseDate compare:[calendar dateFromComponents:currentComponents]] <= NSOrderedSame)
+			[game setPeriod:@(7)];
+		else if ([game.releaseMonth isEqualToNumber:@(currentComponents.month)])
 			[game setPeriod:@(1)];
 		else if ([game.releaseMonth isEqualToNumber:@(nextComponents.month)])
 			[game setPeriod:@(2)];
@@ -325,6 +353,7 @@ static NSInteger selectedRow;
 		else if ([game.releaseYear isEqualToNumber:@(nextComponents.year)])
 			[game setPeriod:@(6)];
 	}
+	
 	[context saveToPersistentStoreAndWait];
 }
 
@@ -380,6 +409,14 @@ static NSInteger selectedRow;
 			_gamesReleasingNextYear = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:predicate].mutableCopy;
 			if (!shouldRemoveFromParent) [_games insertObject:_gamesReleasingNextYear atIndex:index];
 			else if (_gamesReleasingNextYear.count > 0) [_games addObject:_gamesReleasingNextYear];
+			break;
+		case releasedTag:
+			if (!shouldRemoveFromParent) index = [_games indexOfObjectIdenticalTo:_gamesReleased];
+			[_games removeObjectIdenticalTo:_gamesReleased];
+			predicate = [NSPredicate predicateWithFormat:@"track == %@ && period == %@", @(YES), @(7)];
+			_gamesReleased = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:predicate].mutableCopy;
+			if (!shouldRemoveFromParent) [_games insertObject:_gamesReleased atIndex:index];
+			else if (_gamesReleased.count > 0) [_games addObject:_gamesReleased];
 			break;
 		default:
 			break;

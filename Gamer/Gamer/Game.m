@@ -42,5 +42,6 @@
 @dynamic screenshots;
 @dynamic similarGames;
 @dynamic themes;
+@dynamic selectedPlatform;
 
 @end

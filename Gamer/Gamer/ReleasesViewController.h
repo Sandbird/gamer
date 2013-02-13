@@ -18,6 +18,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *nextQuarterGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *thisYearGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *nextYearGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *releasedGestureRecognizer;
 
 @property (nonatomic, strong) NSMutableArray *games;
 @property (nonatomic, strong) NSMutableArray *gamesReleasingThisMonth;
@@ -26,6 +27,7 @@
 @property (nonatomic, strong) NSMutableArray *gamesReleasingNextQuarter;
 @property (nonatomic, strong) NSMutableArray *gamesReleasingThisYear;
 @property (nonatomic, strong) NSMutableArray *gamesReleasingNextYear;
+@property (nonatomic, strong) NSMutableArray *gamesReleased;
 
 @property (nonatomic, strong) NSMutableArray *indexPaths;
 

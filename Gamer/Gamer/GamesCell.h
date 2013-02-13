@@ -2,7 +2,7 @@
 //  GamesCell.h
 //  Gamer
 //
-//  Created by Caio Mello on 2/3/13.
+//  Created by Caio Mello on 2/12/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -10,7 +10,9 @@
 
 @interface GamesCell : UITableViewCell
 
-@property (nonatomic, strong) IBOutlet UIImageView *imageView;
+@property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+
+@property (nonatomic, strong) IBOutlet UILabel *platformLabel;
 
 @end

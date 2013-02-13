@@ -7,22 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		250998E116CAAEF8007D4697 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998E016CAAEF8007D4697 /* Game.m */; };
+		250998E416CAF9B7007D4697 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998E316CAF9B7007D4697 /* Game.m */; };
+		250998E716CAF9B7007D4697 /* Publisher.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998E616CAF9B7007D4697 /* Publisher.m */; };
+		250998EA16CAF9B7007D4697 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998E916CAF9B7007D4697 /* Genre.m */; };
+		250998ED16CAF9B7007D4697 /* Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998EC16CAF9B7007D4697 /* Screenshot.m */; };
+		250998F016CAF9B8007D4697 /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998EF16CAF9B8007D4697 /* Theme.m */; };
+		250998F316CAF9B8007D4697 /* Developer.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998F216CAF9B8007D4697 /* Developer.m */; };
+		250998F616CAF9B8007D4697 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998F516CAF9B8007D4697 /* Platform.m */; };
+		250998F916CAF9B8007D4697 /* SimilarGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998F816CAF9B8007D4697 /* SimilarGame.m */; };
+		250998FC16CAF9B8007D4697 /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998FB16CAF9B8007D4697 /* Franchise.m */; };
+		250998FF16CAFDF4007D4697 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998FE16CAFDF4007D4697 /* SearchResult.m */; };
 		2528140F16BD8CF2000EC0CA /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528140E16BD8CF2000EC0CA /* SearchViewController.m */; };
 		25291D2016C8208D0086BB40 /* ReleasesSectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25291D1F16C8208D0086BB40 /* ReleasesSectionCell.m */; };
 		253035DF16AE09FF006AAC7E /* CalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 253035DE16AE09FF006AAC7E /* CalendarCell.m */; };
 		2530360116B1DEA5006AAC7E /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2530360016B1DEA5006AAC7E /* CoreData.framework */; };
 		254D4D9216B935C200FD1AF6 /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 254D4D9116B935C200FD1AF6 /* CalendarViewController.m */; };
 		256D3DEE16B204D400E8BC57 /* ReleasesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 256D3DED16B204D400E8BC57 /* ReleasesCell.m */; };
-		2571208F16C326E100300571 /* SimilarGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 2571208E16C326E100300571 /* SimilarGame.m */; };
-		2571209216C326E200300571 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 2571209116C326E200300571 /* Platform.m */; };
-		2571209516C326E200300571 /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2571209416C326E200300571 /* Theme.m */; };
-		2571209816C326E200300571 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 2571209716C326E200300571 /* Genre.m */; };
-		2571209B16C326E200300571 /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 2571209A16C326E200300571 /* Franchise.m */; };
-		2571209E16C326E200300571 /* Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 2571209D16C326E200300571 /* Screenshot.m */; };
-		257120A416C326E200300571 /* Developer.m in Sources */ = {isa = PBXBuildFile; fileRef = 257120A316C326E200300571 /* Developer.m */; };
-		257120A716C326E200300571 /* Publisher.m in Sources */ = {isa = PBXBuildFile; fileRef = 257120A616C326E200300571 /* Publisher.m */; };
-		257120AA16C3292800300571 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 257120A916C3292800300571 /* SearchResult.m */; };
+		259036F116CB2A05001B09EE /* GamesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259036F016CB2A05001B09EE /* GamesCell.m */; };
 		259FCF2416BB67DF00D902B2 /* TabBarBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 259FCF2216BB67DF00D902B2 /* TabBarBackground@2x.png */; };
 		259FCF2716BB697700D902B2 /* TabBarSelectionIndicator@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 259FCF2616BB697600D902B2 /* TabBarSelectionIndicator@2x.png */; };
 		259FCF2916BB6C7000D902B2 /* NavigationBarBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 259FCF2816BB6C6F00D902B2 /* NavigationBarBackground@2x.png */; };
@@ -47,8 +48,26 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		250998DF16CAAEF8007D4697 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		250998E016CAAEF8007D4697 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		250998E216CAF9B7007D4697 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		250998E316CAF9B7007D4697 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		250998E516CAF9B7007D4697 /* Publisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Publisher.h; sourceTree = "<group>"; };
+		250998E616CAF9B7007D4697 /* Publisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Publisher.m; sourceTree = "<group>"; };
+		250998E816CAF9B7007D4697 /* Genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
+		250998E916CAF9B7007D4697 /* Genre.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Genre.m; sourceTree = "<group>"; };
+		250998EB16CAF9B7007D4697 /* Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Screenshot.h; sourceTree = "<group>"; };
+		250998EC16CAF9B7007D4697 /* Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Screenshot.m; sourceTree = "<group>"; };
+		250998EE16CAF9B8007D4697 /* Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theme.h; sourceTree = "<group>"; };
+		250998EF16CAF9B8007D4697 /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
+		250998F116CAF9B8007D4697 /* Developer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Developer.h; sourceTree = "<group>"; };
+		250998F216CAF9B8007D4697 /* Developer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Developer.m; sourceTree = "<group>"; };
+		250998F416CAF9B8007D4697 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
+		250998F516CAF9B8007D4697 /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
+		250998F716CAF9B8007D4697 /* SimilarGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarGame.h; sourceTree = "<group>"; };
+		250998F816CAF9B8007D4697 /* SimilarGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimilarGame.m; sourceTree = "<group>"; };
+		250998FA16CAF9B8007D4697 /* Franchise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Franchise.h; sourceTree = "<group>"; };
+		250998FB16CAF9B8007D4697 /* Franchise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Franchise.m; sourceTree = "<group>"; };
+		250998FD16CAFDF4007D4697 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResult.h; sourceTree = "<group>"; };
+		250998FE16CAFDF4007D4697 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
 		2528140D16BD8CF2000EC0CA /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		2528140E16BD8CF2000EC0CA /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		25291D1E16C8208D0086BB40 /* ReleasesSectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesSectionCell.h; sourceTree = "<group>"; };
@@ -60,26 +79,8 @@
 		254D4D9116B935C200FD1AF6 /* CalendarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarViewController.m; sourceTree = "<group>"; };
 		256D3DEC16B204D400E8BC57 /* ReleasesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesCell.h; sourceTree = "<group>"; };
 		256D3DED16B204D400E8BC57 /* ReleasesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesCell.m; sourceTree = "<group>"; };
-		2571208D16C326E100300571 /* SimilarGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarGame.h; sourceTree = "<group>"; };
-		2571208E16C326E100300571 /* SimilarGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimilarGame.m; sourceTree = "<group>"; };
-		2571209016C326E200300571 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
-		2571209116C326E200300571 /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
-		2571209316C326E200300571 /* Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theme.h; sourceTree = "<group>"; };
-		2571209416C326E200300571 /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
-		2571209616C326E200300571 /* Genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
-		2571209716C326E200300571 /* Genre.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Genre.m; sourceTree = "<group>"; };
-		2571209916C326E200300571 /* Franchise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Franchise.h; sourceTree = "<group>"; };
-		2571209A16C326E200300571 /* Franchise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Franchise.m; sourceTree = "<group>"; };
-		2571209C16C326E200300571 /* Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Screenshot.h; sourceTree = "<group>"; };
-		2571209D16C326E200300571 /* Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Screenshot.m; sourceTree = "<group>"; };
-		257120A216C326E200300571 /* Developer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Developer.h; sourceTree = "<group>"; };
-		257120A316C326E200300571 /* Developer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Developer.m; sourceTree = "<group>"; };
-		257120A516C326E200300571 /* Publisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Publisher.h; sourceTree = "<group>"; };
-		257120A616C326E200300571 /* Publisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Publisher.m; sourceTree = "<group>"; };
-		257120A816C3292800300571 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResult.h; sourceTree = "<group>"; };
-		257120A916C3292800300571 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
-		2593E12216BEFB6500045BD8 /* en */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = en; path = en.lproj/GamesCell.h; sourceTree = "<group>"; };
-		2593E12416BEFB6500045BD8 /* en */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = en; path = en.lproj/GamesCell.m; sourceTree = "<group>"; };
+		259036EF16CB2A05001B09EE /* GamesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GamesCell.h; sourceTree = "<group>"; };
+		259036F016CB2A05001B09EE /* GamesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GamesCell.m; sourceTree = "<group>"; };
 		259FCF2216BB67DF00D902B2 /* TabBarBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TabBarBackground@2x.png"; sourceTree = "<group>"; };
 		259FCF2616BB697600D902B2 /* TabBarSelectionIndicator@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TabBarSelectionIndicator@2x.png"; sourceTree = "<group>"; };
 		259FCF2816BB6C6F00D902B2 /* NavigationBarBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NavigationBarBackground@2x.png"; sourceTree = "<group>"; };
@@ -148,10 +149,10 @@
 				253035DE16AE09FF006AAC7E /* CalendarCell.m */,
 				256D3DEC16B204D400E8BC57 /* ReleasesCell.h */,
 				256D3DED16B204D400E8BC57 /* ReleasesCell.m */,
-				2593E12116BEFB6500045BD8 /* GamesCell.h */,
-				2593E12316BEFB6500045BD8 /* GamesCell.m */,
 				25291D1E16C8208D0086BB40 /* ReleasesSectionCell.h */,
 				25291D1F16C8208D0086BB40 /* ReleasesSectionCell.m */,
+				259036EF16CB2A05001B09EE /* GamesCell.h */,
+				259036F016CB2A05001B09EE /* GamesCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -159,26 +160,26 @@
 		253035E216AE0B89006AAC7E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				257120A516C326E200300571 /* Publisher.h */,
-				257120A616C326E200300571 /* Publisher.m */,
-				257120A216C326E200300571 /* Developer.h */,
-				257120A316C326E200300571 /* Developer.m */,
-				2571209C16C326E200300571 /* Screenshot.h */,
-				2571209D16C326E200300571 /* Screenshot.m */,
-				2571209916C326E200300571 /* Franchise.h */,
-				2571209A16C326E200300571 /* Franchise.m */,
-				2571209616C326E200300571 /* Genre.h */,
-				2571209716C326E200300571 /* Genre.m */,
-				2571209316C326E200300571 /* Theme.h */,
-				2571209416C326E200300571 /* Theme.m */,
-				2571209016C326E200300571 /* Platform.h */,
-				2571209116C326E200300571 /* Platform.m */,
-				2571208D16C326E100300571 /* SimilarGame.h */,
-				2571208E16C326E100300571 /* SimilarGame.m */,
-				257120A816C3292800300571 /* SearchResult.h */,
-				257120A916C3292800300571 /* SearchResult.m */,
-				250998DF16CAAEF8007D4697 /* Game.h */,
-				250998E016CAAEF8007D4697 /* Game.m */,
+				250998FA16CAF9B8007D4697 /* Franchise.h */,
+				250998FB16CAF9B8007D4697 /* Franchise.m */,
+				250998F716CAF9B8007D4697 /* SimilarGame.h */,
+				250998F816CAF9B8007D4697 /* SimilarGame.m */,
+				250998F416CAF9B8007D4697 /* Platform.h */,
+				250998F516CAF9B8007D4697 /* Platform.m */,
+				250998F116CAF9B8007D4697 /* Developer.h */,
+				250998F216CAF9B8007D4697 /* Developer.m */,
+				250998EE16CAF9B8007D4697 /* Theme.h */,
+				250998EF16CAF9B8007D4697 /* Theme.m */,
+				250998EB16CAF9B7007D4697 /* Screenshot.h */,
+				250998EC16CAF9B7007D4697 /* Screenshot.m */,
+				250998E816CAF9B7007D4697 /* Genre.h */,
+				250998E916CAF9B7007D4697 /* Genre.m */,
+				250998E516CAF9B7007D4697 /* Publisher.h */,
+				250998E616CAF9B7007D4697 /* Publisher.m */,
+				250998E216CAF9B7007D4697 /* Game.h */,
+				250998E316CAF9B7007D4697 /* Game.m */,
+				250998FD16CAFDF4007D4697 /* SearchResult.h */,
+				250998FE16CAFDF4007D4697 /* SearchResult.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -398,39 +399,24 @@
 				256D3DEE16B204D400E8BC57 /* ReleasesCell.m in Sources */,
 				254D4D9216B935C200FD1AF6 /* CalendarViewController.m in Sources */,
 				2528140F16BD8CF2000EC0CA /* SearchViewController.m in Sources */,
-				2571208F16C326E100300571 /* SimilarGame.m in Sources */,
-				2571209216C326E200300571 /* Platform.m in Sources */,
-				2571209516C326E200300571 /* Theme.m in Sources */,
-				2571209816C326E200300571 /* Genre.m in Sources */,
-				2571209B16C326E200300571 /* Franchise.m in Sources */,
-				2571209E16C326E200300571 /* Screenshot.m in Sources */,
-				257120A416C326E200300571 /* Developer.m in Sources */,
-				257120A716C326E200300571 /* Publisher.m in Sources */,
-				257120AA16C3292800300571 /* SearchResult.m in Sources */,
 				25291D2016C8208D0086BB40 /* ReleasesSectionCell.m in Sources */,
-				250998E116CAAEF8007D4697 /* Game.m in Sources */,
+				250998E416CAF9B7007D4697 /* Game.m in Sources */,
+				250998E716CAF9B7007D4697 /* Publisher.m in Sources */,
+				250998EA16CAF9B7007D4697 /* Genre.m in Sources */,
+				250998ED16CAF9B7007D4697 /* Screenshot.m in Sources */,
+				250998F016CAF9B8007D4697 /* Theme.m in Sources */,
+				250998F316CAF9B8007D4697 /* Developer.m in Sources */,
+				250998F616CAF9B8007D4697 /* Platform.m in Sources */,
+				250998F916CAF9B8007D4697 /* SimilarGame.m in Sources */,
+				250998FC16CAF9B8007D4697 /* Franchise.m in Sources */,
+				250998FF16CAFDF4007D4697 /* SearchResult.m in Sources */,
+				259036F116CB2A05001B09EE /* GamesCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		2593E12116BEFB6500045BD8 /* GamesCell.h */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2593E12216BEFB6500045BD8 /* en */,
-			);
-			name = GamesCell.h;
-			sourceTree = "<group>";
-		};
-		2593E12316BEFB6500045BD8 /* GamesCell.m */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2593E12416BEFB6500045BD8 /* en */,
-			);
-			name = GamesCell.m;
-			sourceTree = "<group>";
-		};
 		25BF5D21168E0E1800019267 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
