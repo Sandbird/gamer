@@ -10,8 +10,6 @@
 #import "SearchResult.h"
 #import "GameViewController.h"
 
-static NSInteger selectedRow;
-
 @interface SearchViewController ()
 
 @end
@@ -51,9 +49,13 @@ static NSInteger selectedRow;
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[_previousOperation cancel];
-	
 	NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-		
+	[self requestSearchResultsWithQuery:query];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+	[_previousOperation cancel];
+	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 	[self requestSearchResultsWithQuery:query];
 }
 
@@ -74,11 +76,8 @@ static NSInteger selectedRow;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
-	selectedRow = indexPath.row;
-	
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark -
@@ -89,12 +88,16 @@ static NSInteger selectedRow;
 	
 //	NSLog(@"Query: %@", query);
 	
-	NSString *url = [NSString stringWithFormat:@"http://api.giantbomb.com/search/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&limit=10&field_list=name,id&resources=game&format=json&query=%@", query];
+	NSString *url = [NSString stringWithFormat:@"http://www.giantbomb.com/api/search/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&limit=20&field_list=id,name&resources=game&format=json&query=%@", query];
 	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"GET"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		
+//		NSLog(@"%@", JSON);
+		
 		for (NSDictionary *dictionary in JSON[@"results"]){
 			SearchResult *result = [[SearchResult alloc] init];
 			[result setTitle:dictionary[@"name"]];
@@ -104,6 +107,7 @@ static NSInteger selectedRow;
 		
 		[_tableView reloadData];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, response.statusCode, error.description);
 		[_results removeAllObjects];
 		[_tableView reloadData];
 	}];
@@ -117,7 +121,7 @@ static NSInteger selectedRow;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameViewController *destination = segue.destinationViewController;
-	[destination setSearchResult:_results[selectedRow]];
+	[destination setSearchResult:_results[_tableView.indexPathForSelectedRow.row]];
 }
 
 @end

@@ -26,9 +26,6 @@
 #define nextYearTag 15
 #define releasedTag 16
 
-static NSInteger selectedSection;
-static NSInteger selectedRow;
-
 @interface ReleasesViewController ()
 
 @end
@@ -190,12 +187,8 @@ static NSInteger selectedRow;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
-	selectedSection = indexPath.section;
-	selectedRow = indexPath.row;
-	
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -433,7 +426,7 @@ static NSInteger selectedRow;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
 		GameViewController *destination = [segue destinationViewController];
-		[destination setGame:_games[selectedSection][selectedRow]];
+		[destination setGame:_games[_tableView.indexPathForSelectedRow.section][_tableView.indexPathForSelectedRow.row]];
 	}
 }
 

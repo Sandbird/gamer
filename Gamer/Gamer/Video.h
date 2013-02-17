@@ -1,5 +1,5 @@
 //
-//  SimilarGame.h
+//  Video.h
 //  Gamer
 //
 //  Created by Caio Mello on 2/16/13.
@@ -11,11 +11,9 @@
 
 @class Game;
 
-@interface SimilarGame : NSManagedObject
+@interface Video : NSManagedObject
 
-@property (nonatomic, retain) NSString * identifier;
-@property (nonatomic, retain) NSData * image;
-@property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSString * url;
 @property (nonatomic, retain) Game *game;
 
 @end

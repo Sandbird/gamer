@@ -8,8 +8,7 @@
 
 #import "CalendarViewController.h"
 #import "GameViewController.h"
-
-static NSInteger selectedRow;
+#import <QuartzCore/QuartzCore.h>
 
 @interface CalendarViewController ()
 
@@ -26,7 +25,7 @@ static NSInteger selectedRow;
 	[self.view addSubview:_calendarView];
 	
 	_games = [[NSMutableArray alloc] init];
-	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
+	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES].mutableCopy;
 	
 	_selectedDayGames = [[NSMutableArray alloc] init];
 	
@@ -35,11 +34,9 @@ static NSInteger selectedRow;
 	});
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"track == %@", @(YES)]].mutableCopy;
-	
+- (void)viewDidAppear:(BOOL)animated{
+	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES].mutableCopy;
 	[_calendarView reload];
-	
 	[_tableView reloadData];
 }
 
@@ -62,6 +59,21 @@ static NSInteger selectedRow;
 }
 
 - (NSArray *)calendarMonthView:(TKCalendarMonthView *)monthView marksFromDate:(NSDate *)startDate toDate:(NSDate *)lastDate{
+	// Resize TableView
+//	CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"bounds"];
+//	animation.duration = 1;
+//	animation.fromValue = [NSValue valueWithCGRect:_tableView.bounds];
+//	if ([startDate daysBetweenDate:lastDate] == 34 && _tableView.frame.origin.y == 309)
+//		animation.toValue = [NSValue valueWithCGRect:CGRectMake(_tableView.frame.origin.x, 265, _tableView.frame.size.width, 82)];
+//	else if ([startDate daysBetweenDate:lastDate] == 41 && _tableView.frame.origin.y == 265)
+//		animation.toValue = [NSValue valueWithCGRect:CGRectMake(_tableView.frame.origin.x, 309, _tableView.frame.size.width, 38)];
+//	[_tableView.layer addAnimation:animation forKey:@"bounds"];
+	
+	if ([startDate daysBetweenDate:lastDate] == 34 && _tableView.frame.origin.y == 309)
+		[_tableView setFrame:CGRectMake(_tableView.frame.origin.x, 265, _tableView.frame.size.width, 102)];
+	else if ([startDate daysBetweenDate:lastDate] == 41 && _tableView.frame.origin.y == 265)
+		[_tableView setFrame:CGRectMake(_tableView.frame.origin.x, 309, _tableView.frame.size.width, 58)];
+	
 	NSMutableArray *monthDates = [[NSMutableArray alloc] init];
 	
 	for (Game *game in _games)
@@ -124,11 +136,8 @@ static NSInteger selectedRow;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
-	selectedRow = indexPath.row;
-	
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark -
@@ -140,7 +149,7 @@ static NSInteger selectedRow;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameViewController *destination = segue.destinationViewController;
-	[destination setGame:_games[selectedRow]];
+	[destination setGame:_games[_tableView.indexPathForSelectedRow.row]];
 }
 
 @end

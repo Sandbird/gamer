@@ -35,9 +35,10 @@
 
 @property (nonatomic, strong) IBOutlet UIView *overviewContentView;
 @property (nonatomic, strong) IBOutlet UITextView *overviewTextView;
-@property (nonatomic, strong) IBOutlet UIView *screenshotsContentView;
-@property (nonatomic, strong) IBOutlet UIView *trailerContentView;
-@property (nonatomic, strong) IBOutlet UIButton *trailerButton;
+@property (nonatomic, strong) IBOutlet UIView *imagesContentView;
+@property (nonatomic, strong) IBOutlet UIScrollView *imagesScrollView;
+@property (nonatomic, strong) IBOutlet UIView *videosContentView;
+@property (nonatomic, strong) IBOutlet UIScrollView *videosScrollView;
 
 @property (nonatomic, strong) Game *game;
 

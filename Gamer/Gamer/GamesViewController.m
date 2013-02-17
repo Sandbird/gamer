@@ -10,6 +10,7 @@
 #import "GamesCell.h"
 #import "Game.h"
 #import "Platform.h"
+#import "GameViewController.h"
 
 @interface GamesViewController ()
 
@@ -31,8 +32,6 @@
 	NSDateComponents *components = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	
 	_games = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"releaseDate <= %@ && track == %@", [calendar dateFromComponents:components], @(NO)]].mutableCopy;
-	
-	NSLog(@"%@", [_games[0] title]);
 	
 	[_tableView reloadData];
 }
@@ -61,7 +60,18 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	
+	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark -
+#pragma mark Actions
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+	if ([segue.identifier isEqualToString:@"GameSegue"]){
+		GameViewController *destination = [segue destinationViewController];
+		[destination setGame:_games[_tableView.indexPathForSelectedRow.row]];
+	}
 }
 
 @end

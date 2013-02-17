@@ -9,12 +9,15 @@
 #import "GameViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <AFNetworking/AFNetworking.h>
 #import "Genre.h"
 #import "Platform.h"
 #import "Developer.h"
 #import "Publisher.h"
 #import "Franchise.h"
 #import "Theme.h"
+#import "Image.h"
+#import "Video.h"
 
 @interface GameViewController ()
 
@@ -24,8 +27,6 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-	
-	[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
 	
 	// UI setup
 	[_coverImageShadowView setClipsToBounds:NO];
@@ -45,40 +46,31 @@
 	_dateFormatter = [[NSDateFormatter alloc] init];
 	[_dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
 	[_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	[_dateFormatter setDateFormat:@"dd/MM/yyyy"];
 	
+	[self setInterfaceElementsWithGame:_game];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
 	// If coming from search load game from database
 	if (_searchResult){
 		[self.navigationItem setTitle:[_searchResult.title componentsSeparatedByString:@":"][0]];
 		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
-		if (game)
+		if (game){
 			_game = game;
+			[self setInterfaceElementsWithGame:_game];
+		}
 		else
 			[self requestGameWithIdentifier:_searchResult.identifier];
 	}
-	else
+	else{
+		[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
 		[self requestGameWithIdentifier:_game.identifier];
-	
-	// Set data
-//	[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
-//	[_coverImageView setImage:[UIImage imageWithData:_game.image]];
-//	[_releaseDateLabel setText:_game.releaseDateText];
-//	if (_game.genres.count > 0) [_genreFirstLabel setText:[[_game.genres allObjects][0] name]];
-//	if (_game.genres.count > 1) [_genreSecondLabel setText:[[_game.genres allObjects][1] name]];
-//	if (_game.platforms.count > 0) [_platformFirstLabel setText:[[_game.platforms allObjects][0] name]];
-//	if (_game.platforms.count > 1) [_platformSecondLabel setText:[[_game.platforms allObjects][1] name]];
-//	[_developerLabel setText:[[_game.developers allObjects][0] name]];
-//	[_publisherLabel setText:[[_game.publishers allObjects][0] name]];
-//	if (_game.franchises.count > 0) [_franchiseFirstLabel setText:[[_game.franchises allObjects][0] name]];
-//	if (_game.franchises.count > 1) [_franchiseSecondLabel setText:[[_game.franchises allObjects][1] name]];
-//	if (_game.themes.count > 0) [_themeFirstLabel setText:[[_game.themes allObjects][0] name]];
-//	if (_game.themes.count > 1) [_themeSecondLabel setText:[[_game.themes allObjects][1] name]];
-//	[_overviewTextView setText:_game.overview];
-//	[_overviewTextView setText:_game.overview];
-//	
-//	[self resizeContentViewsAndScrollView];
-	
-	[self setInterfaceElementsWithGame:_game];
+	}
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+	[_imagesScrollView setContentSize:CGSizeMake(_imagesScrollView.frame.size.width + 1, _imagesScrollView.frame.size.height)];
+	[_videosScrollView setContentSize:CGSizeMake(_videosScrollView.frame.size.width + 1, _videosScrollView.frame.size.height)];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -86,27 +78,26 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
-	[self.navigationController popToRootViewControllerAnimated:NO];
-//	if ([_game.track isEqual:@(NO)]){
-//		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-//		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", _game.identifier] inContext:context];
-//		[context saveToPersistentStoreAndWait];
-//	}
+	if ([_game.temporary isEqualToNumber:@(YES)]){
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", _game.identifier] inContext:context];
+		[context saveToPersistentStoreAndWait];
+	}
 }
 
 #pragma mark -
 #pragma mark Networking
 
 - (void)requestGameWithIdentifier:(NSString *)identifier{
-	NSString *url = [NSString stringWithFormat:@"http://api.giantbomb.com/game/%@/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=deck,developers,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,images,name,original_release_date,platforms,publishers,releases,similar_games,themes,videos", identifier];
+	NSString *url = [NSString stringWithFormat:@"http://www.giantbomb.com/api/game/3030-%@/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=deck,developers,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,images,name,original_release_date,platforms,publishers,similar_games,themes,videos", identifier];
 	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"GET"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d", self, response.statusCode);
+		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-//		NSLog(@"%@", JSON);
+		NSLog(@"%@", JSON);
 		
 		[_dateFormatter setDateFormat:@"yyyy-MM-dd"];
 		
@@ -131,7 +122,6 @@
 		// releases
 		// screenshots
 		// videos
-		
 		
 		// REFACTOR THIS CRAP
 		// Release date
@@ -227,14 +217,16 @@
 		
 		// Platforms
 		for (NSDictionary *platformDictionary in results[@"platforms"]){
-			Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:context];
-			if (platform) [platform setName:platformDictionary[@"name"]];
-			else{
-				platform = [[Platform alloc] initWithEntity:[NSEntityDescription entityForName:@"Platform" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
-				[platform setIdentifier:[platformDictionary[@"id"] stringValue]];
-				[platform setName:platformDictionary[@"name"]];
+			if ([platformDictionary[@"name"] isEqualToString:@"Xbox 360"] || [platformDictionary[@"name"] isEqualToString:@"PlayStation 3"] || [platformDictionary[@"name"] isEqualToString:@"PC"] || [platformDictionary[@"name"] isEqualToString:@"Wii U"]){
+				Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:context];
+				if (platform) [platform setName:platformDictionary[@"name"]];
+				else{
+					platform = [[Platform alloc] initWithEntity:[NSEntityDescription entityForName:@"Platform" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					[platform setIdentifier:[platformDictionary[@"id"] stringValue]];
+					[platform setName:platformDictionary[@"name"]];
+				}
+				[_game addPlatformsObject:platform];
 			}
-			[_game addPlatformsObject:platform];
 		}
 		
 		// Developers
@@ -285,19 +277,35 @@
 			[_game addThemesObject:theme];
 		}
 		
+		// Images
+		for (NSDictionary *imageDictionary in results[@"images"]){
+			Image *image = [Image findFirstByAttribute:@"url" withValue:imageDictionary[@"super_url"] inContext:context];
+			if (image) [image setUrl:imageDictionary[@"super_url"]];
+			else{
+				image = [[Image alloc] initWithEntity:[NSEntityDescription entityForName:@"Image" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+				[image setUrl:imageDictionary[@"super_url"]];
+			}
+			[_game addImagesObject:image];
+		}
+		
 		[context saveToPersistentStoreAndWait];
 		
 		[self setInterfaceElementsWithGame:_game];
 		
 		NSDateComponents *todayComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 		
-		if ([_game.releaseDate compare:[calendar dateFromComponents:todayComponents]] >= NSOrderedSame){
-			UIBarButtonItem *trackButton = [[UIBarButtonItem alloc] initWithTitle:@"Track" style:UIBarButtonItemStylePlain target:self action:@selector(trackButtonPressAction)];
-			[self.navigationItem setRightBarButtonItem:trackButton animated:YES];
-		}
-		else if ([_game.releaseDate compare:[calendar dateFromComponents:todayComponents]] <= NSOrderedSame){
-			UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(saveButtonPressAction)];
-			[self.navigationItem setRightBarButtonItem:saveButton animated:YES];
+		if ([_game.releaseDate compare:[calendar dateFromComponents:todayComponents]] <= NSOrderedSame)
+			[self requestMetascoreForGameWithTitle:_game.title andPlatformWithName:[_game.platforms.allObjects[0] name]];
+		
+		if (_searchResult){
+			if ([_game.releaseDate compare:[calendar dateFromComponents:todayComponents]] >= NSOrderedSame){
+				UIBarButtonItem *trackButton = [[UIBarButtonItem alloc] initWithTitle:@"Track" style:UIBarButtonItemStylePlain target:self action:@selector(trackButtonPressAction)];
+				[self.navigationItem setRightBarButtonItem:trackButton animated:YES];
+			}
+			else if ([_game.releaseDate compare:[calendar dateFromComponents:todayComponents]] <= NSOrderedSame){
+				UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:self action:@selector(saveButtonPressAction)];
+				[self.navigationItem setRightBarButtonItem:saveButton animated:YES];
+			}
 		}
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, response.statusCode, error.description);
@@ -328,6 +336,64 @@
 	[operation start];
 }
 
+- (void)requestMetascoreForGameWithTitle:(NSString *)title andPlatformWithName:(NSString *)platform{
+	NSString *formattedTitle = title.lowercaseString;
+	formattedTitle = [formattedTitle stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"':"]];
+	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"];
+	
+	NSString *formattedPlatform = platform.lowercaseString;
+	formattedPlatform = [formattedPlatform stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"':"]];
+	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"];
+	
+	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
+	
+//	NSLog(@"%@", url);
+	
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+	[request setHTTPMethod:@"GET"];
+	
+	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+		NSLog(@"Success in %@ - Metascore", self);
+		
+		NSString *html = [NSString stringWithUTF8String:[responseObject bytes]];
+		
+//		NSLog(@"%@", html);
+		
+		if (html){
+			NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"v:average\">" options:NSRegularExpressionCaseInsensitive error:nil];
+			NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(0, html.length)];
+			NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
+			
+			NSRegularExpression *secondExpression = [NSRegularExpression regularExpressionWithPattern:@"<" options:NSRegularExpressionCaseInsensitive error:nil];
+			NSTextCheckingResult *secondResult = [secondExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(startIndex, html.length - startIndex)];
+			NSUInteger endIndex = secondResult.range.location;
+			
+			NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
+			
+			NSLog(@"Metascore: %@", metascore);
+			
+			NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+			[_game setMetascore:metascore];
+			[context saveToPersistentStoreAndWait];
+			
+			[_metascoreLabel setText:metascore];
+			
+			if (_metascoreView.isHidden){
+				CATransition *transition = [CATransition animation];
+				transition.type = kCATransitionFade;
+				transition.duration = 0.2;
+				transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+				[_metascoreView setHidden:NO];
+				[_metascoreView.layer addAnimation:transition forKey:nil];
+			}
+		}
+	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+		NSLog(@"Failure in %@ - Error: %@ - Metascore", self, error.description);
+	}];
+	[operation start];
+}
+
 #pragma mark -
 #pragma mark ActionSheet
 
@@ -336,19 +402,24 @@
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		
 		if ([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Track"]){
-			[_game setSelectedPlatform:[_game.platforms allObjects][buttonIndex]];
+			[_game setSelectedPlatform:_game.platforms.allObjects[buttonIndex]];
 			[_game setTrack:@(YES)];
+			[_game setTemporary:@(NO)];
 			[context saveToPersistentStoreAndWait];
 			[self.navigationController popToRootViewControllerAnimated:YES];
 		}
 		else if ([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Save"]){
-			[_game setSelectedPlatform:[_game.platforms allObjects][buttonIndex]];
+			[_game setSelectedPlatform:_game.platforms.allObjects[buttonIndex]];
 			[_game setTrack:@(NO)];
+			[_game setTemporary:@(NO)];
 			[context saveToPersistentStoreAndWait];
-			
-			[self.tabBarController setSelectedIndex:2];
 		}
 	}
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+	if (buttonIndex != actionSheet.cancelButtonIndex && [self.navigationItem.rightBarButtonItem.title isEqualToString:@"Save"])
+		[self.tabBarController setSelectedIndex:2];
 }
 
 #pragma mark -
@@ -356,17 +427,20 @@
 
 - (void)setInterfaceElementsWithGame:(Game *)game{
 	[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
+	[_coverImageView setImage:[UIImage imageWithData:game.image]];
+	if (game.metascore) [_metascoreView setHidden:NO];
+	[_metascoreLabel setText:game.metascore];
 	[_releaseDateLabel setText:game.releaseDateText];
-	if (_game.genres.count > 0) [_genreFirstLabel setText:[[game.genres allObjects][0] name]];
-	if (_game.genres.count > 1) [_genreSecondLabel setText:[[game.genres allObjects][1] name]];
-	if (_game.platforms.count > 0) [_platformFirstLabel setText:[[game.platforms allObjects][0] name]];
-	if (_game.platforms.count > 1) [_platformSecondLabel setText:[[game.platforms allObjects][1] name]];
-	if (_game.developers.count > 0) [_developerLabel setText:[[game.developers allObjects][0] name]];
-	if (_game.publishers.count > 0) [_publisherLabel setText:[[game.publishers allObjects][0] name]];
-	if (_game.franchises.count > 0) [_franchiseFirstLabel setText:[[game.franchises allObjects][0] name]];
-	if (_game.franchises.count > 1) [_franchiseSecondLabel setText:[[game.franchises allObjects][1] name]];
-	if (_game.themes.count > 0) [_themeFirstLabel setText:[[game.themes allObjects][0] name]];
-	if (_game.themes.count > 1) [_themeSecondLabel setText:[[game.themes allObjects][1] name]];
+	if (game.genres.count > 0) [_genreFirstLabel setText:[game.genres.allObjects[0] name]];
+	if (game.genres.count > 1) [_genreSecondLabel setText:[game.genres.allObjects[1] name]];
+	if (game.platforms.count > 0) [_platformFirstLabel setText:[game.platforms.allObjects[0] name]];
+	if (game.platforms.count > 1) [_platformSecondLabel setText:[game.platforms.allObjects[1] name]];
+	if (game.developers.count > 0) [_developerLabel setText:[game.developers.allObjects[0] name]];
+	if (game.publishers.count > 0) [_publisherLabel setText:[game.publishers.allObjects[0] name]];
+	if (game.franchises.count > 0) [_franchiseFirstLabel setText:[game.franchises.allObjects[0] name]];
+	if (game.franchises.count > 1) [_franchiseSecondLabel setText:[game.franchises.allObjects[1] name]];
+	if (game.themes.count > 0) [_themeFirstLabel setText:[game.themes.allObjects[0] name]];
+	if (game.themes.count > 1) [_themeSecondLabel setText:[game.themes.allObjects[1] name]];
 	[_overviewTextView setText:game.overview];
 	
 	[self resizeContentViewsAndScrollView];
@@ -389,9 +463,9 @@
 - (void)resizeContentViewsAndScrollView{
 	[_overviewTextView setFrame:CGRectMake(_overviewTextView.frame.origin.x, _overviewTextView.frame.origin.y, _overviewTextView.contentSize.width, _overviewTextView.contentSize.height)];
 	[_overviewContentView setFrame:CGRectMake(0, _overviewContentView.frame.origin.y, 320, _overviewTextView.frame.origin.y + _overviewTextView.frame.size.height + 10)];
-	[_screenshotsContentView setFrame:CGRectMake(0, _overviewContentView.frame.origin.y + _overviewContentView.frame.size.height, 320, _screenshotsContentView.frame.size.height)];
-	[_trailerContentView setFrame:CGRectMake(0, _screenshotsContentView.frame.origin.y + _screenshotsContentView.frame.size.height, 320, _trailerContentView.frame.size.height)];
-	[_contentView setFrame:CGRectMake(0, 0, 320, _trailerContentView.frame.origin.y + _trailerContentView.frame.size.height)];
+	[_imagesContentView setFrame:CGRectMake(0, _overviewContentView.frame.origin.y + _overviewContentView.frame.size.height, 320, _imagesContentView.frame.size.height)];
+	[_videosContentView setFrame:CGRectMake(0, _imagesContentView.frame.origin.y + _imagesContentView.frame.size.height, 320, _videosContentView.frame.size.height)];
+	[_contentView setFrame:CGRectMake(0, 0, 320, _videosContentView.frame.origin.y + _videosContentView.frame.size.height)];
 	[_scrollView setContentSize:CGSizeMake(_contentView.frame.size.width, _contentView.frame.size.height)];
 }
 
@@ -402,7 +476,7 @@
 	if (_game.platforms.count > 1){
 		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 		
-		for (Platform *platform in [_game.platforms allObjects])
+		for (Platform *platform in _game.platforms.allObjects)
 			[actionSheet addButtonWithTitle:platform.name];
 		
 		[actionSheet addButtonWithTitle:@"Cancel"];
@@ -412,8 +486,10 @@
 	}
 	else{
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-		[_game setSelectedPlatform:[_game.platforms allObjects][0]];
+		if (_game.platforms.allObjects.count > 0)
+			[_game setSelectedPlatform:_game.platforms.allObjects[0]];
 		[_game setTrack:@(YES)];
+		[_game setTemporary:@(NO)];
 		[context saveToPersistentStoreAndWait];
 		
 		[self.navigationController popToRootViewControllerAnimated:YES];
@@ -424,7 +500,7 @@
 	if (_game.platforms.count > 1){
 		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 		
-		for (Platform *platform in [_game.platforms allObjects])
+		for (Platform *platform in _game.platforms.allObjects)
 			[actionSheet addButtonWithTitle:platform.name];
 		
 		[actionSheet addButtonWithTitle:@"Cancel"];
@@ -434,12 +510,13 @@
 	}
 	else{
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-		[_game setSelectedPlatform:[_game.platforms allObjects][0]];
+		[_game setSelectedPlatform:_game.platforms.allObjects[0]];
 		[_game setTrack:@(NO)];
+		[_game setTemporary:@(NO)];
 		[context saveToPersistentStoreAndWait];
 		
-		[self.navigationController popToRootViewControllerAnimated:NO];
 		[self.tabBarController setSelectedIndex:2];
+		[self.navigationController popToRootViewControllerAnimated:NO];
 	}
 }
 

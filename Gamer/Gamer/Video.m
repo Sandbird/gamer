@@ -1,20 +1,18 @@
 //
-//  SimilarGame.m
+//  Video.m
 //  Gamer
 //
 //  Created by Caio Mello on 2/16/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "SimilarGame.h"
+#import "Video.h"
 #import "Game.h"
 
 
-@implementation SimilarGame
+@implementation Video
 
-@dynamic identifier;
-@dynamic image;
-@dynamic title;
+@dynamic url;
 @dynamic game;
 
 @end
