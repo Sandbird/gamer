@@ -13,7 +13,7 @@
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="franchises" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="Game" representedClassName="Game" syncable="YES">
-        <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="hide" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="imageSmall" optional="YES" attributeType="Binary" syncable="YES"/>
@@ -22,6 +22,7 @@
         <attribute name="period" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="releaseDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="releaseDateText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="releaseDay" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="releaseMonth" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="releaseQuarter" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="releaseYear" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -52,6 +53,7 @@
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameShort" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="platforms" inverseEntity="Game" syncable="YES"/>
         <relationship name="trackedGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="selectedPlatform" inverseEntity="Game" syncable="YES"/>
     </entity>
@@ -79,11 +81,11 @@
     <elements>
         <element name="Developer" positionX="135" positionY="-90" width="128" height="103"/>
         <element name="Franchise" positionX="-245" positionY="-72" width="128" height="103"/>
-        <element name="Game" positionX="-63" positionY="-54" width="128" height="418"/>
+        <element name="Game" positionX="-63" positionY="-54" width="128" height="433"/>
         <element name="Genre" positionX="-281" positionY="45" width="128" height="88"/>
-        <element name="Platform" positionX="232" positionY="188" width="128" height="118"/>
-        <element name="Publisher" positionX="-333" positionY="144" width="128" height="103"/>
         <element name="Image" positionX="196" positionY="63" width="128" height="73"/>
+        <element name="Platform" positionX="232" positionY="188" width="128" height="133"/>
+        <element name="Publisher" positionX="-333" positionY="144" width="128" height="103"/>
         <element name="SimilarGame" positionX="-306" positionY="275" width="128" height="103"/>
         <element name="Theme" positionX="189" positionY="342" width="128" height="88"/>
         <element name="Video" positionX="-162" positionY="395" width="128" height="73"/>

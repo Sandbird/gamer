@@ -88,7 +88,7 @@
 	
 //	NSLog(@"Query: %@", query);
 	
-	NSString *url = [NSString stringWithFormat:@"http://www.giantbomb.com/api/search/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&limit=20&field_list=id,name&resources=game&format=json&query=%@", query];
+	NSString *url = [NSString stringWithFormat:@"http://www.giantbomb.com/api/search/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&limit=20&field_list=id,name,platforms&resources=game&format=json&query=%@", query];
 	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"GET"];
@@ -102,7 +102,22 @@
 			SearchResult *result = [[SearchResult alloc] init];
 			[result setTitle:dictionary[@"name"]];
 			[result setIdentifier:dictionary[@"id"]];
-			[_results addObject:result];
+			
+			if (dictionary[@"platforms"] != [NSNull null]){
+				for (NSDictionary *platform in dictionary[@"platforms"]){
+					if ([platform[@"platform"][@"name"] isEqualToString:@"Xbox 360"] ||
+						[platform[@"platform"][@"name"] isEqualToString:@"PlayStation 3"] ||
+						[platform[@"platform"][@"name"] isEqualToString:@"PC"] ||
+						[platform[@"platform"][@"name"] isEqualToString:@"Wii U"]){
+						
+						[_results addObject:result];
+						break;
+					}
+				}
+			}
+			else{
+				[_results addObject:result];
+			}
 		}
 		
 		[_tableView reloadData];

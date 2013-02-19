@@ -54,7 +54,7 @@
 	[cell.titleLabel setText:game.title];
 	[cell.coverImageView setImage:[UIImage imageWithData:game.imageSmall]];
 	
-	[cell.platformLabel setText:game.selectedPlatform.name];
+	[cell.platformLabel setText:game.selectedPlatform.nameShort];
 	
 	return cell;
 }
@@ -62,6 +62,19 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+	return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", [_games[indexPath.row] identifier]] inContext:context];
+	[context saveToPersistentStoreAndWait];
+	
+	[_games removeObjectAtIndex:indexPath.row];
+	[_tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
 }
 
 #pragma mark -

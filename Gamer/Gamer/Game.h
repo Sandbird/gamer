@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 2/16/13.
+//  Created by Caio Mello on 2/18/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -13,7 +13,7 @@
 
 @interface Game : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * hidden;
+@property (nonatomic, retain) NSNumber * hide;
 @property (nonatomic, retain) NSString * identifier;
 @property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSData * imageSmall;
@@ -28,12 +28,13 @@
 @property (nonatomic, retain) NSNumber * temporary;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * track;
+@property (nonatomic, retain) NSNumber * releaseDay;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
+@property (nonatomic, retain) NSSet *images;
 @property (nonatomic, retain) NSSet *platforms;
 @property (nonatomic, retain) NSSet *publishers;
-@property (nonatomic, retain) NSSet *images;
 @property (nonatomic, retain) Platform *selectedPlatform;
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
@@ -57,6 +58,11 @@
 - (void)addGenres:(NSSet *)values;
 - (void)removeGenres:(NSSet *)values;
 
+- (void)addImagesObject:(Image *)value;
+- (void)removeImagesObject:(Image *)value;
+- (void)addImages:(NSSet *)values;
+- (void)removeImages:(NSSet *)values;
+
 - (void)addPlatformsObject:(Platform *)value;
 - (void)removePlatformsObject:(Platform *)value;
 - (void)addPlatforms:(NSSet *)values;
@@ -66,11 +72,6 @@
 - (void)removePublishersObject:(Publisher *)value;
 - (void)addPublishers:(NSSet *)values;
 - (void)removePublishers:(NSSet *)values;
-
-- (void)addImagesObject:(Image *)value;
-- (void)removeImagesObject:(Image *)value;
-- (void)addImages:(NSSet *)values;
-- (void)removeImages:(NSSet *)values;
 
 - (void)addSimilarGamesObject:(SimilarGame *)value;
 - (void)removeSimilarGamesObject:(SimilarGame *)value;

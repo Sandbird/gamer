@@ -28,10 +28,6 @@
 	_games = [Game findAllSortedBy:@"releaseDate" ascending:YES].mutableCopy;
 	
 	_selectedDayGames = [[NSMutableArray alloc] init];
-	
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[_calendarView selectDate:[NSDate date]];
-	});
 }
 
 - (void)viewDidAppear:(BOOL)animated{

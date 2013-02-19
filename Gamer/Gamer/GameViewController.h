@@ -46,4 +46,6 @@
 
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
+@property (nonatomic, strong) AFJSONRequestOperation *previousOperation;
+
 @end
