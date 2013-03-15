@@ -99,7 +99,7 @@
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-		NSLog(@"%@", JSON);
+//		NSLog(@"%@", JSON);
 		
 		[_dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
@@ -378,11 +378,13 @@
 
 - (void)requestMetascoreForGameWithTitle:(NSString *)title andPlatformWithName:(NSString *)platform{
 	NSString *formattedTitle = title.lowercaseString;
-	formattedTitle = [formattedTitle stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"':"]];
+	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""];
+	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""];
 	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"];
 	
 	NSString *formattedPlatform = platform.lowercaseString;
-	formattedPlatform = [formattedPlatform stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"':"]];
+	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""];
+	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""];
 	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"];
 	
 	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
