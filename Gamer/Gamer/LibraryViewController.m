@@ -6,17 +6,17 @@
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "GamesViewController.h"
+#import "LibraryViewController.h"
 #import "GamesCell.h"
 #import "Game.h"
 #import "Platform.h"
 #import "GameViewController.h"
 
-@interface GamesViewController ()
+@interface LibraryViewController ()
 
 @end
 
-@implementation GamesViewController
+@implementation LibraryViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];

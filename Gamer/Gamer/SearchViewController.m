@@ -105,18 +105,16 @@
 			
 			if (dictionary[@"platforms"] != [NSNull null]){
 				for (NSDictionary *platform in dictionary[@"platforms"]){
-					if ([platform[@"platform"][@"name"] isEqualToString:@"Xbox 360"] ||
-						[platform[@"platform"][@"name"] isEqualToString:@"PlayStation 3"] ||
-						[platform[@"platform"][@"name"] isEqualToString:@"PC"] ||
-						[platform[@"platform"][@"name"] isEqualToString:@"Wii U"]){
+					if ([platform[@"name"] isEqualToString:@"Xbox 360"] ||
+						[platform[@"name"] isEqualToString:@"PlayStation 3"] ||
+						[platform[@"name"] isEqualToString:@"PC"] ||
+						[platform[@"name"] isEqualToString:@"Wii U"] ||
+						[platform[@"name"] isEqualToString:@"Nintendo 3DS"]){
 						
 						[_results addObject:result];
 						break;
 					}
 				}
-			}
-			else{
-				[_results addObject:result];
 			}
 		}
 		

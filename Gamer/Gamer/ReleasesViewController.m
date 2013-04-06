@@ -8,7 +8,7 @@
 
 #import "ReleasesViewController.h"
 #import "ReleasesCell.h"
-#import "ReleasesSectionCell.h"
+#import "ReleasesSectionHeaderView.h"
 #import "Game.h"
 #import "Genre.h"
 #import "Platform.h"
@@ -111,57 +111,58 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-	ReleasesSectionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"releasesSectionCell"];
+	ReleasesSectionHeaderView *view;
+	if (!view) view = [[ReleasesSectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, tableView.sectionHeaderHeight)];
 	
 	if (_games[section] == _gamesReleasingThisMonth){
-		[cell.contentView addGestureRecognizer:_thisMonthGestureRecognizer];
-		[cell.contentView setTag:thisMonthTag];
-		[cell.titleLabel setText:@"This month"];
+		[view addGestureRecognizer:_thisMonthGestureRecognizer];
+		[view setTag:thisMonthTag];
+		[view.titleLabel setText:@"This month"];
 	}
 	
 	if (_games[section] == _gamesReleasingNextMonth){
-		[cell.contentView addGestureRecognizer:_nextMonthGestureRecognizer];
-		[cell.contentView setTag:nextMonthTag];
-		[cell.titleLabel setText:@"Next month"];
+		[view addGestureRecognizer:_nextMonthGestureRecognizer];
+		[view setTag:nextMonthTag];
+		[view.titleLabel setText:@"Next month"];
 	}
 	
 	if (_games[section] == _gamesReleasingThisQuarter){
-		[cell.contentView addGestureRecognizer:_thisQuarterGestureRecognizer];
-		[cell.contentView setTag:thisQuarterTag];
-		[cell.titleLabel setText:@"This quarter"];
+		[view addGestureRecognizer:_thisQuarterGestureRecognizer];
+		[view setTag:thisQuarterTag];
+		[view.titleLabel setText:@"This quarter"];
 	}
 	
 	if (_games[section] == _gamesReleasingNextQuarter){
-		[cell.contentView addGestureRecognizer:_nextQuarterGestureRecognizer];
-		[cell.contentView setTag:nextQuarterTag];
-		[cell.titleLabel setText:@"Next quarter"];
+		[view addGestureRecognizer:_nextQuarterGestureRecognizer];
+		[view setTag:nextQuarterTag];
+		[view.titleLabel setText:@"Next quarter"];
 	}
 	
 	if (_games[section] == _gamesReleasingThisYear){
-		[cell.contentView addGestureRecognizer:_thisYearGestureRecognizer];
-		[cell.contentView setTag:thisYearTag];
-		[cell.titleLabel setText:@"This year"];
+		[view addGestureRecognizer:_thisYearGestureRecognizer];
+		[view setTag:thisYearTag];
+		[view.titleLabel setText:@"This year"];
 	}
 	
 	if (_games[section] == _gamesReleasingNextYear){
-		[cell.contentView addGestureRecognizer:_nextYearGestureRecognizer];
-		[cell.contentView setTag:nextYearTag];
-		[cell.titleLabel setText:@"Next year"];
+		[view addGestureRecognizer:_nextYearGestureRecognizer];
+		[view setTag:nextYearTag];
+		[view.titleLabel setText:@"Next year"];
 	}
 	
 	if (_games[section] == _gamesToBeAnnounced){
-		[cell.contentView addGestureRecognizer:_toBeAnnouncedGestureRecognizer];
-		[cell.contentView setTag:toBeAnnouncedTag];
-		[cell.titleLabel setText:@"To Be Announced"];
+		[view addGestureRecognizer:_toBeAnnouncedGestureRecognizer];
+		[view setTag:toBeAnnouncedTag];
+		[view.titleLabel setText:@"To Be Announced"];
 	}
 	
 	if (_games[section] == _gamesReleased){
-		[cell.contentView addGestureRecognizer:_releasedGestureRecognizer];
-		[cell.contentView setTag:releasedTag];
-		[cell.titleLabel setText:@"Released"];
+		[view addGestureRecognizer:_releasedGestureRecognizer];
+		[view setTag:releasedTag];
+		[view.titleLabel setText:@"Released"];
 	}
 	
-	return cell.contentView;
+	return view;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
