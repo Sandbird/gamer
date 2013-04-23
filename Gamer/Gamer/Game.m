@@ -2,7 +2,7 @@
 //  Game.m
 //  Gamer
 //
-//  Created by Caio Mello on 4/6/13.
+//  Created by Caio Mello on 4/23/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -13,6 +13,7 @@
 #import "Image.h"
 #import "Platform.h"
 #import "Publisher.h"
+#import "ReleasePeriod.h"
 #import "SimilarGame.h"
 #import "Theme.h"
 #import "Video.h"
@@ -20,23 +21,18 @@
 
 @implementation Game
 
-@dynamic hide;
 @dynamic identifier;
 @dynamic image;
 @dynamic imageSmall;
 @dynamic metascore;
 @dynamic overview;
-@dynamic period;
 @dynamic releaseDate;
 @dynamic releaseDateText;
 @dynamic releaseDay;
 @dynamic releaseMonth;
 @dynamic releaseQuarter;
 @dynamic releaseYear;
-@dynamic temporary;
 @dynamic title;
-@dynamic track;
-@dynamic group;
 @dynamic developers;
 @dynamic franchises;
 @dynamic genres;
@@ -47,5 +43,6 @@
 @dynamic similarGames;
 @dynamic themes;
 @dynamic videos;
+@dynamic releasePeriod;
 
 @end

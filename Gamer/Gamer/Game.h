@@ -2,34 +2,29 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 4/6/13.
+//  Created by Caio Mello on 4/23/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Developer, Franchise, Genre, Image, Platform, Publisher, SimilarGame, Theme, Video;
+@class Developer, Franchise, Genre, Image, Platform, Publisher, ReleasePeriod, SimilarGame, Theme, Video;
 
 @interface Game : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * hide;
 @property (nonatomic, retain) NSString * identifier;
 @property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSData * imageSmall;
 @property (nonatomic, retain) NSString * metascore;
 @property (nonatomic, retain) NSString * overview;
-@property (nonatomic, retain) NSNumber * period;
 @property (nonatomic, retain) NSDate * releaseDate;
 @property (nonatomic, retain) NSString * releaseDateText;
 @property (nonatomic, retain) NSNumber * releaseDay;
 @property (nonatomic, retain) NSNumber * releaseMonth;
 @property (nonatomic, retain) NSNumber * releaseQuarter;
 @property (nonatomic, retain) NSNumber * releaseYear;
-@property (nonatomic, retain) NSNumber * temporary;
 @property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSNumber * track;
-@property (nonatomic, retain) NSNumber * group;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
@@ -40,6 +35,7 @@
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
+@property (nonatomic, retain) ReleasePeriod *releasePeriod;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)

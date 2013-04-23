@@ -1,27 +1,28 @@
 //
-//  SearchViewController.m
+//  GameSearchViewController.m
 //  Gamer
 //
-//  Created by Caio Mello on 2/2/13.
+//  Created by Caio Mello on 4/22/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "SearchViewController.h"
-#import "SearchResult.h"
+#import "LibrarySearchTableViewController.h"
 #import "GameViewController.h"
+#import "SearchResult.h"
+#import "SessionManager.h"
 
-@interface SearchViewController ()
+@interface LibrarySearchTableViewController ()
 
 @end
 
-@implementation SearchViewController
+@implementation LibrarySearchTableViewController
 
 - (void)viewDidLoad{
-	[super viewDidLoad];
+    [super viewDidLoad];
 	
 	// Search bar setup
-	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 252, 44)];
-	[_searchBar setPlaceholder:@"Search for games"];
+	if (!_searchBar) _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 252, 44)];
+	[_searchBar setPlaceholder:@"Search for released games"];
 	[_searchBar setDelegate:self];
 	
 	// Remove search bar background
@@ -30,10 +31,15 @@
 			[backgroundImage removeFromSuperview];
 	
 	// Add search bar to navigation bar
-	UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:_searchBar];
+	UIBarButtonItem *searchBarItem;
+	if (!searchBarItem) searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:_searchBar];
 	[self.navigationItem setRightBarButtonItem:searchBarItem];
 	
-	_results = [[NSMutableArray alloc] init];
+	if (!_results) _results = [[NSMutableArray alloc] init];
+}
+
+- (void)viewDidLayoutSubviews{
+	[self.tableView setContentInset:UIEdgeInsetsMake(0, 0, 216, 0)];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -44,35 +50,31 @@
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark -
-#pragma mark SearchBar
+#pragma mark - SearchBar
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[_previousOperation cancel];
-	NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-	[self requestSearchResultsWithQuery:query];
+	[self requestSearchResultsWithQuery:[searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 	[_previousOperation cancel];
-	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-	[self requestSearchResultsWithQuery:query];
+	[self requestSearchResultsWithQuery:[searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
 }
 
-#pragma mark -
-#pragma mark TableView
+#pragma mark - TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return _results.count;
+    return _results.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCell"];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCell" forIndexPath:indexPath];
 	
 	SearchResult *result = _results[indexPath.row];
 	[cell.textLabel setText:result.title];
 	
-	return cell;
+    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -80,29 +82,17 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-#pragma mark -
-#pragma mark Networking
+#pragma mark - Networking
 
 - (void)requestSearchResultsWithQuery:(NSString *)query{
-	[_results removeAllObjects];
-	
-//	NSLog(@"Query: %@", query);
-	
-	NSString *url = [NSString stringWithFormat:@"http://www.giantbomb.com/api/search/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&limit=20&field_list=id,name,platforms&resources=game&format=json&query=%@", query];
-	
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-	[request setHTTPMethod:@"GET"];
+	NSURLRequest *request = [SessionManager APISearchRequestWithFields:@"id,name,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,original_release_date,platforms" query:query];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-//		NSLog(@"%@", JSON);
+		[_results removeAllObjects];
 		
 		for (NSDictionary *dictionary in JSON[@"results"]){
-			SearchResult *result = [[SearchResult alloc] init];
-			[result setTitle:dictionary[@"name"]];
-			[result setIdentifier:dictionary[@"id"]];
-			
 			if (dictionary[@"platforms"] != [NSNull null]){
 				for (NSDictionary *platform in dictionary[@"platforms"]){
 					if ([platform[@"name"] isEqualToString:@"Xbox 360"] ||
@@ -111,6 +101,10 @@
 						[platform[@"name"] isEqualToString:@"Wii U"] ||
 						[platform[@"name"] isEqualToString:@"Nintendo 3DS"]){
 						
+						SearchResult *result;
+						if (!result) result = [[SearchResult alloc] init];
+						[result setTitle:dictionary[@"name"]];
+						[result setIdentifier:dictionary[@"id"]];
 						[_results addObject:result];
 						break;
 					}
@@ -118,23 +112,23 @@
 			}
 		}
 		
-		[_tableView reloadData];
+		[self.tableView reloadData];
+		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, response.statusCode, error.description);
+		
 		[_results removeAllObjects];
-		[_tableView reloadData];
+		[self.tableView reloadData];
 	}];
-	
 	[operation start];
 	_previousOperation = operation;
 }
 
-#pragma mark -
-#pragma mark Actions
+#pragma mark - Actions
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameViewController *destination = segue.destinationViewController;
-	[destination setSearchResult:_results[_tableView.indexPathForSelectedRow.row]];
+	[destination setSearchResult:_results[self.tableView.indexPathForSelectedRow.row]];
 }
 
 @end

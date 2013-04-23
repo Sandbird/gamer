@@ -1,0 +1,82 @@
+//
+//  LibraryTableViewController.m
+//  Gamer
+//
+//  Created by Caio Mello on 4/23/13.
+//  Copyright (c) 2013 Caio Mello. All rights reserved.
+//
+
+#import "LibraryTableViewController.h"
+#import "GamesCell.h"
+#import "Game.h"
+#import "Platform.h"
+#import "GameViewController.h"
+
+@interface LibraryTableViewController ()
+
+@end
+
+@implementation LibraryTableViewController
+
+- (void)viewDidLoad{
+    [super viewDidLoad];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+	_gamesFetch = [Game fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@", @(1)] sortedBy:@"title" ascending:YES];
+	[self.tableView reloadData];
+}
+
+- (void)didReceiveMemoryWarning{
+    [super didReceiveMemoryWarning];
+}
+
+#pragma mark - TableView
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return [_gamesFetch.sections[section] numberOfObjects];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    GamesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LibraryCell" forIndexPath:indexPath];
+	
+	Game *game = [_gamesFetch objectAtIndexPath:indexPath];
+	[cell.titleLabel setText:game.title];
+	[cell.platformLabel setText:game.selectedPlatform.nameShort];
+	[cell.coverImageView setImage:[UIImage imageWithData:game.imageSmall]];
+	
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+	return UITableViewCellEditingStyleDelete;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", [[_gamesFetch objectAtIndexPath:indexPath] identifier]] inContext:context];
+	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		_gamesFetch = [Game fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@", @(1)] sortedBy:@"title" ascending:YES];
+		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+	}];
+}
+
+#pragma mark - Actions
+
+- (IBAction)addBarButtonPressAction:(UIBarButtonItem *)sender{
+	[self performSegueWithIdentifier:@"SearchSegue" sender:nil];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+	if ([segue.identifier isEqualToString:@"GameSegue"]){
+		GameViewController *destination = [segue destinationViewController];
+		[destination setGame:[_gamesFetch objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
+	}
+}
+
+@end

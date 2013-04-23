@@ -18,6 +18,8 @@
 #import "Theme.h"
 #import "Image.h"
 #import "Video.h"
+#import "SessionManager.h"
+#import "ReleasePeriod.h"
 
 #define setTargetIfValueNotNull(target, value) if (value != [NSNull null]) target = value;
 
@@ -30,7 +32,14 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	// UI setup
+	_dateFormatter = [[NSDateFormatter alloc] init];
+	[_dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+	[_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	
+//	[self setInterfaceElementsWithGame:_game];
+}
+
+- (void)viewDidLayoutSubviews{
 	[_coverImageShadowView setClipsToBounds:NO];
 	[_coverImageShadowView.layer setShadowPath:[UIBezierPath bezierPathWithRect:_coverImageShadowView.bounds].CGPath];
 	[_coverImageShadowView.layer setShadowColor:[UIColor blackColor].CGColor];
@@ -44,12 +53,6 @@
 	[_metascoreView.layer setShadowOpacity:0.6];
 	[_metascoreView.layer setShadowRadius:5];
 	[_metascoreView.layer setShadowOffset:CGSizeMake(0, 0)];
-	
-	_dateFormatter = [[NSDateFormatter alloc] init];
-	[_dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-	[_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	
-	[self setInterfaceElementsWithGame:_game];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -79,13 +82,13 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)viewDidDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated{
 	[_previousOperation cancel];
-	if ([_game.temporary isEqualToNumber:@(YES)]){
-		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", _game.identifier] inContext:context];
-		[context saveToPersistentStoreAndWait];
-	}
+//	if ([_game.temporary isEqualToNumber:@(YES)]){
+//		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+//		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", _game.identifier] inContext:context];
+//		[context saveToPersistentStoreAndWait];
+//	}
 }
 
 #pragma mark -
@@ -99,7 +102,7 @@
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-//		NSLog(@"%@", JSON);
+		NSLog(@"%@", JSON);
 		
 		[_dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
@@ -162,7 +165,7 @@
 			if (day){
 				[components setDay:day.integerValue];
 				[components setMonth:month.integerValue];
-				[components setQuarter:quarter.integerValue];
+				[components setQuarter:[self quarterForMonth:month.integerValue]];
 				[components setYear:year.integerValue];
 				
 				[_dateFormatter setDateFormat:@"dd MMM yyyy"];
@@ -213,6 +216,8 @@
 			
 			[_game setReleaseDateText:([_dateFormatter.dateFormat isEqualToString:@"TBA"]) ? @"TBA" : [_dateFormatter stringFromDate:date]];
 		}
+		
+		[_game setReleasePeriod:[self releasePeriodForGame:_game]];
 		
 //		NSLog(@"%@", _game.releaseDate);
 //		NSLog(@"%@", _game.releaseDateText);
@@ -445,15 +450,11 @@
 		
 		if ([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Track"]){
 			[_game setSelectedPlatform:_game.platforms.allObjects[buttonIndex]];
-			[_game setTrack:@(YES)];
-			[_game setTemporary:@(NO)];
 			[context saveToPersistentStoreAndWait];
 			[self.navigationController popToRootViewControllerAnimated:YES];
 		}
 		else if ([self.navigationItem.rightBarButtonItem.title isEqualToString:@"Save"]){
 			[_game setSelectedPlatform:_game.platforms.allObjects[buttonIndex]];
-			[_game setTrack:@(NO)];
-			[_game setTemporary:@(NO)];
 			[context saveToPersistentStoreAndWait];
 		}
 	}
@@ -530,6 +531,54 @@
 	}
 }
 
+- (ReleasePeriod *)releasePeriodForGame:(Game *)game{
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	
+	// Components for today, this month, this quarter, this year
+	NSDateComponents *currentComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+	[currentComponents setQuarter:[self quarterForMonth:currentComponents.month]];
+	
+	// Components for next month, next quarter, next year
+	NSDateComponents *nextComponents = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+	nextComponents.month++;
+	[nextComponents setQuarter:[self quarterForMonth:nextComponents.month]];
+	nextComponents.quarter++;
+	nextComponents.year++;
+	
+	NSInteger period = 0;
+	if ([game.releaseDate compare:[calendar dateFromComponents:currentComponents]] <= NSOrderedSame) period = 1;
+	else if ([game.releaseMonth isEqualToNumber:@(currentComponents.month)]) period = 2;
+	else if ([game.releaseMonth isEqualToNumber:@(nextComponents.month)]) period = 3;
+	else if ([game.releaseQuarter isEqualToNumber:@(currentComponents.quarter)]) period = 4;
+	else if ([game.releaseQuarter isEqualToNumber:@(nextComponents.quarter)]) period = 5;
+	else if ([game.releaseYear isEqualToNumber:@(currentComponents.year)]) period = 6;
+	else if ([game.releaseYear isEqualToNumber:@(nextComponents.year)]) period = 7;
+	else if ([game.releaseYear isEqualToNumber:@(2050)]) period = 8;
+	
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+	
+	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
+	if (!releasePeriod){
+		releasePeriod = [[ReleasePeriod alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleasePeriod" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+		[releasePeriod setIdentifier:@(period)];
+		switch (period) {
+			case 1: [releasePeriod setName:@"Released"]; break;
+			case 2: [releasePeriod setName:@"This Month"]; break;
+			case 3: [releasePeriod setName:@"Next Month"]; break;
+			case 4: [releasePeriod setName:@"This Quarter"]; break;
+			case 5: [releasePeriod setName:@"Next Quarter"]; break;
+			case 6: [releasePeriod setName:@"This Year"]; break;
+			case 7: [releasePeriod setName:@"Next Year"]; break;
+			case 8: [releasePeriod setName:@"To Be Announced"]; break;
+			default: break;
+		}
+		[context saveToPersistentStoreAndWait];
+	}
+	
+	return releasePeriod;
+}
+
 #pragma mark -
 #pragma mark Actions
 
@@ -549,8 +598,6 @@
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		if (_game.platforms.allObjects.count > 0)
 			[_game setSelectedPlatform:_game.platforms.allObjects[0]];
-		[_game setTrack:@(YES)];
-		[_game setTemporary:@(NO)];
 		[context saveToPersistentStoreAndWait];
 		
 		[self.navigationController popToRootViewControllerAnimated:YES];
@@ -572,8 +619,6 @@
 	else{
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		[_game setSelectedPlatform:_game.platforms.allObjects[0]];
-		[_game setTrack:@(NO)];
-		[_game setTemporary:@(NO)];
 		[context saveToPersistentStoreAndWait];
 		
 		[self.tabBarController setSelectedIndex:2];

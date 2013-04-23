@@ -8,7 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		250998FF16CAFDF4007D4697 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 250998FE16CAFDF4007D4697 /* SearchResult.m */; };
-		2528140F16BD8CF2000EC0CA /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528140E16BD8CF2000EC0CA /* SearchViewController.m */; };
+		250FB53317260B0C00E122DC /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB53217260B0C00E122DC /* SessionManager.m */; };
+		250FB537172615F300E122DC /* ReleasesSearchTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB536172615F300E122DC /* ReleasesSearchTableViewController.m */; };
+		250FB53A17261E1100E122DC /* LibrarySearchTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB53917261E1100E122DC /* LibrarySearchTableViewController.m */; };
+		250FB53D1726A91100E122DC /* ReleasesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB53C1726A91100E122DC /* ReleasesTableViewController.m */; };
+		250FB5401726A92300E122DC /* LibraryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB53F1726A92300E122DC /* LibraryTableViewController.m */; };
+		250FB5431726AF5100E122DC /* ReleasePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB5421726AF5100E122DC /* ReleasePeriod.m */; };
+		250FB5491726AFCA00E122DC /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB5481726AFCA00E122DC /* Game.m */; };
+		250FB54C1727371800E122DC /* GameTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB54B1727371800E122DC /* GameTableViewController.m */; };
 		253035DF16AE09FF006AAC7E /* CalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 253035DE16AE09FF006AAC7E /* CalendarCell.m */; };
 		2530360116B1DEA5006AAC7E /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2530360016B1DEA5006AAC7E /* CoreData.framework */; };
 		254D4D9216B935C200FD1AF6 /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 254D4D9116B935C200FD1AF6 /* CalendarViewController.m */; };
@@ -39,11 +46,8 @@
 		25D9699916D0268E00E7736B /* GameBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 25D9699816D0268E00E7736B /* GameBackground@2x.png */; };
 		25DBC5981699F4F30017C176 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 25DBC5961699F4F30017C176 /* Model.xcdatamodeld */; };
 		25DBC59E1699FF800017C176 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25DBC59D1699FF800017C176 /* QuartzCore.framework */; };
-		25EB4FC01710A71600633459 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB4FBF1710A71600633459 /* Game.m */; };
 		25EB4FC21710A7A000633459 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25EB4FC11710A7A000633459 /* MainStoryboard_iPad.storyboard */; };
 		25EB4FC51710BD3E00633459 /* ReleasesSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB4FC41710BD3E00633459 /* ReleasesSectionHeaderView.m */; };
-		25F121EF169470D4003E3ECB /* ReleasesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F121EE169470D4003E3ECB /* ReleasesViewController.m */; };
-		25F121F2169470E5003E3ECB /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F121F1169470E5003E3ECB /* LibraryViewController.m */; };
 		25F121F8169470F9003E3ECB /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F121F7169470F9003E3ECB /* SettingsViewController.m */; };
 		25F121FE1694723C003E3ECB /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F121FD1694723C003E3ECB /* GameViewController.m */; };
 		25FBEF0316BEA7F8007383BE /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25FBEF0216BEA7F7007383BE /* MediaPlayer.framework */; };
@@ -53,8 +57,22 @@
 /* Begin PBXFileReference section */
 		250998FD16CAFDF4007D4697 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResult.h; sourceTree = "<group>"; };
 		250998FE16CAFDF4007D4697 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
-		2528140D16BD8CF2000EC0CA /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
-		2528140E16BD8CF2000EC0CA /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
+		250FB53117260B0C00E122DC /* SessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionManager.h; sourceTree = "<group>"; };
+		250FB53217260B0C00E122DC /* SessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
+		250FB535172615F300E122DC /* ReleasesSearchTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesSearchTableViewController.h; sourceTree = "<group>"; };
+		250FB536172615F300E122DC /* ReleasesSearchTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesSearchTableViewController.m; sourceTree = "<group>"; };
+		250FB53817261E1100E122DC /* LibrarySearchTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibrarySearchTableViewController.h; sourceTree = "<group>"; };
+		250FB53917261E1100E122DC /* LibrarySearchTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibrarySearchTableViewController.m; sourceTree = "<group>"; };
+		250FB53B1726A91100E122DC /* ReleasesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesTableViewController.h; sourceTree = "<group>"; };
+		250FB53C1726A91100E122DC /* ReleasesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesTableViewController.m; sourceTree = "<group>"; };
+		250FB53E1726A92300E122DC /* LibraryTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryTableViewController.h; sourceTree = "<group>"; };
+		250FB53F1726A92300E122DC /* LibraryTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryTableViewController.m; sourceTree = "<group>"; };
+		250FB5411726AF5100E122DC /* ReleasePeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasePeriod.h; sourceTree = "<group>"; };
+		250FB5421726AF5100E122DC /* ReleasePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasePeriod.m; sourceTree = "<group>"; };
+		250FB5471726AFCA00E122DC /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		250FB5481726AFCA00E122DC /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		250FB54A1727371800E122DC /* GameTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameTableViewController.h; sourceTree = "<group>"; };
+		250FB54B1727371800E122DC /* GameTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameTableViewController.m; sourceTree = "<group>"; };
 		253035DD16AE09FF006AAC7E /* CalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarCell.h; sourceTree = "<group>"; };
 		253035DE16AE09FF006AAC7E /* CalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarCell.m; sourceTree = "<group>"; };
 		2530360016B1DEA5006AAC7E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -104,15 +122,9 @@
 		25DBC5991699FF720017C176 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		25DBC59B1699FF780017C176 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		25DBC59D1699FF800017C176 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		25EB4FBE1710A71600633459 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		25EB4FBF1710A71600633459 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		25EB4FC11710A7A000633459 /* MainStoryboard_iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		25EB4FC31710BD3E00633459 /* ReleasesSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesSectionHeaderView.h; sourceTree = "<group>"; };
 		25EB4FC41710BD3E00633459 /* ReleasesSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesSectionHeaderView.m; sourceTree = "<group>"; };
-		25F121ED169470D4003E3ECB /* ReleasesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesViewController.h; sourceTree = "<group>"; };
-		25F121EE169470D4003E3ECB /* ReleasesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesViewController.m; sourceTree = "<group>"; };
-		25F121F0169470E5003E3ECB /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
-		25F121F1169470E5003E3ECB /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		25F121F6169470F9003E3ECB /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		25F121F7169470F9003E3ECB /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		25F121FC1694723C003E3ECB /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
@@ -140,6 +152,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		250FB5341726158600E122DC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				250FB53117260B0C00E122DC /* SessionManager.h */,
+				250FB53217260B0C00E122DC /* SessionManager.m */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		253035E116AE0A04006AAC7E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -156,8 +177,10 @@
 		253035E216AE0B89006AAC7E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				25EB4FBE1710A71600633459 /* Game.h */,
-				25EB4FBF1710A71600633459 /* Game.m */,
+				250FB5471726AFCA00E122DC /* Game.h */,
+				250FB5481726AFCA00E122DC /* Game.m */,
+				250FB5411726AF5100E122DC /* ReleasePeriod.h */,
+				250FB5421726AF5100E122DC /* ReleasePeriod.m */,
 				250998FD16CAFDF4007D4697 /* SearchResult.h */,
 				250998FE16CAFDF4007D4697 /* SearchResult.m */,
 				2562B56916D2F2F40020EE65 /* Publisher.h */,
@@ -198,6 +221,8 @@
 			children = (
 				25F121FC1694723C003E3ECB /* GameViewController.h */,
 				25F121FD1694723C003E3ECB /* GameViewController.m */,
+				250FB54A1727371800E122DC /* GameTableViewController.h */,
+				250FB54B1727371800E122DC /* GameTableViewController.m */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -244,10 +269,11 @@
 				25EB4FBB1710A4A800633459 /* Releases */,
 				25EB4FBC1710A4C900633459 /* Calendar */,
 				25F121EC168F0FBC003E3ECB /* Library */,
-				25EB4FBD1710A4FA00633459 /* Settings */,
 				253035FF16AF764A006AAC7E /* Game */,
+				25EB4FBD1710A4FA00633459 /* Settings */,
 				25F121EA168F0FA8003E3ECB /* Interface */,
 				25DBC5941699F4CA0017C176 /* Data */,
+				250FB5341726158600E122DC /* Resources */,
 				25BF5D1F168E0E1800019267 /* Supporting Files */,
 			);
 			path = Gamer;
@@ -279,10 +305,10 @@
 		25EB4FBB1710A4A800633459 /* Releases */ = {
 			isa = PBXGroup;
 			children = (
-				25F121ED169470D4003E3ECB /* ReleasesViewController.h */,
-				25F121EE169470D4003E3ECB /* ReleasesViewController.m */,
-				2528140D16BD8CF2000EC0CA /* SearchViewController.h */,
-				2528140E16BD8CF2000EC0CA /* SearchViewController.m */,
+				250FB53B1726A91100E122DC /* ReleasesTableViewController.h */,
+				250FB53C1726A91100E122DC /* ReleasesTableViewController.m */,
+				250FB535172615F300E122DC /* ReleasesSearchTableViewController.h */,
+				250FB536172615F300E122DC /* ReleasesSearchTableViewController.m */,
 			);
 			name = Releases;
 			sourceTree = "<group>";
@@ -321,8 +347,10 @@
 		25F121EC168F0FBC003E3ECB /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				25F121F0169470E5003E3ECB /* LibraryViewController.h */,
-				25F121F1169470E5003E3ECB /* LibraryViewController.m */,
+				250FB53E1726A92300E122DC /* LibraryTableViewController.h */,
+				250FB53F1726A92300E122DC /* LibraryTableViewController.m */,
+				250FB53817261E1100E122DC /* LibrarySearchTableViewController.h */,
+				250FB53917261E1100E122DC /* LibrarySearchTableViewController.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -419,15 +447,12 @@
 			files = (
 				25BF5D25168E0E1800019267 /* main.m in Sources */,
 				25BF5D29168E0E1800019267 /* GamerAppDelegate.m in Sources */,
-				25F121EF169470D4003E3ECB /* ReleasesViewController.m in Sources */,
-				25F121F2169470E5003E3ECB /* LibraryViewController.m in Sources */,
 				25F121F8169470F9003E3ECB /* SettingsViewController.m in Sources */,
 				25F121FE1694723C003E3ECB /* GameViewController.m in Sources */,
 				25DBC5981699F4F30017C176 /* Model.xcdatamodeld in Sources */,
 				253035DF16AE09FF006AAC7E /* CalendarCell.m in Sources */,
 				256D3DEE16B204D400E8BC57 /* ReleasesCell.m in Sources */,
 				254D4D9216B935C200FD1AF6 /* CalendarViewController.m in Sources */,
-				2528140F16BD8CF2000EC0CA /* SearchViewController.m in Sources */,
 				250998FF16CAFDF4007D4697 /* SearchResult.m in Sources */,
 				259036F116CB2A05001B09EE /* GamesCell.m in Sources */,
 				2562B55016D2F2F30020EE65 /* Genre.m in Sources */,
@@ -439,8 +464,15 @@
 				2562B56516D2F2F40020EE65 /* SimilarGame.m in Sources */,
 				2562B56816D2F2F40020EE65 /* Theme.m in Sources */,
 				2562B56B16D2F2F40020EE65 /* Publisher.m in Sources */,
-				25EB4FC01710A71600633459 /* Game.m in Sources */,
 				25EB4FC51710BD3E00633459 /* ReleasesSectionHeaderView.m in Sources */,
+				250FB53317260B0C00E122DC /* SessionManager.m in Sources */,
+				250FB537172615F300E122DC /* ReleasesSearchTableViewController.m in Sources */,
+				250FB53A17261E1100E122DC /* LibrarySearchTableViewController.m in Sources */,
+				250FB53D1726A91100E122DC /* ReleasesTableViewController.m in Sources */,
+				250FB5401726A92300E122DC /* LibraryTableViewController.m in Sources */,
+				250FB5431726AF5100E122DC /* ReleasePeriod.m in Sources */,
+				250FB5491726AFCA00E122DC /* Game.m in Sources */,
+				250FB54C1727371800E122DC /* GameTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
