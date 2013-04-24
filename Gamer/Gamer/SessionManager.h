@@ -14,6 +14,6 @@
 
 + (NSMutableURLRequest *)APISearchRequestWithFields:(NSString *)fields query:(NSString *)query;
 
-+ (NSMutableURLRequest *)APIGameRequestWithFields:(NSString *)fields identifier:(NSString *)identifier;
++ (NSMutableURLRequest *)APIGameRequestWithFields:(NSString *)fields identifier:(NSInteger)identifier;
 
 @end

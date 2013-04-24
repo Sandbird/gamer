@@ -25,10 +25,10 @@ static NSMutableURLRequest *REQUEST;
 	return  REQUEST;
 }
 
-+ (NSMutableURLRequest *)APIGameRequestWithFields:(NSString *)fields identifier:(NSString *)identifier{
++ (NSMutableURLRequest *)APIGameRequestWithFields:(NSString *)fields identifier:(NSInteger)identifier{
 	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
 	[REQUEST setHTTPMethod:@"GET"];
-	[REQUEST setURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.giantbomb.com/api/game/3030-%@/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=%@", identifier, fields]]];
+	[REQUEST setURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.giantbomb.com/api/game/3030-%d/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=%@", identifier, fields]]];
 	return  REQUEST;
 }
 

@@ -13,7 +13,7 @@
 
 @interface Game : NSManagedObject
 
-@property (nonatomic, retain) NSString * identifier;
+@property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) NSData * image;
 @property (nonatomic, retain) NSData * imageSmall;
 @property (nonatomic, retain) NSString * metascore;

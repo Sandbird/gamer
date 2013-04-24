@@ -16,7 +16,7 @@
 #import "Franchise.h"
 #import "Theme.h"
 #import "ReleasePeriod.h"
-#import "GameViewController.h"
+#import "GameTableViewController.h"
 
 @interface ReleasesTableViewController ()
 
@@ -88,7 +88,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
-		GameViewController *destination = [segue destinationViewController];
+		GameTableViewController *destination = [segue destinationViewController];
 		[destination setGame:[_releasesFetch objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
 	}
 }

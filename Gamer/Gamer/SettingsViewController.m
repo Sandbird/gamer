@@ -14,6 +14,7 @@
 #import "Publisher.h"
 #import "Franchise.h"
 #import "Theme.h"
+#import "ReleasePeriod.h"
 
 @interface SettingsViewController ()
 
@@ -64,6 +65,7 @@
 	[Publisher truncateAll];
 	[Franchise truncateAll];
 	[Theme truncateAll];
+	[ReleasePeriod truncateAll];
 	[context saveToPersistentStoreAndWait];
 }
 

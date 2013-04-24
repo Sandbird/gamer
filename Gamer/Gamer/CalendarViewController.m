@@ -7,8 +7,7 @@
 //
 
 #import "CalendarViewController.h"
-#import "GameViewController.h"
-#import <QuartzCore/QuartzCore.h>
+#import "GameTableViewController.h"
 
 @interface CalendarViewController ()
 
@@ -144,7 +143,7 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-	GameViewController *destination = segue.destinationViewController;
+	GameTableViewController *destination = segue.destinationViewController;
 	[destination setGame:_games[_tableView.indexPathForSelectedRow.row]];
 }
 

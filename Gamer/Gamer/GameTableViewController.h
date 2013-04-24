@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Game.h"
+#import "SearchResult.h"
 
 @interface GameTableViewController : UITableViewController
+
+@property (nonatomic, strong) Game *game;
+
+@property (nonatomic, strong) SearchResult *searchResult;
 
 @end

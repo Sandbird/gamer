@@ -14,8 +14,12 @@
 		250FB53D1726A91100E122DC /* ReleasesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB53C1726A91100E122DC /* ReleasesTableViewController.m */; };
 		250FB5401726A92300E122DC /* LibraryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB53F1726A92300E122DC /* LibraryTableViewController.m */; };
 		250FB5431726AF5100E122DC /* ReleasePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB5421726AF5100E122DC /* ReleasePeriod.m */; };
-		250FB5491726AFCA00E122DC /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB5481726AFCA00E122DC /* Game.m */; };
 		250FB54C1727371800E122DC /* GameTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB54B1727371800E122DC /* GameTableViewController.m */; };
+		250FB54F1727467900E122DC /* GameMainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB54E1727467900E122DC /* GameMainCell.m */; };
+		250FB552172746AF00E122DC /* GameDescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB551172746AF00E122DC /* GameDescriptionCell.m */; };
+		250FB555172746BF00E122DC /* GameMediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB554172746BF00E122DC /* GameMediaCell.m */; };
+		250FB55B172749AC00E122DC /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB55A172749AC00E122DC /* Utilities.m */; };
+		250FB55E1727543500E122DC /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB55D1727543500E122DC /* Game.m */; };
 		253035DF16AE09FF006AAC7E /* CalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 253035DE16AE09FF006AAC7E /* CalendarCell.m */; };
 		2530360116B1DEA5006AAC7E /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2530360016B1DEA5006AAC7E /* CoreData.framework */; };
 		254D4D9216B935C200FD1AF6 /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 254D4D9116B935C200FD1AF6 /* CalendarViewController.m */; };
@@ -29,7 +33,7 @@
 		2562B56816D2F2F40020EE65 /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2562B56716D2F2F40020EE65 /* Theme.m */; };
 		2562B56B16D2F2F40020EE65 /* Publisher.m in Sources */ = {isa = PBXBuildFile; fileRef = 2562B56A16D2F2F40020EE65 /* Publisher.m */; };
 		256D3DEE16B204D400E8BC57 /* ReleasesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 256D3DED16B204D400E8BC57 /* ReleasesCell.m */; };
-		259036F116CB2A05001B09EE /* GamesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259036F016CB2A05001B09EE /* GamesCell.m */; };
+		259036F116CB2A05001B09EE /* LibraryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259036F016CB2A05001B09EE /* LibraryCell.m */; };
 		25BF5D19168E0E1800019267 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BF5D18168E0E1800019267 /* UIKit.framework */; };
 		25BF5D1B168E0E1800019267 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BF5D1A168E0E1800019267 /* Foundation.framework */; };
 		25BF5D1D168E0E1800019267 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BF5D1C168E0E1800019267 /* CoreGraphics.framework */; };
@@ -69,10 +73,18 @@
 		250FB53F1726A92300E122DC /* LibraryTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryTableViewController.m; sourceTree = "<group>"; };
 		250FB5411726AF5100E122DC /* ReleasePeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasePeriod.h; sourceTree = "<group>"; };
 		250FB5421726AF5100E122DC /* ReleasePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasePeriod.m; sourceTree = "<group>"; };
-		250FB5471726AFCA00E122DC /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		250FB5481726AFCA00E122DC /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		250FB54A1727371800E122DC /* GameTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameTableViewController.h; sourceTree = "<group>"; };
 		250FB54B1727371800E122DC /* GameTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameTableViewController.m; sourceTree = "<group>"; };
+		250FB54D1727467900E122DC /* GameMainCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameMainCell.h; sourceTree = "<group>"; };
+		250FB54E1727467900E122DC /* GameMainCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameMainCell.m; sourceTree = "<group>"; };
+		250FB550172746AF00E122DC /* GameDescriptionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameDescriptionCell.h; sourceTree = "<group>"; };
+		250FB551172746AF00E122DC /* GameDescriptionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameDescriptionCell.m; sourceTree = "<group>"; };
+		250FB553172746BF00E122DC /* GameMediaCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameMediaCell.h; sourceTree = "<group>"; };
+		250FB554172746BF00E122DC /* GameMediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameMediaCell.m; sourceTree = "<group>"; };
+		250FB559172749AC00E122DC /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
+		250FB55A172749AC00E122DC /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
+		250FB55C1727543500E122DC /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		250FB55D1727543500E122DC /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		253035DD16AE09FF006AAC7E /* CalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarCell.h; sourceTree = "<group>"; };
 		253035DE16AE09FF006AAC7E /* CalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarCell.m; sourceTree = "<group>"; };
 		2530360016B1DEA5006AAC7E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -98,8 +110,8 @@
 		2562B56A16D2F2F40020EE65 /* Publisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Publisher.m; sourceTree = "<group>"; };
 		256D3DEC16B204D400E8BC57 /* ReleasesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesCell.h; sourceTree = "<group>"; };
 		256D3DED16B204D400E8BC57 /* ReleasesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesCell.m; sourceTree = "<group>"; };
-		259036EF16CB2A05001B09EE /* GamesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GamesCell.h; sourceTree = "<group>"; };
-		259036F016CB2A05001B09EE /* GamesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GamesCell.m; sourceTree = "<group>"; };
+		259036EF16CB2A05001B09EE /* LibraryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCell.h; sourceTree = "<group>"; };
+		259036F016CB2A05001B09EE /* LibraryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCell.m; sourceTree = "<group>"; };
 		25BF5D14168E0E1800019267 /* Gamer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gamer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25BF5D18168E0E1800019267 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		25BF5D1A168E0E1800019267 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -157,6 +169,8 @@
 			children = (
 				250FB53117260B0C00E122DC /* SessionManager.h */,
 				250FB53217260B0C00E122DC /* SessionManager.m */,
+				250FB559172749AC00E122DC /* Utilities.h */,
+				250FB55A172749AC00E122DC /* Utilities.m */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -168,8 +182,14 @@
 				253035DE16AE09FF006AAC7E /* CalendarCell.m */,
 				256D3DEC16B204D400E8BC57 /* ReleasesCell.h */,
 				256D3DED16B204D400E8BC57 /* ReleasesCell.m */,
-				259036EF16CB2A05001B09EE /* GamesCell.h */,
-				259036F016CB2A05001B09EE /* GamesCell.m */,
+				259036EF16CB2A05001B09EE /* LibraryCell.h */,
+				259036F016CB2A05001B09EE /* LibraryCell.m */,
+				250FB54D1727467900E122DC /* GameMainCell.h */,
+				250FB54E1727467900E122DC /* GameMainCell.m */,
+				250FB550172746AF00E122DC /* GameDescriptionCell.h */,
+				250FB551172746AF00E122DC /* GameDescriptionCell.m */,
+				250FB553172746BF00E122DC /* GameMediaCell.h */,
+				250FB554172746BF00E122DC /* GameMediaCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -177,8 +197,8 @@
 		253035E216AE0B89006AAC7E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				250FB5471726AFCA00E122DC /* Game.h */,
-				250FB5481726AFCA00E122DC /* Game.m */,
+				250FB55C1727543500E122DC /* Game.h */,
+				250FB55D1727543500E122DC /* Game.m */,
 				250FB5411726AF5100E122DC /* ReleasePeriod.h */,
 				250FB5421726AF5100E122DC /* ReleasePeriod.m */,
 				250998FD16CAFDF4007D4697 /* SearchResult.h */,
@@ -454,7 +474,7 @@
 				256D3DEE16B204D400E8BC57 /* ReleasesCell.m in Sources */,
 				254D4D9216B935C200FD1AF6 /* CalendarViewController.m in Sources */,
 				250998FF16CAFDF4007D4697 /* SearchResult.m in Sources */,
-				259036F116CB2A05001B09EE /* GamesCell.m in Sources */,
+				259036F116CB2A05001B09EE /* LibraryCell.m in Sources */,
 				2562B55016D2F2F30020EE65 /* Genre.m in Sources */,
 				2562B55316D2F2F40020EE65 /* Franchise.m in Sources */,
 				2562B55616D2F2F40020EE65 /* Video.m in Sources */,
@@ -471,8 +491,12 @@
 				250FB53D1726A91100E122DC /* ReleasesTableViewController.m in Sources */,
 				250FB5401726A92300E122DC /* LibraryTableViewController.m in Sources */,
 				250FB5431726AF5100E122DC /* ReleasePeriod.m in Sources */,
-				250FB5491726AFCA00E122DC /* Game.m in Sources */,
 				250FB54C1727371800E122DC /* GameTableViewController.m in Sources */,
+				250FB54F1727467900E122DC /* GameMainCell.m in Sources */,
+				250FB552172746AF00E122DC /* GameDescriptionCell.m in Sources */,
+				250FB555172746BF00E122DC /* GameMediaCell.m in Sources */,
+				250FB55B172749AC00E122DC /* Utilities.m in Sources */,
+				250FB55E1727543500E122DC /* Game.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

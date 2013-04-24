@@ -7,7 +7,7 @@
 //
 
 #import "ReleasesSearchTableViewController.h"
-#import "GameViewController.h"
+#import "GameTableViewController.h"
 #import "SearchResult.h"
 #import "SessionManager.h"
 
@@ -127,7 +127,7 @@
 #pragma mark - Actions
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-	GameViewController *destination = segue.destinationViewController;
+	GameTableViewController *destination = segue.destinationViewController;
 	[destination setSearchResult:_results[self.tableView.indexPathForSelectedRow.row]];
 }
 

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GamesCell : UITableViewCell
+@interface LibraryCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;

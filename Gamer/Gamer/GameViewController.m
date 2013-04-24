@@ -526,8 +526,7 @@
 		case 10: return 4;
 		case 11: return 4;
 		case 12: return 4;
-		default:
-			return 0;
+		default: return 0;
 	}
 }
 

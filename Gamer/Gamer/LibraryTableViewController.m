@@ -7,10 +7,10 @@
 //
 
 #import "LibraryTableViewController.h"
-#import "GamesCell.h"
+#import "LibraryCell.h"
 #import "Game.h"
 #import "Platform.h"
-#import "GameViewController.h"
+#import "GameTableViewController.h"
 
 @interface LibraryTableViewController ()
 
@@ -38,7 +38,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    GamesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LibraryCell" forIndexPath:indexPath];
+    LibraryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LibraryCell" forIndexPath:indexPath];
 	
 	Game *game = [_gamesFetch objectAtIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
@@ -74,7 +74,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
-		GameViewController *destination = [segue destinationViewController];
+		GameTableViewController *destination = [segue destinationViewController];
 		[destination setGame:[_gamesFetch objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
 	}
 }
