@@ -23,7 +23,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	_gamesFetch = [Game fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@", @(1)] sortedBy:@"title" ascending:YES];
+	_gamesFetch = [self libraryFetchedResultsController];
 	[self.tableView reloadData];
 }
 
@@ -59,11 +59,18 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", [[_gamesFetch objectAtIndexPath:indexPath] identifier]] inContext:context];
+	Game *game = [_gamesFetch objectAtIndexPath:indexPath];
+	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", game.identifier] inContext:context];
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		_gamesFetch = [Game fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@", @(1)] sortedBy:@"title" ascending:YES];
+		_gamesFetch = [self libraryFetchedResultsController];
 		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
 	}];
+}
+
+#pragma mark - Custom
+
+- (NSFetchedResultsController *)libraryFetchedResultsController{
+	return [Game fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@", @(1)] sortedBy:@"title" ascending:YES];
 }
 
 #pragma mark - Actions

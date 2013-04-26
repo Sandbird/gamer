@@ -13,8 +13,6 @@
 // JSON input
 + (NSString *)stringFromSourceIfNotNull:(id)source;
 
-+ (NSDecimalNumber *)decimalNumberFromSourceIfNotNull:(id)source;
-
 + (NSNumber *)integerNumberFromSourceIfNotNull:(id)source;
 
 + (NSNumber *)booleanNumberFromSourceIfNotNull:(id)source withDefault:(BOOL)defaultValue;

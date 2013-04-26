@@ -10,6 +10,7 @@
 #import "GameTableViewController.h"
 #import "SearchResult.h"
 #import "SessionManager.h"
+#import "Utilities.h"
 
 @interface ReleasesSearchTableViewController ()
 
@@ -92,6 +93,8 @@
 		
 		[_results removeAllObjects];
 		
+//		NSLog(@"%@", JSON);
+		
 		for (NSDictionary *dictionary in JSON[@"results"]){
 			if (dictionary[@"platforms"] != [NSNull null]){
 				for (NSDictionary *platform in dictionary[@"platforms"]){
@@ -103,8 +106,8 @@
 						
 						SearchResult *result;
 						if (!result) result = [[SearchResult alloc] init];
-						[result setTitle:dictionary[@"name"]];
-						[result setIdentifier:dictionary[@"id"]];
+						[result setTitle:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+						[result setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 						[_results addObject:result];
 						break;
 					}
@@ -129,6 +132,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameTableViewController *destination = segue.destinationViewController;
 	[destination setSearchResult:_results[self.tableView.indexPathForSelectedRow.row]];
+	[destination setOrigin:1];
 }
 
 @end

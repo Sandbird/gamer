@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 @property (nonatomic, strong) IBOutlet UILabel *metascoreLabel;
+@property (nonatomic, strong) IBOutlet UIButton *addButton;
 @property (nonatomic, strong) IBOutlet UILabel *gameTitleLabel;
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 

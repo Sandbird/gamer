@@ -37,7 +37,7 @@
 }
 
 + (NSNumber *)integerNumberFromSourceIfNotNull:(id)source{
-	return (source != [NSNull null]) ? [NSNumber numberWithInteger:[[NSString stringWithFormat:@"%@", source] integerValue]] : [NSNumber numberWithInteger:0];
+	return (source != [NSNull null]) ? @([[NSString stringWithFormat:@"%@", source] integerValue]) : @(0);
 }
 
 + (NSNumber *)booleanNumberFromSourceIfNotNull:(id)source withDefault:(BOOL)defaultValue{

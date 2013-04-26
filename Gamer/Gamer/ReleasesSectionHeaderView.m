@@ -30,7 +30,7 @@
 		
 		[_titleLabel setBackgroundColor:[UIColor clearColor]];
 		[_titleLabel setTextColor:[UIColor darkGrayColor]];
-		[_titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16]];
+		[_titleLabel setFont:[UIFont fontWithName:@"Avenir-Heavy" size:18]];
 		
 		[_hideIndicator setBackgroundColor:[UIColor blackColor]];
     }

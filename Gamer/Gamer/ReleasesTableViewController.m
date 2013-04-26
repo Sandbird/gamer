@@ -29,7 +29,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	_releasesFetch = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier != %@", @(1)] sortedBy:@"releaseDate" ascending:YES];
+	_releasesFetch = [self releasesFetchedResultsController];
 	[self.tableView reloadData];
 }
 
@@ -56,7 +56,7 @@
 	
 	Game *game = [_releasesFetch objectAtIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
-	[cell.dateLabel setText:game.releaseDateText];
+	[cell.dateLabel setText:([game.releasePeriod.identifier isEqualToNumber:@(8)]) ? @"" : game.releaseDateText];
 	[cell.coverImageView setImage:[UIImage imageWithData:game.imageSmall]];
 	[cell.platformLabel setText:game.selectedPlatform.nameShort];
 	
@@ -74,10 +74,21 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", [_releasesFetch objectAtIndexPath:indexPath]] inContext:context];
+	Game *game = [_releasesFetch objectAtIndexPath:indexPath];
+	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier = %@", game.identifier] inContext:context];
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+		_releasesFetch = [self releasesFetchedResultsController];
+		if ([tableView numberOfRowsInSection:indexPath.section == 1])
+			[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationLeft];
+		else
+			[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
 	}];
+}
+
+#pragma mark - Custom
+
+- (NSFetchedResultsController *)releasesFetchedResultsController{
+	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier != %@", @(1)] sortedBy:@"releaseDate" ascending:YES];
 }
 
 #pragma mark - Actions

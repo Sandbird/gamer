@@ -10,7 +10,7 @@
 
 @interface SearchResult : NSObject
 
-@property (nonatomic, copy) NSString *identifier;
+@property (nonatomic, strong) NSNumber *identifier;
 @property (nonatomic, copy) NSString *title;
 
 @end

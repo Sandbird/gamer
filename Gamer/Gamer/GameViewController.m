@@ -56,21 +56,21 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	// If coming from search load game from database
-	if (_searchResult){
-		[self.navigationItem setTitle:[_searchResult.title componentsSeparatedByString:@":"][0]];
-		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
-		if (game){
-			_game = game;
-			[self setInterfaceElementsWithGame:_game];
-		}
-		else
-			[self requestGameWithIdentifier:_searchResult.identifier];
-	}
-	else{
-		[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
-		[self requestGameWithIdentifier:_game.identifier];
-	}
+//	// If coming from search load game from database
+//	if (_searchResult){
+//		[self.navigationItem setTitle:[_searchResult.title componentsSeparatedByString:@":"][0]];
+//		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
+//		if (game){
+//			_game = game;
+//			[self setInterfaceElementsWithGame:_game];
+//		}
+//		else
+//			[self requestGameWithIdentifier:_searchResult.identifier];
+//	}
+//	else{
+//		[self.navigationItem setTitle:[_game.title componentsSeparatedByString:@":"][0]];
+//		[self requestGameWithIdentifier:_game.identifier];
+//	}
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -114,7 +114,7 @@
 		_game = (game) ? game : [[Game alloc] initWithEntity:[NSEntityDescription entityForName:@"Game" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 		
 		// Information
-		[_game setIdentifier:[results[@"id"] stringValue]];
+//		[_game setIdentifier:results[@"id"]];
 		setTargetIfValueNotNull(_game.title, results[@"name"]);
 		setTargetIfValueNotNull(_game.overview, results[@"deck"]);
 		

@@ -10,10 +10,12 @@
 #import "Game.h"
 #import "SearchResult.h"
 
-@interface GameTableViewController : UITableViewController
+@interface GameTableViewController : UITableViewController <UIActionSheetDelegate>
 
 @property (nonatomic, strong) Game *game;
 
 @property (nonatomic, strong) SearchResult *searchResult;
+
+@property (nonatomic, assign) NSInteger origin;
 
 @end

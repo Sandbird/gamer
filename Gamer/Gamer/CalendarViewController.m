@@ -145,6 +145,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameTableViewController *destination = segue.destinationViewController;
 	[destination setGame:_games[_tableView.indexPathForSelectedRow.row]];
+	[destination setOrigin:2];
 }
 
 @end
