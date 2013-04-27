@@ -89,15 +89,16 @@
 		case 1:{
 			GameDescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GameDescriptionCell" forIndexPath:indexPath];
 			[cell.descriptionTextView setText:_game.overview];
-//			[cell.platformsLabel setText:[_game.platforms.allObjects[0] nameShort]];
-//			[cell.developerLabel]
-//			[cell.publisherLabel]
-//			[cell.genrePrimaryLabel]
-//			[cell.genreSecondaryLabel]
+			if (_game.platforms.count > 0) [cell.platformsLabel setText:[_game.platforms.allObjects[0] nameShort]];
+			if (_game.genres.count > 0) [cell.genrePrimaryLabel setText:[_game.genres.allObjects[0] name]];
+			if (_game.genres.count > 1) [cell.genrePrimaryLabel setText:[_game.genres.allObjects[1] name]];
+			if (_game.developers.count > 0) [cell.developerLabel setText:[_game.developers.allObjects[0] name]];
+			if (_game.publishers.count > 0) [cell.publisherLabel setText:[_game.publishers.allObjects[0] name]];
 			return cell;
 		}
 		case 2:{
 			GameMediaCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GameMediaCell" forIndexPath:indexPath];
+			
 			return cell;
 		}
 		case 3:{
@@ -137,7 +138,7 @@
 		// Release date
 		NSString *originalReleaseDate = [Utilities stringFromSourceIfNotNull:results[@"original_release_date"]];
 		NSInteger expectedReleaseDay = [Utilities integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
-		NSInteger expectedReleaseMonth = [Utilities integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
+		NSInteger expectedReleaseMonth = [Utilities integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
 		NSInteger expectedReleaseQuarter = [Utilities integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
 		NSInteger expectedReleaseYear = [Utilities integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
 		
@@ -147,6 +148,7 @@
 		if (originalReleaseDate){
 			NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[SessionManager dateFormatter] dateFromString:originalReleaseDate]];
 			[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
+			[originalReleaseDateComponents setHour:9];
 			
 			NSDate *dateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
 			[_game setReleaseDate:dateFromComponents];
@@ -155,7 +157,7 @@
 			[_game setReleaseQuarter:@(originalReleaseDateComponents.quarter)];
 			[_game setReleaseYear:@(originalReleaseDateComponents.year)];
 			
-			[[SessionManager dateFormatter] setDateFormat:@"dd MMM yyyy"];
+			[[SessionManager dateFormatter] setDateFormat:@"d MMM yyyy"];
 			[_game setReleaseDateText:[[SessionManager dateFormatter] stringFromDate:dateFromComponents]];
 		}
 		else{
@@ -166,7 +168,8 @@
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
 				[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[[SessionManager dateFormatter] setDateFormat:@"dd MMMM yyyy"];
+				[expectedReleaseDateComponents setHour:9];
+				[[SessionManager dateFormatter] setDateFormat:@"d MMMM yyyy"];
 			}
 			else if (expectedReleaseMonth){
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
@@ -207,6 +210,26 @@
 		
 		[_game setReleasePeriod:[self releasePeriodForGame:_game]];
 		
+        // Platforms
+		if (results[@"platforms"] != [NSNull null]){
+			for (NSDictionary *dictionary in results[@"platforms"]){
+				if ([dictionary[@"name"] isEqualToString:@"Xbox 360"] || [dictionary[@"name"] isEqualToString:@"PlayStation 3"] || [dictionary[@"name"] isEqualToString:@"PC"] || [dictionary[@"name"] isEqualToString:@"Wii U"]){
+					Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+					if (platform){
+						[platform setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+						[platform setNameShort:[Utilities stringFromSourceIfNotNull:dictionary[@"abbreviation"]]];
+					}
+					else{
+						platform = [[Platform alloc] initWithEntity:[NSEntityDescription entityForName:@"Platform" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+						[platform setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+						[platform setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+						[platform setNameShort:[Utilities stringFromSourceIfNotNull:dictionary[@"abbreviation"]]];
+						[_game addPlatformsObject:platform];
+					}
+				}
+			}
+		}
+        
 		// Genres
 		if (results[@"genres"] != [NSNull null]){
 			for (NSDictionary *dictionary in results[@"genres"]){
@@ -217,14 +240,81 @@
 					genre = [[Genre alloc] initWithEntity:[NSEntityDescription entityForName:@"Genre" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 					[genre setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[genre setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+					[_game addGenresObject:genre];
 				}
-				[_game addGenresObject:genre];
 			}
 		}
 		
-		// Platforms
-		if (results[@"platforms"] != [NSNull null]){
-			
+		// Developers
+		if (results[@"developers"] != [NSNull null]){
+			for (NSDictionary *dictionary in results[@"developers"]){
+				Developer *developer = [Developer findFirstByAttribute:@"identifier" withValue:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+				if (developer)
+					[developer setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+				else{
+					developer = [[Developer alloc] initWithEntity:[NSEntityDescription entityForName:@"Developer" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					[developer setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+					[developer setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+					[_game addDevelopersObject:developer];
+				}
+			}
+		}
+		
+		// Publishers
+		if (results[@"publishers"] != [NSNull null]){
+			for (NSDictionary *dictionary in results[@"publishers"]){
+				Publisher *publisher = [Publisher findFirstByAttribute:@"identifier" withValue:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+				if (publisher)
+					[publisher setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+				else{
+					publisher = [[Publisher alloc] initWithEntity:[NSEntityDescription entityForName:@"Publisher" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					[publisher setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+					[publisher setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+					[_game addPublishersObject:publisher];
+				}
+			}
+		}
+		
+		// Franchises
+		if (results[@"franchises"] != [NSNull null]){
+			for (NSDictionary *dictionary in results[@"franchises"]){
+				Franchise *franchise = [Franchise findFirstByAttribute:@"identifier" withValue:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+				if (franchise)
+					[franchise setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+				else{
+					franchise = [[Franchise alloc] initWithEntity:[NSEntityDescription entityForName:@"Franchise" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					[franchise setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+					[franchise setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+					[_game addFranchisesObject:franchise];
+				}
+			}
+		}
+		
+		// Themes
+		if (results[@"themes"] != [NSNull null]){
+			for (NSDictionary *dictionary in results[@"themes"]){
+				Theme *theme = [Theme findFirstByAttribute:@"identifier" withValue:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+				if (theme)
+					[theme setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+				else{
+					theme = [[Theme alloc] initWithEntity:[NSEntityDescription entityForName:@"Theme" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					[theme setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+					[theme setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+					[_game addThemesObject:theme];
+				}
+			}
+		}
+		
+		// Images
+		if (results[@"images"] != [NSNull null]){
+			for (NSDictionary *dictionary in results[@"images"]){
+				Image *image = [Image findFirstByAttribute:@"url" withValue:[Utilities stringFromSourceIfNotNull:dictionary[@"super_url"]] inContext:context];
+				if (!image){
+					image = [[Image alloc] initWithEntity:[NSEntityDescription entityForName:@"Image" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					[image setUrl:[Utilities stringFromSourceIfNotNull:dictionary[@"super_url"]]];
+					[_game addImagesObject:image];
+				}
+			}
 		}
 		
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -396,7 +486,9 @@
 	else if ([game.releaseYear isEqualToNumber:@(currentComponents.year)]) period = 6;
 	else if ([game.releaseYear isEqualToNumber:@(nextComponents.year)]) period = 7;
 	else if ([game.releaseYear isEqualToNumber:@(2050)]) period = 8;
-	
+	NSLog(@"%@", game.releaseYear);
+	NSLog(@"%d", currentComponents.year);
+	NSLog(@"%d", period);
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
 	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
