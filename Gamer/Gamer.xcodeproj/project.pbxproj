@@ -20,9 +20,9 @@
 		250FB55B172749AC00E122DC /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB55A172749AC00E122DC /* Utilities.m */; };
 		253035DF16AE09FF006AAC7E /* CalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 253035DE16AE09FF006AAC7E /* CalendarCell.m */; };
 		2530360116B1DEA5006AAC7E /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2530360016B1DEA5006AAC7E /* CoreData.framework */; };
-		254D4D9216B935C200FD1AF6 /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 254D4D9116B935C200FD1AF6 /* CalendarViewController.m */; };
 		256D3DEE16B204D400E8BC57 /* ReleasesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 256D3DED16B204D400E8BC57 /* ReleasesCell.m */; };
 		259036F116CB2A05001B09EE /* LibraryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259036F016CB2A05001B09EE /* LibraryCell.m */; };
+		25AAF6C0172CD2C30079631C /* CalendarMonthTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AAF6BF172CD2C30079631C /* CalendarMonthTableViewController.m */; };
 		25BF5D19168E0E1800019267 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BF5D18168E0E1800019267 /* UIKit.framework */; };
 		25BF5D1B168E0E1800019267 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BF5D1A168E0E1800019267 /* Foundation.framework */; };
 		25BF5D1D168E0E1800019267 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25BF5D1C168E0E1800019267 /* CoreGraphics.framework */; };
@@ -42,7 +42,6 @@
 		25EB4FC21710A7A000633459 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25EB4FC11710A7A000633459 /* MainStoryboard_iPad.storyboard */; };
 		25EB4FC51710BD3E00633459 /* ReleasesSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB4FC41710BD3E00633459 /* ReleasesSectionHeaderView.m */; };
 		25F121F8169470F9003E3ECB /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F121F7169470F9003E3ECB /* SettingsViewController.m */; };
-		25F121FE1694723C003E3ECB /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F121FD1694723C003E3ECB /* GameViewController.m */; };
 		25FA2AAC1728CFE800998490 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FA2AAB1728CFE800998490 /* Game.m */; };
 		25FA2AAF1728CFE800998490 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FA2AAE1728CFE800998490 /* Image.m */; };
 		25FA2AB21728CFE800998490 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FA2AB11728CFE800998490 /* Platform.m */; };
@@ -84,12 +83,12 @@
 		253035DD16AE09FF006AAC7E /* CalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarCell.h; sourceTree = "<group>"; };
 		253035DE16AE09FF006AAC7E /* CalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarCell.m; sourceTree = "<group>"; };
 		2530360016B1DEA5006AAC7E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		254D4D9016B935C200FD1AF6 /* CalendarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarViewController.h; sourceTree = "<group>"; };
-		254D4D9116B935C200FD1AF6 /* CalendarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarViewController.m; sourceTree = "<group>"; };
 		256D3DEC16B204D400E8BC57 /* ReleasesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesCell.h; sourceTree = "<group>"; };
 		256D3DED16B204D400E8BC57 /* ReleasesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesCell.m; sourceTree = "<group>"; };
 		259036EF16CB2A05001B09EE /* LibraryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCell.h; sourceTree = "<group>"; };
 		259036F016CB2A05001B09EE /* LibraryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCell.m; sourceTree = "<group>"; };
+		25AAF6BE172CD2C30079631C /* CalendarMonthTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarMonthTableViewController.h; sourceTree = "<group>"; };
+		25AAF6BF172CD2C30079631C /* CalendarMonthTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarMonthTableViewController.m; sourceTree = "<group>"; };
 		25BF5D14168E0E1800019267 /* Gamer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gamer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25BF5D18168E0E1800019267 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		25BF5D1A168E0E1800019267 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -117,8 +116,6 @@
 		25EB4FC41710BD3E00633459 /* ReleasesSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesSectionHeaderView.m; sourceTree = "<group>"; };
 		25F121F6169470F9003E3ECB /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		25F121F7169470F9003E3ECB /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		25F121FC1694723C003E3ECB /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
-		25F121FD1694723C003E3ECB /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
 		25FA2AAA1728CFE800998490 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		25FA2AAB1728CFE800998490 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		25FA2AAD1728CFE800998490 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
@@ -239,8 +236,6 @@
 		253035FF16AF764A006AAC7E /* Game */ = {
 			isa = PBXGroup;
 			children = (
-				25F121FC1694723C003E3ECB /* GameViewController.h */,
-				25F121FD1694723C003E3ECB /* GameViewController.m */,
 				250FB54A1727371800E122DC /* GameTableViewController.h */,
 				250FB54B1727371800E122DC /* GameTableViewController.m */,
 			);
@@ -336,8 +331,8 @@
 		25EB4FBC1710A4C900633459 /* Calendar */ = {
 			isa = PBXGroup;
 			children = (
-				254D4D9016B935C200FD1AF6 /* CalendarViewController.h */,
-				254D4D9116B935C200FD1AF6 /* CalendarViewController.m */,
+				25AAF6BE172CD2C30079631C /* CalendarMonthTableViewController.h */,
+				25AAF6BF172CD2C30079631C /* CalendarMonthTableViewController.m */,
 			);
 			name = Calendar;
 			sourceTree = "<group>";
@@ -468,11 +463,9 @@
 				25BF5D25168E0E1800019267 /* main.m in Sources */,
 				25BF5D29168E0E1800019267 /* GamerAppDelegate.m in Sources */,
 				25F121F8169470F9003E3ECB /* SettingsViewController.m in Sources */,
-				25F121FE1694723C003E3ECB /* GameViewController.m in Sources */,
 				25DBC5981699F4F30017C176 /* Model.xcdatamodeld in Sources */,
 				253035DF16AE09FF006AAC7E /* CalendarCell.m in Sources */,
 				256D3DEE16B204D400E8BC57 /* ReleasesCell.m in Sources */,
-				254D4D9216B935C200FD1AF6 /* CalendarViewController.m in Sources */,
 				250998FF16CAFDF4007D4697 /* SearchResult.m in Sources */,
 				259036F116CB2A05001B09EE /* LibraryCell.m in Sources */,
 				25EB4FC51710BD3E00633459 /* ReleasesSectionHeaderView.m in Sources */,
@@ -497,6 +490,7 @@
 				25FA2AC41728CFE900998490 /* ReleasePeriod.m in Sources */,
 				25FA2AC71728CFE900998490 /* Theme.m in Sources */,
 				25FA2ACA1728CFE900998490 /* Video.m in Sources */,
+				25AAF6C0172CD2C30079631C /* CalendarMonthTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

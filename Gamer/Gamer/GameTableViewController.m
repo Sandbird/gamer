@@ -213,7 +213,7 @@
         // Platforms
 		if (results[@"platforms"] != [NSNull null]){
 			for (NSDictionary *dictionary in results[@"platforms"]){
-				if ([dictionary[@"name"] isEqualToString:@"Xbox 360"] || [dictionary[@"name"] isEqualToString:@"PlayStation 3"] || [dictionary[@"name"] isEqualToString:@"PC"] || [dictionary[@"name"] isEqualToString:@"Wii U"]){
+				if ([dictionary[@"name"] isEqualToString:@"Xbox 360"] || [dictionary[@"name"] isEqualToString:@"PlayStation 3"] || [dictionary[@"name"] isEqualToString:@"PC"] || [dictionary[@"name"] isEqualToString:@"Wii U"] || [dictionary[@"name"] isEqualToString:@"Nintendo 3DS"]){
 					Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 					if (platform){
 						[platform setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
@@ -486,9 +486,7 @@
 	else if ([game.releaseYear isEqualToNumber:@(currentComponents.year)]) period = 6;
 	else if ([game.releaseYear isEqualToNumber:@(nextComponents.year)]) period = 7;
 	else if ([game.releaseYear isEqualToNumber:@(2050)]) period = 8;
-	NSLog(@"%@", game.releaseYear);
-	NSLog(@"%d", currentComponents.year);
-	NSLog(@"%d", period);
+	
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
 	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
@@ -517,9 +515,9 @@
 - (IBAction)addButtonPressAction:(UIButton *)sender{
 	if (_game.platforms.count > 1){
 		UIActionSheet *actionSheet;
-		if (!actionSheet) actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:nil];
+		if (!actionSheet) actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 		for (Platform *platform in _game.platforms.allObjects) [actionSheet addButtonWithTitle:platform.name];
-//		[actionSheet addButtonWithTitle:@"Cancel"];
+		[actionSheet addButtonWithTitle:@"Cancel"];
 		[actionSheet setCancelButtonIndex:_game.platforms.count];
 		[actionSheet showInView:self.tabBarController.view];
 	}
