@@ -6,24 +6,28 @@
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "ReleasesSearchTableViewController.h"
+#import "SearchTableViewController.h"
 #import "GameTableViewController.h"
 #import "SearchResult.h"
 #import "SessionManager.h"
 #import "Utilities.h"
+#import "ReleasesTableViewController.h"
+#import "LibraryTableViewController.h"
 
-@interface ReleasesSearchTableViewController ()
+#define kReleasesTableViewController 1
+
+@interface SearchTableViewController ()
 
 @end
 
-@implementation ReleasesSearchTableViewController
+@implementation SearchTableViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
 	// Search bar setup
 	if (!_searchBar) _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 252, 44)];
-	[_searchBar setPlaceholder:@"Search for upcoming games"];
+	[_searchBar setPlaceholder:(_origin == kReleasesTableViewController) ? @"Search for upcoming games" : @"Search for released games"];
 	[_searchBar setDelegate:self];
 	
 	// Remove search bar background
@@ -37,10 +41,6 @@
 	[self.navigationItem setRightBarButtonItem:searchBarItem];
 	
 	if (!_results) _results = [[NSMutableArray alloc] init];
-}
-
-- (void)viewDidLayoutSubviews{
-//	[self.tableView setContentInset:UIEdgeInsetsMake(0, 0, 216, 0)];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -70,7 +70,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	
 	SearchResult *result = _results[indexPath.row];
 	[cell.textLabel setText:result.title];
@@ -86,7 +86,7 @@
 #pragma mark - Networking
 
 - (void)requestSearchResultsWithQuery:(NSString *)query{
-	NSURLRequest *request = [SessionManager APISearchRequestWithFields:@"id,name,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,original_release_date,platforms" query:query];
+	NSURLRequest *request = [SessionManager APISearchRequestWithFields:@"id,name,original_release_date,platforms" query:query];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -104,12 +104,14 @@
 						[platform[@"name"] isEqualToString:@"Wii U"] ||
 						[platform[@"name"] isEqualToString:@"Nintendo 3DS"]){
 						
-						SearchResult *result;
-						if (!result) result = [[SearchResult alloc] init];
-						[result setTitle:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
-						[result setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-						[_results addObject:result];
-						break;
+						if ((_origin == kReleasesTableViewController) ? (dictionary[@"original_release_date"] == [NSNull null]) : (dictionary[@"original_release_date"] != [NSNull null])){
+							SearchResult *result;
+							if (!result) result = [[SearchResult alloc] init];
+							[result setTitle:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+							[result setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+							[_results addObject:result];
+							break;
+						}
 					}
 				}
 			}
@@ -132,7 +134,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameTableViewController *destination = segue.destinationViewController;
 	[destination setSearchResult:_results[self.tableView.indexPathForSelectedRow.row]];
-	[destination setOrigin:1];
+	[destination setOrigin:_origin];
 }
 
 @end

@@ -17,6 +17,7 @@
 #import "Theme.h"
 #import "ReleasePeriod.h"
 #import "GameTableViewController.h"
+#import "SearchTableViewController.h"
 
 @interface ReleasesTableViewController ()
 
@@ -52,7 +53,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ReleasesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ReleasesCell" forIndexPath:indexPath];
+    ReleasesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	
 	Game *game = [_releasesFetch objectAtIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
@@ -75,7 +76,8 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	Game *game = [_releasesFetch objectAtIndexPath:indexPath];
-	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier = %@", game.identifier] inContext:context];
+//	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier = %@", game.identifier] inContext:context];
+	[game setTracked:@(NO)];
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		_releasesFetch = [self releasesFetchedResultsController];
 		if ([tableView numberOfRowsInSection:indexPath.section == 1])
@@ -88,7 +90,7 @@
 #pragma mark - Custom
 
 - (NSFetchedResultsController *)releasesFetchedResultsController{
-	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier != %@", @(1)] sortedBy:@"releaseDate" ascending:YES];
+	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier != %@ AND tracked = %@", @(1), @(YES)] sortedBy:@"releaseDate" ascending:YES];
 }
 
 #pragma mark - Actions
@@ -101,6 +103,10 @@
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
 		GameTableViewController *destination = [segue destinationViewController];
 		[destination setGame:[_releasesFetch objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
+	}
+	if ([segue.identifier isEqualToString:@"SearchSegue"]){
+		SearchTableViewController *destination = [segue destinationViewController];
+		[destination setOrigin:1];
 	}
 }
 

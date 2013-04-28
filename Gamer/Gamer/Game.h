@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 4/24/13.
+//  Created by Caio Mello on 4/28/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -25,6 +25,8 @@
 @property (nonatomic, retain) NSNumber * releaseQuarter;
 @property (nonatomic, retain) NSNumber * releaseYear;
 @property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSNumber * tracked;
+@property (nonatomic, retain) NSNumber * owned;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;

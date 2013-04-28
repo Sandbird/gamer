@@ -38,9 +38,12 @@
 
 - (void)viewWillAppear:(BOOL)animated{
 	[self.navigationItem setTitle:(_game) ? _game.title : _searchResult.title];
-	if (!_game) [self requestGameWithIdentifier:_searchResult.identifier];
 	
-//	[self requestGameWithIdentifier:(_game) ? _game.identifier : _searchResult.identifier];
+	if (!_game){
+		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
+		if (game) _game = game;
+		else [self requestGameWithIdentifier:_searchResult.identifier];
+	}
 }
 
 - (void)didReceiveMemoryWarning{
@@ -78,7 +81,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
 		case 0:{
-			GameMainCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GameMainCell" forIndexPath:indexPath];
+			GameMainCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell" forIndexPath:indexPath];
 			[cell.coverImageView setImage:[UIImage imageWithData:_game.image]];
 			[cell.metascoreLabel setText:_game.metascore];
 			[cell.addButton setHidden:NO]; // SET THIS
@@ -87,7 +90,7 @@
 			return cell;
 		}
 		case 1:{
-			GameDescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GameDescriptionCell" forIndexPath:indexPath];
+			GameDescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DescriptionCell" forIndexPath:indexPath];
 			[cell.descriptionTextView setText:_game.overview];
 			if (_game.platforms.count > 0) [cell.platformsLabel setText:[_game.platforms.allObjects[0] nameShort]];
 			if (_game.genres.count > 0) [cell.genrePrimaryLabel setText:[_game.genres.allObjects[0] name]];
@@ -97,12 +100,12 @@
 			return cell;
 		}
 		case 2:{
-			GameMediaCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GameMediaCell" forIndexPath:indexPath];
+			GameMediaCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MediaCell" forIndexPath:indexPath];
 			
 			return cell;
 		}
 		case 3:{
-			GameMediaCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GameMediaCell" forIndexPath:indexPath];
+			GameMediaCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MediaCell" forIndexPath:indexPath];
 			
 			return cell;
 		}
@@ -336,6 +339,8 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
+		NSLog(@"Success in %@ - Cover image", self);
+		
 		UIImage *imageLarge = [self imageWithImage:image scaledToWidth:300];
 		UIImage *imageSmall = [self imageWithImage:image scaledToWidth:200];
 		
@@ -430,6 +435,10 @@
 	if (buttonIndex != actionSheet.cancelButtonIndex){
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		[_game setSelectedPlatform:_game.platforms.allObjects[buttonIndex]];
+		if (_origin == kReleasesTableViewController)
+			[_game setTracked:@(YES)];
+		else
+			[_game setOwned:@(YES)];
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationController popToRootViewControllerAnimated:YES];
 		}];
@@ -524,6 +533,10 @@
 	else{
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		if (_game.platforms.allObjects.count > 0) [_game setSelectedPlatform:_game.platforms.allObjects[0]];
+		if (_origin == kReleasesTableViewController)
+			[_game setTracked:@(YES)];
+		else
+			[_game setOwned:@(YES)];
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationController popToRootViewControllerAnimated:YES];
 		}];

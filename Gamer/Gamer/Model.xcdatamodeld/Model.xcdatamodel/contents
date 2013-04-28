@@ -18,6 +18,7 @@
         <attribute name="imageSmall" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="metascore" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="releaseDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="releaseDateText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="releaseDay" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -25,6 +26,7 @@
         <attribute name="releaseQuarter" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="releaseYear" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tracked" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="developers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Developer" inverseName="games" inverseEntity="Developer" syncable="YES"/>
         <relationship name="franchises" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Franchise" inverseName="games" inverseEntity="Franchise" syncable="YES"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
@@ -83,7 +85,7 @@
     <elements>
         <element name="Developer" positionX="135" positionY="-90" width="128" height="103"/>
         <element name="Franchise" positionX="-245" positionY="-72" width="128" height="103"/>
-        <element name="Game" positionX="-63" positionY="-54" width="128" height="388"/>
+        <element name="Game" positionX="-63" positionY="-54" width="128" height="418"/>
         <element name="Genre" positionX="-281" positionY="45" width="128" height="88"/>
         <element name="Image" positionX="196" positionY="63" width="128" height="73"/>
         <element name="Platform" positionX="232" positionY="162" width="128" height="133"/>

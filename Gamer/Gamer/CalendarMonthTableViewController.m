@@ -64,6 +64,11 @@
 	return marks;
 }
 
+- (void)calendarMonthView:(TKCalendarMonthView *)monthView monthWillChange:(NSDate *)month animated:(BOOL)animated{
+	_calendarFetch = nil;
+	[self.tableView reloadData];
+}
+
 - (void)calendarMonthView:(TKCalendarMonthView *)monthView didSelectDate:(NSDate *)date{
 	_calendarFetch = [self calendarFetchedResultsControllerForDate:date];
 	[self.tableView reloadData];
@@ -80,8 +85,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CalendarCell"];
-	if (!cell) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CalendarCell"];
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+	if (!cell) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
 	
 	Game *game = [_calendarFetch objectAtIndexPath:indexPath];
 	[cell.textLabel setText:game.title];
