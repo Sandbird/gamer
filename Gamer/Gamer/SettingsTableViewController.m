@@ -18,12 +18,19 @@
 
 @interface SettingsTableViewController ()
 
+@property (nonatomic, strong) NSFetchedResultsController *platformsFetch;
+
 @end
 
 @implementation SettingsTableViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+	_platformsFetch = [Platform fetchAllGroupedBy:nil withPredicate:nil sortedBy:@"name" ascending:YES];
+	[self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -43,9 +50,16 @@
 	}
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section{
+	switch (section) {
+		case 0: return @"Select the platforms of the games you want to see on search results.";
+		default: return @"";
+	}
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
-		case 0: return 4;
+		case 0: return [_platformsFetch.sections[section] numberOfObjects];
 		case 1: case 2: return 1;
 		default: return 0;
 	}
@@ -55,23 +69,20 @@
 	UITableViewCell *cell;
 	
 	switch (indexPath.section) {
-		case 0:
+		case 0:{
 			cell = [tableView dequeueReusableCellWithIdentifier:@"CheckmarkCell" forIndexPath:indexPath];
-			switch (indexPath.row) {
-				case 0: [cell.textLabel setText:@"Xbox 360"]; break;
-				case 1: [cell.textLabel setText:@"PlayStation 3"]; break;
-				case 2: [cell.textLabel setText:@"Wii U"]; break;
-				case 3: [cell.textLabel setText:@"Nintendo 3DS"]; break;
-				default: break;
-			}
+			Platform *platform = [_platformsFetch objectAtIndexPath:indexPath];
+			[cell.textLabel setText:platform.name];
+			[cell setAccessoryType:([platform.favorite isEqualToNumber:@(YES)]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
 			break;
+		}
 		case 1:
 			cell = [tableView dequeueReusableCellWithIdentifier:@"NavigationCell" forIndexPath:indexPath];
 			[cell.textLabel setText:@"Notifications"];
 			break;
 		case 2:
 			cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
-			[cell.textLabel setText:@"Clear Database"];
+			[cell.textLabel setText:@"Delete all data"];
 			break;
 		default:
 			break;
@@ -87,6 +98,11 @@
 		case 0:{
 			UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 			[cell setAccessoryType:(cell.accessoryType == UITableViewCellAccessoryCheckmark) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryCheckmark];
+			
+			NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+			Platform *platform = [_platformsFetch objectAtIndexPath:indexPath];
+			[platform setFavorite:(cell.accessoryType == UITableViewCellAccessoryCheckmark) ? @(YES) : @(NO)];
+			[context saveToPersistentStoreAndWait];
 			break;
 		}
 		case 1:
@@ -102,12 +118,62 @@
 			[Franchise truncateAll];
 			[Theme truncateAll];
 			[ReleasePeriod truncateAll];
-			[context saveToPersistentStoreAndWait];
+			[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				_platformsFetch = [Platform fetchAllGroupedBy:nil withPredicate:nil sortedBy:@"name" ascending:YES];
+				[self.tableView reloadData];
+			}];
 			break;
 		}
 		default:
 			break;
 	}
+}
+
+#pragma mark - Stuff
+
+- (IBAction)testBarButtonAction:(UIBarButtonItem *)sender{
+//	[self.tableView setEditing:YES animated:YES];
+	
+	[self requestPlatformWithIdentifier:@(139) completion:^{
+		[self requestPlatformWithIdentifier:@(129) completion:^{
+			[self requestPlatformWithIdentifier:@(117) completion:^{
+				[self requestPlatformWithIdentifier:@(35) completion:^{
+					[self requestPlatformWithIdentifier:@(20) completion:^{
+						[self requestPlatformWithIdentifier:@(94) completion:nil];
+					}];
+				}];
+			}];
+		}];
+	}];
+}
+
+- (void)requestPlatformWithIdentifier:(NSNumber *)identifier completion:(void (^)())completion{
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://api.giantbomb.com/platform/3045-%@/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=id,name,abbreviation", identifier]]];
+	[request setHTTPMethod:@"GET"];
+	
+	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+//		NSLog(@"%lld bytes", response.expectedContentLength);
+//		NSLog(@"%@", JSON);
+		
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:identifier];
+		if (!platform) platform = [[Platform alloc] initWithEntity:[NSEntityDescription entityForName:@"Platform" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+		[platform setIdentifier:identifier];
+		[platform setName:JSON[@"results"][@"name"]];
+		[platform setNameShort:JSON[@"results"][@"abbreviation"]];
+		
+		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			_platformsFetch = [Platform fetchAllGroupedBy:nil withPredicate:nil sortedBy:@"name" ascending:YES];
+			[self.tableView reloadData];
+		}];
+		
+		if (completion){
+			completion();
+		}
+	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+		NSLog(@"Error %d", response.statusCode);
+	}];
+	[operation start];
 }
 
 @end

@@ -10,6 +10,4 @@
 
 @interface LibraryTableViewController : UITableViewController
 
-@property (nonatomic, strong) NSFetchedResultsController *gamesFetch;
-
 @end

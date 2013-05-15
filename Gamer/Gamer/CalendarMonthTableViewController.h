@@ -10,6 +10,4 @@
 
 @interface CalendarMonthTableViewController : TKCalendarMonthTableViewController
 
-@property (nonatomic, strong) NSFetchedResultsController *calendarFetch;
-
 @end

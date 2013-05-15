@@ -21,6 +21,8 @@
 
 @interface ReleasesTableViewController ()
 
+@property (nonatomic, strong) NSFetchedResultsController *releasesFetch;
+
 @end
 
 @implementation ReleasesTableViewController
@@ -58,7 +60,7 @@
 	Game *game = [_releasesFetch objectAtIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
 	[cell.dateLabel setText:([game.releasePeriod.identifier isEqualToNumber:@(8)]) ? @"" : game.releaseDateText];
-	[cell.coverImageView setImage:[UIImage imageWithData:game.imageSmall]];
+	[cell.coverImageView setImage:[UIImage imageWithData:game.coverImageSmall]];
 	[cell.platformLabel setText:game.selectedPlatform.nameShort];
 	
     return cell;

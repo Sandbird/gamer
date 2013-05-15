@@ -47,4 +47,12 @@
  */
 - (void) applicationDidStartup:(UIApplication *)application;
 
+
+///----------------------------
+/// @name Properties
+///----------------------------
+
+/** Returns the application main window. */
+@property (nonatomic,strong) UIWindow *window;
+
 @end

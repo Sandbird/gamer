@@ -40,7 +40,6 @@
 @end
 
 @implementation TKImageRequest
-@synthesize key;
 @end
 
 
@@ -58,10 +57,6 @@
 
 #pragma mark -
 @implementation TKImageCache
-@synthesize cacheDirectoryName=_cacheDirectoryName,notificationName=_notificationName;
-@synthesize timeTillRefreshCache=_timeTillRefreshCache;
-@synthesize imagesQueue=_imagesQueue;
-@synthesize shouldNetworkActivity;
 
 - (id) init{
 	self = [self initWithCacheDirectoryName:@"imagecache"];
@@ -85,9 +80,7 @@
 	
 	return self;
 }
-- (void) dealloc{
-	dispatch_release(cache_queue);
-}
+
 
 
 
@@ -210,10 +203,13 @@
 
 
 
+- (void) removeAllObjects{
+	[super removeAllObjects];
+	[self cancelOperations];
+}
 - (void) cancelOperations{
 	[_imagesQueue cancelAllOperations];
 	dispatch_async(cache_queue,^{
-		
 		[_requestKeys removeAllObjects];
 	});
 }
@@ -228,7 +224,7 @@
 		
 		
 		for( NSString *file in files ) {
-			if( ![file isEqual: @"."] && ![file isEqual: @".."] ) {
+			if( file != @"." && file != @".." ) {
 				NSString *path = [[self cacheDirectoryPath] stringByAppendingPathComponent:file];
 				[[NSFileManager defaultManager] removeItemAtPath:path error:&error];
 				
@@ -242,25 +238,35 @@
 }
 - (void) removeCachedImagesFromDiskOlderThanTime:(NSTimeInterval)time{
 	
+	NSString *path = [self cacheDirectoryPath];
 	UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
-	NSError* error = nil;
-	NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self cacheDirectoryPath] error:&error];
-	
-	for( NSString *file in files ) {
-		if( ![file isEqual: @"."] && ![file isEqual: @".."] ) {
-			
-			NSString *path = [[self cacheDirectoryPath] stringByAppendingPathComponent:file];
-			NSDate *created = [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL] fileCreationDate];
-			NSTimeInterval timeSince = fabs([created timeIntervalSinceNow]);
-			
-			if(timeSince > time){
-				if(_diskKeys) [_diskKeys removeObjectForKey:file];
-				[[NSFileManager defaultManager] removeItemAtPath:[[self cacheDirectoryPath] stringByAppendingPathComponent:file] error:&error];
+
+	dispatch_async(cache_queue,^{
+		
+		
+		NSError* error = nil;
+		NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:&error];
+		
+		for( NSString *file in files ) {
+			if( file != @"." && file != @".." ) {
+				
+				NSString *path = [path stringByAppendingPathComponent:file];
+				NSDate *created = [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL] fileCreationDate];
+				NSTimeInterval timeSince = fabs([created timeIntervalSinceNow]);
+				
+				if(timeSince > time){
+					
+					dispatch_async(dispatch_get_main_queue(), ^{
+						if(_diskKeys) [_diskKeys removeObjectForKey:file];
+					});
+					[[NSFileManager defaultManager] removeItemAtPath:[path stringByAppendingPathComponent:file] error:&error];
+				}
 			}
 		}
-	}
+		[[UIApplication sharedApplication] endBackgroundTask:bgTask];
+		
+	});
 	
-	[[UIApplication sharedApplication] endBackgroundTask:bgTask];
 	
 }
 - (void) printAllCaching{

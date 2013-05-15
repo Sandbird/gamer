@@ -21,6 +21,7 @@
 #import "GameMediaCell.h"
 #import "SessionManager.h"
 #import "Utilities.h"
+#import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 
 #define kReleasesTableViewController 1
 #define kCalendarViewController 2
@@ -36,8 +37,14 @@
 	[super viewDidLoad];
 }
 
+- (void)viewDidLayoutSubviews{
+	GameMainCell *cell = (GameMainCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+	[cell.progressIndicator setColor:[UIColor whiteColor]];
+	[Utilities addDropShadowToView:cell.coverImageView color:[UIColor blackColor] opacity:0.6 radius:5 offset:CGSizeZero];
+}
+
 - (void)viewWillAppear:(BOOL)animated{
-	[self.navigationItem setTitle:(_game) ? _game.title : _searchResult.title];
+//	[self.navigationItem setTitle:(_game) ? _game.title : _searchResult.title];
 	
 	if (!_game){
 		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
@@ -82,11 +89,14 @@
 	switch (indexPath.section) {
 		case 0:{
 			GameMainCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell" forIndexPath:indexPath];
-			[cell.coverImageView setImage:[UIImage imageWithData:_game.image]];
+			[cell.coverImageView setImage:[UIImage imageWithData:_game.coverImage]];
 			[cell.metascoreLabel setText:_game.metascore];
-			[cell.addButton setHidden:NO]; // SET THIS
 			[cell.gameTitleLabel setText:_game.title];
 			[cell.releaseDateLabel setText:_game.releaseDateText];
+			
+			[cell.addButton setHidden:([_game.tracked isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? YES : NO];
+			[cell.addButton setTitle:(_origin == kReleasesTableViewController) ? @"Track" : @"Own it?" forState:UIControlStateNormal];
+			
 			return cell;
 		}
 		case 1:{
@@ -117,7 +127,7 @@
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
-	NSURLRequest *request = [SessionManager APIGameRequestWithFields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers" identifier:identifier];
+	NSURLRequest *request = [SessionManager URLRequestForGameWithFields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers" identifier:identifier];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -130,13 +140,23 @@
 		
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		
+		// Set game
 		_game = [Game findFirstByAttribute:@"identifier" withValue:identifier];
 		if (!_game) _game = [[Game alloc] initWithEntity:[NSEntityDescription entityForName:@"Game" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 		
+		// Main info
 		[_game setIdentifier:identifier];
 		[_game setTitle:[Utilities stringFromSourceIfNotNull:results[@"name"]]];
 		[_game setOverview:[Utilities stringFromSourceIfNotNull:results[@"deck"]]];
-		[self requestImageWithURL:[NSURL URLWithString:[Utilities stringFromSourceIfNotNull:results[@"image"][@"super_url"]]]];
+		
+		// Cover image
+		if (results[@"image"] != [NSNull null]){
+			NSString *URL = [Utilities stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
+			if (![_game.coverImageURL isEqualToString:URL]){
+				[self requestImageWithURL:[NSURL URLWithString:URL]];
+				[_game setCoverImageURL:URL];
+			}
+		}
 		
 		// Release date
 		NSString *originalReleaseDate = [Utilities stringFromSourceIfNotNull:results[@"original_release_date"]];
@@ -216,19 +236,11 @@
         // Platforms
 		if (results[@"platforms"] != [NSNull null]){
 			for (NSDictionary *dictionary in results[@"platforms"]){
-				if ([dictionary[@"name"] isEqualToString:@"Xbox 360"] || [dictionary[@"name"] isEqualToString:@"PlayStation 3"] || [dictionary[@"name"] isEqualToString:@"PC"] || [dictionary[@"name"] isEqualToString:@"Wii U"] || [dictionary[@"name"] isEqualToString:@"Nintendo 3DS"]){
-					Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
-					if (platform){
-						[platform setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
-						[platform setNameShort:[Utilities stringFromSourceIfNotNull:dictionary[@"abbreviation"]]];
-					}
-					else{
-						platform = [[Platform alloc] initWithEntity:[NSEntityDescription entityForName:@"Platform" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
-						[platform setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-						[platform setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
-						[platform setNameShort:[Utilities stringFromSourceIfNotNull:dictionary[@"abbreviation"]]];
-						[_game addPlatformsObject:platform];
-					}
+				Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+				if (platform){
+					[platform setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
+					[platform setNameShort:[Utilities stringFromSourceIfNotNull:dictionary[@"abbreviation"]]];
+					[_game addPlatformsObject:platform];
 				}
 			}
 		}
@@ -243,8 +255,8 @@
 					genre = [[Genre alloc] initWithEntity:[NSEntityDescription entityForName:@"Genre" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 					[genre setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[genre setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
-					[_game addGenresObject:genre];
 				}
+				[_game addGenresObject:genre];
 			}
 		}
 		
@@ -258,8 +270,8 @@
 					developer = [[Developer alloc] initWithEntity:[NSEntityDescription entityForName:@"Developer" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 					[developer setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[developer setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
-					[_game addDevelopersObject:developer];
 				}
+				[_game addDevelopersObject:developer];
 			}
 		}
 		
@@ -273,8 +285,8 @@
 					publisher = [[Publisher alloc] initWithEntity:[NSEntityDescription entityForName:@"Publisher" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 					[publisher setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[publisher setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
-					[_game addPublishersObject:publisher];
 				}
+				[_game addPublishersObject:publisher];
 			}
 		}
 		
@@ -288,8 +300,8 @@
 					franchise = [[Franchise alloc] initWithEntity:[NSEntityDescription entityForName:@"Franchise" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 					[franchise setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[franchise setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
-					[_game addFranchisesObject:franchise];
 				}
+				[_game addFranchisesObject:franchise];
 			}
 		}
 		
@@ -303,8 +315,8 @@
 					theme = [[Theme alloc] initWithEntity:[NSEntityDescription entityForName:@"Theme" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 					[theme setIdentifier:[Utilities integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[theme setName:[Utilities stringFromSourceIfNotNull:dictionary[@"name"]]];
-					[_game addThemesObject:theme];
 				}
+				[_game addThemesObject:theme];
 			}
 		}
 		
@@ -315,8 +327,8 @@
 				if (!image){
 					image = [[Image alloc] initWithEntity:[NSEntityDescription entityForName:@"Image" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 					[image setUrl:[Utilities stringFromSourceIfNotNull:dictionary[@"super_url"]]];
-					[_game addImagesObject:image];
 				}
+				[_game addImagesObject:image];
 			}
 		}
 		
@@ -338,6 +350,10 @@
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
 	[request setHTTPMethod:@"GET"];
 	
+	GameMainCell *cell = (GameMainCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+	[cell.progressIndicator setValue:0];
+	[cell.progressIndicator setHidden:NO];
+	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
 		NSLog(@"Success in %@ - Cover image", self);
 		
@@ -345,8 +361,8 @@
 		UIImage *imageSmall = [self imageWithImage:image scaledToWidth:200];
 		
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-		[_game setImage:UIImagePNGRepresentation(imageLarge)];
-		[_game setImageSmall:UIImagePNGRepresentation(imageSmall)];
+		[_game setCoverImage:UIImagePNGRepresentation(imageLarge)];
+		[_game setCoverImageSmall:UIImagePNGRepresentation(imageSmall)];
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			GameMainCell *cell = (GameMainCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 			
@@ -356,6 +372,8 @@
 				transition.duration = 0.2;
 				transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
 				[cell.coverImageView setImage:image];
+				[cell.progressIndicator setHidden:YES];
+				[Utilities addDropShadowToView:cell.coverImageView color:[UIColor blackColor] opacity:0.6 radius:5 offset:CGSizeZero];
 				[cell.coverImageView.layer addAnimation:transition forKey:nil];
 				
 //				NSLog(@"image:      %.2fx%.2f", image.size.width, image.size.height);
@@ -364,7 +382,11 @@
 			});
 		}];
 	}];
-	
+	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
+		
+		[cell.progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
+	}];
 	[operation start];
 }
 
@@ -525,7 +547,10 @@
 	if (_game.platforms.count > 1){
 		UIActionSheet *actionSheet;
 		if (!actionSheet) actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-		for (Platform *platform in _game.platforms.allObjects) [actionSheet addButtonWithTitle:platform.name];
+		
+		for (Platform *platform in _game.platforms.allObjects)
+			[actionSheet addButtonWithTitle:platform.name];
+		
 		[actionSheet addButtonWithTitle:@"Cancel"];
 		[actionSheet setCancelButtonIndex:_game.platforms.count];
 		[actionSheet showInView:self.tabBarController.view];

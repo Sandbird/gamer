@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 
 @interface GameMainCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
+@property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
 @property (nonatomic, strong) IBOutlet UILabel *metascoreLabel;
 @property (nonatomic, strong) IBOutlet UIButton *addButton;
 @property (nonatomic, strong) IBOutlet UILabel *gameTitleLabel;

@@ -1,6 +1,6 @@
 //
-//  TKMapPlace.m
-//  Created by Devin Ross on 4/15/09.
+//  NSObject+TKCategory.h
+//  Created by Devin Ross on 12/29/12.
 //
 /*
  
@@ -29,9 +29,35 @@
  
  */
 
-#import "TKMapPlace.h"
+#import <Foundation/Foundation.h>
 
-@implementation TKMapPlace
-@synthesize title,coordinate, color;
+@interface NSObject (TKCategory)
+
+/** For subclassing, this method should return the item's properties mapped to the data dictionary keys.
+ See the DataTests.m for an example implementation.
+ 
+	
+	 @{
+	 @"identifier" : @"id",
+	 @"name" : @"name",
+	 @"createdAt" : @[@"created_at",@"yyyy-MM-dd'T'HH:mm:ss"], // For NSDate
+	 @"updatedAt" : @[@"updated_at",@"yyyy-MM-dd"]
+	 };
+ 
+ 
+ @returns The dictionary used to fill up data from the data dictionary.
+ */
++ (NSDictionary*) dataKeys;
+
++ (id) createObject:(NSDictionary*)data;
+
+
+
+
+/** Imports data from an `NSDictionary` objects using the map provided by the dataKeys dictionary.
+ 
+ @param dictionary The data that will be imported.
+ */
+- (void) importDataWithDictionary:(NSDictionary*)dictionary;
 
 @end

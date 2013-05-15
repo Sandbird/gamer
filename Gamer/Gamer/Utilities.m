@@ -41,7 +41,7 @@
 }
 
 + (NSNumber *)booleanNumberFromSourceIfNotNull:(id)source withDefault:(BOOL)defaultValue{
-	return (source != [NSNull null]) ? [NSNumber numberWithBool:[[NSString stringWithFormat:@"%@", source] boolValue]] : [NSNumber numberWithBool:defaultValue];
+	return (source != [NSNull null]) ? @([[NSString stringWithFormat:@"%@", source] boolValue]) : @(defaultValue);
 }
 
 #pragma mark - String formatting
@@ -76,9 +76,18 @@
 	return decimalNumber;
 }
 
-#pragma mark - Miscellaneous
+#pragma mark - Graphics
 
-+ (void)setMaskTo:(UIView*)view byRoundingCorners:(UIRectCorner)corners withRadius:(CGFloat)radius{
++ (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset{
+	[view setClipsToBounds:NO];
+	[view.layer setShadowPath:[UIBezierPath bezierPathWithRect:view.bounds].CGPath];
+	[view.layer setShadowColor:color.CGColor];
+	[view.layer setShadowOpacity:opacity];
+	[view.layer setShadowRadius:radius];
+	[view.layer setShadowOffset:offset];
+}
+
++ (void)setMaskToView:(UIView *)view roundCorners:(UIRectCorner)corners radius:(CGFloat)radius{
 	//	[view.layer setMasksToBounds:YES];
 	
 	UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(radius, radius)];

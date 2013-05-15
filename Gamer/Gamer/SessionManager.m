@@ -18,17 +18,21 @@ static NSMutableURLRequest *REQUEST;
 	return DATEFORMATTER;
 }
 
-+ (NSMutableURLRequest *)APISearchRequestWithFields:(NSString *)fields query:(NSString *)query{
++ (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms name:(NSString *)name{
 	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
 	[REQUEST setHTTPMethod:@"GET"];
-	[REQUEST setURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.giantbomb.com/api/search/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&resources=game&limit=20&field_list=%@&query=%@", fields, query]]];
+	
+	NSString *platformIdentifiers = [[platforms valueForKey:@"identifier"] componentsJoinedByString:@"|"];
+	
+	[REQUEST setURL:[NSURL URLWithString:[[NSString stringWithFormat:@"http://api.giantbomb.com/games/3030/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=%@&filter=platforms:%@,name:%@", fields, platformIdentifiers, name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+	
 	return  REQUEST;
 }
 
-+ (NSMutableURLRequest *)APIGameRequestWithFields:(NSString *)fields identifier:(NSNumber *)identifier{
++ (NSMutableURLRequest *)URLRequestForGameWithFields:(NSString *)fields identifier:(NSNumber *)identifier{
 	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
 	[REQUEST setHTTPMethod:@"GET"];
-	[REQUEST setURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.giantbomb.com/api/game/3030-%@/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=%@", identifier, fields]]];
+	[REQUEST setURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://api.giantbomb.com/game/3030-%@/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=%@", identifier, fields]]];
 	return  REQUEST;
 }
 

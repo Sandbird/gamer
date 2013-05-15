@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 4/28/13.
+//  Created by Caio Mello on 5/3/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -14,10 +14,11 @@
 @interface Game : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * identifier;
-@property (nonatomic, retain) NSData * image;
-@property (nonatomic, retain) NSData * imageSmall;
+@property (nonatomic, retain) NSData * coverImage;
+@property (nonatomic, retain) NSData * coverImageSmall;
 @property (nonatomic, retain) NSString * metascore;
 @property (nonatomic, retain) NSString * overview;
+@property (nonatomic, retain) NSNumber * owned;
 @property (nonatomic, retain) NSDate * releaseDate;
 @property (nonatomic, retain) NSString * releaseDateText;
 @property (nonatomic, retain) NSNumber * releaseDay;
@@ -26,7 +27,7 @@
 @property (nonatomic, retain) NSNumber * releaseYear;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * tracked;
-@property (nonatomic, retain) NSNumber * owned;
+@property (nonatomic, retain) NSString * coverImageURL;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;

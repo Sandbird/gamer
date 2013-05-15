@@ -12,8 +12,8 @@
 
 + (NSDateFormatter *)dateFormatter;
 
-+ (NSMutableURLRequest *)APISearchRequestWithFields:(NSString *)fields query:(NSString *)query;
++ (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms name:(NSString *)name;
 
-+ (NSMutableURLRequest *)APIGameRequestWithFields:(NSString *)fields identifier:(NSNumber *)identifier;
++ (NSMutableURLRequest *)URLRequestForGameWithFields:(NSString *)fields identifier:(NSNumber *)identifier;
 
 @end

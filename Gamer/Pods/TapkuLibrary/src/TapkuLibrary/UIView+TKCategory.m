@@ -35,8 +35,7 @@
 
 
 - (void) addSubviewToBack:(UIView*)view{
-	[self addSubview:view];
-	[self sendSubviewToBack:view];
+	[self insertSubview:view atIndex:0];
 }
 
 

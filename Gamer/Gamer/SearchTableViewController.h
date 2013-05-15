@@ -10,12 +10,7 @@
 
 @interface SearchTableViewController : UITableViewController <UISearchBarDelegate>
 
-@property (nonatomic, strong) UISearchBar *searchBar;
-
-@property (nonatomic, strong) NSMutableArray *results;
-
-@property (nonatomic, strong) AFJSONRequestOperation *previousOperation;
-
+@property (nonatomic, strong) IBOutlet UIScrollView *filterScrollView;
 @property (nonatomic, assign) NSInteger origin;
 
 @end

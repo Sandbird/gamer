@@ -12,6 +12,8 @@
 
 @interface CalendarMonthTableViewController ()
 
+@property (nonatomic, strong) NSFetchedResultsController *calendarFetch;
+
 @end
 
 @implementation CalendarMonthTableViewController
@@ -114,6 +116,7 @@
 #pragma mark - Actions
 
 - (IBAction)todayBarButtonAction:(UIBarButtonItem *)sender{
+	NSLog(@"%@", [NSDate date]);
 	[self.monthView selectDate:[NSDate date]];
 	_calendarFetch = [self calendarFetchedResultsControllerForDate:[NSDate date]];
 	[self.tableView reloadData];

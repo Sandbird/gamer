@@ -39,7 +39,6 @@
 @end
 
 @implementation TKCalendarMonthViewController
-@synthesize monthView = _monthView;
 
 - (id) init{
 	return [self initWithSunday:YES];

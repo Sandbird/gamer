@@ -15,6 +15,8 @@
 
 @interface LibraryTableViewController ()
 
+@property (nonatomic, strong) NSFetchedResultsController *gamesFetch;
+
 @end
 
 @implementation LibraryTableViewController
@@ -44,7 +46,7 @@
 	Game *game = [_gamesFetch objectAtIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
 	[cell.platformLabel setText:game.selectedPlatform.nameShort];
-	[cell.coverImageView setImage:[UIImage imageWithData:game.imageSmall]];
+	[cell.coverImageView setImage:[UIImage imageWithData:game.coverImageSmall]];
 	
     return cell;
 }

@@ -10,6 +10,4 @@
 
 @interface ReleasesTableViewController : UITableViewController
 
-@property (nonatomic, strong) NSFetchedResultsController *releasesFetch;
-
 @end
