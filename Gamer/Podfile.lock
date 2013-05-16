@@ -2,18 +2,21 @@ PODS:
   - AFNetworking (1.2.1)
   - MACircleProgressIndicator (1.0.0)
   - MagicalRecord (2.1)
+  - SDSegmentedControl (1.0.1)
   - TapkuLibrary (0.2.3)
 
 DEPENDENCIES:
   - AFNetworking
   - MACircleProgressIndicator
   - MagicalRecord
+  - SDSegmentedControl
   - TapkuLibrary
 
 SPEC CHECKSUMS:
   AFNetworking: d1ba5908b233189e424e101721acef7905b58efb
   MACircleProgressIndicator: dc497a2c68dd930d4aea837b1a732a56ce4bd6d8
   MagicalRecord: 64e7184c240087a45e9588a722eaf05b0ad837f7
+  SDSegmentedControl: 270110865f17db04328b826ccea2c42ddee72a0f
   TapkuLibrary: 669754cc8392b855b227be01e5b2309d86bae4e7
 
 COCOAPODS: 0.19.1

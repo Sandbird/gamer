@@ -12,10 +12,12 @@
 #import "Platform.h"
 #import "GameTableViewController.h"
 #import "SearchTableViewController.h"
+#import <SDSegmentedControl/SDSegmentedControl.h>
 
 @interface LibraryTableViewController ()
 
 @property (nonatomic, strong) NSFetchedResultsController *gamesFetch;
+@property (nonatomic, strong) NSPredicate *predicate;
 
 @end
 
@@ -26,7 +28,15 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	_gamesFetch = [self libraryFetchedResultsController];
+	NSArray *platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite == %@", @(YES)]];
+	SDSegmentedControl *filterSegmentedControl = (SDSegmentedControl *)self.tableView.tableHeaderView;
+	[filterSegmentedControl removeAllSegments];
+	for (Platform *platform in platforms)
+		[filterSegmentedControl insertSegmentWithTitle:platform.name atIndex:[platforms indexOfObject:platform] animated:NO];
+	[filterSegmentedControl setSelectedSegmentIndex:0];
+	[filterSegmentedControl setInterItemSpace:10];
+	
+	_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:_predicate];
 	[self.tableView reloadData];
 }
 
@@ -66,18 +76,25 @@
 //	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", game.identifier] inContext:context];
 	[game setOwned:@(NO)];
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		_gamesFetch = [self libraryFetchedResultsController];
+		_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:_predicate];
 		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
 	}];
 }
 
 #pragma mark - Custom
 
-- (NSFetchedResultsController *)libraryFetchedResultsController{
-	return [Game fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@ AND owned == %@", @(1), @(YES)] sortedBy:@"title" ascending:YES];
+- (NSFetchedResultsController *)libraryFetchedResultsControllerWithPredicate:(NSPredicate *)predicate{
+	return [Game fetchAllGroupedBy:nil withPredicate:(predicate) ? predicate : [NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@ AND owned == %@", @(1), @(YES)] sortedBy:@"title" ascending:YES];
 }
 
 #pragma mark - Actions
+
+- (IBAction)segmentedControlValueChanged:(SDSegmentedControl *)sender{
+	NSArray *platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite == %@", @(YES)]];
+	Platform *selectedPlatform = platforms[sender.selectedSegmentIndex];
+	_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@ AND owned == %@ AND selectedPlatform == %@", @(1), @(YES), selectedPlatform]];
+	[self.tableView reloadData];
+}
 
 - (IBAction)addBarButtonPressAction:(UIBarButtonItem *)sender{
 	[self performSegueWithIdentifier:@"SearchSegue" sender:nil];
