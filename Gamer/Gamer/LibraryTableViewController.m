@@ -32,14 +32,16 @@
 	
 	SDSegmentedControl *filterSegmentedControl = (SDSegmentedControl *)self.tableView.tableHeaderView;
 	[filterSegmentedControl removeAllSegments];
-	[filterSegmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
+	
 	if (favoritePlatforms.count > 0){
+		[filterSegmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
 		for (Platform *platform in favoritePlatforms)
 			[filterSegmentedControl insertSegmentWithTitle:platform.nameShort atIndex:([favoritePlatforms indexOfObject:platform] + 1) animated:NO];
-		[filterSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else
 		[filterSegmentedControl insertSegmentWithTitle:@"Select your platforms in Settings" atIndex:0 animated:NO];
+	
+	[filterSegmentedControl setSelectedSegmentIndex:0];
 	
 	_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:_predicate];
 	[self.tableView reloadData];
