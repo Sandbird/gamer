@@ -134,12 +134,12 @@
 - (IBAction)testBarButtonAction:(UIBarButtonItem *)sender{
 //	[self.tableView setEditing:YES animated:YES];
 	
-	[self requestPlatformWithIdentifier:@(139) completion:^{
-		[self requestPlatformWithIdentifier:@(129) completion:^{
-			[self requestPlatformWithIdentifier:@(117) completion:^{
-				[self requestPlatformWithIdentifier:@(35) completion:^{
-					[self requestPlatformWithIdentifier:@(20) completion:^{
-						[self requestPlatformWithIdentifier:@(94) completion:nil];
+	[self requestPlatformWithIdentifier:@(139) color:[UIColor colorWithRed:0 green:.509803922 blue:.745098039 alpha:1] completion:^{
+		[self requestPlatformWithIdentifier:@(129) color:[UIColor colorWithRed:0 green:0 blue:.588235294 alpha:1] completion:^{
+			[self requestPlatformWithIdentifier:@(117) color:[UIColor colorWithRed:.784313725 green:0 blue:0 alpha:1] completion:^{
+				[self requestPlatformWithIdentifier:@(35) color:[UIColor colorWithRed:0 green:0 blue:.392156863 alpha:1] completion:^{
+					[self requestPlatformWithIdentifier:@(20) color:[UIColor colorWithRed:.31372549 green:.62745098 blue:.117647059 alpha:1] completion:^{
+						[self requestPlatformWithIdentifier:@(94) color:[UIColor colorWithRed:.156862745 green:.156862745 blue:.156862745 alpha:1] completion:nil];
 					}];
 				}];
 			}];
@@ -147,7 +147,7 @@
 	}];
 }
 
-- (void)requestPlatformWithIdentifier:(NSNumber *)identifier completion:(void (^)())completion{
+- (void)requestPlatformWithIdentifier:(NSNumber *)identifier color:(UIColor *)color completion:(void (^)())completion{
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://api.giantbomb.com/platform/3045-%@/?api_key=d92c258adb509ded409d28f4e51de2c83e297011&format=json&field_list=id,name,abbreviation", identifier]]];
 	[request setHTTPMethod:@"GET"];
 	
@@ -161,6 +161,7 @@
 		[platform setIdentifier:identifier];
 		[platform setName:JSON[@"results"][@"name"]];
 		[platform setNameShort:JSON[@"results"][@"abbreviation"]];
+		[platform setColor:color];
 		
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			_platformsFetch = [Platform fetchAllGroupedBy:nil withPredicate:nil sortedBy:@"name" ascending:YES];

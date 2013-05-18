@@ -62,6 +62,7 @@
 	[cell.dateLabel setText:([game.releasePeriod.identifier isEqualToNumber:@(8)]) ? @"" : game.releaseDateText];
 	[cell.coverImageView setImage:[UIImage imageWithData:game.coverImageSmall]];
 	[cell.platformLabel setText:game.selectedPlatform.nameShort];
+	[cell.platformLabel setBackgroundColor:game.selectedPlatform.color];
 	
     return cell;
 }
