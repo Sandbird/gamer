@@ -10,6 +10,8 @@
 
 @interface Utilities : NSObject
 
++ (NSDateFormatter *)dateFormatter;
+
 // JSON input
 + (NSString *)stringFromSourceIfNotNull:(id)source;
 
@@ -26,6 +28,9 @@
 
 // Number formatting
 + (NSDecimalNumber *)absoluteValueOfDecimalNumber:(NSDecimalNumber *)decimalNumber;
+
+// Date formatting
++ (NSDate *)localDateWithDate:(NSDate *)date;
 
 // Graphics
 + (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset;

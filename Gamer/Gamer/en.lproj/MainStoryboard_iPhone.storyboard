@@ -343,9 +343,13 @@
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Psh-Ve-wNE">
+                                        <button hidden="YES" opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Psh-Ve-wNE">
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="100" id="97d-zd-6fl"/>
+                                                <constraint firstAttribute="height" constant="34" id="WCe-jc-j6t"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                            <state key="normal" title="Track it?">
+                                            <state key="normal" title="Want it?">
                                                 <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
@@ -353,12 +357,12 @@
                                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
-                                                <action selector="addButtonPressAction:" destination="E4r-Jh-KH7" eventType="touchUpInside" id="6qh-Ye-PRq"/>
+                                                <action selector="addButtonPressAction:" destination="E4r-Jh-KH7" eventType="touchUpInside" id="zzP-GT-8OY"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3d4-pK-fUC">
+                                        <button hidden="YES" opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3d4-pK-fUC">
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="100" id="cxe-bb-alU"/>
+                                                <constraint firstAttribute="height" constant="34" id="VH6-NY-RH4"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                             <state key="normal" title="Own it?">
@@ -369,7 +373,7 @@
                                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
-                                                <action selector="addButtonPressAction:" destination="E4r-Jh-KH7" eventType="touchUpInside" id="feB-tW-93h"/>
+                                                <action selector="addButtonPressAction:" destination="E4r-Jh-KH7" eventType="touchUpInside" id="ySM-Me-eju"/>
                                             </connections>
                                         </button>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zpd-Zg-YmK" customClass="MACircleProgressIndicator">
@@ -386,12 +390,13 @@
                                     <constraint firstItem="bsp-r1-POB" firstAttribute="leading" secondItem="dAL-dD-KGx" secondAttribute="leading" constant="20" type="default" id="G9m-gj-pG2"/>
                                     <constraint firstAttribute="bottom" secondItem="CHS-c2-ivH" secondAttribute="bottom" constant="41" id="GBt-Bf-hIu"/>
                                     <constraint firstItem="rsr-9C-7LU" firstAttribute="leading" secondItem="dAL-dD-KGx" secondAttribute="leading" constant="210" id="GdJ-BI-TMv"/>
-                                    <constraint firstAttribute="bottom" secondItem="3d4-pK-fUC" secondAttribute="bottom" constant="82" id="MNW-nS-biN"/>
                                     <constraint firstItem="3d4-pK-fUC" firstAttribute="leading" secondItem="Psh-Ve-wNE" secondAttribute="leading" type="default" id="P4f-uW-sHL"/>
                                     <constraint firstItem="Zpd-Zg-YmK" firstAttribute="centerX" secondItem="aiU-kR-YRP" secondAttribute="centerX" type="default" id="R1F-TJ-umi"/>
-                                    <constraint firstAttribute="bottom" secondItem="rsr-9C-7LU" secondAttribute="bottom" constant="208" id="WhC-f6-Hhc"/>
+                                    <constraint firstItem="Psh-Ve-wNE" firstAttribute="top" secondItem="dAL-dD-KGx" secondAttribute="top" constant="134" id="S7D-Jx-f6b"/>
+                                    <constraint firstItem="3d4-pK-fUC" firstAttribute="top" secondItem="Psh-Ve-wNE" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="SwH-xY-3Hv"/>
+                                    <constraint firstAttribute="bottom" secondItem="rsr-9C-7LU" secondAttribute="bottom" constant="218" id="UBy-pU-JF5"/>
+                                    <constraint firstItem="rsr-9C-7LU" firstAttribute="top" secondItem="dAL-dD-KGx" secondAttribute="top" constant="30" id="avM-7I-w4u"/>
                                     <constraint firstItem="Zpd-Zg-YmK" firstAttribute="centerY" secondItem="aiU-kR-YRP" secondAttribute="centerY" type="default" id="bX3-bA-WoU"/>
-                                    <constraint firstItem="rsr-9C-7LU" firstAttribute="top" secondItem="dAL-dD-KGx" secondAttribute="top" constant="40" id="gKy-7l-jx4"/>
                                     <constraint firstItem="Vnt-vZ-mH0" firstAttribute="leading" secondItem="dAL-dD-KGx" secondAttribute="leading" constant="20" type="default" id="geb-nR-Ph2"/>
                                     <constraint firstItem="aiU-kR-YRP" firstAttribute="top" secondItem="dAL-dD-KGx" secondAttribute="top" constant="20" type="default" id="hwY-qO-uid"/>
                                     <constraint firstAttribute="trailing" secondItem="3d4-pK-fUC" secondAttribute="trailing" constant="20" type="default" id="jMD-ma-shP"/>
@@ -400,15 +405,15 @@
                                     <constraint firstAttribute="trailing" secondItem="Psh-Ve-wNE" secondAttribute="trailing" constant="20" type="default" id="nMH-tz-dMr"/>
                                     <constraint firstItem="Zpd-Zg-YmK" firstAttribute="leading" secondItem="dAL-dD-KGx" secondAttribute="leading" constant="84" id="sAX-or-a0Y"/>
                                     <constraint firstItem="aiU-kR-YRP" firstAttribute="leading" secondItem="dAL-dD-KGx" secondAttribute="leading" constant="20" type="default" id="vlo-ZI-16L"/>
-                                    <constraint firstItem="Psh-Ve-wNE" firstAttribute="top" secondItem="dAL-dD-KGx" secondAttribute="top" constant="157" id="xFI-Iy-avv"/>
                                 </constraints>
                                 <connections>
-                                    <outlet property="addButton" destination="Psh-Ve-wNE" id="zvo-lI-TSL"/>
                                     <outlet property="coverImageView" destination="aiU-kR-YRP" id="mS1-FW-4rC"/>
                                     <outlet property="gameTitleLabel" destination="Vnt-vZ-mH0" id="hlR-ag-OFe"/>
                                     <outlet property="metascoreLabel" destination="dh9-bI-4bU" id="beZ-FQ-Ps7"/>
+                                    <outlet property="ownButton" destination="3d4-pK-fUC" id="COp-6l-pFG"/>
                                     <outlet property="progressIndicator" destination="Zpd-Zg-YmK" id="1gk-ed-xnk"/>
                                     <outlet property="releaseDateLabel" destination="bsp-r1-POB" id="9lh-gq-Nn5"/>
+                                    <outlet property="wantButton" destination="Psh-Ve-wNE" id="XbU-kW-qqW"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="DescriptionCell" rowHeight="200" id="EfB-9y-MuV" customClass="GameDescriptionCell">

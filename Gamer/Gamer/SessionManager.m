@@ -10,13 +10,13 @@
 
 @implementation SessionManager
 
-static NSDateFormatter *DATEFORMATTER;
+//static NSDateFormatter *DATEFORMATTER;
 static NSMutableURLRequest *REQUEST;
 
-+ (NSDateFormatter *)dateFormatter{
-	if (!DATEFORMATTER) DATEFORMATTER = [[NSDateFormatter alloc] init];
-	return DATEFORMATTER;
-}
+//+ (NSDateFormatter *)dateFormatter{
+//	if (!DATEFORMATTER) DATEFORMATTER = [[NSDateFormatter alloc] init];
+//	return DATEFORMATTER;
+//}
 
 + (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms name:(NSString *)name{
 	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];

@@ -28,13 +28,18 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	NSArray *platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite == %@", @(YES)]];
+	NSArray *favoritePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite == %@", @(YES)]];
+	
 	SDSegmentedControl *filterSegmentedControl = (SDSegmentedControl *)self.tableView.tableHeaderView;
 	[filterSegmentedControl removeAllSegments];
-	for (Platform *platform in platforms)
-		[filterSegmentedControl insertSegmentWithTitle:platform.name atIndex:[platforms indexOfObject:platform] animated:NO];
-	[filterSegmentedControl setSelectedSegmentIndex:0];
-	[filterSegmentedControl setInterItemSpace:10];
+	
+	if (favoritePlatforms.count > 0){
+		for (Platform *platform in favoritePlatforms)
+			[filterSegmentedControl insertSegmentWithTitle:platform.nameShort atIndex:[favoritePlatforms indexOfObject:platform] animated:NO];
+		[filterSegmentedControl setSelectedSegmentIndex:0];
+	}
+	else
+		[filterSegmentedControl insertSegmentWithTitle:@"Select your platforms in Settings" atIndex:0 animated:NO];
 	
 	_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:_predicate];
 	[self.tableView reloadData];

@@ -79,7 +79,7 @@
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	Game *game = [_releasesFetch objectAtIndexPath:indexPath];
 //	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier = %@", game.identifier] inContext:context];
-	[game setTracked:@(NO)];
+	[game setWanted:@(NO)];
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		_releasesFetch = [self releasesFetchedResultsController];
 		if ([tableView numberOfRowsInSection:indexPath.section == 1])
@@ -92,7 +92,7 @@
 #pragma mark - Custom
 
 - (NSFetchedResultsController *)releasesFetchedResultsController{
-	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier != %@ AND tracked = %@", @(1), @(YES)] sortedBy:@"releaseDate" ascending:YES];
+	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)] sortedBy:@"releaseDate" ascending:YES];
 }
 
 #pragma mark - Actions

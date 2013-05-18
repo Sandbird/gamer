@@ -26,6 +26,14 @@
 //	[view.layer addAnimation:animation forKey:@"position"];
 //	view.layer.position = CGPointMake(view.layer.position.x, view.layer.position.y + 20);
 
+static NSDateFormatter *DATEFORMATTER;
+
++ (NSDateFormatter *)dateFormatter{
+	if (!DATEFORMATTER) DATEFORMATTER = [[NSDateFormatter alloc] init];
+	[DATEFORMATTER setTimeZone:[NSTimeZone localTimeZone]];
+	return DATEFORMATTER;
+}
+
 #pragma mark - JSON input
 
 + (NSString *)stringFromSourceIfNotNull:(id)source{
@@ -74,6 +82,28 @@
 	}
 	
 	return decimalNumber;
+}
+
+#pragma mark - Date formatting
+
++ (NSDate *)localDateWithDate:(NSDate *)date{
+	NSInteger GMTOffset = [[NSTimeZone timeZoneWithAbbreviation:@"GMT"] secondsFromGMTForDate:date];
+	NSInteger localOffset = [[NSTimeZone systemTimeZone] secondsFromGMTForDate:date];
+	NSTimeInterval interval = GMTOffset - localOffset;
+	
+	return [NSDate dateWithTimeInterval:interval sinceDate:date];
+}
+
++ (NSDate *)dateWithLocalTimeFromDate:(NSDate *)date{
+	
+}
+
++ (NSDate *)dateWithDate:(NSDate *)date hour:(NSInteger)hour{
+	
+}
+
++ (BOOL)compareDate:(NSDate *)date toLocalDate:(NSDate *)localDate{
+	
 }
 
 #pragma mark - Graphics

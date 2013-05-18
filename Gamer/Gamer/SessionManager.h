@@ -10,7 +10,7 @@
 
 @interface SessionManager : NSObject
 
-+ (NSDateFormatter *)dateFormatter;
+//+ (NSDateFormatter *)dateFormatter;
 
 + (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms name:(NSString *)name;
 

@@ -23,11 +23,12 @@
 #import "Utilities.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 
-#define kReleasesTableViewController 1
-#define kCalendarViewController 2
-#define kLibraryTableViewController 3
+#define kWantButtonTag 1
+#define kOwnButtonTag 2
 
 @interface GameTableViewController ()
+
+@property (nonatomic, assign) NSInteger pressedButtonTag;
 
 @end
 
@@ -44,8 +45,6 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-//	[self.navigationItem setTitle:(_game) ? _game.title : _searchResult.title];
-	
 	if (!_game){
 		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
 		if (game) _game = game;
@@ -94,8 +93,8 @@
 			[cell.gameTitleLabel setText:_game.title];
 			[cell.releaseDateLabel setText:_game.releaseDateText];
 			
-			[cell.addButton setHidden:([_game.tracked isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? YES : NO];
-			[cell.addButton setTitle:(_origin == kReleasesTableViewController) ? @"Track" : @"Own it?" forState:UIControlStateNormal];
+			[cell.wantButton setHidden:([_game.wanted isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? YES : NO];
+			[cell.ownButton setHidden:([_game.owned isEqualToNumber:@(YES)] || [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
 			
 			return cell;
 		}
@@ -134,7 +133,7 @@
 		
 //		NSLog(@"%@", JSON);
 		
-		[[SessionManager dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+		[[Utilities dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
 		NSDictionary *results = JSON[@"results"];
 		
@@ -152,7 +151,7 @@
 		// Cover image
 		if (results[@"image"] != [NSNull null]){
 			NSString *URL = [Utilities stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-			if (![_game.coverImageURL isEqualToString:URL]){
+			if (!_game.coverImage || ![_game.coverImageURL isEqualToString:URL]){
 				[self requestImageWithURL:[NSURL URLWithString:URL]];
 				[_game setCoverImageURL:URL];
 			}
@@ -166,10 +165,10 @@
 		NSInteger expectedReleaseYear = [Utilities integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
 		
 		NSCalendar *calendar = [NSCalendar currentCalendar];
-		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+//		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 		
 		if (originalReleaseDate){
-			NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[SessionManager dateFormatter] dateFromString:originalReleaseDate]];
+			NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Utilities dateFormatter] dateFromString:originalReleaseDate]];
 			[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
 			[originalReleaseDateComponents setHour:9];
 			
@@ -180,8 +179,9 @@
 			[_game setReleaseQuarter:@(originalReleaseDateComponents.quarter)];
 			[_game setReleaseYear:@(originalReleaseDateComponents.year)];
 			
-			[[SessionManager dateFormatter] setDateFormat:@"d MMM yyyy"];
-			[_game setReleaseDateText:[[SessionManager dateFormatter] stringFromDate:dateFromComponents]];
+			[[Utilities dateFormatter] setDateFormat:@"d MMM yyyy"];
+			[_game setReleaseDateText:[[Utilities dateFormatter] stringFromDate:dateFromComponents]];
+			[_game setReleased:@(YES)];
 		}
 		else{
 			NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
@@ -191,29 +191,29 @@
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
 				[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[expectedReleaseDateComponents setHour:9];
-				[[SessionManager dateFormatter] setDateFormat:@"d MMMM yyyy"];
+				[expectedReleaseDateComponents setHour:12];
+				[[Utilities dateFormatter] setDateFormat:@"d MMMM yyyy"];
 			}
 			else if (expectedReleaseMonth){
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
 				[expectedReleaseDateComponents setDay:0];
 				[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[[SessionManager dateFormatter] setDateFormat:@"MMMM yyyy"];
+				[[Utilities dateFormatter] setDateFormat:@"MMMM yyyy"];
 			}
 			else if (expectedReleaseQuarter){
 				[expectedReleaseDateComponents setQuarter:expectedReleaseQuarter];
 				[expectedReleaseDateComponents setMonth:((expectedReleaseQuarter * 3) + 1)];
 				[expectedReleaseDateComponents setDay:0];
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[[SessionManager dateFormatter] setDateFormat:@"QQQ yyyy"];
+				[[Utilities dateFormatter] setDateFormat:@"QQQ yyyy"];
 			}
 			else if (expectedReleaseYear){
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
 				[expectedReleaseDateComponents setQuarter:4];
 				[expectedReleaseDateComponents setMonth:13];
 				[expectedReleaseDateComponents setDay:0];
-				[[SessionManager dateFormatter] setDateFormat:@"yyyy"];
+				[[Utilities dateFormatter] setDateFormat:@"yyyy"];
 			}
 			else{
 				[expectedReleaseDateComponents setYear:2050];
@@ -228,7 +228,9 @@
 			[_game setReleaseMonth:@(expectedReleaseDateComponents.month)];
 			[_game setReleaseQuarter:@(expectedReleaseDateComponents.quarter)];
 			[_game setReleaseYear:@(expectedReleaseDateComponents.year)];
-			[_game setReleaseDateText:(expectedReleaseYear) ? [[SessionManager dateFormatter] stringFromDate:expectedReleaseDate] : @"TBA"];
+			[_game setReleaseDateText:(expectedReleaseYear) ? [[Utilities dateFormatter] stringFromDate:expectedReleaseDate] : @"TBA"];
+			
+			[_game setReleased:@(NO)];
 		}
 		
 		[_game setReleasePeriod:[self releasePeriodForGame:_game]];
@@ -457,10 +459,8 @@
 	if (buttonIndex != actionSheet.cancelButtonIndex){
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		[_game setSelectedPlatform:_game.platforms.allObjects[buttonIndex]];
-		if (_origin == kReleasesTableViewController)
-			[_game setTracked:@(YES)];
-		else
-			[_game setOwned:@(YES)];
+		[_game setWanted:(_pressedButtonTag == kWantButtonTag) ? @(YES) : @(NO)];
+		[_game setOwned:(_pressedButtonTag == kOwnButtonTag) ? @(YES) : @(NO)];
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationController popToRootViewControllerAnimated:YES];
 		}];
@@ -544,24 +544,23 @@
 #pragma mark - Actions
 
 - (IBAction)addButtonPressAction:(UIButton *)sender{
+	_pressedButtonTag = sender.tag;
+	
 	if (_game.platforms.count > 1){
 		UIActionSheet *actionSheet;
 		if (!actionSheet) actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-		
 		for (Platform *platform in _game.platforms.allObjects)
 			[actionSheet addButtonWithTitle:platform.name];
-		
 		[actionSheet addButtonWithTitle:@"Cancel"];
 		[actionSheet setCancelButtonIndex:_game.platforms.count];
 		[actionSheet showInView:self.tabBarController.view];
 	}
 	else{
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-		if (_game.platforms.allObjects.count > 0) [_game setSelectedPlatform:_game.platforms.allObjects[0]];
-		if (_origin == kReleasesTableViewController)
-			[_game setTracked:@(YES)];
-		else
-			[_game setOwned:@(YES)];
+		if (_game.platforms.allObjects.count > 0)
+			[_game setSelectedPlatform:_game.platforms.allObjects[0]];
+		[_game setWanted:(sender.tag == kWantButtonTag) ? @(YES) : @(NO)];
+		[_game setOwned:(sender.tag == kOwnButtonTag) ? @(YES) : @(NO)];
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationController popToRootViewControllerAnimated:YES];
 		}];
