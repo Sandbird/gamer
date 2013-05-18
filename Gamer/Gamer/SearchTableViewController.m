@@ -10,7 +10,6 @@
 #import "GameTableViewController.h"
 #import "SearchResult.h"
 #import "SessionManager.h"
-#import "Utilities.h"
 #import "ReleasesTableViewController.h"
 #import "LibraryTableViewController.h"
 #import "Platform.h"

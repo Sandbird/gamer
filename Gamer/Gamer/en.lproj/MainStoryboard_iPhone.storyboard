@@ -20,7 +20,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="89"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Gears of War: Judgment" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="226" translatesAutoresizingMaskIntoConstraints="NO" id="Ulq-Ij-iNY">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Game title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="226" translatesAutoresizingMaskIntoConstraints="NO" id="Ulq-Ij-iNY">
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="226" id="vg7-hD-G4N"/>
                                                 <constraint firstAttribute="height" constant="42" id="yfo-Lc-Mqz"/>
@@ -186,7 +186,7 @@
                                                 <constraint firstAttribute="height" constant="42" id="jJF-bn-mks"/>
                                                 <constraint firstAttribute="width" constant="226" id="vNv-l4-a0T"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="18"/>
+                                            <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="18"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
@@ -766,7 +766,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="HKs-RV-VX7"/>
-        <segue reference="RTl-BA-kHf"/>
+        <segue reference="egn-fk-zuo"/>
+        <segue reference="7xw-D2-Xf9"/>
     </inferredMetricsTieBreakers>
 </document>

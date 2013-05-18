@@ -13,3 +13,4 @@
 #define MR_ENABLE_ACTIVE_RECORD_LOGGING 0
 #import <MagicalRecord/CoreData+MagicalRecord.h>
 #import <QuartzCore/QuartzCore.h>
+#import "Utilities.h"

@@ -32,10 +32,10 @@
 	
 	SDSegmentedControl *filterSegmentedControl = (SDSegmentedControl *)self.tableView.tableHeaderView;
 	[filterSegmentedControl removeAllSegments];
-	
+	[filterSegmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
 	if (favoritePlatforms.count > 0){
 		for (Platform *platform in favoritePlatforms)
-			[filterSegmentedControl insertSegmentWithTitle:platform.nameShort atIndex:[favoritePlatforms indexOfObject:platform] animated:NO];
+			[filterSegmentedControl insertSegmentWithTitle:platform.nameShort atIndex:([favoritePlatforms indexOfObject:platform] + 1) animated:NO];
 		[filterSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else
@@ -90,15 +90,23 @@
 #pragma mark - Custom
 
 - (NSFetchedResultsController *)libraryFetchedResultsControllerWithPredicate:(NSPredicate *)predicate{
-	return [Game fetchAllGroupedBy:nil withPredicate:(predicate) ? predicate : [NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@ AND owned == %@", @(1), @(YES)] sortedBy:@"title" ascending:YES];
+	return [Game fetchAllGroupedBy:nil withPredicate:(predicate) ? predicate : [NSPredicate predicateWithFormat:@"owned == %@", @(YES)] sortedBy:@"title" ascending:YES];
 }
 
 #pragma mark - Actions
 
 - (IBAction)segmentedControlValueChanged:(SDSegmentedControl *)sender{
-	NSArray *platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite == %@", @(YES)]];
-	Platform *selectedPlatform = platforms[sender.selectedSegmentIndex];
-	_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier == %@ AND owned == %@ AND selectedPlatform == %@", @(1), @(YES), selectedPlatform]];
+	NSPredicate *predicate;
+	
+	if (sender.selectedSegmentIndex > 0){
+		NSArray *platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite == %@", @(YES)]];
+		Platform *selectedPlatform = platforms[sender.selectedSegmentIndex - 1];
+		predicate = [NSPredicate predicateWithFormat:@"owned == %@ AND selectedPlatform == %@", @(YES), selectedPlatform];
+	}
+	else
+		predicate = nil;
+		
+	_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:predicate];
 	[self.tableView reloadData];
 }
 

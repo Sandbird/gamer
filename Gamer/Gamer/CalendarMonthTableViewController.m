@@ -33,18 +33,7 @@
 #pragma mark - CalendarMonthView
 
 - (NSArray *)calendarMonthView:(TKCalendarMonthView *)monthView marksFromDate:(NSDate *)startDate toDate:(NSDate *)lastDate{
-	NSCalendar *calendar = [NSCalendar currentCalendar];
-	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	
-	NSDateComponents *startDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:startDate];
-	[startDateComponents setHour:9];
-	NSDate *date = [calendar dateFromComponents:startDateComponents];
-	
-	NSDateComponents *lastDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:lastDate];
-	[lastDateComponents setHour:9];
-	NSDate *lastDateWithTime = [calendar dateFromComponents:lastDateComponents];
-	
-	NSFetchRequest *gameDatesRequest = [Game requestAllWithPredicate:[NSPredicate predicateWithFormat:@"releaseDate >= %@ AND releaseDate <= %@", date, lastDateWithTime]];
+	NSFetchRequest *gameDatesRequest = [Game requestAllWithPredicate:[NSPredicate predicateWithFormat:@"releaseDate >= %@ AND releaseDate <= %@", startDate, lastDate]];
 	[gameDatesRequest setResultType:NSDictionaryResultType];
 	[gameDatesRequest setPropertiesToFetch:@[@"releaseDate"]];
 	
@@ -57,10 +46,12 @@
 	if (!offsetComponents) offsetComponents = [[NSDateComponents alloc] init];
 	[offsetComponents setDay:1];
 	
+	NSDate *date = startDate;
+	
 	while (YES) {
-		if ([date compare:lastDateWithTime] == NSOrderedDescending) break;
+		if ([date compare:lastDate] == NSOrderedDescending) break;
 		[marks addObject:([datesFromGamesReleasedThisMonth containsObject:date]) ? @(YES) : @(NO)];
-		date = [calendar dateByAddingComponents:offsetComponents toDate:date options:nil];
+		date = [[NSCalendar currentCalendar] dateByAddingComponents:offsetComponents toDate:date options:nil];
 	}
 	
 	return marks;
@@ -104,21 +95,14 @@
 #pragma mark - Custom
 
 - (NSFetchedResultsController *)calendarFetchedResultsControllerForDate:(NSDate *)date{
-	NSCalendar *calendar = [NSCalendar currentCalendar];
-	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	
-	NSDateComponents *dateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:date];
-	[dateComponents setHour:9];
-	
-	return [Game fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"releaseDate == %@", [calendar dateFromComponents:dateComponents]] sortedBy:@"title" ascending:YES];
+	return [Game fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"releaseDate == %@", date] sortedBy:@"title" ascending:YES];
 }
 
 #pragma mark - Actions
 
 - (IBAction)todayBarButtonAction:(UIBarButtonItem *)sender{
-	NSLog(@"%@", [NSDate date]);
 	[self.monthView selectDate:[NSDate date]];
-	_calendarFetch = [self calendarFetchedResultsControllerForDate:[NSDate date]];
+	_calendarFetch = [self calendarFetchedResultsControllerForDate:[Utilities dateWithoutTimeFromDate:[NSDate date]]];
 	[self.tableView reloadData];
 }
 

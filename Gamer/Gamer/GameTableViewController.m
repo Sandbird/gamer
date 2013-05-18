@@ -20,7 +20,6 @@
 #import "GameDescriptionCell.h"
 #import "GameMediaCell.h"
 #import "SessionManager.h"
-#import "Utilities.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 
 #define kWantButtonTag 1
@@ -40,8 +39,8 @@
 
 - (void)viewDidLayoutSubviews{
 	GameMainCell *cell = (GameMainCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-	[cell.progressIndicator setColor:[UIColor whiteColor]];
 	[Utilities addDropShadowToView:cell.coverImageView color:[UIColor blackColor] opacity:0.6 radius:5 offset:CGSizeZero];
+	[cell.progressIndicator setColor:[UIColor whiteColor]];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -165,12 +164,11 @@
 		NSInteger expectedReleaseYear = [Utilities integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
 		
 		NSCalendar *calendar = [NSCalendar currentCalendar];
-//		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 		
 		if (originalReleaseDate){
 			NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Utilities dateFormatter] dateFromString:originalReleaseDate]];
 			[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
-			[originalReleaseDateComponents setHour:9];
 			
 			NSDate *dateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
 			[_game setReleaseDate:dateFromComponents];
@@ -191,7 +189,6 @@
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
 				[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[expectedReleaseDateComponents setHour:12];
 				[[Utilities dateFormatter] setDateFormat:@"d MMMM yyyy"];
 			}
 			else if (expectedReleaseMonth){

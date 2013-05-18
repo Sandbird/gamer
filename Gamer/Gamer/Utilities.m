@@ -30,7 +30,7 @@ static NSDateFormatter *DATEFORMATTER;
 
 + (NSDateFormatter *)dateFormatter{
 	if (!DATEFORMATTER) DATEFORMATTER = [[NSDateFormatter alloc] init];
-	[DATEFORMATTER setTimeZone:[NSTimeZone localTimeZone]];
+	[DATEFORMATTER setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	return DATEFORMATTER;
 }
 
@@ -86,24 +86,20 @@ static NSDateFormatter *DATEFORMATTER;
 
 #pragma mark - Date formatting
 
-+ (NSDate *)localDateWithDate:(NSDate *)date{
++ (NSDate *)dateWithoutTimeFromDate:(NSDate *)date{
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	
+	NSDateComponents *dateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:date];
+	return [calendar dateFromComponents:dateComponents];
+}
+
++ (NSDate *)dateWithSystemTimeFromDate:(NSDate *)date{
 	NSInteger GMTOffset = [[NSTimeZone timeZoneWithAbbreviation:@"GMT"] secondsFromGMTForDate:date];
 	NSInteger localOffset = [[NSTimeZone systemTimeZone] secondsFromGMTForDate:date];
 	NSTimeInterval interval = GMTOffset - localOffset;
 	
 	return [NSDate dateWithTimeInterval:interval sinceDate:date];
-}
-
-+ (NSDate *)dateWithLocalTimeFromDate:(NSDate *)date{
-	
-}
-
-+ (NSDate *)dateWithDate:(NSDate *)date hour:(NSInteger)hour{
-	
-}
-
-+ (BOOL)compareDate:(NSDate *)date toLocalDate:(NSDate *)localDate{
-	
 }
 
 #pragma mark - Graphics

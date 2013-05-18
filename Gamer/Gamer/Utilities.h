@@ -30,7 +30,9 @@
 + (NSDecimalNumber *)absoluteValueOfDecimalNumber:(NSDecimalNumber *)decimalNumber;
 
 // Date formatting
-+ (NSDate *)localDateWithDate:(NSDate *)date;
++ (NSDate *)dateWithoutTimeFromDate:(NSDate *)date;
+
++ (NSDate *)dateWithSystemTimeFromDate:(NSDate *)date;
 
 // Graphics
 + (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset;

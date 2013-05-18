@@ -31,8 +31,14 @@
     [super viewDidLoad];
 }
 
+- (void)viewDidLayoutSubviews{
+//	ReleasesCell *cell = (ReleasesCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+//	[Utilities addDropShadowToView:cell.coverImageView color:[UIColor redColor] opacity:0.6 radius:10 offset:CGSizeZero];
+}
+
 - (void)viewWillAppear:(BOOL)animated{
 	_releasesFetch = [self releasesFetchedResultsController];
+	[self.tableView reloadData];
 	[self.tableView reloadData];
 }
 
@@ -63,6 +69,7 @@
 	[cell.coverImageView setImage:[UIImage imageWithData:game.coverImageSmall]];
 	[cell.platformLabel setText:game.selectedPlatform.nameShort];
 	[cell.platformLabel setBackgroundColor:game.selectedPlatform.color];
+//	[Utilities addDropShadowToView:cell.coverImageView color:[UIColor redColor] opacity:0.6 radius:10 offset:CGSizeZero];
 	
     return cell;
 }
