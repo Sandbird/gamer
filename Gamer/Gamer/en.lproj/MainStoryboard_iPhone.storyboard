@@ -11,7 +11,7 @@
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="90" sectionHeaderHeight="44" sectionFooterHeight="0.0" id="kx9-Dq-3KR">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.897429435483871" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="4DU-rq-Aik" customClass="ReleasesCell">
                                 <rect key="frame" x="0.0" y="44" width="320" height="90"/>
@@ -168,6 +168,7 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7a3-sa-H5z">
                                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
+                                                <constraint firstAttribute="height" constant="70" id="Q2l-W4-n6K"/>
                                                 <constraint firstAttribute="width" constant="56" id="VUC-fT-nt0"/>
                                             </constraints>
                                         </imageView>
@@ -190,20 +191,32 @@
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </label>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="90" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gOC-eh-yno">
+                                            <color key="backgroundColor" red="0.31372549020000001" green="0.58823529409999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="34" id="KEk-dF-k6H"/>
+                                                <constraint firstAttribute="height" constant="34" id="syK-aO-pyZ"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="18"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="wh0-5C-sny" secondAttribute="bottom" constant="10" id="H8x-4D-FcJ"/>
-                                    <constraint firstItem="OhZ-XC-JPw" firstAttribute="top" secondItem="nFb-t6-pzK" secondAttribute="top" constant="10" id="Ngv-b3-Bac"/>
+                                    <constraint firstAttribute="trailing" secondItem="gOC-eh-yno" secondAttribute="trailing" constant="20" type="default" id="GCb-Vz-Muv"/>
                                     <constraint firstItem="wh0-5C-sny" firstAttribute="leading" secondItem="7a3-sa-H5z" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="Nov-MZ-E5A"/>
+                                    <constraint firstItem="gOC-eh-yno" firstAttribute="bottom" secondItem="wh0-5C-sny" secondAttribute="bottom" type="default" id="Tjt-cX-SJN"/>
                                     <constraint firstItem="OhZ-XC-JPw" firstAttribute="top" secondItem="7a3-sa-H5z" secondAttribute="top" type="default" id="a7p-SS-koh"/>
+                                    <constraint firstItem="7a3-sa-H5z" firstAttribute="centerY" secondItem="nFb-t6-pzK" secondAttribute="centerY" type="default" id="d2c-A2-czQ"/>
                                     <constraint firstItem="wh0-5C-sny" firstAttribute="bottom" secondItem="7a3-sa-H5z" secondAttribute="bottom" type="default" id="hhs-Ke-nyl"/>
                                     <constraint firstAttribute="trailing" secondItem="OhZ-XC-JPw" secondAttribute="trailing" constant="20" type="default" id="mq7-Wj-CSo"/>
                                     <constraint firstItem="OhZ-XC-JPw" firstAttribute="leading" secondItem="7a3-sa-H5z" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="whU-Wr-oy9"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="coverImageView" destination="7a3-sa-H5z" id="UTv-mg-Eq9"/>
+                                    <outlet property="metascoreLabel" destination="gOC-eh-yno" id="fi6-0a-fjD"/>
                                     <outlet property="platformLabel" destination="wh0-5C-sny" id="yN4-fl-Ara"/>
                                     <outlet property="titleLabel" destination="OhZ-XC-JPw" id="SUk-bW-eqJ"/>
                                 </connections>
@@ -766,7 +779,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="egn-fk-zuo"/>
-        <segue reference="7xw-D2-Xf9"/>
+        <segue reference="HKs-RV-VX7"/>
+        <segue reference="RTl-BA-kHf"/>
     </inferredMetricsTieBreakers>
 </document>

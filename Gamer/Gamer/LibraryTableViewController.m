@@ -65,6 +65,7 @@
 	[cell.coverImageView setImage:[UIImage imageWithData:game.coverImageSmall]];
 	[cell.platformLabel setText:game.selectedPlatform.nameShort];
 	[cell.platformLabel setBackgroundColor:game.selectedPlatform.color];
+	[cell.metascoreLabel setText:game.metascore];
 	
     return cell;
 }

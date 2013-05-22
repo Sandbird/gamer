@@ -135,11 +135,15 @@
 //	[self.tableView setEditing:YES animated:YES];
 	
 	[self requestPlatformWithIdentifier:@(139) color:[UIColor colorWithRed:0 green:.509803922 blue:.745098039 alpha:1] completion:^{
-		[self requestPlatformWithIdentifier:@(129) color:[UIColor colorWithRed:0 green:0 blue:.588235294 alpha:1] completion:^{
+		[self requestPlatformWithIdentifier:@(129) color:[UIColor colorWithRed:0 green:.235294118 blue:.705882353 alpha:1] completion:^{
 			[self requestPlatformWithIdentifier:@(117) color:[UIColor colorWithRed:.784313725 green:0 blue:0 alpha:1] completion:^{
-				[self requestPlatformWithIdentifier:@(35) color:[UIColor colorWithRed:0 green:0 blue:.392156863 alpha:1] completion:^{
+				[self requestPlatformWithIdentifier:@(35) color:[UIColor colorWithRed:0 green:.117647059 blue:.62745098 alpha:1] completion:^{
 					[self requestPlatformWithIdentifier:@(20) color:[UIColor colorWithRed:.31372549 green:.62745098 blue:.117647059 alpha:1] completion:^{
-						[self requestPlatformWithIdentifier:@(94) color:[UIColor colorWithRed:.156862745 green:.156862745 blue:.156862745 alpha:1] completion:nil];
+						[self requestPlatformWithIdentifier:@(94) color:[UIColor colorWithRed:.156862745 green:.156862745 blue:.156862745 alpha:1] completion:^{
+							[self requestPlatformWithIdentifier:@(146) color:[UIColor colorWithRed:.019607843 green:0 blue:.235294118 alpha:1] completion:^{
+								[self requestPlatformWithIdentifier:@(145) color:[UIColor colorWithRed:.058823529 green:.431372549 blue:0 alpha:1] completion:nil];
+							}];
+						}];
 					}];
 				}];
 			}];
