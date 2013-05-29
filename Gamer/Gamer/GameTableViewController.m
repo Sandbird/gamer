@@ -21,6 +21,7 @@
 #import "GameMediaCell.h"
 #import "SessionManager.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
+#import "MediaViewController.h"
 
 #define kWantButtonTag 1
 #define kOwnButtonTag 2
@@ -94,6 +95,10 @@
 			
 			[cell.wantButton setHidden:([_game.wanted isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? YES : NO];
 			[cell.ownButton setHidden:([_game.owned isEqualToNumber:@(YES)] || [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
+			
+			UITapGestureRecognizer *gestureRecognizer;
+			if (!gestureRecognizer) gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizerAction:)];
+			if (![cell.coverImageView.gestureRecognizers containsObject:gestureRecognizer]) [cell.coverImageView addGestureRecognizer:gestureRecognizer];
 			
 			return cell;
 		}
@@ -540,22 +545,28 @@
 
 #pragma mark - Actions
 
+- (void)tapGestureRecognizerAction:(UITapGestureRecognizer *)sender{
+	[self performSegueWithIdentifier:@"MediaSegue" sender:nil];
+}
+
 - (IBAction)addButtonPressAction:(UIButton *)sender{
 	_pressedButtonTag = sender.tag;
 	
-	if (_game.platforms.count > 1){
+	NSArray *favoritePlatforms = [Platform findAllWithPredicate:[NSPredicate predicateWithFormat:@"favorite == %@ AND self IN %@", @(YES), _game.platforms.allObjects]];
+	
+	if (favoritePlatforms.count > 1){
 		UIActionSheet *actionSheet;
 		if (!actionSheet) actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-		for (Platform *platform in _game.platforms.allObjects)
+		for (Platform *platform in favoritePlatforms)
 			[actionSheet addButtonWithTitle:platform.name];
 		[actionSheet addButtonWithTitle:@"Cancel"];
-		[actionSheet setCancelButtonIndex:_game.platforms.count];
+		[actionSheet setCancelButtonIndex:favoritePlatforms.count];
 		[actionSheet showInView:self.tabBarController.view];
 	}
 	else{
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-		if (_game.platforms.allObjects.count > 0)
-			[_game setSelectedPlatform:_game.platforms.allObjects[0]];
+		if (favoritePlatforms.count > 0)
+			[_game setSelectedPlatform:favoritePlatforms[0]];
 		[_game setWanted:(sender.tag == kWantButtonTag) ? @(YES) : @(NO)];
 		[_game setOwned:(sender.tag == kOwnButtonTag) ? @(YES) : @(NO)];
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -566,6 +577,11 @@
 
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	[self requestGameWithIdentifier:_game.identifier];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+	MediaViewController *destination = segue.destinationViewController;
+	[destination setImage:[UIImage imageWithData:_game.coverImage]];
 }
 
 @end

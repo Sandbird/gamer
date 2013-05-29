@@ -18,8 +18,9 @@
 #import "ReleasePeriod.h"
 #import "GameTableViewController.h"
 #import "SearchTableViewController.h"
+#import "ReleasesSectionHeaderView.h"
 
-@interface ReleasesTableViewController ()
+@interface ReleasesTableViewController () <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSFetchedResultsController *releasesFetch;
 
@@ -37,8 +38,11 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	
+}
+
+- (void)viewDidAppear:(BOOL)animated{
 	_releasesFetch = [self releasesFetchedResultsController];
-	[self.tableView reloadData];
 	[self.tableView reloadData];
 }
 
@@ -52,9 +56,16 @@
     return _releasesFetch.sections.count;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-	return [[ReleasePeriod findFirstByAttribute:@"identifier" withValue:[_releasesFetch.sections[section] name]] name];
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+	ReleasesSectionHeaderView *headerView = [[ReleasesSectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, tableView.sectionHeaderHeight)];
+	[headerView.titleLabel setText:[[ReleasePeriod findFirstByAttribute:@"identifier" withValue:[_releasesFetch.sections[section] name]] name]];
+	
+	return headerView;
 }
+
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+//	return [[ReleasePeriod findFirstByAttribute:@"identifier" withValue:[_releasesFetch.sections[section] name]] name];
+//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return [_releasesFetch.sections[section] numberOfObjects];
@@ -86,21 +97,26 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	Game *game = [_releasesFetch objectAtIndexPath:indexPath];
-//	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier = %@", game.identifier] inContext:context];
 	[game setWanted:@(NO)];
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		_releasesFetch = [self releasesFetchedResultsController];
-		if ([tableView numberOfRowsInSection:indexPath.section == 1])
+		
+		if ([tableView numberOfRowsInSection:indexPath.section] == 1)
 			[tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationLeft];
 		else
 			[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
 	}];
 }
 
-#pragma mark - Custom
+#pragma mark - FetchedResultsController
 
 - (NSFetchedResultsController *)releasesFetchedResultsController{
-	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)] sortedBy:@"releaseDate" ascending:YES];
+	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ && selectedPlatform.favorite = %@", @(YES), @(YES)] sortedBy:@"releaseDate" ascending:YES delegate:self];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath{
+	NSLog(@"index: %@", indexPath);
+	NSLog(@"new index: %@", newIndexPath);
 }
 
 #pragma mark - Actions
