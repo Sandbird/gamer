@@ -17,7 +17,7 @@
 		250FB552172746AF00E122DC /* GameDescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB551172746AF00E122DC /* GameDescriptionCell.m */; };
 		250FB555172746BF00E122DC /* GameMediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB554172746BF00E122DC /* GameMediaCell.m */; };
 		250FB55B172749AC00E122DC /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 250FB55A172749AC00E122DC /* Utilities.m */; };
-		253022C71755A1570028F8B2 /* MagicalTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 253022C61755A1570028F8B2 /* MagicalTableViewController.m */; };
+		253022C71755A1570028F8B2 /* FetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 253022C61755A1570028F8B2 /* FetchedTableViewController.m */; };
 		253035DF16AE09FF006AAC7E /* CalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 253035DE16AE09FF006AAC7E /* CalendarCell.m */; };
 		2530360116B1DEA5006AAC7E /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2530360016B1DEA5006AAC7E /* CoreData.framework */; };
 		256D3DEE16B204D400E8BC57 /* ReleasesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 256D3DED16B204D400E8BC57 /* ReleasesCell.m */; };
@@ -79,8 +79,8 @@
 		250FB554172746BF00E122DC /* GameMediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameMediaCell.m; sourceTree = "<group>"; };
 		250FB559172749AC00E122DC /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		250FB55A172749AC00E122DC /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
-		253022C51755A1570028F8B2 /* MagicalTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagicalTableViewController.h; sourceTree = "<group>"; };
-		253022C61755A1570028F8B2 /* MagicalTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagicalTableViewController.m; sourceTree = "<group>"; };
+		253022C51755A1570028F8B2 /* FetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FetchedTableViewController.h; sourceTree = "<group>"; };
+		253022C61755A1570028F8B2 /* FetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FetchedTableViewController.m; sourceTree = "<group>"; };
 		253035DD16AE09FF006AAC7E /* CalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarCell.h; sourceTree = "<group>"; };
 		253035DE16AE09FF006AAC7E /* CalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarCell.m; sourceTree = "<group>"; };
 		2530360016B1DEA5006AAC7E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -178,8 +178,8 @@
 		253022C41755A06C0028F8B2 /* Subclasses */ = {
 			isa = PBXGroup;
 			children = (
-				253022C51755A1570028F8B2 /* MagicalTableViewController.h */,
-				253022C61755A1570028F8B2 /* MagicalTableViewController.m */,
+				253022C51755A1570028F8B2 /* FetchedTableViewController.h */,
+				253022C61755A1570028F8B2 /* FetchedTableViewController.m */,
 			);
 			name = Subclasses;
 			sourceTree = "<group>";
@@ -520,7 +520,7 @@
 				257209EA17471F5100BD8457 /* Game.m in Sources */,
 				257209ED1747268000BD8457 /* Platform.m in Sources */,
 				25771276174D870100ABAB99 /* MediaViewController.m in Sources */,
-				253022C71755A1570028F8B2 /* MagicalTableViewController.m in Sources */,
+				253022C71755A1570028F8B2 /* FetchedTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

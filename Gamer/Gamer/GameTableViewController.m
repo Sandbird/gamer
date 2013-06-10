@@ -520,27 +520,7 @@
 	else if ([game.releaseYear isEqualToNumber:@(nextComponents.year)]) period = 7;
 	else if ([game.releaseYear isEqualToNumber:@(2050)]) period = 8;
 	
-	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-	
-	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
-	if (!releasePeriod){
-		releasePeriod = [[ReleasePeriod alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleasePeriod" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
-		[releasePeriod setIdentifier:@(period)];
-		switch (period) {
-			case 1: [releasePeriod setName:@"Released"]; break;
-			case 2: [releasePeriod setName:@"This Month"]; break;
-			case 3: [releasePeriod setName:@"Next Month"]; break;
-			case 4: [releasePeriod setName:@"This Quarter"]; break;
-			case 5: [releasePeriod setName:@"Next Quarter"]; break;
-			case 6: [releasePeriod setName:@"This Year"]; break;
-			case 7: [releasePeriod setName:@"Next Year"]; break;
-			case 8: [releasePeriod setName:@"To Be Announced"]; break;
-			default: break;
-		}
-		[context saveToPersistentStoreAndWait];
-	}
-	
-	return releasePeriod;
+	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
 }
 
 #pragma mark - Actions

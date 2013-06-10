@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12D78" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="9OR-s2-EPY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="9OR-s2-EPY">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--Releases Table View Controller - Releases-->
+        <!--Releases Table View Controller - Wishlist-->
         <scene sceneID="fW6-Tl-3z6">
             <objects>
                 <tableViewController id="grM-bw-g7D" customClass="ReleasesTableViewController" sceneMemberID="viewController">
@@ -81,7 +81,7 @@
                             <outlet property="delegate" destination="grM-bw-g7D" id="96t-nU-Dwl"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Releases" id="Cib-hP-TXD">
+                    <navigationItem key="navigationItem" title="Wishlist" id="Cib-hP-TXD">
                         <barButtonItem key="backBarButtonItem" title="Back" id="NDW-BM-CYm"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="P73-Oj-8P8">
                             <connections>
@@ -651,13 +651,7 @@
                             <outlet property="delegate" destination="gUr-80-iIN" id="iHA-Kw-jdF"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Settings" id="lcF-9v-zDO">
-                        <barButtonItem key="rightBarButtonItem" title="Platforms" id="73q-vj-Ykn">
-                            <connections>
-                                <action selector="testBarButtonAction:" destination="gUr-80-iIN" id="xXO-O8-bmm"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Settings" id="lcF-9v-zDO"/>
                     <connections>
                         <segue destination="LDt-7r-le7" kind="push" identifier="NotificationsSegue" id="ANj-R5-nXi"/>
                     </connections>
@@ -717,11 +711,11 @@
             </objects>
             <point key="canvasLocation" x="401" y="38"/>
         </scene>
-        <!--Navigation Controller - Releases-->
+        <!--Navigation Controller - Wishlist-->
         <scene sceneID="qUc-IO-pvl">
             <objects>
                 <navigationController id="8no-6N-Ora" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Releases" id="Yvv-8P-Qum"/>
+                    <tabBarItem key="tabBarItem" title="Wishlist" id="Yvv-8P-Qum"/>
                     <toolbarItems/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="tvB-2k-39o">
@@ -798,6 +792,105 @@
             <point key="canvasLocation" x="1027" y="-301"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="CalendarMonthTableViewController" superclassName="TKCalendarMonthTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CalendarMonthTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="todayBarButtonAction:" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="FetchedTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FetchedTableViewController.h"/>
+        </class>
+        <class className="GameDescriptionCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GameDescriptionCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="descriptionTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="developerLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="genrePrimaryLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="genreSecondaryLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="platformsLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="publisherLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="GameMainCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GameMainCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="coverImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="gameTitleLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="metascoreLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="ownButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="progressIndicator" candidateClass="MACircleProgressIndicator"/>
+                <relationship kind="outlet" name="releaseDateLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="wantButton" candidateClass="UIButton"/>
+            </relationships>
+        </class>
+        <class className="GameMediaCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GameMediaCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
+            </relationships>
+        </class>
+        <class className="GameTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GameTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="addButtonPressAction:" candidateClass="UIButton"/>
+                <relationship kind="action" name="refreshBarButtonAction:" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="LibraryCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LibraryCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="coverImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="metascoreLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="platformLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="LibraryTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LibraryTableViewController.h"/>
+        </class>
+        <class className="MACircleProgressIndicator" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MACircleProgressIndicator.h"/>
+        </class>
+        <class className="MediaViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MediaViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="tapGestureRecognizerAction:" candidateClass="UITapGestureRecognizer"/>
+                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
+            </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="ReleasesCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ReleasesCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="coverImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="dateLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="platformLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="ReleasesTableViewController" superclassName="FetchedTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ReleasesTableViewController.h"/>
+        </class>
+        <class className="SDSegmentedControl" superclassName="UISegmentedControl">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SDSegmentedControl.h"/>
+        </class>
+        <class className="SearchTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SearchTableViewController.h"/>
+        </class>
+        <class className="SettingsTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsTableViewController.h"/>
+        </class>
+        <class className="TKCalendarMonthTableViewController" superclassName="TKCalendarMonthViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TKCalendarMonthTableViewController.h"/>
+        </class>
+        <class className="TKCalendarMonthViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TKCalendarMonthViewController.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

@@ -29,7 +29,7 @@
 	
 	// Search bar setup
 	if (!_searchBar) _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 252, 44)];
-	[_searchBar setPlaceholder:@"Search for games"];
+	[_searchBar setPlaceholder:@"Search"];
 	[_searchBar setDelegate:self];
 	
 	// Remove search bar background
@@ -47,9 +47,6 @@
 
 - (void)viewDidAppear:(BOOL)animated{
 	[_searchBar becomeFirstResponder];
-	
-	[self.tableView setContentInset:UIEdgeInsetsMake(0, 0, 167, 0)];
-	[self.tableView setScrollIndicatorInsets:UIEdgeInsetsMake(0, 0, 167, 0)];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -86,6 +83,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark - ScrollView
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+	[_searchBar resignFirstResponder];
 }
 
 #pragma mark - Networking

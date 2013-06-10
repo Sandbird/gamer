@@ -9,8 +9,14 @@
 // AFNetworking
 #define COCOAPODS_POD_AVAILABLE_AFNetworking
 #define COCOAPODS_VERSION_MAJOR_AFNetworking 1
-#define COCOAPODS_VERSION_MINOR_AFNetworking 2
-#define COCOAPODS_VERSION_PATCH_AFNetworking 1
+#define COCOAPODS_VERSION_MINOR_AFNetworking 3
+#define COCOAPODS_VERSION_PATCH_AFNetworking 0
+
+// FlurrySDK
+#define COCOAPODS_POD_AVAILABLE_FlurrySDK
+#define COCOAPODS_VERSION_MAJOR_FlurrySDK 4
+#define COCOAPODS_VERSION_MINOR_FlurrySDK 2
+#define COCOAPODS_VERSION_PATCH_FlurrySDK 1
 
 // MACircleProgressIndicator
 #define COCOAPODS_POD_AVAILABLE_MACircleProgressIndicator

@@ -10,7 +10,6 @@
 
 @interface SearchTableViewController : UITableViewController <UISearchBarDelegate>
 
-@property (nonatomic, strong) IBOutlet UIScrollView *filterScrollView;
 @property (nonatomic, assign) NSInteger origin;
 
 @end
