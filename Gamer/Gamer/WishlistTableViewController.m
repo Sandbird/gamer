@@ -1,13 +1,13 @@
 //
-//  ReleasesTableViewController.m
+//  WishlistTableViewController.m
 //  Gamer
 //
 //  Created by Caio Mello on 4/23/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "ReleasesTableViewController.h"
-#import "ReleasesCell.h"
+#import "WishlistTableViewController.h"
+#import "WishlistCell.h"
 #import "Game.h"
 #import "Genre.h"
 #import "Platform.h"
@@ -18,19 +18,15 @@
 #import "ReleasePeriod.h"
 #import "GameTableViewController.h"
 #import "SearchTableViewController.h"
-#import "ReleasesSectionHeaderView.h"
 
-@interface ReleasesTableViewController ()
+@interface WishlistTableViewController ()
 
 @end
 
-@implementation ReleasesTableViewController
+@implementation WishlistTableViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-	
-	self.fetchedResultsController = [self releasesFetchedResultsController];
-//	[self.tableView reloadData];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -45,13 +41,8 @@
 		[game setReleasePeriod:[self releasePeriodForGame:game]];
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		self.fetchedResultsController = [self releasesFetchedResultsController];
-		NSLog(@"%d", self.fetchedResultsController.fetchedObjects.count);
 		[self.tableView reloadData];
 	}];
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-//	[self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -65,7 +56,8 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-	ReleasesSectionHeaderView *headerView = [[ReleasesSectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, tableView.sectionHeaderHeight)];
+	HidingSectionHeaderView *headerView = [[HidingSectionHeaderView alloc] initWithSectionIndex:section];
+	[headerView setDelegate:self];
 	[headerView.titleLabel setText:[[ReleasePeriod findFirstByAttribute:@"identifier" withValue:[self.fetchedResultsController.sections[section] name]] name]];
 	
 	return headerView;
@@ -80,7 +72,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ReleasesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	
 	[self configureCell:cell atIndexPath:indexPath];
 	
@@ -108,7 +100,7 @@
 #pragma mark - FetchedTableView
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
-	ReleasesCell *customCell = (ReleasesCell *)cell;
+	WishlistCell *customCell = (WishlistCell *)cell;
 	
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[customCell.titleLabel setText:game.title];
@@ -117,6 +109,12 @@
 	[customCell.platformLabel setText:game.selectedPlatform.nameShort];
 	[customCell.platformLabel setBackgroundColor:game.selectedPlatform.color];
 //	[Utilities addDropShadowToView:cell.coverImageView color:[UIColor redColor] opacity:0.6 radius:10 offset:CGSizeZero];
+}
+
+#pragma mark - HidingSectionView
+
+- (void)hidingSectionHeaderView:(HidingSectionHeaderView *)sectionView didTapSection:(NSInteger)section{
+	
 }
 
 #pragma mark - FetchedResultsController

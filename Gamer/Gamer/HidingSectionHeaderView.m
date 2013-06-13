@@ -6,15 +6,23 @@
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "ReleasesSectionHeaderView.h"
+#import "HidingSectionHeaderView.h"
 
-@implementation ReleasesSectionHeaderView
+@implementation HidingSectionHeaderView
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+    }
+    return self;
+}
+
+- (id)initWithSectionIndex:(NSInteger)index{
+	self = [super initWithFrame:CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height)];
+	if (self){
+		_index = index;
 		
 		[self setBackgroundColor:[UIColor colorWithWhite:0.96 alpha:1]];
 		
@@ -34,8 +42,16 @@
 		[self addSubview:_iconImageView];
 		[self addSubview:_titleLabel];
 		[self addSubview:_hideIndicator];
-    }
-    return self;
+		
+		_gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizerAction:)];
+		[self addGestureRecognizer:_gestureRecognizer];
+	}
+	
+	return  self;
+}
+
+- (void)tapGestureRecognizerAction:(UITapGestureRecognizer *)gestureRecognizer{
+	[self.delegate hidingSectionHeaderView:self didTapSection:_index];
 }
 
 @end

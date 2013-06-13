@@ -10,7 +10,7 @@
 #import "GameTableViewController.h"
 #import "SearchResult.h"
 #import "SessionManager.h"
-#import "ReleasesTableViewController.h"
+#import "WishlistTableViewController.h"
 #import "LibraryTableViewController.h"
 #import "Platform.h"
 

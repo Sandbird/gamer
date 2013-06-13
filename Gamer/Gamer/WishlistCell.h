@@ -1,5 +1,5 @@
 //
-//  ReleaseCell.h
+//  WishlistCell.h
 //  Gamer
 //
 //  Created by Caio Mello on 1/24/13.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ReleasesCell : UITableViewCell
+@interface WishlistCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
