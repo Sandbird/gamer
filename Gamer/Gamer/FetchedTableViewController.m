@@ -1,5 +1,5 @@
 //
-//  MagicalTableViewController.m
+//  FetchedTableViewController.m
 //  Gamer
 //
 //  Created by Caio Mello on 5/28/13.

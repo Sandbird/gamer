@@ -36,9 +36,21 @@
 
 - (void)viewWillAppear:(BOOL)animated{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+	
 	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND selectedPlatform.favorite = %@", @(YES), @(YES)]];
 	for (Game *game in games)
 		[game setReleasePeriod:[self releasePeriodForGame:game]];
+	
+	NSArray *releasePeriods = [ReleasePeriod findAll];
+	for (ReleasePeriod *releasePeriod in releasePeriods){
+		[self verifySectionHidingForReleasePeriod:releasePeriod];
+//		Game *fakeGame = [Game findFirstWithPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND identifier = nil", releasePeriod.identifier]];
+//		if ([Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND releasePeriod.identifier = %@ AND identifier != nil", @(YES), releasePeriod.identifier]].count > 0)
+//			[fakeGame setHidden:@(NO)];
+//		else
+//			[fakeGame setHidden:@(YES)];
+	}
+	
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		self.fetchedResultsController = [self releasesFetchedResultsController];
 		[self.tableView reloadData];
@@ -71,6 +83,11 @@
     return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	return (game.identifier) ? tableView.rowHeight : 0;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	
@@ -92,6 +109,10 @@
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[game setWanted:@(NO)];
+	
+	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:[self.fetchedResultsController.sections[indexPath.section] name]];
+	[self verifySectionHidingForReleasePeriod:releasePeriod];
+	
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		self.fetchedResultsController = [self releasesFetchedResultsController];
 	}];
@@ -114,13 +135,22 @@
 #pragma mark - HidingSectionView
 
 - (void)hidingSectionHeaderView:(HidingSectionHeaderView *)sectionView didTapSection:(NSInteger)section{
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
+	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:[self.fetchedResultsController.sections[section] name]];
+	for (Game *game in releasePeriod.games)
+		if (game.identifier)
+			[game setHidden:@(!game.hidden.boolValue)];
+	
+	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		self.fetchedResultsController = [self releasesFetchedResultsController];
+	}];
 }
 
 #pragma mark - FetchedResultsController
 
 - (NSFetchedResultsController *)releasesFetchedResultsController{
-	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ && selectedPlatform.favorite = %@", @(YES), @(YES)] sortedBy:@"releaseDate" ascending:YES delegate:self];
+	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND selectedPlatform.favorite = %@) OR identifier = nil)", @(NO), @(YES), @(YES)] sortedBy:@"releasePeriod.identifier,releaseDate" ascending:YES delegate:self];
 }
 
 #pragma mark - Custom
@@ -147,7 +177,6 @@
 	NSDateComponents *nextComponents = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	nextComponents.month++;
 	[nextComponents setQuarter:[self quarterForMonth:nextComponents.month]];
-	nextComponents.quarter++;
 	nextComponents.year++;
 	
 	NSInteger period = 0;
@@ -161,6 +190,14 @@
 	else if ([game.releaseYear isEqualToNumber:@(2050)]) period = 8;
 	
 	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
+}
+
+- (void)verifySectionHidingForReleasePeriod:(ReleasePeriod *)releasePeriod{
+	Game *fakeGame = [Game findFirstWithPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND identifier = nil", releasePeriod.identifier]];
+	if ([Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND releasePeriod.identifier = %@ AND identifier != nil", @(YES), releasePeriod.identifier]].count > 0)
+		[fakeGame setHidden:@(NO)];
+	else
+		[fakeGame setHidden:@(YES)];
 }
 
 #pragma mark - Actions

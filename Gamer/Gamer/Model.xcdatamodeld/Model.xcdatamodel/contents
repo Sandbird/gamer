@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12D78" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12E55" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Developer" representedClassName="Developer" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
@@ -16,7 +16,8 @@
         <attribute name="coverImage" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="coverImageSmall" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="coverImageURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="identifier" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="metascore" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -90,7 +91,7 @@
     <elements>
         <element name="Developer" positionX="135" positionY="-117" width="128" height="103"/>
         <element name="Franchise" positionX="-245" positionY="-72" width="128" height="103"/>
-        <element name="Game" positionX="-63" positionY="-90" width="128" height="448"/>
+        <element name="Game" positionX="-63" positionY="-90" width="128" height="463"/>
         <element name="Genre" positionX="-281" positionY="45" width="128" height="88"/>
         <element name="Image" positionX="187" positionY="9" width="128" height="73"/>
         <element name="Platform" positionX="198" positionY="126" width="128" height="178"/>

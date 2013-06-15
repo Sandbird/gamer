@@ -173,6 +173,7 @@
 		
 		if (originalReleaseDate){
 			NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Utilities dateFormatter] dateFromString:originalReleaseDate]];
+			[originalReleaseDateComponents setHour:10];
 			[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
 			
 			NSDate *dateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
@@ -188,6 +189,7 @@
 		}
 		else{
 			NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+			[expectedReleaseDateComponents setHour:10];
 			
 			if (expectedReleaseDay){
 				[expectedReleaseDateComponents setDay:expectedReleaseDay];
@@ -234,7 +236,6 @@
 			
 			[_game setReleased:@(NO)];
 		}
-		
 		[_game setReleasePeriod:[self releasePeriodForGame:_game]];
 		
         // Platforms
@@ -507,7 +508,6 @@
 	NSDateComponents *nextComponents = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	nextComponents.month++;
 	[nextComponents setQuarter:[self quarterForMonth:nextComponents.month]];
-	nextComponents.quarter++;
 	nextComponents.year++;
 	
 	NSInteger period = 0;

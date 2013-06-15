@@ -28,8 +28,10 @@
 	[[UITabBarItem appearance] setTitleTextAttributes:@{UITextAttributeFont:[UIFont fontWithName:@"Avenir-Medium" size:12]} forState:UIControlStateNormal];
 	
 	// Starting data
-	if ([ReleasePeriod findAll].count == 0) [self initializeReleasePeriods];
-	if ([Platform findAll].count == 0) [self initializePlatforms];
+	if ([ReleasePeriod findAll].count == 0){
+		[self initializeReleasePeriods];
+		[self initializePlatforms];
+	}
 	
     return YES;
 }
@@ -42,14 +44,6 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application{
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-	
-	
-	
-	
-	
-//	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-//	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"temporary == %@", @(YES)] inContext:context];
-//	[context saveToPersistentStoreAndWait];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application{
@@ -64,14 +58,26 @@
 	[MagicalRecord cleanUp];
 }
 
+#pragma mark - Initialization
+
 - (void)initializeReleasePeriods{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	NSDateComponents *components = [calendar components:nil fromDate:[NSDate date]];
+	[components setYear:2051];
+	
 	NSArray *periods = @[@"Released", @"This Month", @"Next Month", @"This Quarter", @"Next Quarter", @"This Year", @"Next Year", @"To Be Announced"];
-	for (NSInteger period = 1; period <= 8; period++){
+	for (NSInteger period = 1; period <= periods.count; period++){
 		ReleasePeriod *releasePeriod = [[ReleasePeriod alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleasePeriod" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 		[releasePeriod setIdentifier:@(period)];
 		[releasePeriod setName:periods[period - 1]];
+		
+		Game *fakeGame = [[Game alloc] initWithEntity:[NSEntityDescription entityForName:@"Game" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+		[fakeGame setReleasePeriod:releasePeriod];
+		[fakeGame setReleaseDate:[calendar dateFromComponents:components]];
+		[fakeGame setHidden:@(YES)];
 	}
 	
 	[context saveToPersistentStoreAndWait];
@@ -93,6 +99,6 @@
 	}
 	
 	[context saveToPersistentStoreAndWait];
-}
+}	
 
 @end

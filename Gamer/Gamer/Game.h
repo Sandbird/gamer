@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 5/17/13.
+//  Created by Caio Mello on 6/13/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * metascore;
 @property (nonatomic, retain) NSString * overview;
 @property (nonatomic, retain) NSNumber * owned;
+@property (nonatomic, retain) NSNumber * released;
 @property (nonatomic, retain) NSDate * releaseDate;
 @property (nonatomic, retain) NSString * releaseDateText;
 @property (nonatomic, retain) NSNumber * releaseDay;
@@ -28,7 +29,7 @@
 @property (nonatomic, retain) NSNumber * releaseYear;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * wanted;
-@property (nonatomic, retain) NSNumber * released;
+@property (nonatomic, retain) NSNumber * hidden;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
