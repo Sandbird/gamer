@@ -1,0 +1,25 @@
+PODS:
+  - AFNetworking (1.3.0)
+  - FlurrySDK (4.2.1)
+  - MACircleProgressIndicator (1.0.0)
+  - MagicalRecord (2.1)
+  - SDSegmentedControl (1.0.1)
+  - TapkuLibrary (0.2.4)
+
+DEPENDENCIES:
+  - AFNetworking
+  - FlurrySDK
+  - MACircleProgressIndicator
+  - MagicalRecord
+  - SDSegmentedControl
+  - TapkuLibrary
+
+SPEC CHECKSUMS:
+  AFNetworking: e528f20d06b1b818c3571266fb5efa20031a8ace
+  FlurrySDK: ed65c2389c6028244cb0e57f31fe370cc1b17f22
+  MACircleProgressIndicator: dc497a2c68dd930d4aea837b1a732a56ce4bd6d8
+  MagicalRecord: 64e7184c240087a45e9588a722eaf05b0ad837f7
+  SDSegmentedControl: 270110865f17db04328b826ccea2c42ddee72a0f
+  TapkuLibrary: a5c893e99fcbbc21f7adaa6562e6311dfe24e6ee
+
+COCOAPODS: 0.20.2

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>940A3490-E46E-48F0-B359-B80A3B53A2AF</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Gamer</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C5FED669-461C-4A4A-B9CF-3D08C9EFDD55</key>
+		<string>https://github.com/caiomello/gamer.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Gamer/Gamer.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C5FED669-461C-4A4A-B9CF-3D08C9EFDD55</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/caiomello/gamer.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C5FED669-461C-4A4A-B9CF-3D08C9EFDD55</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C5FED669-461C-4A4A-B9CF-3D08C9EFDD55</string>
+			<key>IDESourceControlWCCName</key>
+			<string>gamer</string>
+		</dict>
+	</array>
+</dict>
+</plist>
