@@ -27,26 +27,23 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
+	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
+	
+	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
+	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
+	
 	// Search bar setup
-	if (!_searchBar) _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 252, 44)];
+	if (!_searchBar) _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
 	[_searchBar setPlaceholder:@"Search"];
 	[_searchBar setDelegate:self];
 	
-//	// Remove search bar background
-//	for (id backgroundImage in _searchBar.subviews)
-//        if ([backgroundImage isKindOfClass:NSClassFromString(@"UISearchBarBackground")])
-//			[backgroundImage removeFromSuperview];
+	for(UIView *subView in _searchBar.subviews)
+		if([subView isKindOfClass: [UITextField class]])
+			[(UITextField *)subView setKeyboardAppearance:UIKeyboardAppearanceAlert];
 	
-	// Add search bar to navigation bar
-	UIBarButtonItem *searchBarItem;
-	if (!searchBarItem) searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:_searchBar];
-	[self.navigationItem setRightBarButtonItem:searchBarItem];
+	[self.navigationItem setTitleView:_searchBar];
 	
 	if (!_results) _results = [[NSMutableArray alloc] init];
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-	[_searchBar becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -55,14 +52,31 @@
 
 #pragma mark - SearchBar
 
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
+	[_searchBar setShowsSearchResultsButton:YES];
+}
+
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[_previousOperation cancel];
-	if (searchText.length > 0) [self requestGamesWithName:[searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
+	if (searchText.length > 0){
+		[self requestGamesWithName:[searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
+//		NSString *name = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+//		[self performSelector:@selector(requestGamesWithName:) withObject:name afterDelay:(searchText.length == 1) ? 0 : 1];
+	}
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+	[searchBar resignFirstResponder];
 	[_previousOperation cancel];
 	[self requestGamesWithName:[searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
+}
+
+- (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar{
+	[searchBar resignFirstResponder];
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
+	[_searchBar setShowsSearchResultsButton:NO];
 }
 
 #pragma mark - TableView
@@ -73,6 +87,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
+	[cell.textLabel setTextColor:[UIColor lightGrayColor]];
 	
 	SearchResult *result = _results[indexPath.row];
 	[cell.textLabel setText:result.title];
@@ -103,7 +119,7 @@
 		
 		[_results removeAllObjects];
 		
-		//		NSLog(@"%@", JSON);
+//		NSLog(@"%@", JSON);
 		
 		for (NSDictionary *dictionary in JSON[@"results"]){
 			SearchResult *result;

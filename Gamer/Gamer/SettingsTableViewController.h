@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FetchedTableViewController.h"
 
-@interface SettingsTableViewController : UITableViewController
+@interface SettingsTableViewController : FetchedTableViewController
 
 @end

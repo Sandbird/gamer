@@ -16,10 +16,11 @@
 #import "Franchise.h"
 #import "Theme.h"
 #import "ReleasePeriod.h"
+#import "ReleaseDate.h"
 #import "GameTableViewController.h"
 #import "SearchTableViewController.h"
 
-@interface WishlistTableViewController ()
+@interface WishlistTableViewController () <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
 
 @end
 
@@ -27,34 +28,50 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+	
+	[self setEdgesForExtendedLayout:UIExtendedEdgeBottom];
+	
+	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
+	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
+	
+	self.fetchedResultsController = [self fetch];
+	
+	// Update game release periods
+//	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+//	
+//	NSFetchRequest *fetchRequest = [Game createFetchRequest];
+//	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND selectedPlatform.favorite = %@", @(YES), @(YES)]];
+//	[fetchRequest setPropertiesToFetch:@[@"releaseDate", @"releasePeriod"]];
+//	[fetchRequest setRelationshipKeyPathsForPrefetching:@[@"releaseDate", @"releasePeriod"]];
+//	NSArray *games = [Game executeFetchRequest:fetchRequest];
+//	
+//	for (Game *game in games)
+//		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
+//
+//	[context saveToPersistentStoreAndWait];
 }
 
-- (void)viewDidLayoutSubviews{
-	//	ReleasesCell *cell = (ReleasesCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-	//	[Utilities addDropShadowToView:cell.coverImageView color:[UIColor redColor] opacity:0.6 radius:10 offset:CGSizeZero];
-}
-
-- (void)viewWillAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
-	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND selectedPlatform.favorite = %@", @(YES), @(YES)]];
-	for (Game *game in games)
-		[game setReleasePeriod:[self releasePeriodForGame:game]];
+//	NSFetchRequest *fRequest = [ReleasePeriod createFetchRequest];
+//	[fetchRequest setPropertiesToFetch:@[@"placeholderGame.hidden"]];
+//	[fRequest setRelationshipKeyPathsForPrefetching:@[@"games", @"placeholderGame"]];
+//	NSArray *releasePeriods = [ReleasePeriod executeFetchRequest:fRequest];
 	
+	// Set sections to show if they have tracked games
 	NSArray *releasePeriods = [ReleasePeriod findAll];
+	
 	for (ReleasePeriod *releasePeriod in releasePeriods){
-		[self verifySectionHidingForReleasePeriod:releasePeriod];
-		//		Game *fakeGame = [Game findFirstWithPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND identifier = nil", releasePeriod.identifier]];
-		//		if ([Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND releasePeriod.identifier = %@ AND identifier != nil", @(YES), releasePeriod.identifier]].count > 0)
-		//			[fakeGame setHidden:@(NO)];
-		//		else
-		//			[fakeGame setHidden:@(YES)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
+		NSArray *games = [Game findAllWithPredicate:predicate];
+		
+//		NSLog(@"hidden? %@ - %@ - %@ - %@ - count: %d", releasePeriod.placeholderGame.hidden, releasePeriod.placeholderGame.title, releasePeriod.identifier, releasePeriod.name, games.count);
+		
+		[releasePeriod.placeholderGame setHidden:(games.count > 0) ? @(NO) : @(YES)];
 	}
 	
-	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		self.fetchedResultsController = [self releasesFetchedResultsController];
-		[self.tableView reloadData];
-	}];
+	[context saveToPersistentStoreAndWait];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -68,16 +85,14 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-	WishlistSectionHeaderView *headerView = [[WishlistSectionHeaderView alloc] initWithSectionIndex:section];
+	NSString *sectionName = [self.fetchedResultsController.sections[section] name];
+	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue)];
+	
+	WishlistSectionHeaderView *headerView = [[WishlistSectionHeaderView alloc] initWithReleasePeriod:releasePeriod];
 	[headerView setDelegate:self];
-	[headerView.titleLabel setText:[[ReleasePeriod findFirstByAttribute:@"identifier" withValue:[self.fetchedResultsController.sections[section] name]] name]];
 	
 	return headerView;
 }
-
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-//	return [[ReleasePeriod findFirstByAttribute:@"identifier" withValue:[_releasesFetch.sections[section] name]] name];
-//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return [self.fetchedResultsController.sections[section] numberOfObjects];
@@ -90,6 +105,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
+	[cell setSeparatorInset:UIEdgeInsetsMake(0, 74, 0, 0)];
+	[cell.titleLabel setTextColor:[UIColor lightGrayColor]];
+	[cell.dateLabel setTextColor:[UIColor grayColor]];
 	
 	[self configureCell:cell atIndexPath:indexPath];
 	
@@ -107,50 +126,56 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+	
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[game setWanted:@(NO)];
 	
-	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:[self.fetchedResultsController.sections[indexPath.section] name]];
-	[self verifySectionHidingForReleasePeriod:releasePeriod];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", game.releasePeriod.identifier, @(YES), @(YES)];
+	NSArray *games = [Game findAllWithPredicate:predicate inContext:context];
 	
-	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		self.fetchedResultsController = [self releasesFetchedResultsController];
-	}];
+	if (games.count == 0)
+		[game.releasePeriod.placeholderGame setHidden:@(YES)];
+	
+	[context saveToPersistentStoreAndWait];
 }
 
 #pragma mark - FetchedTableView
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
-	WishlistCell *customCell = (WishlistCell *)cell;
-	
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	
+	WishlistCell *customCell = (WishlistCell *)cell;
 	[customCell.titleLabel setText:game.title];
 	[customCell.dateLabel setText:([game.releasePeriod.identifier isEqualToNumber:@(8)]) ? @"" : game.releaseDateText];
-	[customCell.coverImageView setImage:[UIImage imageWithData:game.coverImageSmall]];
+	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];
 	[customCell.platformLabel setText:game.selectedPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.selectedPlatform.color];
-	//	[Utilities addDropShadowToView:cell.coverImageView color:[UIColor redColor] opacity:0.6 radius:10 offset:CGSizeZero];
 }
 
 #pragma mark - HidingSectionView
 
-- (void)sectionHeaderView:(WishlistSectionHeaderView *)sectionView didTapSection:(NSInteger)section{
+- (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)sectionView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
-	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:[self.fetchedResultsController.sections[section] name]];
-	for (Game *game in releasePeriod.games)
-		if (game.identifier)
-			[game setHidden:@(!game.hidden.boolValue)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
+	NSArray *games = [Game findAllWithPredicate:predicate];
 	
-	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		self.fetchedResultsController = [self releasesFetchedResultsController];
-	}];
+	for (Game *game in games)
+		[game setHidden:@(!game.hidden.boolValue)];
+	
+	[context saveToPersistentStoreAndWait];
 }
 
 #pragma mark - FetchedResultsController
 
-- (NSFetchedResultsController *)releasesFetchedResultsController{
-	return [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:[NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND selectedPlatform.favorite = %@) OR identifier = nil)", @(NO), @(YES), @(YES)] sortedBy:@"releasePeriod.identifier,releaseDate" ascending:YES delegate:self];
+- (NSFetchedResultsController *)fetch{
+	if (!self.fetchedResultsController){
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND selectedPlatform.favorite = %@) OR identifier = nil)", @(NO), @(YES), @(YES)];
+		
+		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date" ascending:YES delegate:self];
+	}
+	
+	return self.fetchedResultsController;
 }
 
 #pragma mark - Custom
@@ -165,7 +190,7 @@
 	}
 }
 
-- (ReleasePeriod *)releasePeriodForGame:(Game *)game{
+- (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate{
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
@@ -180,41 +205,25 @@
 	nextComponents.year++;
 	
 	NSInteger period = 0;
-	if ([game.releaseDate compare:[calendar dateFromComponents:currentComponents]] <= NSOrderedSame) period = 1;
-	else if ([game.releaseMonth isEqualToNumber:@(currentComponents.month)]) period = 2;
-	else if ([game.releaseMonth isEqualToNumber:@(nextComponents.month)]) period = 3;
-	else if ([game.releaseQuarter isEqualToNumber:@(currentComponents.quarter)]) period = 4;
-	else if ([game.releaseQuarter isEqualToNumber:@(nextComponents.quarter)]) period = 5;
-	else if ([game.releaseYear isEqualToNumber:@(currentComponents.year)]) period = 6;
-	else if ([game.releaseYear isEqualToNumber:@(nextComponents.year)]) period = 7;
-	else if ([game.releaseYear isEqualToNumber:@(2050)]) period = 8;
+	if ([releaseDate.date compare:[calendar dateFromComponents:currentComponents]] <= NSOrderedSame) period = 1;
+	else if ([releaseDate.month isEqualToNumber:@(currentComponents.month)]) period = 2;
+	else if ([releaseDate.month isEqualToNumber:@(nextComponents.month)]) period = 3;
+	else if ([releaseDate.quarter isEqualToNumber:@(currentComponents.quarter)]) period = 4;
+	else if ([releaseDate.quarter isEqualToNumber:@(nextComponents.quarter)]) period = 5;
+	else if ([releaseDate.year isEqualToNumber:@(currentComponents.year)]) period = 6;
+	else if ([releaseDate.year isEqualToNumber:@(nextComponents.year)]) period = 7;
+	else if ([releaseDate.year isEqualToNumber:@(2050)]) period = 8;
 	
 	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
 }
 
-- (void)verifySectionHidingForReleasePeriod:(ReleasePeriod *)releasePeriod{
-	Game *fakeGame = [Game findFirstWithPredicate:[NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND identifier = nil", releasePeriod.identifier]];
-	if ([Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND releasePeriod.identifier = %@ AND identifier != nil", @(YES), releasePeriod.identifier]].count > 0)
-		[fakeGame setHidden:@(NO)];
-	else
-		[fakeGame setHidden:@(YES)];
-}
-
 #pragma mark - Actions
-
-- (IBAction)addBarButtonPressAction:(UIBarButtonItem *)sender{
-	[self performSegueWithIdentifier:@"SearchSegue" sender:nil];
-}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
 		GameTableViewController *destination = [segue destinationViewController];
 		[destination setGame:[self.fetchedResultsController objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
 	}
-//	if ([segue.identifier isEqualToString:@"SearchSegue"]){
-//		SearchTableViewController *destination = [segue destinationViewController];
-//		[destination setOrigin:1];
-//	}
 }
 
 @end

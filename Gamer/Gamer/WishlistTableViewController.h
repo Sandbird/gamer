@@ -10,6 +10,6 @@
 #import "FetchedTableViewController.h"
 #import "WishlistSectionHeaderView.h"
 
-@interface WishlistTableViewController : FetchedTableViewController <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
+@interface WishlistTableViewController : FetchedTableViewController
 
 @end

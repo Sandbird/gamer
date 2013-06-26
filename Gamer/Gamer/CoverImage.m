@@ -1,19 +1,19 @@
 //
-//  Theme.m
+//  CoverImage.m
 //  Gamer
 //
 //  Created by Caio Mello on 6/20/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "Theme.h"
+#import "CoverImage.h"
 #import "Game.h"
 
 
-@implementation Theme
+@implementation CoverImage
 
-@dynamic identifier;
-@dynamic name;
-@dynamic games;
+@dynamic data;
+@dynamic url;
+@dynamic game;
 
 @end

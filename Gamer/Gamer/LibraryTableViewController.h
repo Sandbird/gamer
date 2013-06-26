@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FetchedTableViewController.h"
 
-@interface LibraryTableViewController : UITableViewController
+@interface LibraryTableViewController : FetchedTableViewController
 
 @end

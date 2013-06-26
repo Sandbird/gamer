@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3381.3" systemVersion="12E55" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="CoverImage" representedClassName="CoverImage" syncable="YES">
+        <attribute name="data" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="coverImage" inverseEntity="Game" syncable="YES"/>
+    </entity>
     <entity name="Developer" representedClassName="Developer" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
@@ -13,29 +18,25 @@
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="franchises" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="Game" representedClassName="Game" syncable="YES">
-        <attribute name="coverImage" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="coverImageSmall" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="coverImageURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="metascore" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="released" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="releaseDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="releaseDateText" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="releaseDay" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="releaseMonth" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="releaseQuarter" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="releaseYear" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="wanted" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <relationship name="coverImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoverImage" inverseName="game" inverseEntity="CoverImage" syncable="YES"/>
         <relationship name="developers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Developer" inverseName="games" inverseEntity="Developer" syncable="YES"/>
         <relationship name="franchises" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Franchise" inverseName="games" inverseEntity="Franchise" syncable="YES"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="game" inverseEntity="Image" syncable="YES"/>
+        <relationship name="placeholderPeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="placeholderGame" inverseEntity="ReleasePeriod" syncable="YES"/>
         <relationship name="platforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="games" inverseEntity="Platform" syncable="YES"/>
         <relationship name="publishers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Publisher" inverseName="games" inverseEntity="Publisher" syncable="YES"/>
+        <relationship name="releaseDate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleaseDate" inverseName="games" inverseEntity="ReleaseDate" syncable="YES"/>
         <relationship name="releasePeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="games" inverseEntity="ReleasePeriod" syncable="YES"/>
         <relationship name="selectedPlatform" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="savedGames" inverseEntity="Platform" syncable="YES"/>
         <relationship name="similarGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SimilarGame" inverseName="game" inverseEntity="SimilarGame" syncable="YES"/>
@@ -66,10 +67,19 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="publishers" inverseEntity="Game" syncable="YES"/>
     </entity>
+    <entity name="ReleaseDate" representedClassName="ReleaseDate" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="day" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="month" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="quarter" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="year" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="releaseDate" inverseEntity="Game" syncable="YES"/>
+    </entity>
     <entity name="ReleasePeriod" representedClassName="ReleasePeriod" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="releasePeriod" inverseEntity="Game" syncable="YES"/>
+        <relationship name="placeholderGame" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="placeholderPeriod" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="SimilarGame" representedClassName="SimilarGame" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
@@ -87,16 +97,18 @@
         <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="videos" inverseEntity="Game" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Franchise" positionX="-135" positionY="-247" width="128" height="103"/>
-        <element name="Genre" positionX="-173" positionY="-99" width="128" height="88"/>
-        <element name="Publisher" positionX="-209" positionY="9" width="128" height="103"/>
-        <element name="SimilarGame" positionX="-225" positionY="140" width="128" height="103"/>
-        <element name="ReleasePeriod" positionX="52" positionY="308" width="128" height="88"/>
-        <element name="Video" positionX="-198" positionY="278" width="128" height="73"/>
-        <element name="Game" positionX="63" positionY="-220" width="128" height="463"/>
-        <element name="Developer" positionX="261" positionY="-252" width="128" height="103"/>
-        <element name="Image" positionX="315" positionY="-118" width="128" height="73"/>
-        <element name="Theme" positionX="313" positionY="227" width="128" height="88"/>
-        <element name="Platform" positionX="324" positionY="32" width="128" height="148"/>
+        <element name="CoverImage" positionX="-108" positionY="-313" width="128" height="88"/>
+        <element name="Developer" positionX="261" positionY="-319" width="128" height="103"/>
+        <element name="Franchise" positionX="-137" positionY="-202" width="128" height="103"/>
+        <element name="Game" positionX="63" positionY="-220" width="128" height="403"/>
+        <element name="Genre" positionX="-180" positionY="-79" width="128" height="88"/>
+        <element name="Image" positionX="313" positionY="-180" width="128" height="73"/>
+        <element name="Platform" positionX="322" positionY="-63" width="128" height="148"/>
+        <element name="Publisher" positionX="-225" positionY="27" width="128" height="103"/>
+        <element name="ReleaseDate" positionX="376" positionY="110" width="128" height="133"/>
+        <element name="ReleasePeriod" positionX="27" positionY="297" width="128" height="103"/>
+        <element name="SimilarGame" positionX="-263" positionY="149" width="128" height="103"/>
+        <element name="Theme" positionX="279" positionY="279" width="128" height="88"/>
+        <element name="Video" positionX="-198" positionY="270" width="128" height="73"/>
     </elements>
 </model>

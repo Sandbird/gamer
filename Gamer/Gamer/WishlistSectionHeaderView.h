@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ReleasePeriod.h"
 
 @class WishlistSectionHeaderView;
 
@@ -14,7 +15,7 @@
 
 @required
 
-- (void)sectionHeaderView:(WishlistSectionHeaderView *)sectionView didTapSection:(NSInteger)section;
+- (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)sectionView didTapReleasePeriod:(ReleasePeriod *)releasePeriod;
 
 @end
 
@@ -25,10 +26,10 @@
 @property (nonatomic, strong) UIImageView *hideIndicator;
 @property (nonatomic, strong) UITapGestureRecognizer *gestureRecognizer;
 
-@property (nonatomic, assign) NSInteger index;
+@property (nonatomic, strong) ReleasePeriod *releasePeriod;
 
 @property (nonatomic, weak) id <WishlistSectionHeaderViewDelegate> delegate;
 
-- (id)initWithSectionIndex:(NSInteger)index;
+- (id)initWithReleasePeriod:(ReleasePeriod *)releasePeriod;
 
 @end

@@ -13,9 +13,9 @@
 #import "GameTableViewController.h"
 #import "SearchTableViewController.h"
 
-@interface LibraryTableViewController ()
+@interface LibraryTableViewController () <FetchedTableViewDelegate>
 
-@property (nonatomic, strong) NSFetchedResultsController *gamesFetch;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *segmentedControl;
 @property (nonatomic, strong) NSPredicate *predicate;
 
 @end
@@ -24,26 +24,26 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+	
+	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
+	
+	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
+	[self.tableView.tableHeaderView setBackgroundColor:[UIColor clearColor]];
+	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
+	
+	self.fetchedResultsController = [self fetchWithPredicate:_predicate];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
 	NSArray *favoritePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@", @(YES)]];
 	
-	UISegmentedControl *segmentedControl = (UISegmentedControl *)self.tableView.tableHeaderView;
-	[segmentedControl removeAllSegments];
+	[_segmentedControl removeAllSegments];
 	
-	if (favoritePlatforms.count > 0){
-		[segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
-		for (Platform *platform in favoritePlatforms)
-			[segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([favoritePlatforms indexOfObject:platform] + 1) animated:NO];
-	}
-	else
-		[segmentedControl insertSegmentWithTitle:@"Select your platforms in Settings" atIndex:0 animated:NO];
+	[_segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
+	for (Platform *platform in favoritePlatforms)
+		[_segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([favoritePlatforms indexOfObject:platform] + 1) animated:NO];
 	
-	[segmentedControl setSelectedSegmentIndex:0];
-	
-	_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:_predicate];
-	[self.tableView reloadData];
+	[_segmentedControl setSelectedSegmentIndex:0];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -53,18 +53,15 @@
 #pragma mark - TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [_gamesFetch.sections[section] numberOfObjects];
+    return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     LibraryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
+	[cell.titleLabel setTextColor:[UIColor lightGrayColor]];
 	
-	Game *game = [_gamesFetch objectAtIndexPath:indexPath];
-	[cell.titleLabel setText:game.title];
-	[cell.coverImageView setImage:[UIImage imageWithData:game.coverImageSmall]];
-	[cell.platformLabel setText:game.selectedPlatform.abbreviation];
-	[cell.platformLabel setBackgroundColor:game.selectedPlatform.color];
-	[cell.metascoreLabel setText:game.metascore];
+	[self configureCell:cell atIndexPath:indexPath];
 	
     return cell;
 }
@@ -80,19 +77,34 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-	Game *game = [_gamesFetch objectAtIndexPath:indexPath];
+	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	//	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", game.identifier] inContext:context];
 	[game setOwned:@(NO)];
 	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:_predicate];
+		self.fetchedResultsController = [self fetchWithPredicate:_predicate];
 		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
 	}];
 }
 
-#pragma mark - Custom
+#pragma mark - FetchedTableView
 
-- (NSFetchedResultsController *)libraryFetchedResultsControllerWithPredicate:(NSPredicate *)predicate{
-	return [Game fetchAllGroupedBy:nil withPredicate:(predicate) ? predicate : [NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"title" ascending:YES];
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
+	LibraryCell *customCell = (LibraryCell *)cell;
+	
+	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	[customCell.titleLabel setText:game.title];
+	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];
+	[customCell.platformLabel setText:game.selectedPlatform.abbreviation];
+	[customCell.platformLabel setBackgroundColor:game.selectedPlatform.color];
+	[customCell.metascoreLabel setText:game.metascore];
+}
+
+#pragma mark - Fetch
+
+- (NSFetchedResultsController *)fetchWithPredicate:(NSPredicate *)predicate{
+	if (!self.fetchedResultsController)
+		self.fetchedResultsController = [Game fetchAllGroupedBy:nil withPredicate:(predicate) ? predicate : [NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"title" ascending:YES delegate:self];
+	return self.fetchedResultsController;
 }
 
 #pragma mark - Actions
@@ -108,7 +120,7 @@
 	else
 		predicate = nil;
 	
-	_gamesFetch = [self libraryFetchedResultsControllerWithPredicate:predicate];
+	self.fetchedResultsController = [self fetchWithPredicate:predicate];
 	[self.tableView reloadData];
 }
 
@@ -119,7 +131,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
 		GameTableViewController *destination = [segue destinationViewController];
-		[destination setGame:[_gamesFetch objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
+		[destination setGame:[self.fetchedResultsController objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
 	}
 //	if ([segue.identifier isEqualToString:@"SearchSegue"]){
 //		SearchTableViewController *destination = [segue destinationViewController];

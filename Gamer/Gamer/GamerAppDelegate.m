@@ -11,6 +11,7 @@
 #import "Game.h"
 #import "ReleasePeriod.h"
 #import "Platform.h"
+#import "ReleaseDate.h"
 
 @implementation GamerAppDelegate
 
@@ -20,12 +21,14 @@
 	
 	//	[Flurry startSession:@"P9BVWFKVSP4PD66TGNXV"];
 	
-//	[[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"NavigationBarBackground"] forBarMetrics:UIBarMetricsDefault];
-//	[[UINavigationBar appearance] setTitleTextAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Avenir-Heavy" size:20]}];
-//	
-//	[[UITabBar appearance] setBackgroundImage:[UIImage imageNamed:@"TabBarBackground"]];
-//	[[UITabBar appearance] setSelectionIndicatorImage:[UIImage imageNamed:@"TabBarSelectionIndicator"]];
-//	[[UITabBarItem appearance] setTitleTextAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Avenir-Medium" size:12]} forState:UIControlStateNormal];
+	[self.window setTintColor:[UIColor orangeColor]];
+	
+	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+	
+	[[UITabBar appearance] setBarStyle:UIBarStyleBlack];
+	
+	[[UINavigationBar appearance] setBarStyle:UIBarStyleBlack];
+	[[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:self.window.tintColor}];
 	
 	// Starting data
 	if ([ReleasePeriod findAll].count == 0){
@@ -68,16 +71,22 @@
 	NSDateComponents *components = [calendar components:NSYearCalendarUnit fromDate:[NSDate date]];
 	[components setYear:2051];
 	
+	ReleaseDate *releaseDate = [[ReleaseDate alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleaseDate" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+	[releaseDate setDate:[calendar dateFromComponents:components]];
+	
 	NSArray *periods = @[@"Released", @"This Month", @"Next Month", @"This Quarter", @"Next Quarter", @"This Year", @"Next Year", @"To Be Announced"];
 	for (NSInteger period = 1; period <= periods.count; period++){
 		ReleasePeriod *releasePeriod = [[ReleasePeriod alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleasePeriod" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 		[releasePeriod setIdentifier:@(period)];
 		[releasePeriod setName:periods[period - 1]];
 		
-		Game *fakeGame = [[Game alloc] initWithEntity:[NSEntityDescription entityForName:@"Game" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
-		[fakeGame setReleasePeriod:releasePeriod];
-		[fakeGame setReleaseDate:[calendar dateFromComponents:components]];
-		[fakeGame setHidden:@(YES)];
+		Game *placeholderGame = [[Game alloc] initWithEntity:[NSEntityDescription entityForName:@"Game" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+//		[placeholderGame setTitle:[NSString stringWithFormat:@"placeholder%@", releasePeriod.identifier]];
+		[placeholderGame setReleasePeriod:releasePeriod];
+		[placeholderGame setReleaseDate:releaseDate];
+		[placeholderGame setHidden:@(YES)];
+		
+		[releasePeriod setPlaceholderGame:placeholderGame];
 	}
 	
 	[context saveToPersistentStoreAndWait];
@@ -89,7 +98,7 @@
 	NSArray *identifiers = @[@(117), @(94), @(35), @(146), @(129), @(139), @(20), @(145)];
 	NSArray *names = @[@"Nintendo 3DS", @"PC", @"PlayStation 3", @"PlayStation 4", @"PlayStation Vita", @"Wii U", @"Xbox 360", @"Xbox One"];
 	NSArray *abbreviations = @[@"3DS", @"PC", @"PS3", @"PS4", @"VITA", @"WIIU", @"X360", @"XONE"];
-	NSArray *colors = @[[UIColor colorWithRed:.784313725 green:0 blue:0 alpha:1], [UIColor colorWithRed:.156862745 green:.156862745 blue:.156862745 alpha:1], [UIColor colorWithRed:0 green:.117647059 blue:.62745098 alpha:1], [UIColor colorWithRed:.188235294 green:.176470588 blue:.490196078 alpha:1], [UIColor colorWithRed:.082352941 green:.294117647 blue:.596078431 alpha:1], [UIColor colorWithRed:0 green:.509803922 blue:.745098039 alpha:1], [UIColor colorWithRed:.31372549 green:.62745098 blue:.117647059 alpha:1], [UIColor colorWithRed:.058823529 green:.431372549 blue:0 alpha:1]];
+	NSArray *colors = @[[UIColor colorWithRed:.784313725 green:0 blue:0 alpha:0.8], [UIColor colorWithRed:.156862745 green:.156862745 blue:.156862745 alpha:0.8], [UIColor colorWithRed:0 green:.117647059 blue:.62745098 alpha:0.8], [UIColor colorWithRed:.188235294 green:.176470588 blue:.490196078 alpha:0.8], [UIColor colorWithRed:.082352941 green:.294117647 blue:.596078431 alpha:0.8], [UIColor colorWithRed:0 green:.509803922 blue:.745098039 alpha:0.8], [UIColor colorWithRed:.31372549 green:.62745098 blue:.117647059 alpha:0.8], [UIColor colorWithRed:.058823529 green:.431372549 blue:0 alpha:0.8]];
 	for (NSInteger index = 0; index < identifiers.count; index++){
 		Platform *platform = [[Platform alloc] initWithEntity:[NSEntityDescription entityForName:@"Platform" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
 		[platform setIdentifier:identifiers[index]];

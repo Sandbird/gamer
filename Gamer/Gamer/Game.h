@@ -2,40 +2,36 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 6/15/13.
+//  Created by Caio Mello on 6/26/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Developer, Franchise, Genre, Image, Platform, Publisher, ReleasePeriod, SimilarGame, Theme, Video;
+@class CoverImage, Developer, Franchise, Genre, Image, Platform, Publisher, ReleaseDate, ReleasePeriod, SimilarGame, Theme, Video;
 
 @interface Game : NSManagedObject
 
-@property (nonatomic, retain) NSData * coverImage;
-@property (nonatomic, retain) NSData * coverImageSmall;
-@property (nonatomic, retain) NSString * coverImageURL;
 @property (nonatomic, retain) NSNumber * hidden;
 @property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) NSString * metascore;
 @property (nonatomic, retain) NSString * overview;
 @property (nonatomic, retain) NSNumber * owned;
 @property (nonatomic, retain) NSNumber * released;
-@property (nonatomic, retain) NSDate * releaseDate;
 @property (nonatomic, retain) NSString * releaseDateText;
-@property (nonatomic, retain) NSNumber * releaseDay;
-@property (nonatomic, retain) NSNumber * releaseMonth;
-@property (nonatomic, retain) NSNumber * releaseQuarter;
-@property (nonatomic, retain) NSNumber * releaseYear;
+@property (nonatomic, retain) NSData * thumbnail;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * wanted;
+@property (nonatomic, retain) CoverImage *coverImage;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
 @property (nonatomic, retain) NSSet *images;
+@property (nonatomic, retain) ReleasePeriod *placeholderPeriod;
 @property (nonatomic, retain) NSSet *platforms;
 @property (nonatomic, retain) NSSet *publishers;
+@property (nonatomic, retain) ReleaseDate *releaseDate;
 @property (nonatomic, retain) ReleasePeriod *releasePeriod;
 @property (nonatomic, retain) Platform *selectedPlatform;
 @property (nonatomic, retain) NSSet *similarGames;

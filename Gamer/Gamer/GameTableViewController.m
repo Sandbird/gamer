@@ -16,6 +16,8 @@
 #import "Image.h"
 #import "Video.h"
 #import "ReleasePeriod.h"
+#import "CoverImage.h"
+#import "ReleaseDate.h"
 #import "SessionManager.h"
 //#import "MediaViewController.h"
 
@@ -48,6 +50,20 @@
 
 - (void)viewDidLoad{
 	[super viewDidLoad];
+	
+	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
+	
+	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
+	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
+	
+	[_titleLabel setTextColor:[UIColor lightGrayColor]];
+	[_releaseDateLabel setTextColor:[UIColor lightGrayColor]];
+	[_descriptionTextView setTextColor:[UIColor lightGrayColor]];
+	[_platformLabel setTextColor:[UIColor lightGrayColor]];
+	[_developerLabel setTextColor:[UIColor lightGrayColor]];
+	[_publisherLabel setTextColor:[UIColor lightGrayColor]];
+	[_genreFirstLabel setTextColor:[UIColor lightGrayColor]];
+	[_genreSecondLabel setTextColor:[UIColor lightGrayColor]];
 	
 	if (!_game){
 		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
@@ -108,9 +124,8 @@
 		// Cover image
 		if (results[@"image"] != [NSNull null]){
 			NSString *URL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-			if (!_game.coverImage || ![_game.coverImageURL isEqualToString:URL]){
+			if (!_game.coverImage || ![_game.coverImage.url isEqualToString:URL]){
 				[self requestImageWithURL:[NSURL URLWithString:URL]];
-				[_game setCoverImageURL:URL];
 			}
 		}
 		
@@ -129,16 +144,22 @@
 			[originalReleaseDateComponents setHour:10];
 			[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
 			
-			NSDate *dateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
-			[_game setReleaseDate:dateFromComponents];
-			[_game setReleaseDay:@(originalReleaseDateComponents.day)];
-			[_game setReleaseMonth:@(originalReleaseDateComponents.month)];
-			[_game setReleaseQuarter:@(originalReleaseDateComponents.quarter)];
-			[_game setReleaseYear:@(originalReleaseDateComponents.year)];
+			NSDate *releaseDateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
+			
+			ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:releaseDateFromComponents];
+			if (!releaseDate) releaseDate = [[ReleaseDate alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleaseDate" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+			[releaseDate setDate:releaseDateFromComponents];
+			[releaseDate setDay:@(originalReleaseDateComponents.day)];
+			[releaseDate setMonth:@(originalReleaseDateComponents.month)];
+			[releaseDate setQuarter:@(originalReleaseDateComponents.quarter)];
+			[releaseDate setYear:@(originalReleaseDateComponents.year)];
 			
 			[[Tools dateFormatter] setDateFormat:@"d MMM yyyy"];
-			[_game setReleaseDateText:[[Tools dateFormatter] stringFromDate:dateFromComponents]];
+			[_game setReleaseDateText:[[Tools dateFormatter] stringFromDate:releaseDateFromComponents]];
 			[_game setReleased:@(YES)];
+			
+			[_game setReleaseDate:releaseDate];
+			[_game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
 		}
 		else{
 			NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
@@ -179,17 +200,22 @@
 				[expectedReleaseDateComponents setDay:0];
 			}
 			
-			NSDate *expectedReleaseDate = [calendar dateFromComponents:expectedReleaseDateComponents];
-			[_game setReleaseDate:expectedReleaseDate];
-			[_game setReleaseDay:@(expectedReleaseDateComponents.day)];
-			[_game setReleaseMonth:@(expectedReleaseDateComponents.month)];
-			[_game setReleaseQuarter:@(expectedReleaseDateComponents.quarter)];
-			[_game setReleaseYear:@(expectedReleaseDateComponents.year)];
-			[_game setReleaseDateText:(expectedReleaseYear) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDate] : @"TBA"];
+			NSDate *expectedReleaseDateFromComponents = [calendar dateFromComponents:expectedReleaseDateComponents];
 			
+			ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents];
+			if (!releaseDate) releaseDate = [[ReleaseDate alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleaseDate" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+			[releaseDate setDate:expectedReleaseDateFromComponents];
+			[releaseDate setDay:@(expectedReleaseDateComponents.day)];
+			[releaseDate setMonth:@(expectedReleaseDateComponents.month)];
+			[releaseDate setQuarter:@(expectedReleaseDateComponents.quarter)];
+			[releaseDate setYear:@(expectedReleaseDateComponents.year)];
+			
+			[_game setReleaseDateText:(expectedReleaseYear) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
 			[_game setReleased:@(NO)];
+			
+			[_game setReleaseDate:releaseDate];
+			[_game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
 		}
-		[_game setReleasePeriod:[self releasePeriodForGame:_game]];
 		
         // Platforms
 		if (results[@"platforms"] != [NSNull null]){
@@ -318,8 +344,14 @@
 		UIImage *imageSmall = [self imageWithImage:image scaledToWidth:200];
 		
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-		[_game setCoverImage:UIImagePNGRepresentation(imageLarge)];
-		[_game setCoverImageSmall:UIImagePNGRepresentation(imageSmall)];
+		
+		CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:URL];
+		if (!coverImage) coverImage = [[CoverImage alloc] initWithEntity:[NSEntityDescription entityForName:@"CoverImage" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+		[coverImage setData:UIImagePNGRepresentation(imageLarge)];
+		
+		[_game setCoverImage:coverImage];
+		[_game setThumbnail:UIImagePNGRepresentation(imageSmall)];
+		
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			dispatch_async(dispatch_get_main_queue(), ^{
 				CATransition *transition = [CATransition animation];
@@ -421,7 +453,8 @@
 #pragma mark - Custom
 
 - (void)refresh{
-	[_coverImageView setImage:[UIImage imageWithData:_game.coverImage]];
+	[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
+//	[_progressIndicator setHidden:(_game.coverImage.data) ? YES : NO];
 	[_metascoreLabel setText:_game.metascore];
 	[_titleLabel setText:_game.title];
 	
@@ -462,7 +495,7 @@
 	}
 }
 
-- (ReleasePeriod *)releasePeriodForGame:(Game *)game{
+- (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate{
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
@@ -477,14 +510,14 @@
 	nextComponents.year++;
 	
 	NSInteger period = 0;
-	if ([game.releaseDate compare:[calendar dateFromComponents:currentComponents]] <= NSOrderedSame) period = 1;
-	else if ([game.releaseMonth isEqualToNumber:@(currentComponents.month)]) period = 2;
-	else if ([game.releaseMonth isEqualToNumber:@(nextComponents.month)]) period = 3;
-	else if ([game.releaseQuarter isEqualToNumber:@(currentComponents.quarter)]) period = 4;
-	else if ([game.releaseQuarter isEqualToNumber:@(nextComponents.quarter)]) period = 5;
-	else if ([game.releaseYear isEqualToNumber:@(currentComponents.year)]) period = 6;
-	else if ([game.releaseYear isEqualToNumber:@(nextComponents.year)]) period = 7;
-	else if ([game.releaseYear isEqualToNumber:@(2050)]) period = 8;
+	if ([releaseDate.date compare:[calendar dateFromComponents:currentComponents]] <= NSOrderedSame) period = 1;
+	else if ([releaseDate.month isEqualToNumber:@(currentComponents.month)]) period = 2;
+	else if ([releaseDate.month isEqualToNumber:@(nextComponents.month)]) period = 3;
+	else if ([releaseDate.quarter isEqualToNumber:@(currentComponents.quarter)]) period = 4;
+	else if ([releaseDate.quarter isEqualToNumber:@(nextComponents.quarter)]) period = 5;
+	else if ([releaseDate.year isEqualToNumber:@(currentComponents.year)]) period = 6;
+	else if ([releaseDate.year isEqualToNumber:@(nextComponents.year)]) period = 7;
+	else if ([releaseDate.year isEqualToNumber:@(2050)]) period = 8;
 	
 	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
 }
