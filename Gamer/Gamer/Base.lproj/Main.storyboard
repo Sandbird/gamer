@@ -295,17 +295,16 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Images" id="Aou-00-fZY">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="160" id="gvy-Ac-Fzg">
-                                        <rect key="frame" x="0.0" y="650" width="320" height="160"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="180" id="gvy-Ac-Fzg">
+                                        <rect key="frame" x="0.0" y="650" width="320" height="180"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="159"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="179"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wLa-8j-Trm" userLabel="Images Scroll View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="159"/>
+                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wLa-8j-Trm" userLabel="Images Scroll View">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 </scrollView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -316,17 +315,16 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Videos" id="BJa-Z2-jrP">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="160" id="45A-Vm-3jG">
-                                        <rect key="frame" x="0.0" y="832" width="320" height="160"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="180" id="45A-Vm-3jG">
+                                        <rect key="frame" x="0.0" y="852" width="320" height="180"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="159"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="179"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5rk-Ai-hfh" userLabel="Videos Scroll View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="159"/>
+                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" indicatorStyle="white" translatesAutoresizingMaskIntoConstraints="NO" id="5rk-Ai-hfh" userLabel="Videos Scroll View">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 </scrollView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -357,6 +355,7 @@
                         <outlet property="genreSecondLabel" destination="zHJ-mA-eUy" id="jFo-48-cfE"/>
                         <outlet property="imagesScrollView" destination="wLa-8j-Trm" id="Any-eD-PC0"/>
                         <outlet property="metascoreLabel" destination="suo-Lj-KTi" id="fwa-yn-0W7"/>
+                        <outlet property="metascoreView" destination="QBX-br-58q" id="s0g-cP-Oxg"/>
                         <outlet property="ownButton" destination="Szq-Ge-fAn" id="WgJ-DJ-H75"/>
                         <outlet property="platformLabel" destination="CuD-AV-5Ih" id="M6e-BN-36n"/>
                         <outlet property="progressIndicator" destination="oo5-jN-rbJ" id="LaR-0i-tUj"/>
@@ -647,6 +646,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="5qi-Mj-SGM"/>
+        <segue reference="ErO-my-toj"/>
     </inferredMetricsTieBreakers>
 </document>

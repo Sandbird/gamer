@@ -19,7 +19,7 @@
 #import "CoverImage.h"
 #import "ReleaseDate.h"
 #import "SessionManager.h"
-//#import "MediaViewController.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 #define kWantButtonTag 1
 #define kOwnButtonTag 2
@@ -28,6 +28,7 @@
 
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 @property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
+@property (nonatomic, strong) IBOutlet UIView *metascoreView;
 @property (nonatomic, strong) IBOutlet UILabel *metascoreLabel;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
@@ -43,6 +44,8 @@
 @property (nonatomic, strong) IBOutlet UIScrollView *videosScrollView;
 
 @property (nonatomic, assign) NSInteger pressedButtonTag;
+
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
 
 @end
 
@@ -70,10 +73,12 @@
 		if (game) _game = game;
 		else [self requestGameWithIdentifier:_searchResult.identifier];
 	}
+	
+	[_metascoreView setHidden:YES];
 }
 
 - (void)viewDidLayoutSubviews{
-	[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:0.6 radius:5 offset:CGSizeZero];
+//	[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:0.6 radius:5 offset:CGSizeZero];
 	[_progressIndicator setColor:[UIColor whiteColor]];
 }
 
@@ -102,9 +107,9 @@
 	NSURLRequest *request = [SessionManager URLRequestForGameWithFields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers" identifier:identifier];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-		//		NSLog(@"%@", JSON);
+//		NSLog(@"%@", JSON);
 		
 		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
@@ -114,7 +119,7 @@
 		
 		// Set game
 		_game = [Game findFirstByAttribute:@"identifier" withValue:identifier];
-		if (!_game) _game = [[Game alloc] initWithEntity:[NSEntityDescription entityForName:@"Game" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+		if (!_game) _game = [Game createInContext:context];
 		
 		// Main info
 		[_game setIdentifier:identifier];
@@ -123,9 +128,10 @@
 		
 		// Cover image
 		if (results[@"image"] != [NSNull null]){
-			NSString *URL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-			if (!_game.coverImage || ![_game.coverImage.url isEqualToString:URL]){
-				[self requestImageWithURL:[NSURL URLWithString:URL]];
+			NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
+			if (stringURL) stringURL = [stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"];
+			if (!_game.coverImage || ![_game.coverImage.url isEqualToString:stringURL]){
+				[self downloadCoverImageWithURL:[NSURL URLWithString:stringURL]];
 			}
 		}
 		
@@ -147,7 +153,7 @@
 			NSDate *releaseDateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
 			
 			ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:releaseDateFromComponents];
-			if (!releaseDate) releaseDate = [[ReleaseDate alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleaseDate" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+			if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
 			[releaseDate setDate:releaseDateFromComponents];
 			[releaseDate setDay:@(originalReleaseDateComponents.day)];
 			[releaseDate setMonth:@(originalReleaseDateComponents.month)];
@@ -203,7 +209,7 @@
 			NSDate *expectedReleaseDateFromComponents = [calendar dateFromComponents:expectedReleaseDateComponents];
 			
 			ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents];
-			if (!releaseDate) releaseDate = [[ReleaseDate alloc] initWithEntity:[NSEntityDescription entityForName:@"ReleaseDate" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+			if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
 			[releaseDate setDate:expectedReleaseDateFromComponents];
 			[releaseDate setDay:@(expectedReleaseDateComponents.day)];
 			[releaseDate setMonth:@(expectedReleaseDateComponents.month)];
@@ -236,7 +242,7 @@
 				if (genre)
 					[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				else{
-					genre = [[Genre alloc] initWithEntity:[NSEntityDescription entityForName:@"Genre" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					genre = [Genre createInContext:context];
 					[genre setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				}
@@ -251,7 +257,7 @@
 				if (developer)
 					[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				else{
-					developer = [[Developer alloc] initWithEntity:[NSEntityDescription entityForName:@"Developer" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					developer = [Developer createInContext:context];
 					[developer setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				}
@@ -266,7 +272,7 @@
 				if (publisher)
 					[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				else{
-					publisher = [[Publisher alloc] initWithEntity:[NSEntityDescription entityForName:@"Publisher" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					publisher = [Publisher createInContext:context];
 					[publisher setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				}
@@ -281,7 +287,7 @@
 				if (franchise)
 					[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				else{
-					franchise = [[Franchise alloc] initWithEntity:[NSEntityDescription entityForName:@"Franchise" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					franchise = [Franchise createInContext:context];
 					[franchise setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				}
@@ -296,23 +302,11 @@
 				if (theme)
 					[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				else{
-					theme = [[Theme alloc] initWithEntity:[NSEntityDescription entityForName:@"Theme" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
+					theme = [Theme createInContext:context];
 					[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 					[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				}
 				[_game addThemesObject:theme];
-			}
-		}
-		
-		// Images
-		if (results[@"images"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"images"]){
-				Image *image = [Image findFirstByAttribute:@"url" withValue:[Tools stringFromSourceIfNotNull:dictionary[@"super_url"]] inContext:context];
-				if (!image){
-					image = [[Image alloc] initWithEntity:[NSEntityDescription entityForName:@"Image" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
-					[image setUrl:[Tools stringFromSourceIfNotNull:dictionary[@"super_url"]]];
-				}
-				[_game addImagesObject:image];
 			}
 		}
 		
@@ -322,6 +316,8 @@
 			// If game is released and has at least one platform, request metascore
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _game.platforms.count > 0)
 				[self requestMetascoreForGameWithTitle:_game.title platform:_game.platforms.allObjects[0]];
+			
+			[self requestMediaForGame:_game];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -330,7 +326,7 @@
 	[operation start];
 }
 
-- (void)requestImageWithURL:(NSURL *)URL{
+- (void)downloadCoverImageWithURL:(NSURL *)URL{
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
 	[request setHTTPMethod:@"GET"];
 	
@@ -340,17 +336,20 @@
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
 		NSLog(@"Success in %@ - Cover image", self);
 		
-		UIImage *imageLarge = [self imageWithImage:image scaledToWidth:300];
-		UIImage *imageSmall = [self imageWithImage:image scaledToWidth:200];
+		UIImage *fullImage = [Tools imageWithImage:image scaledToHeight:200];
+		UIImage *thumbnail = [Tools imageWithImage:image scaledToHeight:70];
 		
 		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 		
-		CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:URL];
-		if (!coverImage) coverImage = [[CoverImage alloc] initWithEntity:[NSEntityDescription entityForName:@"CoverImage" inManagedObjectContext:context] insertIntoManagedObjectContext:context];
-		[coverImage setData:UIImagePNGRepresentation(imageLarge)];
+		CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:URL.absoluteString];
+		if (!coverImage) coverImage = [CoverImage createInContext:context];
+		[coverImage setData:UIImagePNGRepresentation(fullImage)];
+		[coverImage setUrl:URL.absoluteString];
 		
 		[_game setCoverImage:coverImage];
-		[_game setThumbnail:UIImagePNGRepresentation(imageSmall)];
+		[_game setThumbnail:UIImagePNGRepresentation(thumbnail)];
+		
+		[_coverImageView setFrame:CGRectMake(_coverImageView.frame.origin.x, _coverImageView.frame.origin.y, fullImage.size.width * 0.5, _coverImageView.frame.size.height)];
 		
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			dispatch_async(dispatch_get_main_queue(), ^{
@@ -358,18 +357,14 @@
 				transition.type = kCATransitionFade;
 				transition.duration = 0.2;
 				transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-				[_coverImageView setImage:image];
+				[_coverImageView setImage:fullImage];
 				[_progressIndicator setHidden:YES];
 				[_coverImageView.layer addAnimation:transition forKey:nil];
-				
-				//				NSLog(@"image:      %.2fx%.2f", image.size.width, image.size.height);
-				//				NSLog(@"imageLarge: %.2fx%.2f", imageLarge.size.width, imageLarge.size.height);
-				//				NSLog(@"imageSmall: %.2fx%.2f", imageSmall.size.width, imageSmall.size.height);
 			});
 		}];
 	}];
 	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-		//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
+//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
 		
 		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
 	}];
@@ -389,7 +384,7 @@
 	
 	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
 	
-	//	NSLog(@"%@", url);
+//	NSLog(@"%@", url);
 	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"GET"];
@@ -400,7 +395,7 @@
 		
 		NSString *html = [NSString stringWithUTF8String:[responseObject bytes]];
 		
-		//		NSLog(@"%@", html);
+//		NSLog(@"%@", html);
 		
 		if (html){
 			NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"v:average\">" options:NSRegularExpressionCaseInsensitive error:nil];
@@ -413,27 +408,180 @@
 			
 			NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
 			
-			//			NSLog(@"Metascore: %@", metascore);
+//			NSLog(@"Metascore: %@", metascore);
 			
 			NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 			[_game setMetascore:metascore];
 			[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[_metascoreLabel setText:metascore];
 				
-				//				if (metascore.length > 0 && _metascoreView.isHidden){
-				//					CATransition *transition = [CATransition animation];
-				//					transition.type = kCATransitionFade;
-				//					transition.duration = 0.2;
-				//					transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-				//					[_metascoreView setHidden:NO];
-				//					[_metascoreView.layer addAnimation:transition forKey:nil];
-				//				}
+				if (metascore.length > 0){
+					[_metascoreView setHidden:NO];
+					[_metascoreLabel setText:metascore];
+				}
 			}];
 		}
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		NSLog(@"Failure in %@ - Error: %@ - Metascore", self, error.description);
+		NSLog(@"Failure in %@ - Metascore", self);
 	}];
 	[operation start];
+}
+
+- (void)requestMediaForGame:(Game *)game{
+	NSURLRequest *request = [SessionManager URLRequestForGameWithFields:@"images,videos" identifier:game.identifier];
+	
+	_operationQueue = [[NSOperationQueue alloc] init];
+	
+	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+		NSLog(@"Success in %@ - Status code: %d - Media - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		
+//		NSLog(@"%@", JSON);
+		
+		NSDictionary *results = JSON[@"results"];
+		
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		
+		// Images
+		if (results[@"images"] != [NSNull null]){
+			NSInteger index = 0;
+			for (NSDictionary *dictionary in results[@"images"]){
+				NSString *stringURL = [Tools stringFromSourceIfNotNull:dictionary[@"super_url"]];
+				if (stringURL) stringURL = [stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"];
+				Image *image = [Image findFirstByAttribute:@"url" withValue:stringURL inContext:context];
+				if (!image){
+					image = [Image createInContext:context];
+					[image setUrl:stringURL];
+				}
+				[image setIndex:@(index)];
+				[game addImagesObject:image];
+				
+				if (index == 2) [self downloadImageWithURL:[NSURL URLWithString:stringURL]];
+				
+				index++;
+			}
+		}
+		
+		// Videos
+		if (results[@"videos"] != [NSNull null]){
+			NSInteger index = 0;
+			for (NSDictionary *dictionary in results[@"videos"]){
+				NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+				Video *video = [Video findFirstByAttribute:@"identifier" withValue:identifier];
+				if (!video){
+					video = [Video createInContext:context];
+					[video setIdentifier:identifier];
+				}
+				[video setIndex:@(index)];
+				[video setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
+				[game addVideosObject:video];
+				
+				if (index == 0) [self requestVideoWithIdentifier:identifier];
+				
+				index++;
+			}
+		}
+		
+		[context saveToPersistentStoreAndWait];
+		
+	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d", self, response.statusCode);
+	}];
+	[operation start];
+}
+
+- (void)downloadImageWithURL:(NSURL *)URL{
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+	[request setHTTPMethod:@"GET"];
+	
+	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
+//		NSLog(@"Success in %@ - Image", self);
+		
+//		NSLog(@"image   size: %.fx%.f", image.size.width, image.size.height);
+		
+		UIImage *scaledImage = [Tools imageWithImage:image scaledToWidth:image.size.width * 2];
+		UIImage *scaledThumbnail = [Tools imageWithImage:image scaledToHeight:180];
+		
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		
+		Image *img = [Image findFirstByAttribute:@"url" withValue:URL.absoluteString];
+		[img setData:UIImagePNGRepresentation(scaledImage)];
+		[img setThumbnailData:UIImagePNGRepresentation(scaledThumbnail)];
+		
+		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+//			[self refresh];
+		}];
+	}];
+	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
+		
+//		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
+	}];
+	[_operationQueue addOperation:operation];
+}
+
+- (void)requestVideoWithIdentifier:(NSNumber *)identifier{
+	NSURLRequest *request = [SessionManager URLRequestForVideoWithFields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image" identifier:identifier];
+	
+	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		
+//		NSLog(@"%@", JSON);
+		
+		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+		
+		NSDictionary *results = JSON[@"results"];
+		
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		
+		Video *video = [Video findFirstByAttribute:@"identifier" withValue:identifier];
+		[video setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
+		[video setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
+		[video setType:[Tools stringFromSourceIfNotNull:results[@"video_type"]]];
+		[video setLength:[Tools integerNumberFromSourceIfNotNull:results[@"length_seconds"]]];
+		[video setPublishDate:[[Tools dateFormatter] dateFromString:results[@"publish_date"]]];
+		[video setHighQualityURL:[Tools stringFromSourceIfNotNull:results[@"high_url"]]];
+		[video setLowQualityURL:[Tools stringFromSourceIfNotNull:results[@"low_url"]]];
+		
+		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
+			if (stringURL) stringURL = [stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"];
+			[self downloadVideoImageWithURL:[NSURL URLWithString:stringURL] video:video];
+		}];
+		
+	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+		NSLog(@"Failure in %@ - Status code: %d - Video", self, response.statusCode);
+	}];
+	[_operationQueue addOperation:operation];
+}
+
+- (void)downloadVideoImageWithURL:(NSURL *)URL video:(Video *)video{
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+	[request setHTTPMethod:@"GET"];
+	
+	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
+		
+		NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+		
+		UIImage *scaledImage = [Tools imageWithImage:image scaledToWidth:image.size.width * 2];
+		UIImage *scaledThumbnail = [Tools imageWithImage:image scaledToHeight:180];
+		
+		Image *newImage = [Image findFirstByAttribute:@"url" withValue:URL];
+		if (!newImage) newImage = [Image createInContext:context];
+		[newImage setUrl:URL.absoluteString];
+		[newImage setData:UIImagePNGRepresentation(scaledImage)];
+		[newImage setThumbnailData:UIImagePNGRepresentation(scaledThumbnail)];
+		
+		[video setImage:newImage];
+		
+		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[self refresh];
+		}];
+	}];
+	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
+		
+//		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
+	}];
+	[_operationQueue addOperation:operation];
 }
 
 #pragma mark - ActionSheet
@@ -453,7 +601,9 @@
 #pragma mark - Custom
 
 - (void)refresh{
-	[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
+	UIImage *coverImage = [UIImage imageWithData:_game.coverImage.data];
+	[_coverImageView setFrame:CGRectMake(_coverImageView.frame.origin.x, _coverImageView.frame.origin.y, coverImage.size.width * 0.5, _coverImageView.frame.size.height)];
+	[_coverImageView setImage:coverImage];
 //	[_progressIndicator setHidden:(_game.coverImage.data) ? YES : NO];
 	[_metascoreLabel setText:_game.metascore];
 	[_titleLabel setText:_game.title];
@@ -469,20 +619,48 @@
 	if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
 	if (_game.publishers.count > 0) [_publisherLabel setText:[_game.publishers.allObjects[0] name]];
 	
-}
-
-- (UIImage *)imageWithImage:(UIImage *)image scaledToWidth:(float)width{
-	float scaleFactor = width/image.size.width;
+	NSArray *images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game = %@", _game]];
+	for (Image *image in images){
+		UIImage *img = [UIImage imageWithData:image.thumbnailData];
+		CGSize imageSize = CGSizeMake(img.size.width * 0.5, img.size.height * 0.5);
+		
+//		if (img.size.width != 0) NSLog(@"image   size: %.fx%.f", imageSize.width, imageSize.height);
+		CGFloat offset = (_imagesScrollView.frame.size.width - imageSize.width) * 0.5;
+		CGFloat position = (_imagesScrollView.frame.size.width * image.index.integerValue) + offset;
+		
+		[_imagesScrollView setContentSize:CGSizeMake(_imagesScrollView.frame.size.width * images.count, _imagesScrollView.frame.size.height)];
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(position, 0, imageSize.width, imageSize.height)];
+		[imageView setImage:img];
+		[_imagesScrollView addSubview:imageView];
+	}
 	
-	float newWidth = image.size.width * scaleFactor;
-	float newHeight = image.size.height * scaleFactor;
-	
-	UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight));
-	[image drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
-	
-	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
-	return newImage;
+	NSArray *videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game = %@", _game]];
+	for (Video *video in videos){
+		NSInteger index = [videos indexOfObject:video];
+		
+		UIImage *image = [UIImage imageWithData:video.image.thumbnailData];
+		CGSize imageSize = CGSizeMake(image.size.width * 0.5, image.size.height * 0.5);
+		
+		CGFloat offset = (_videosScrollView.frame.size.width - imageSize.width) * 0.5;
+		CGFloat position = (_videosScrollView.frame.size.width * index) + offset;
+		
+		[_videosScrollView setContentSize:CGSizeMake(_videosScrollView.frame.size.width * videos.count, _videosScrollView.frame.size.height)];
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(position, 0, imageSize.width, imageSize.height)];
+		[imageView setImage:image];
+		[_videosScrollView addSubview:imageView];
+		
+		CGFloat buttonOffset = (_videosScrollView.frame.size.width - 44) * 0.5;
+		CGFloat buttonPosition = (_videosScrollView.frame.size.width * index) + buttonOffset;
+		
+		UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+		[button setFrame:CGRectMake(buttonPosition, 58, 44, 44)];
+		[button setTitle:@"Play" forState:UIControlStateNormal];
+		[button setBackgroundColor:[UIColor blackColor]];
+		[button setTag:video.identifier.integerValue];
+		[button addTarget:self action:@selector(playButtonPressAction:) forControlEvents:UIControlEventTouchUpInside];
+		
+		[_videosScrollView addSubview:button];
+	}
 }
 
 - (NSInteger)quarterForMonth:(NSInteger)month{
@@ -524,10 +702,6 @@
 
 #pragma mark - Actions
 
-- (void)tapGestureRecognizerAction:(UITapGestureRecognizer *)sender{
-	[self performSegueWithIdentifier:@"MediaSegue" sender:nil];
-}
-
 - (IBAction)addButtonPressAction:(UIButton *)sender{
 	_pressedButtonTag = sender.tag;
 	
@@ -554,13 +728,15 @@
 	}
 }
 
-- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
-	[self requestGameWithIdentifier:_game.identifier];
+- (IBAction)playButtonPressAction:(UIButton *)sender{
+	Video *video = [Video findFirstByAttribute:@"identifier" withValue:@(sender.tag)];
+	
+	MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
+	[self presentMoviePlayerViewControllerAnimated:player];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-//	MediaViewController *destination = segue.destinationViewController;
-//	[destination setImage:[UIImage imageWithData:_game.coverImage]];
+- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
+	[self requestGameWithIdentifier:_game.identifier];
 }
 
 @end

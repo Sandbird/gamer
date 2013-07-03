@@ -122,4 +122,34 @@ static NSDateFormatter *DATEFORMATTER;
 	view.layer.mask = shapeLayer;
 }
 
++ (UIImage *)imageWithImage:(UIImage *)image scaledToWidth:(CGFloat)width{
+	CGFloat scaleFactor = width/image.size.width;
+	
+	CGFloat newWidth = image.size.width * scaleFactor;
+	CGFloat newHeight = image.size.height * scaleFactor;
+	
+	UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), YES, 0);
+	CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+	[image drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
+	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	
+	return newImage;
+}
+
++ (UIImage *)imageWithImage:(UIImage *)image scaledToHeight:(CGFloat)height{
+	CGFloat scaleFactor = height/image.size.height;
+	
+	CGFloat newWidth = image.size.width * scaleFactor;
+	CGFloat newHeight = image.size.height * scaleFactor;
+	
+	UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), YES, 0);
+	CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+	[image drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
+	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	
+	return newImage;
+}
+
 @end

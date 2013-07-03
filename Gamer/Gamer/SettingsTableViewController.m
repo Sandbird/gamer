@@ -16,6 +16,10 @@
 #import "Theme.h"
 #import "ReleasePeriod.h"
 #import "ReleaseDate.h"
+#import "Video.h"
+#import "Image.h"
+#import "CoverImage.h"
+#import "SimilarGame.h"
 
 @interface SettingsTableViewController () <FetchedTableViewDelegate>
 
@@ -122,6 +126,10 @@
 			[Theme truncateAll];
 			[ReleasePeriod truncateAll];
 			[ReleaseDate truncateAll];
+			[Video truncateAll];
+			[Image truncateAll];
+			[CoverImage truncateAll];
+			[SimilarGame truncateAll];
 			[context saveToPersistentStoreAndWait];
 			break;
 		}

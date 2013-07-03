@@ -39,4 +39,8 @@
 
 + (void)setMaskToView:(UIView *)view roundCorners:(UIRectCorner)corners radius:(CGFloat)radius;
 
++ (UIImage *)imageWithImage:(UIImage *)image scaledToWidth:(CGFloat)width;
+
++ (UIImage *)imageWithImage:(UIImage *)image scaledToHeight:(CGFloat)height;
+
 @end
