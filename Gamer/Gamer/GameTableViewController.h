@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "Game.h"
 #import "SearchResult.h"
-#import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 
 @interface GameTableViewController : UITableViewController
 

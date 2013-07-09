@@ -22,6 +22,8 @@
 
 @interface WishlistTableViewController () <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
 
+@property (nonatomic, strong) NSManagedObjectContext *context;
+
 @end
 
 @implementation WishlistTableViewController
@@ -33,6 +35,9 @@
 	
 	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
 	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
+	
+	_context = [NSManagedObjectContext contextForCurrentThread];
+	[_context setUndoManager:nil];
 	
 	self.fetchedResultsController = [self fetch];
 	
@@ -52,8 +57,6 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-	
 //	NSFetchRequest *fRequest = [ReleasePeriod createFetchRequest];
 //	[fetchRequest setPropertiesToFetch:@[@"placeholderGame.hidden"]];
 //	[fRequest setRelationshipKeyPathsForPrefetching:@[@"games", @"placeholderGame"]];
@@ -71,7 +74,7 @@
 		[releasePeriod.placeholderGame setHidden:(games.count > 0) ? @(NO) : @(YES)];
 	}
 	
-	[context saveToPersistentStoreAndWait];
+	[_context saveToPersistentStoreAndWait];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -125,18 +128,16 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-	
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[game setWanted:@(NO)];
 	
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", game.releasePeriod.identifier, @(YES), @(YES)];
-	NSArray *games = [Game findAllWithPredicate:predicate inContext:context];
+	NSArray *games = [Game findAllWithPredicate:predicate inContext:_context];
 	
 	if (games.count == 0)
 		[game.releasePeriod.placeholderGame setHidden:@(YES)];
 	
-	[context saveToPersistentStoreAndWait];
+	[_context saveToPersistentStoreAndWait];
 }
 
 #pragma mark - FetchedTableView
@@ -155,15 +156,13 @@
 #pragma mark - HidingSectionView
 
 - (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)sectionView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
-	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
-	
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
 	NSArray *games = [Game findAllWithPredicate:predicate];
 	
 	for (Game *game in games)
 		[game setHidden:@(!game.hidden.boolValue)];
 	
-	[context saveToPersistentStoreAndWait];
+	[_context saveToPersistentStoreAndWait];
 }
 
 #pragma mark - FetchedResultsController

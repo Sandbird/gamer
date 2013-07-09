@@ -51,10 +51,10 @@
     <entity name="Image" representedClassName="Image" syncable="YES">
         <attribute name="data" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="isDownloading" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="thumbnailData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="images" inverseEntity="Game" syncable="YES"/>
-        <relationship name="video" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Video" inverseName="image" inverseEntity="Video" syncable="YES"/>
     </entity>
     <entity name="Platform" representedClassName="Platform" syncable="YES">
         <attribute name="abbreviation" optional="YES" attributeType="String" syncable="YES"/>
@@ -100,14 +100,16 @@
         <attribute name="highQualityURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="isDownloading" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="lowQualityURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="publishDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="thumbnailURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="videos" inverseEntity="Game" syncable="YES"/>
-        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="video" inverseEntity="Image" syncable="YES"/>
     </entity>
     <elements>
         <element name="CoverImage" positionX="-108" positionY="-313" width="128" height="88"/>
@@ -122,6 +124,6 @@
         <element name="ReleasePeriod" positionX="-36" positionY="275" width="128" height="103"/>
         <element name="SimilarGame" positionX="-263" positionY="149" width="128" height="103"/>
         <element name="Theme" positionX="126" positionY="272" width="128" height="88"/>
-        <element name="Video" positionX="396" positionY="278" width="128" height="208"/>
+        <element name="Video" positionX="378" positionY="284" width="128" height="238"/>
     </elements>
 </model>

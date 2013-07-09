@@ -39,7 +39,7 @@
 	
 	for(UIView *subView in _searchBar.subviews)
 		if([subView isKindOfClass: [UITextField class]])
-			[(UITextField *)subView setKeyboardAppearance:UIKeyboardAppearanceAlert];
+			[(UITextField *)subView setKeyboardAppearance:UIKeyboardAppearanceDark];
 	
 	[self.navigationItem setTitleView:_searchBar];
 	
@@ -115,7 +115,7 @@
 	NSURLRequest *request = [SessionManager URLRequestForGamesWithFields:@"id,name" platforms:platforms name:name];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+//		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
 		[_results removeAllObjects];
 		
