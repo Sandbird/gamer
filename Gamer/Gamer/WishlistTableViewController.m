@@ -57,6 +57,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[self.tableView setContentInset:UIEdgeInsetsMake(0, 0, 49, 0)];
+	
 //	NSFetchRequest *fRequest = [ReleasePeriod createFetchRequest];
 //	[fetchRequest setPropertiesToFetch:@[@"placeholderGame.hidden"]];
 //	[fRequest setRelationshipKeyPathsForPrefetching:@[@"games", @"placeholderGame"]];
@@ -120,7 +122,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{

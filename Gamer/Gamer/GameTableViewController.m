@@ -23,6 +23,7 @@
 #import "ImageCollectionCell.h"
 #import "VideoCollectionCell.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
+#import "ZoomViewController.h"
 
 #define kWantButtonTag 1
 #define kOwnButtonTag 2
@@ -64,15 +65,6 @@
 	
 	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
 	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
-	
-	[_titleLabel setTextColor:[UIColor lightGrayColor]];
-	[_releaseDateLabel setTextColor:[UIColor lightGrayColor]];
-	[_descriptionTextView setTextColor:[UIColor lightGrayColor]];
-	[_platformLabel setTextColor:[UIColor lightGrayColor]];
-	[_developerLabel setTextColor:[UIColor lightGrayColor]];
-	[_publisherLabel setTextColor:[UIColor lightGrayColor]];
-	[_genreFirstLabel setTextColor:[UIColor lightGrayColor]];
-	[_genreSecondLabel setTextColor:[UIColor lightGrayColor]];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
@@ -164,7 +156,8 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _imagesCollectionView){
-		
+		Image *image = _images[indexPath.item];
+		[self performSegueWithIdentifier:@"ZoomSegue" sender:image];
 	}
 	else{
 		Video *video = _videos[indexPath.item];
@@ -411,8 +404,14 @@
 	[_progressIndicator setHidden:NO];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-		[coverImage setData:UIImageJPEGRepresentation([Tools imageWithImage:image scaledToHeight:200], 1)];
-		[_game setThumbnail:UIImageJPEGRepresentation([Tools imageWithImage:image scaledToHeight:70], 1)];
+		if (image.size.width > image.size.height){
+			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:280])];
+			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:56])];
+		}
+		else{
+			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:200])];
+			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:70])];
+		}
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -560,8 +559,8 @@
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
 		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
-		[imageObject setData:UIImageJPEGRepresentation(image, 1)];
-		[imageObject setThumbnailData:UIImageJPEGRepresentation([Tools imageWithImage:image scaledToHeight:180], 1)];
+		[imageObject setData:UIImagePNGRepresentation(image)];
+		[imageObject setThumbnailData:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[imageObject setIsDownloading:@(NO)];
@@ -626,7 +625,7 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-		[video setThumbnail:UIImageJPEGRepresentation([Tools imageWithImage:image scaledToHeight:180], 1)];
+		[video setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[video setIsDownloading:@(NO)];
@@ -750,6 +749,13 @@
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	[self requestGameWithIdentifier:_game.identifier];
 //	[_context reset];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+	Image *image = sender;
+	
+	ZoomViewController *destination = segue.destinationViewController;
+	[destination setImage:[UIImage imageWithData:image.data]];
 }
 
 @end

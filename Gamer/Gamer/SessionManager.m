@@ -15,7 +15,7 @@ static NSMutableURLRequest *REQUEST;
 + (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms name:(NSString *)name{
 	NSString *apiKey = @"d92c258adb509ded409d28f4e51de2c83e297011";
 	NSString *platformIdentifiers = [[platforms valueForKey:@"identifier"] componentsJoinedByString:@"|"];
-	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/games/3030/?api_key=%@&format=json&field_list=%@&filter=platforms:%@,name:%@", apiKey, fields, platformIdentifiers, name];
+	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/games/3030/?api_key=%@&format=json&sort=date_added:desc&field_list=%@&filter=platforms:%@,name:%@", apiKey, fields, platformIdentifiers, name];
 	
 	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
 	[REQUEST setHTTPMethod:@"GET"];

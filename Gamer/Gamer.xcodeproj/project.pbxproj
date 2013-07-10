@@ -50,6 +50,7 @@
 		25AE80E41773D65D00FBE9FC /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80E31773D65D00FBE9FC /* Theme.m */; };
 		25CBCBB9177B9944002FD0AD /* ReleasePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CBCBB8177B9944002FD0AD /* ReleasePeriod.m */; };
 		25CBCBBC177B9944002FD0AD /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CBCBBB177B9944002FD0AD /* Game.m */; };
+		25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ZoomViewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
 		25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */; };
 /* End PBXBuildFile section */
@@ -138,6 +139,8 @@
 		25CBCBB8177B9944002FD0AD /* ReleasePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasePeriod.m; sourceTree = "<group>"; };
 		25CBCBBA177B9944002FD0AD /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		25CBCBBB177B9944002FD0AD /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		25D2E5FF178BB22900C7EDDB /* ZoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZoomViewController.h; sourceTree = "<group>"; };
+		25D2E600178BB22900C7EDDB /* ZoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZoomViewController.m; sourceTree = "<group>"; };
 		25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionCell.h; sourceTree = "<group>"; };
 		25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionCell.m; sourceTree = "<group>"; };
 		25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCollectionCell.h; sourceTree = "<group>"; };
@@ -324,6 +327,8 @@
 				2506A186176CD5540010E61D /* GameTableViewController.m */,
 				2506A187176CD5620010E61D /* SettingsTableViewController.h */,
 				2506A188176CD5620010E61D /* SettingsTableViewController.m */,
+				25D2E5FF178BB22900C7EDDB /* ZoomViewController.h */,
+				25D2E600178BB22900C7EDDB /* ZoomViewController.m */,
 			);
 			name = Code;
 			sourceTree = "<group>";
@@ -523,6 +528,7 @@
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
 				2531E842176CDB60005881A4 /* CalendarCell.m in Sources */,
 				2531E843176CDB60005881A4 /* LibraryCell.m in Sources */,
+				25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */,
 				2531E849176CDB60005881A4 /* Franchise.m in Sources */,
 				2531E84B176CDB60005881A4 /* Publisher.m in Sources */,
 				25AE80E41773D65D00FBE9FC /* Theme.m in Sources */,
