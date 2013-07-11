@@ -20,6 +20,7 @@
 #import "Image.h"
 #import "CoverImage.h"
 #import "SimilarGame.h"
+#import "PlatformCell.h"
 
 @interface SettingsTableViewController () <FetchedTableViewDelegate>
 
@@ -65,37 +66,29 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
 		case 0: return [self.fetchedResultsController.sections[section] numberOfObjects];
-//		case 1: case 2: return 1;
 		case 1: return 1;
 		default: return 0;
 	}
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	UITableViewCell *cell;
-	
 	switch (indexPath.section) {
 		case 0:{
-			cell = [tableView dequeueReusableCellWithIdentifier:@"CheckmarkCell" forIndexPath:indexPath];
+			PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
 			[self configureCell:cell atIndexPath:indexPath];
-			break;
+			return cell;
 		}
-//		case 1:
-//			cell = [tableView dequeueReusableCellWithIdentifier:@"NavigationCell" forIndexPath:indexPath];
-//			[cell.textLabel setText:@"Notifications"];
-//			break;
-		case 1:
-			cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
+		case 1:{
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
 			[cell.textLabel setText:@"Delete all data"];
-			break;
+			return cell;
+		}
 		default:
-			break;
+			return nil;
 	}
     
-	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
-	[cell.textLabel setTextColor:[UIColor lightGrayColor]];
-	
-    return cell;
+//	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
+//	[cell.textLabel setTextColor:[UIColor lightGrayColor]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -112,9 +105,6 @@
 			[context saveToPersistentStoreAndWait];
 			break;
 		}
-//		case 1:
-//			[self performSegueWithIdentifier:@"NotificationsSegue" sender:nil];
-//			break;
 		case 1:{
 			NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 			[Game truncateAll];
@@ -141,9 +131,13 @@
 #pragma mark - FetchedTableView
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
+	PlatformCell *customCell = (PlatformCell *)cell;
+	
 	Platform *platform = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	[cell.textLabel setText:platform.name];
-	[cell setAccessoryType:([platform.favorite isEqualToNumber:@(YES)]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+	[customCell.titleLabel setText:platform.name];
+	[customCell.abbreviationLabel setText:platform.abbreviation];
+	[customCell.abbreviationLabel setBackgroundColor:platform.color];
+	[customCell setAccessoryType:([platform.favorite isEqualToNumber:@(YES)]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
 }
 
 #pragma mark - FetchedTableView

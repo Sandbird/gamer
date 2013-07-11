@@ -1,14 +1,14 @@
 //
-//  CalendarCell.m
+//  PlatformCell.m
 //  Gamer
 //
-//  Created by Caio Mello on 6/15/13.
+//  Created by Caio Mello on 7/9/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "CalendarCell.h"
+#import "PlatformCell.h"
 
-@implementation CalendarCell
+@implementation PlatformCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

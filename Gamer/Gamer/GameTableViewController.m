@@ -662,10 +662,6 @@
 #pragma mark - Custom
 
 - (void)refresh{
-//	UIImage *coverImage = [UIImage imageWithData:_game.coverImage.data];
-//	[_coverImageView setFrame:CGRectMake(_coverImageView.frame.origin.x, _coverImageView.frame.origin.y, coverImage.size.width * 0.5, _coverImageView.frame.size.height)];
-//	[_coverImageView setImage:coverImage];
-//	[_progressIndicator setHidden:(_game.coverImage.data) ? YES : NO];
 	[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
 	[_metascoreLabel setText:_game.metascore];
 	[_titleLabel setText:_game.title];
@@ -697,24 +693,43 @@
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
 	// Components for today, this month, this quarter, this year
-	NSDateComponents *currentComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-	[currentComponents setQuarter:[self quarterForMonth:currentComponents.month]];
+	NSDateComponents *current = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+	[current setQuarter:[self quarterForMonth:current.month]];
 	
 	// Components for next month, next quarter, next year
-	NSDateComponents *nextComponents = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-	nextComponents.month++;
-	[nextComponents setQuarter:[self quarterForMonth:nextComponents.month]];
-	nextComponents.year++;
+	NSDateComponents *next = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+	next.month++;
+	[next setQuarter:current.quarter + 1];
+	next.year++;
 	
 	NSInteger period = 0;
-	if ([releaseDate.date compare:[calendar dateFromComponents:currentComponents]] <= NSOrderedSame) period = 1;
-	else if ([releaseDate.month isEqualToNumber:@(currentComponents.month)]) period = 2;
-	else if ([releaseDate.month isEqualToNumber:@(nextComponents.month)]) period = 3;
-	else if ([releaseDate.quarter isEqualToNumber:@(currentComponents.quarter)]) period = 4;
-	else if ([releaseDate.quarter isEqualToNumber:@(nextComponents.quarter)]) period = 5;
-	else if ([releaseDate.year isEqualToNumber:@(currentComponents.year)]) period = 6;
-	else if ([releaseDate.year isEqualToNumber:@(nextComponents.year)]) period = 7;
-	else if ([releaseDate.year isEqualToNumber:@(2050)]) period = 8;
+	if ([releaseDate.date compare:[calendar dateFromComponents:current]] <= NSOrderedSame) period = 1; // Released
+	else{
+		if (releaseDate.year.integerValue == 2050)
+			period = 9; // TBA
+		else if (releaseDate.year.integerValue > next.year)
+			period = 8; // Later
+		else if (releaseDate.year.integerValue == next.year){
+			if (current.month == 12 && releaseDate.month.integerValue == 1)
+				period = 3; // Next month
+			else if (current.quarter == 4 && releaseDate.quarter.integerValue == 1)
+				period = 5; // Next quarter
+			else
+				period = 7; // Next year
+		}
+		else if (releaseDate.year.integerValue == current.year){
+			if (releaseDate.month.integerValue == current.month)
+				period = 2; // This month
+			else if (releaseDate.month.integerValue == next.month)
+				period = 3; // Next month
+			else if (releaseDate.quarter.integerValue == current.quarter)
+				period = 4; // This quarter
+			else if (releaseDate.quarter.integerValue == next.quarter)
+				period = 5; // Next quarter
+			else
+				period = 6; // This year
+		}
+	}
 	
 	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
 }

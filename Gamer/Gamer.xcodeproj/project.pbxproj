@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251DEA41178CF3EA0094A6CB /* PlatformCell.m */; };
 		2531E820176CDA35005881A4 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E81F176CDA35005881A4 /* CoreData.framework */; };
 		2531E822176CDA48005881A4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E821176CDA48005881A4 /* QuartzCore.framework */; };
 		2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */; };
@@ -17,7 +18,6 @@
 		2531E83F176CDB60005881A4 /* FetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A18A176CD5B80010E61D /* FetchedTableViewController.m */; };
 		2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A17C176CD4B30010E61D /* WishlistSectionHeaderView.m */; };
 		2531E841176CDB60005881A4 /* WishlistCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A174176CD4160010E61D /* WishlistCell.m */; };
-		2531E842176CDB60005881A4 /* CalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A17A176CD4480010E61D /* CalendarCell.m */; };
 		2531E843176CDB60005881A4 /* LibraryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A176176CD4210010E61D /* LibraryCell.m */; };
 		2531E849176CDB60005881A4 /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E834176CDA97005881A4 /* Franchise.m */; };
 		2531E84B176CDB60005881A4 /* Publisher.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E830176CDA97005881A4 /* Publisher.m */; };
@@ -70,8 +70,6 @@
 		2506A174176CD4160010E61D /* WishlistCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WishlistCell.m; sourceTree = "<group>"; };
 		2506A175176CD4210010E61D /* LibraryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryCell.h; sourceTree = "<group>"; };
 		2506A176176CD4210010E61D /* LibraryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryCell.m; sourceTree = "<group>"; };
-		2506A179176CD4480010E61D /* CalendarCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CalendarCell.h; sourceTree = "<group>"; };
-		2506A17A176CD4480010E61D /* CalendarCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CalendarCell.m; sourceTree = "<group>"; };
 		2506A17B176CD4B30010E61D /* WishlistSectionHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WishlistSectionHeaderView.h; sourceTree = "<group>"; };
 		2506A17C176CD4B30010E61D /* WishlistSectionHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WishlistSectionHeaderView.m; sourceTree = "<group>"; };
 		2506A17D176CD4EA0010E61D /* WishlistTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WishlistTableViewController.h; sourceTree = "<group>"; };
@@ -86,6 +84,8 @@
 		2506A188176CD5620010E61D /* SettingsTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
 		2506A189176CD5B80010E61D /* FetchedTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FetchedTableViewController.h; sourceTree = "<group>"; };
 		2506A18A176CD5B80010E61D /* FetchedTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FetchedTableViewController.m; sourceTree = "<group>"; };
+		251DEA40178CF3EA0094A6CB /* PlatformCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCell.h; sourceTree = "<group>"; };
+		251DEA41178CF3EA0094A6CB /* PlatformCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCell.m; sourceTree = "<group>"; };
 		2531E81F176CDA35005881A4 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2531E821176CDA48005881A4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2531E825176CDA97005881A4 /* Genre.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
@@ -194,14 +194,14 @@
 			children = (
 				2506A173176CD4160010E61D /* WishlistCell.h */,
 				2506A174176CD4160010E61D /* WishlistCell.m */,
-				2506A179176CD4480010E61D /* CalendarCell.h */,
-				2506A17A176CD4480010E61D /* CalendarCell.m */,
 				2506A175176CD4210010E61D /* LibraryCell.h */,
 				2506A176176CD4210010E61D /* LibraryCell.m */,
 				25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */,
 				25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */,
 				25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */,
 				25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */,
+				251DEA40178CF3EA0094A6CB /* PlatformCell.h */,
+				251DEA41178CF3EA0094A6CB /* PlatformCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -523,10 +523,10 @@
 				2531E83C176CDB60005881A4 /* SearchTableViewController.m in Sources */,
 				2531E83D176CDB60005881A4 /* GameTableViewController.m in Sources */,
 				2531E83E176CDB60005881A4 /* SettingsTableViewController.m in Sources */,
+				251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */,
 				2531E83F176CDB60005881A4 /* FetchedTableViewController.m in Sources */,
 				2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */,
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
-				2531E842176CDB60005881A4 /* CalendarCell.m in Sources */,
 				2531E843176CDB60005881A4 /* LibraryCell.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */,
 				2531E849176CDB60005881A4 /* Franchise.m in Sources */,
