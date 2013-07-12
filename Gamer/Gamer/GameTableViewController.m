@@ -25,9 +25,6 @@
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 #import "ZoomViewController.h"
 
-#define kWantButtonTag 1
-#define kOwnButtonTag 2
-
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
@@ -49,10 +46,9 @@
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
+@property (nonatomic, strong) NSArray *platforms;
 @property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSArray *videos;
-
-@property (nonatomic, assign) NSInteger pressedButtonTag;
 
 @end
 
@@ -69,21 +65,28 @@
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
 	
-	if (!_game){
-		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
-		if (game)
-			_game = game;
+	if (_game)
+		[self refresh];
+	else{
+		_game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
+		if (_game)
+			[self refresh];
 		else
 			[self requestGameWithIdentifier:_searchResult.identifier];
 	}
 	
+//	if (!_game){
+//		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
+//		if (game)
+//			_game = game;
+//		else
+//			[self requestGameWithIdentifier:_searchResult.identifier];
+//	}
+	
 	[_progressIndicator setColor:[UIColor whiteColor]];
-	[_metascoreView setHidden:YES];
+//	[_metascoreView setHidden:YES];
 	
-	_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
-	_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
-	
-	[self refresh];
+//	[self refresh];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -94,9 +97,9 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	if (section == 2)
-		return [NSString stringWithFormat:@"Images - %d", _images.count];
+		return [NSString stringWithFormat:@"Images - %d          ", _images.count];
 	else if (section == 3)
-		return [NSString stringWithFormat:@"Videos - %d", _videos.count];
+		return [NSString stringWithFormat:@"Videos - %d          ", _videos.count];
 	
 	return [super tableView:tableView titleForHeaderInSection:section];
 }
@@ -118,23 +121,45 @@
 #pragma mark - CollectionView
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	return (collectionView == _imagesCollectionView) ? _images.count : _videos.count;
+	if (collectionView == _imagesCollectionView)
+		return (_images.count > 0) ? _images.count : 1;
+	else
+		return (_videos.count > 0) ? _videos.count : 1;
+//	return (collectionView == _imagesCollectionView) ? _images.count : _videos.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _imagesCollectionView){
+		// If array empty, show loading cell
+		if (_images.count == 0){
+			ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+			[cell.activityIndicator startAnimating];
+			return cell;
+		}
+		
+		// If before last cell, download image for next cell
 		if ((_images.count - 1) > indexPath.item){
 			Image *nextImage = _images[indexPath.item + 1];
-			if (!nextImage.thumbnailData && [nextImage.isDownloading isEqualToNumber:@(NO)])
+			if (!nextImage.thumbnail && [nextImage.isDownloading isEqualToNumber:@(NO)])
 				[self downloadImageWithImageObject:nextImage];
 		}
 		
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = _images[indexPath.item];
-		[cell.imageView setImage:[UIImage imageWithData:image.thumbnailData]];
+		[cell.imageView setImage:[UIImage imageWithData:image.thumbnail]];
+		if ([image.isDownloading isEqualToNumber:@(YES)] || !image.thumbnail)
+			[cell.activityIndicator startAnimating];
+		else
+			[cell.activityIndicator stopAnimating];
 		return cell;
 	}
 	else{
+		if (_videos.count == 0){
+			VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+			[cell.activityIndicator startAnimating];
+			return cell;
+		}
+		
 		if ((_videos.count - 1) > indexPath.item){
 			Video *nextVideo = _videos[indexPath.item + 1];
 			if (!nextVideo.thumbnail && [nextVideo.isDownloading isEqualToNumber:@(NO)])
@@ -144,25 +169,30 @@
 		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Video *video = _videos[indexPath.item];
 		[cell.imageView setImage:[UIImage imageWithData:video.thumbnail]];
+		if ([video.isDownloading isEqualToNumber:@(YES)] || !video.thumbnail)
+			[cell.activityIndicator startAnimating];
+		else
+			[cell.activityIndicator stopAnimating];
 		return cell;
 	}
 }
 
-//- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
-//	if (collectionView == _imagesCollectionView){
-//		[_imagesFetchedResultsController.fetchRequest setFetchOffset:<#(NSUInteger)#>]
-//	}
-//}
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+//	NSLog(@"DID END DISPLAYING CELL: %@", indexPath);
+}
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _imagesCollectionView){
 		Image *image = _images[indexPath.item];
-		[self performSegueWithIdentifier:@"ZoomSegue" sender:image];
+		if (image.data)
+			[self performSegueWithIdentifier:@"ZoomSegue" sender:image];
 	}
 	else{
 		Video *video = _videos[indexPath.item];
-		MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
-		[self presentMoviePlayerViewControllerAnimated:player];
+		if (video.highQualityURL){
+			MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
+			[self presentMoviePlayerViewControllerAnimated:player];
+		}
 	}
 }
 
@@ -384,14 +414,14 @@
 			[self refresh];
 			
 			// If game is released and has at least one platform, request metascore
-			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _game.platforms.count > 0)
-				[self requestMetascoreForGameWithTitle:_game.title platform:_game.platforms.allObjects[0]];
+			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _platforms.count > 0)
+				[self requestMetascoreForGameWithTitle:_game.title platform:_platforms[0]];
 			
 			[self requestMediaForGame:_game];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, response.statusCode, error.description);
+		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 	}];
 	[operation start];
 }
@@ -415,13 +445,15 @@
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			CATransition *transition = [CATransition animation];
-			transition.type = kCATransitionFade;
-			transition.duration = 0.2;
-			transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-			[_coverImageView setImage:[UIImage imageWithData:coverImage.data]];
-			[_progressIndicator setHidden:YES];
-			[_coverImageView.layer addAnimation:transition forKey:nil];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				CATransition *transition = [CATransition animation];
+				transition.type = kCATransitionFade;
+				transition.duration = 0.2;
+				transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+				[_coverImageView setImage:[UIImage imageWithData:coverImage.data]];
+				[_progressIndicator setHidden:YES];
+				[_coverImageView.layer addAnimation:transition forKey:nil];
+			});
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		;
@@ -511,7 +543,7 @@
 				[image setIndex:@(index)];
 				[game addImagesObject:image];
 				
-				if (index <= 1) [self downloadImageWithImageObject:image];
+				if (index == 0) [self downloadImageWithImageObject:image];
 				
 				index++;
 			}
@@ -531,7 +563,7 @@
 				[video setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
 				[game addVideosObject:video];
 				
-				if (index <= 1) [self requestInformationForVideo:video];
+				if (index == 1) [self requestInformationForVideo:video];
 				
 				index++;
 			}
@@ -539,7 +571,7 @@
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
-			_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
+			[[self.tableView headerViewForSection:2].textLabel setText:[NSString stringWithFormat:@"Images - %d", _images.count]];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -551,32 +583,29 @@
 - (void)downloadImageWithImageObject:(Image *)imageObject{
 	[imageObject setIsDownloading:@(YES)];
 	
-//	ImageCollectionCell *cell = (ImageCollectionCell *)[_imagesCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:[_images indexOfObject:imageObject] inSection:0]];
-//	[cell.progressIndicator setHidden:NO];
-	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageObject.url]];
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
 		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
 		[imageObject setData:UIImagePNGRepresentation(image)];
-		[imageObject setThumbnailData:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[imageObject setIsDownloading:@(NO)];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[_imagesCollectionView reloadItemsAtIndexPaths:[_imagesCollectionView indexPathsForVisibleItems]];
-//			[cell.imageView setImage:[UIImage imageWithData:imageObject.thumbnailData]];
-//			[cell.progressIndicator setHidden:YES];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[_imagesCollectionView performBatchUpdates:^{
+					[_imagesCollectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+				} completion:nil];
+			});
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		[imageObject setIsDownloading:@(NO)];
-		[_context saveToPersistentStoreAndWait];
 	}];
 	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 //		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
-//		[cell.progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
 	}];
 //	[_operationQueue addOperation:operation];
 	[operation start];
@@ -611,10 +640,14 @@
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self downloadThumbnailForVideo:video];
+			
+			_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
+			[[self.tableView headerViewForSection:3].textLabel setText:[NSString stringWithFormat:@"Videos - %d", _videos.count]];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		NSLog(@"Failure in %@ - Status code: %d - Video", self, response.statusCode);
+		[video setIsDownloading:@(NO)];
 	}];
 //	[_operationQueue addOperation:operation];
 	[operation start];
@@ -629,14 +662,18 @@
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[video setIsDownloading:@(NO)];
+		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[_videosCollectionView reloadItemsAtIndexPaths:[_videosCollectionView indexPathsForVisibleItems]];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[_videosCollectionView performBatchUpdates:^{
+					[_videosCollectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+				} completion:nil];
+			});
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		[video setIsDownloading:@(NO)];
-		[_context saveToPersistentStoreAndWait];
 	}];
-		
+	
 	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 //		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
 		
@@ -650,11 +687,12 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex != actionSheet.cancelButtonIndex){
-		[_game setSelectedPlatform:_game.platforms.allObjects[buttonIndex]];
-		[_game setWanted:(_pressedButtonTag == kWantButtonTag) ? @(YES) : @(NO)];
-		[_game setOwned:(_pressedButtonTag == kOwnButtonTag) ? @(YES) : @(NO)];
+		[_game setSelectedPlatform:_platforms[buttonIndex]];
+		[_game setWanted:(actionSheet.tag == 1) ? @(YES) : @(NO)];
+		[_game setOwned:(actionSheet.tag == 2) ? @(YES) : @(NO)];
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self.navigationController popToRootViewControllerAnimated:YES];
+//			[self.navigationController popToRootViewControllerAnimated:YES];
+//			[self.tabBarController setSelectedIndex:(actionSheet.tag == 1) ? 0 : 1];
 		}];
 	}
 }
@@ -662,20 +700,28 @@
 #pragma mark - Custom
 
 - (void)refresh{
-	[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
-	[_metascoreLabel setText:_game.metascore];
-	[_titleLabel setText:_game.title];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
+		[_metascoreLabel setText:_game.metascore];
+		[_titleLabel setText:_game.title];
+		
+		[_releaseDateLabel setText:_game.releaseDateText];
+		[_wantButton setHidden:([_game.wanted isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? YES : NO];
+		[_ownButton setHidden:([_game.owned isEqualToNumber:@(YES)] || [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
+		
+		[_descriptionTextView setText:_game.overview];
+		if (_game.platforms.count > 0) [_platformLabel setText:[_game.platforms.allObjects[0] abbreviation]];
+		if (_game.genres.count > 0) [_genreFirstLabel setText:[_game.genres.allObjects[0] name]];
+		if (_game.genres.count > 1) [_genreSecondLabel setText:[_game.genres.allObjects[1] name]];
+		if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
+		if (_game.publishers.count > 0) [_publisherLabel setText:[_game.publishers.allObjects[0] name]];
+	});
 	
-	[_releaseDateLabel setText:_game.releaseDateText];
-	[_wantButton setHidden:([_game.wanted isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? YES : NO];
-	[_ownButton setHidden:([_game.owned isEqualToNumber:@(YES)] || [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
-	
-	[_descriptionTextView setText:_game.overview];
-	if (_game.platforms.count > 0) [_platformLabel setText:[_game.platforms.allObjects[0] abbreviation]];
-	if (_game.genres.count > 0) [_genreFirstLabel setText:[_game.genres.allObjects[0] name]];
-	if (_game.genres.count > 1) [_genreSecondLabel setText:[_game.genres.allObjects[1] name]];
-	if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
-	if (_game.publishers.count > 0) [_publisherLabel setText:[_game.publishers.allObjects[0] name]];
+	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+	_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
+	_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
+//	[_imagesCollectionView reloadData];
+//	[_videosCollectionView reloadData];
 }
 
 - (NSInteger)quarterForMonth:(NSInteger)month{
@@ -737,33 +783,31 @@
 #pragma mark - Actions
 
 - (IBAction)addButtonPressAction:(UIButton *)sender{
-	_pressedButtonTag = sender.tag;
+	NSInteger buttonPressed = (sender == _wantButton) ? 1 : 2;
 	
-	NSArray *favoritePlatforms = [Platform findAllWithPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND self IN %@", @(YES), _game.platforms.allObjects]];
-	
-	if (favoritePlatforms.count > 1){
-		UIActionSheet *actionSheet;
-		if (!actionSheet) actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-		for (Platform *platform in favoritePlatforms)
-			[actionSheet addButtonWithTitle:platform.name];
+	if (_platforms.count > 1){
+		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+		[actionSheet setTag:buttonPressed];
+		
+		for (Platform *platform in _platforms) [actionSheet addButtonWithTitle:platform.name];
 		[actionSheet addButtonWithTitle:@"Cancel"];
-		[actionSheet setCancelButtonIndex:favoritePlatforms.count];
+		[actionSheet setCancelButtonIndex:_platforms.count];
+		
 		[actionSheet showInView:self.tabBarController.view];
 	}
 	else{
-		if (favoritePlatforms.count > 0)
-			[_game setSelectedPlatform:favoritePlatforms[0]];
-		[_game setWanted:(sender.tag == kWantButtonTag) ? @(YES) : @(NO)];
-		[_game setOwned:(sender.tag == kOwnButtonTag) ? @(YES) : @(NO)];
+		if (_platforms.count > 0) [_game setSelectedPlatform:_platforms[0]];
+		[_game setWanted:(sender == _wantButton) ? @(YES) : @(NO)];
+		[_game setOwned:(sender == _ownButton) ? @(YES) : @(NO)];
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self.navigationController popToRootViewControllerAnimated:YES];
+//			[self.navigationController popToRootViewControllerAnimated:YES];
+//			[self.tabBarController setSelectedIndex:(sender == _wantButton) ? 0 : 1];
 		}];
 	}
 }
 
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	[self requestGameWithIdentifier:_game.identifier];
-//	[_context reset];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

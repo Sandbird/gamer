@@ -75,14 +75,13 @@
 
 - (IBAction)doubleTapGestureRecognizerAction:(UITapGestureRecognizer *)sender{
 	CGPoint touchLocation = [sender locationInView:_imageView];
-	CGFloat zoomScale = (_scrollView.zoomScale < 1) ? 1 : _scrollView.minimumZoomScale;
-	
+	CGFloat zoomScale = (_scrollView.zoomScale < 0.5) ? 1 : _scrollView.minimumZoomScale;
 	CGFloat width = _scrollView.bounds.size.width/zoomScale;
 	CGFloat height = _scrollView.bounds.size.height/zoomScale;
-	CGFloat x = touchLocation.x - (width/2);
-	CGFloat y = touchLocation.y - (height/2);
+	CGFloat x = touchLocation.x - width;
+	CGFloat y = touchLocation.y - height;
 	
-	CGRect zoomRect = CGRectMake(x, y, width, height);
+	CGRect zoomRect = CGRectMake(x, y, (width * 2), (height * 2));
 	
     [_scrollView zoomToRect:zoomRect animated:YES];
 }

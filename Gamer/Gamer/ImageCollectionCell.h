@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 
 @interface ImageCollectionCell : UICollectionViewCell
 
 @property (nonatomic, strong) IBOutlet UIImageView *imageView;
-@property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end

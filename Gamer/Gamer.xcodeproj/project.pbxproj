@@ -43,8 +43,8 @@
 		25704047176CB12800642430 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704029176CB12800642430 /* UIKit.framework */; };
 		2570404F176CB12800642430 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2570404D176CB12800642430 /* InfoPlist.strings */; };
 		25704051176CB12800642430 /* GamerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704050176CB12800642430 /* GamerTests.m */; };
+		258D3B3D178F906800EAB7B9 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 258D3B3C178F906800EAB7B9 /* Image.m */; };
 		25A5188F178A54A5001692AD /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = 25A5188E178A54A5001692AD /* Video.m */; };
-		25A51892178A54A5001692AD /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 25A51891178A54A5001692AD /* Image.m */; };
 		25AE80D81773C71E00FBE9FC /* CoverImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80D71773C71E00FBE9FC /* CoverImage.m */; };
 		25AE80DE1773CE6C00FBE9FC /* ReleaseDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80DD1773CE6C00FBE9FC /* ReleaseDate.m */; };
 		25AE80E41773D65D00FBE9FC /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80E31773D65D00FBE9FC /* Theme.m */; };
@@ -125,10 +125,10 @@
 		2570404E176CB12800642430 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		25704050176CB12800642430 /* GamerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GamerTests.m; sourceTree = "<group>"; };
 		2570405E176CB55500642430 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		258D3B3B178F906800EAB7B9 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
+		258D3B3C178F906800EAB7B9 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
 		25A5188D178A54A5001692AD /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
 		25A5188E178A54A5001692AD /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video.m; sourceTree = "<group>"; };
-		25A51890178A54A5001692AD /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
-		25A51891178A54A5001692AD /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
 		25AE80D61773C71E00FBE9FC /* CoverImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverImage.h; sourceTree = "<group>"; };
 		25AE80D71773C71E00FBE9FC /* CoverImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverImage.m; sourceTree = "<group>"; };
 		25AE80DC1773CE6C00FBE9FC /* ReleaseDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseDate.h; sourceTree = "<group>"; };
@@ -345,8 +345,8 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				25A51890178A54A5001692AD /* Image.h */,
-				25A51891178A54A5001692AD /* Image.m */,
+				258D3B3B178F906800EAB7B9 /* Image.h */,
+				258D3B3C178F906800EAB7B9 /* Image.m */,
 				25A5188D178A54A5001692AD /* Video.h */,
 				25A5188E178A54A5001692AD /* Video.m */,
 				25CBCBBA177B9944002FD0AD /* Game.h */,
@@ -514,12 +514,12 @@
 				2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */,
 				2531E856176CDBDD005881A4 /* Tools.m in Sources */,
 				25A5188F178A54A5001692AD /* Video.m in Sources */,
+				258D3B3D178F906800EAB7B9 /* Image.m in Sources */,
 				2531E857176CDBDD005881A4 /* SessionManager.m in Sources */,
 				25CBCBBC177B9944002FD0AD /* Game.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
 				2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */,
 				2531E83B176CDB60005881A4 /* LibraryTableViewController.m in Sources */,
-				25A51892178A54A5001692AD /* Image.m in Sources */,
 				2531E83C176CDB60005881A4 /* SearchTableViewController.m in Sources */,
 				2531E83D176CDB60005881A4 /* GameTableViewController.m in Sources */,
 				2531E83E176CDB60005881A4 /* SettingsTableViewController.m in Sources */,
