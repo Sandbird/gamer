@@ -24,6 +24,7 @@
 #import "VideoCollectionCell.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 #import "ZoomViewController.h"
+#import "PlatformCollectionCell.h"
 
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -33,22 +34,26 @@
 @property (nonatomic, strong) IBOutlet UILabel *metascoreLabel;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
-@property (nonatomic, strong) IBOutlet UIButton *wantButton;
-@property (nonatomic, strong) IBOutlet UIButton *ownButton;
+@property (nonatomic, strong) IBOutlet UIButton *wishlistButton;
+@property (nonatomic, strong) IBOutlet UIButton *libraryButton;
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
-@property (nonatomic, strong) IBOutlet UILabel *platformLabel;
 @property (nonatomic, strong) IBOutlet UILabel *developerLabel;
 @property (nonatomic, strong) IBOutlet UILabel *publisherLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreFirstLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreSecondLabel;
+@property (nonatomic, strong) IBOutlet UICollectionView *platformsCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *imagesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *videosCollectionView;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
+
 @property (nonatomic, strong) NSArray *platforms;
 @property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSArray *videos;
+
+@property (nonatomic, strong) NSArray *selectablePlatforms;
 
 @end
 
@@ -59,11 +64,19 @@
 	
 	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
 	
+	[_wishlistButton setBackgroundImage:[[UIImage imageNamed:@"AddButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateNormal];
+	[_wishlistButton setBackgroundImage:[[UIImage imageNamed:@"AddButtonHighlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateHighlighted];
+	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateNormal];
+	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButtonHighlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateHighlighted];
+	
 	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
 	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
+	
+	_operationQueue = [[NSOperationQueue alloc] init];
+	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	
 	if (_game)
 		[self refresh];
@@ -75,18 +88,8 @@
 			[self requestGameWithIdentifier:_searchResult.identifier];
 	}
 	
-//	if (!_game){
-//		Game *game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
-//		if (game)
-//			_game = game;
-//		else
-//			[self requestGameWithIdentifier:_searchResult.identifier];
-//	}
-	
 	[_progressIndicator setColor:[UIColor whiteColor]];
 //	[_metascoreView setHidden:YES];
-	
-//	[self refresh];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -104,32 +107,35 @@
 	return [super tableView:tableView titleForHeaderInSection:section];
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//	switch (indexPath.section) {
-//		case 0: return 328;
-//		case 1: return 200;
-//		case 2: case 3: return 160;
-//		default: return 0;
-//	}
-//}
-
-//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-//	NSInteger imagesSection = tableView.numberOfSections - 2;
-//	NSInteger videosSection = tableView.numberOfSections - 1;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	if (indexPath.section == 1 && indexPath.row == 0){
+		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(280, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
+		return textRect.size.height + 30;
+	}
+	else
+		return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+}
 
 #pragma mark - CollectionView
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	if (collectionView == _imagesCollectionView)
+	if (collectionView == _platformsCollectionView)
+		return _platforms.count;
+	else if (collectionView == _imagesCollectionView)
 		return (_images.count > 0) ? _images.count : 1;
 	else
 		return (_videos.count > 0) ? _videos.count : 1;
-//	return (collectionView == _imagesCollectionView) ? _images.count : _videos.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-	if (collectionView == _imagesCollectionView){
+	if (collectionView == _platformsCollectionView){
+		PlatformCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+		Platform *platform = _platforms[indexPath.item];
+		[cell.platformLabel setText:platform.abbreviation];
+		[cell.platformLabel setBackgroundColor:platform.color];
+		return cell;
+	}
+	else if (collectionView == _imagesCollectionView){
 		// If array empty, show loading cell
 		if (_images.count == 0){
 			ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
@@ -138,11 +144,13 @@
 		}
 		
 		// If before last cell, download image for next cell
-		if ((_images.count - 1) > indexPath.item){
-			Image *nextImage = _images[indexPath.item + 1];
-			if (!nextImage.thumbnail && [nextImage.isDownloading isEqualToNumber:@(NO)])
-				[self downloadImageWithImageObject:nextImage];
-		}
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if ((_images.count - 1) > indexPath.item){
+				Image *nextImage = _images[indexPath.item + 1];
+				if (!nextImage.thumbnail && [nextImage.isDownloading isEqualToNumber:@(NO)])
+					[self downloadImageWithImageObject:nextImage];
+			}
+		});
 		
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = _images[indexPath.item];
@@ -160,11 +168,13 @@
 			return cell;
 		}
 		
-		if ((_videos.count - 1) > indexPath.item){
-			Video *nextVideo = _videos[indexPath.item + 1];
-			if (!nextVideo.thumbnail && [nextVideo.isDownloading isEqualToNumber:@(NO)])
-				[self requestInformationForVideo:nextVideo];
-		}
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if ((_videos.count - 1) > indexPath.item){
+				Video *nextVideo = _videos[indexPath.item + 1];
+				if (!nextVideo.thumbnail && [nextVideo.isDownloading isEqualToNumber:@(NO)])
+					[self downloadThumbnailForVideo:nextVideo];
+			}
+		});
 		
 		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Video *video = _videos[indexPath.item];
@@ -177,17 +187,13 @@
 	}
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
-//	NSLog(@"DID END DISPLAYING CELL: %@", indexPath);
-}
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _imagesCollectionView){
 		Image *image = _images[indexPath.item];
 		if (image.data)
 			[self performSegueWithIdentifier:@"ZoomSegue" sender:image];
 	}
-	else{
+	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
 		if (video.highQualityURL){
 			MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
@@ -423,7 +429,8 @@
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 	}];
-	[operation start];
+//	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)downloadImageForCoverImage:(CoverImage *)coverImage{
@@ -462,7 +469,8 @@
 //		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
 		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
 	}];
-	[operation start];
+//	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
@@ -516,7 +524,8 @@
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"Failure in %@ - Metascore", self);
 	}];
-	[operation start];
+//	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)requestMediaForGame:(Game *)game{
@@ -543,7 +552,7 @@
 				[image setIndex:@(index)];
 				[game addImagesObject:image];
 				
-				if (index == 0) [self downloadImageWithImageObject:image];
+				if (index <= 1) [self downloadImageWithImageObject:image];
 				
 				index++;
 			}
@@ -551,6 +560,7 @@
 		
 		// Videos
 		if (results[@"videos"] != [NSNull null]){
+//			NSLog(@"%@", results[@"videos"]);
 			NSInteger index = 0;
 			for (NSDictionary *dictionary in results[@"videos"]){
 				NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
@@ -563,7 +573,7 @@
 				[video setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
 				[game addVideosObject:video];
 				
-				if (index == 1) [self requestInformationForVideo:video];
+				[self requestInformationForVideo:video];
 				
 				index++;
 			}
@@ -577,7 +587,8 @@
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d", self, response.statusCode);
 	}];
-	[operation start];
+//	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)downloadImageWithImageObject:(Image *)imageObject{
@@ -587,7 +598,8 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
+//		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
+//		NSLog(@"image downloaded index: %@", imageObject.index);
 		[imageObject setData:UIImagePNGRepresentation(image)];
 		[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
 		return nil;
@@ -595,20 +607,17 @@
 		[imageObject setIsDownloading:@(NO)];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			dispatch_async(dispatch_get_main_queue(), ^{
+//			dispatch_async(dispatch_get_main_queue(), ^{
 				[_imagesCollectionView performBatchUpdates:^{
 					[_imagesCollectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
 				} completion:nil];
-			});
+//			});
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		[imageObject setIsDownloading:@(NO)];
 	}];
-	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
-	}];
-//	[_operationQueue addOperation:operation];
-	[operation start];
+//	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)requestInformationForVideo:(Video *)video{
@@ -639,7 +648,8 @@
 		[video setThumbnailURL:stringURL];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self downloadThumbnailForVideo:video];
+//			if (video.index.integerValue <= 1)
+				[self downloadThumbnailForVideo:video];
 			
 			_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
 			[[self.tableView headerViewForSection:3].textLabel setText:[NSString stringWithFormat:@"Videos - %d", _videos.count]];
@@ -649,8 +659,8 @@
 		NSLog(@"Failure in %@ - Status code: %d - Video", self, response.statusCode);
 		[video setIsDownloading:@(NO)];
 	}];
-//	[_operationQueue addOperation:operation];
-	[operation start];
+//	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)downloadThumbnailForVideo:(Video *)video{
@@ -664,34 +674,28 @@
 		[video setIsDownloading:@(NO)];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			dispatch_async(dispatch_get_main_queue(), ^{
+//			dispatch_async(dispatch_get_main_queue(), ^{
 				[_videosCollectionView performBatchUpdates:^{
 					[_videosCollectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
 				} completion:nil];
-			});
+//			});
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		[video setIsDownloading:@(NO)];
 	}];
-	
-	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
-		
-//		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
-	}];
-//	[_operationQueue addOperation:operation];
-	[operation start];
+//	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 #pragma mark - ActionSheet
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex != actionSheet.cancelButtonIndex){
-		[_game setSelectedPlatform:_platforms[buttonIndex]];
+		[_game setSelectedPlatform:_selectablePlatforms[buttonIndex]];
 		[_game setWanted:(actionSheet.tag == 1) ? @(YES) : @(NO)];
 		[_game setOwned:(actionSheet.tag == 2) ? @(YES) : @(NO)];
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//			[self.navigationController popToRootViewControllerAnimated:YES];
+			[self.navigationController popToRootViewControllerAnimated:YES];
 //			[self.tabBarController setSelectedIndex:(actionSheet.tag == 1) ? 0 : 1];
 		}];
 	}
@@ -700,17 +704,19 @@
 #pragma mark - Custom
 
 - (void)refresh{
+	[self.tableView reloadData];
+	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
 		[_metascoreLabel setText:_game.metascore];
 		[_titleLabel setText:_game.title];
 		
 		[_releaseDateLabel setText:_game.releaseDateText];
-		[_wantButton setHidden:([_game.wanted isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? YES : NO];
-		[_ownButton setHidden:([_game.owned isEqualToNumber:@(YES)] || [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
+		[_wishlistButton setEnabled:([_game.wanted isEqualToNumber:@(NO)]) ? YES : NO];
+		[_libraryButton setEnabled:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(YES)]) ? YES : NO];
 		
+		// This mess is just for demo purposes
 		[_descriptionTextView setText:_game.overview];
-		if (_game.platforms.count > 0) [_platformLabel setText:[_game.platforms.allObjects[0] abbreviation]];
 		if (_game.genres.count > 0) [_genreFirstLabel setText:[_game.genres.allObjects[0] name]];
 		if (_game.genres.count > 1) [_genreSecondLabel setText:[_game.genres.allObjects[1] name]];
 		if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
@@ -718,10 +724,10 @@
 	});
 	
 	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+	[_platformsCollectionView reloadData];
+	
 	_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
 	_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
-//	[_imagesCollectionView reloadData];
-//	[_videosCollectionView reloadData];
 }
 
 - (NSInteger)quarterForMonth:(NSInteger)month{
@@ -783,24 +789,27 @@
 #pragma mark - Actions
 
 - (IBAction)addButtonPressAction:(UIButton *)sender{
-	NSInteger buttonPressed = (sender == _wantButton) ? 1 : 2;
+	NSInteger buttonPressed = (sender == _wishlistButton) ? 1 : 2;
 	
-	if (_platforms.count > 1){
+	if (_selectablePlatforms.count > 1){
 		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 		[actionSheet setTag:buttonPressed];
 		
-		for (Platform *platform in _platforms) [actionSheet addButtonWithTitle:platform.name];
+		_selectablePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND self IN %@", @(YES), _game.platforms]];
+		
+		for (Platform *platform in _selectablePlatforms)
+			[actionSheet addButtonWithTitle:platform.name];
 		[actionSheet addButtonWithTitle:@"Cancel"];
-		[actionSheet setCancelButtonIndex:_platforms.count];
+		[actionSheet setCancelButtonIndex:_selectablePlatforms.count];
 		
 		[actionSheet showInView:self.tabBarController.view];
 	}
 	else{
-		if (_platforms.count > 0) [_game setSelectedPlatform:_platforms[0]];
-		[_game setWanted:(sender == _wantButton) ? @(YES) : @(NO)];
-		[_game setOwned:(sender == _ownButton) ? @(YES) : @(NO)];
+		if (_selectablePlatforms.count > 0) [_game setSelectedPlatform:_selectablePlatforms[0]];
+		[_game setWanted:(sender == _wishlistButton) ? @(YES) : @(NO)];
+		[_game setOwned:(sender == _libraryButton) ? @(YES) : @(NO)];
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//			[self.navigationController popToRootViewControllerAnimated:YES];
+			[self.navigationController popToRootViewControllerAnimated:YES];
 //			[self.tabBarController setSelectedIndex:(sender == _wantButton) ? 0 : 1];
 		}];
 	}

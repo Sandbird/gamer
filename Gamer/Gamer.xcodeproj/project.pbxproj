@@ -43,6 +43,7 @@
 		25704047176CB12800642430 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704029176CB12800642430 /* UIKit.framework */; };
 		2570404F176CB12800642430 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2570404D176CB12800642430 /* InfoPlist.strings */; };
 		25704051176CB12800642430 /* GamerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704050176CB12800642430 /* GamerTests.m */; };
+		257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 257880571794EF70004C28E3 /* PlatformCollectionCell.m */; };
 		258D3B3D178F906800EAB7B9 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 258D3B3C178F906800EAB7B9 /* Image.m */; };
 		25A5188F178A54A5001692AD /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = 25A5188E178A54A5001692AD /* Video.m */; };
 		25AE80D81773C71E00FBE9FC /* CoverImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80D71773C71E00FBE9FC /* CoverImage.m */; };
@@ -125,6 +126,8 @@
 		2570404E176CB12800642430 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		25704050176CB12800642430 /* GamerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GamerTests.m; sourceTree = "<group>"; };
 		2570405E176CB55500642430 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		257880561794EF70004C28E3 /* PlatformCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCollectionCell.h; sourceTree = "<group>"; };
+		257880571794EF70004C28E3 /* PlatformCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCollectionCell.m; sourceTree = "<group>"; };
 		258D3B3B178F906800EAB7B9 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		258D3B3C178F906800EAB7B9 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
 		25A5188D178A54A5001692AD /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
@@ -202,6 +205,8 @@
 				25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */,
 				251DEA40178CF3EA0094A6CB /* PlatformCell.h */,
 				251DEA41178CF3EA0094A6CB /* PlatformCell.m */,
+				257880561794EF70004C28E3 /* PlatformCollectionCell.h */,
+				257880571794EF70004C28E3 /* PlatformCollectionCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -517,6 +522,7 @@
 				258D3B3D178F906800EAB7B9 /* Image.m in Sources */,
 				2531E857176CDBDD005881A4 /* SessionManager.m in Sources */,
 				25CBCBBC177B9944002FD0AD /* Game.m in Sources */,
+				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
 				2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */,
 				2531E83B176CDB60005881A4 /* LibraryTableViewController.m in Sources */,
