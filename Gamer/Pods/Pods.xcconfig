@@ -1,9 +1,5 @@
-ALWAYS_SEARCH_USER_PATHS = YES
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = ${PODS_HEADERS_SEARCH_PATHS}
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/AFNetworking" "${PODS_ROOT}/Headers/FlurrySDK" "${PODS_ROOT}/Headers/MACircleProgressIndicator" "${PODS_ROOT}/Headers/MagicalRecord"
 LIBRARY_SEARCH_PATHS = "$(PODS_ROOT)/FlurrySDK/Flurry"
-OTHER_LDFLAGS = -ObjC -lFlurry -framework CoreData -framework MobileCoreServices -framework QuartzCore -framework Security -framework SystemConfiguration
-PODS_BUILD_HEADERS_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/AFNetworking" "${PODS_ROOT}/BuildHeaders/FlurrySDK" "${PODS_ROOT}/BuildHeaders/MACircleProgressIndicator" "${PODS_ROOT}/BuildHeaders/MagicalRecord" "${PODS_ROOT}/BuildHeaders/SDSegmentedControl" "${PODS_ROOT}/BuildHeaders/TapkuLibrary"
-PODS_HEADERS_SEARCH_PATHS = ${PODS_PUBLIC_HEADERS_SEARCH_PATHS}
-PODS_PUBLIC_HEADERS_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/AFNetworking" "${PODS_ROOT}/Headers/FlurrySDK" "${PODS_ROOT}/Headers/MACircleProgressIndicator" "${PODS_ROOT}/Headers/MagicalRecord" "${PODS_ROOT}/Headers/SDSegmentedControl" "${PODS_ROOT}/Headers/TapkuLibrary"
+OTHER_LDFLAGS = -ObjC -lFlurry -framework CoreData -framework MobileCoreServices -framework Security -framework SystemConfiguration -framework UIKit
 PODS_ROOT = ${SRCROOT}/Pods
