@@ -97,10 +97,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-//	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
 	[cell setSeparatorInset:UIEdgeInsetsMake(0, 74, 0, 0)];
-//	[cell.titleLabel setTextColor:[UIColor lightGrayColor]];
-//	[cell.dateLabel setTextColor:[UIColor grayColor]];
 	
 	[self configureCell:cell atIndexPath:indexPath];
 	

@@ -104,9 +104,9 @@ static NSDateFormatter *DATEFORMATTER;
 
 #pragma mark - Graphics
 
-+ (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset{
++ (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset bounds:(CGRect)bounds{
 	[view setClipsToBounds:NO];
-	[view.layer setShadowPath:[UIBezierPath bezierPathWithRect:view.bounds].CGPath];
+	[view.layer setShadowPath:[UIBezierPath bezierPathWithRect:bounds].CGPath];
 	[view.layer setShadowColor:color.CGColor];
 	[view.layer setShadowOpacity:opacity];
 	[view.layer setShadowRadius:radius];

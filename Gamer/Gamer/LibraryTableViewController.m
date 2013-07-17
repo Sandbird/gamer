@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentedControl;
 @property (nonatomic, strong) NSPredicate *predicate;
+@property (nonatomic, strong) NSManagedObjectContext *context;
 
 @end
 
@@ -30,6 +31,9 @@
 	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
 	[self.tableView.tableHeaderView setBackgroundColor:[UIColor clearColor]];
 	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
+	
+	_context = [NSManagedObjectContext contextForCurrentThread];
+	[_context setUndoManager:nil];
 	
 	self.fetchedResultsController = [self fetchWithPredicate:_predicate];
 }
@@ -58,8 +62,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     LibraryCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
-	[cell.titleLabel setTextColor:[UIColor lightGrayColor]];
+	[cell setSeparatorInset:UIEdgeInsetsMake(0, 74, 0, 0)];
 	
 	[self configureCell:cell atIndexPath:indexPath];
 	
@@ -78,12 +81,8 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	//	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", game.identifier] inContext:context];
 	[game setOwned:@(NO)];
-	[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		self.fetchedResultsController = [self fetchWithPredicate:_predicate];
-		[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-	}];
+	[context saveToPersistentStoreAndWait];
 }
 
 #pragma mark - FetchedTableView
@@ -120,6 +119,7 @@
 	else
 		predicate = nil;
 	
+	self.fetchedResultsController = nil;
 	self.fetchedResultsController = [self fetchWithPredicate:predicate];
 	[self.tableView reloadData];
 }

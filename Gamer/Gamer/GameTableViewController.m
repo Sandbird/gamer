@@ -69,7 +69,8 @@
 	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateNormal];
 	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButtonHighlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateHighlighted];
 	
-	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
+//	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
+	[self.tableView setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
 	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
@@ -78,15 +79,34 @@
 	_operationQueue = [[NSOperationQueue alloc] init];
 	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	
-	if (_game)
-		[self refresh];
-	else{
+	if (!_game)
 		_game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
-		if (_game)
-			[self refresh];
-		else
-			[self requestGameWithIdentifier:_searchResult.identifier];
+	if (_game){
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self setCoverImageAnimated:NO];
+			
+			[_metascoreLabel setText:_game.metascore];
+			[_titleLabel setText:_game.title];
+			
+			[_releaseDateLabel setText:_game.releaseDateText];
+			[_wishlistButton setEnabled:([_game.wanted isEqualToNumber:@(NO)]) ? YES : NO];
+			[_libraryButton setEnabled:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(YES)]) ? YES : NO];
+			
+			// This mess is just for demo purposes
+			[_descriptionTextView setText:_game.overview];
+			if (_game.genres.count > 0) [_genreFirstLabel setText:[_game.genres.allObjects[0] name]];
+			if (_game.genres.count > 1) [_genreSecondLabel setText:[_game.genres.allObjects[1] name]];
+			if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
+			if (_game.publishers.count > 0) [_publisherLabel setText:[_game.publishers.allObjects[0] name]];
+		});
+		
+		_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+		
+		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
+		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
 	}
+	else
+		[self requestGameWithIdentifier:_searchResult.identifier];
 	
 	[_progressIndicator setColor:[UIColor whiteColor]];
 //	[_metascoreView setHidden:YES];
@@ -107,11 +127,14 @@
 	return [super tableView:tableView titleForHeaderInSection:section];
 }
 
+// REFACTOR THIS
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	if (indexPath.section == 1 && indexPath.row == 0){
 		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(280, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
 		return textRect.size.height + 30;
 	}
+	else if (indexPath.section == 1 && indexPath.row == 2)
+		return (_platforms.count > 4) ? 120 : 100;
 	else
 		return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
@@ -417,8 +440,29 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self refresh];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self setCoverImageAnimated:NO];
+				
+				[_metascoreLabel setText:_game.metascore];
+				[_titleLabel setText:_game.title];
+				
+				[_releaseDateLabel setText:_game.releaseDateText];
+				[_wishlistButton setEnabled:([_game.wanted isEqualToNumber:@(NO)]) ? YES : NO];
+				[_libraryButton setEnabled:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(YES)]) ? YES : NO];
+				
+				// This mess is just for demo purposes
+				[_descriptionTextView setText:_game.overview];
+				if (_game.genres.count > 0) [_genreFirstLabel setText:[_game.genres.allObjects[0] name]];
+				if (_game.genres.count > 1) [_genreSecondLabel setText:[_game.genres.allObjects[1] name]];
+				if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
+				if (_game.publishers.count > 0) [_publisherLabel setText:[_game.publishers.allObjects[0] name]];
+			});
 			
+			_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+			[_platformsCollectionView reloadData];
+			
+			[self.tableView reloadData];
+			NSLog(@"%@ - %d", _game.releasePeriod.identifier, _platforms.count);
 			// If game is released and has at least one platform, request metascore
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _platforms.count > 0)
 				[self requestMetascoreForGameWithTitle:_game.title platform:_platforms[0]];
@@ -453,13 +497,8 @@
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			dispatch_async(dispatch_get_main_queue(), ^{
-				CATransition *transition = [CATransition animation];
-				transition.type = kCATransitionFade;
-				transition.duration = 0.2;
-				transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-				[_coverImageView setImage:[UIImage imageWithData:coverImage.data]];
 				[_progressIndicator setHidden:YES];
-				[_coverImageView.layer addAnimation:transition forKey:nil];
+				[self setCoverImageAnimated:YES];
 			});
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
@@ -514,7 +553,6 @@
 			
 			[_game setMetascore:metascore];
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				
 				if (metascore.length > 0){
 					[_metascoreView setHidden:NO];
 					[_metascoreLabel setText:metascore];
@@ -582,6 +620,8 @@
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
 			[[self.tableView headerViewForSection:2].textLabel setText:[NSString stringWithFormat:@"Images - %d", _images.count]];
+			_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", game.identifier, @"Trailers"]];
+			[[self.tableView headerViewForSection:3].textLabel setText:[NSString stringWithFormat:@"Videos - %d", _videos.count]];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -628,9 +668,15 @@
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-//		NSLog(@"%@", JSON);
+		NSLog(@"%@", JSON);
 		
 		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+		
+		if ([JSON[@"status_code"] isEqualToNumber:@(101)]){
+			[video deleteEntity];
+			[_context saveToPersistentStoreAndWait];
+			return;
+		}
 		
 		NSDictionary *results = JSON[@"results"];
 		
@@ -703,31 +749,25 @@
 
 #pragma mark - Custom
 
-- (void)refresh{
-	[self.tableView reloadData];
-	
-	dispatch_async(dispatch_get_main_queue(), ^{
+- (void)setCoverImageAnimated:(BOOL)animated{
+	if (animated){
+		CATransition *transition = [CATransition animation];
+		transition.type = kCATransitionFade;
+		transition.duration = 0.2;
+		transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
 		[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
-		[_metascoreLabel setText:_game.metascore];
-		[_titleLabel setText:_game.title];
-		
-		[_releaseDateLabel setText:_game.releaseDateText];
-		[_wishlistButton setEnabled:([_game.wanted isEqualToNumber:@(NO)]) ? YES : NO];
-		[_libraryButton setEnabled:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(YES)]) ? YES : NO];
-		
-		// This mess is just for demo purposes
-		[_descriptionTextView setText:_game.overview];
-		if (_game.genres.count > 0) [_genreFirstLabel setText:[_game.genres.allObjects[0] name]];
-		if (_game.genres.count > 1) [_genreSecondLabel setText:[_game.genres.allObjects[1] name]];
-		if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
-		if (_game.publishers.count > 0) [_publisherLabel setText:[_game.publishers.allObjects[0] name]];
-	});
+		[_coverImageView.layer addAnimation:transition forKey:nil];
+	}
+	else
+		[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
 	
-	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
-	[_platformsCollectionView reloadData];
+	CGRect shadowRect;
+	if (_coverImageView.image.size.width > _coverImageView.image.size.height)
+		shadowRect = CGRectMake(_coverImageView.bounds.origin.x, (_coverImageView.bounds.size.height - _coverImageView.image.size.height/2)/2, _coverImageView.bounds.size.width, _coverImageView.image.size.height/2);
+	else
+		shadowRect = CGRectMake((_coverImageView.bounds.size.width - _coverImageView.image.size.width/2)/2, _coverImageView.bounds.origin.y, _coverImageView.image.size.width/2, _coverImageView.bounds.size.height);
 	
-	_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
-	_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
+	[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:shadowRect];
 }
 
 - (NSInteger)quarterForMonth:(NSInteger)month{
@@ -791,11 +831,11 @@
 - (IBAction)addButtonPressAction:(UIButton *)sender{
 	NSInteger buttonPressed = (sender == _wishlistButton) ? 1 : 2;
 	
+	_selectablePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND self IN %@", @(YES), _game.platforms]];
+	
 	if (_selectablePlatforms.count > 1){
 		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 		[actionSheet setTag:buttonPressed];
-		
-		_selectablePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND self IN %@", @(YES), _game.platforms]];
 		
 		for (Platform *platform in _selectablePlatforms)
 			[actionSheet addButtonWithTitle:platform.name];
