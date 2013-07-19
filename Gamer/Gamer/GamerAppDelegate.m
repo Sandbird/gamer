@@ -12,7 +12,8 @@
 #import "ReleasePeriod.h"
 #import "Platform.h"
 #import "ReleaseDate.h"
-#import "SessionManager.h"
+#import <Tapstream/TSTapstream.h>
+#import <AdSupport/ASIdentifierManager.h>
 
 @implementation GamerAppDelegate
 
@@ -20,7 +21,13 @@
 	[MagicalRecord setupCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
-	//	[Flurry startSession:@"P9BVWFKVSP4PD66TGNXV"];
+#if !(TARGET_IPHONE_SIMULATOR)
+//	[Flurry startSession:@"P9BVWFKVSP4PD66TGNXV"];
+	
+//	TSConfig *config = [TSConfig configWithDefaults];
+//	[config setIdfa:[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];
+//	[TSTapstream createWithAccountName:@"caiomello" developerSecret:@"6W5Kiz2jSXWbUqQaRe1jxw" config:config];
+#endif
 	
 	[self.window setTintColor:[UIColor orangeColor]];
 	

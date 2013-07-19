@@ -30,3 +30,9 @@
 #define COCOAPODS_VERSION_MINOR_MagicalRecord 1
 #define COCOAPODS_VERSION_PATCH_MagicalRecord 0
 
+// Tapstream
+#define COCOAPODS_POD_AVAILABLE_Tapstream
+#define COCOAPODS_VERSION_MAJOR_Tapstream 2
+#define COCOAPODS_VERSION_MINOR_Tapstream 3
+#define COCOAPODS_VERSION_PATCH_Tapstream 0
+

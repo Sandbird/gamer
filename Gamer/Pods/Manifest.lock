@@ -3,17 +3,20 @@ PODS:
   - FlurrySDK (4.2.1)
   - MACircleProgressIndicator (1.0.0)
   - MagicalRecord (2.1)
+  - Tapstream (2.3)
 
 DEPENDENCIES:
   - AFNetworking
   - FlurrySDK
   - MACircleProgressIndicator
   - MagicalRecord
+  - Tapstream
 
 SPEC CHECKSUMS:
   AFNetworking: e528f20d06b1b818c3571266fb5efa20031a8ace
   FlurrySDK: 9a38bbb195c9f636a40193190ef38fd07e6b76c5
   MACircleProgressIndicator: dc497a2c68dd930d4aea837b1a732a56ce4bd6d8
   MagicalRecord: 64e7184c240087a45e9588a722eaf05b0ad837f7
+  Tapstream: c999a7e7870dbe40847a8dec56fdb07410b12bc6
 
 COCOAPODS: 0.22.2
