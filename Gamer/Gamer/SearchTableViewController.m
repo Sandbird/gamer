@@ -9,9 +9,6 @@
 #import "SearchTableViewController.h"
 #import "GameTableViewController.h"
 #import "SearchResult.h"
-#import "SessionManager.h"
-#import "WishlistTableViewController.h"
-#import "LibraryTableViewController.h"
 #import "Platform.h"
 
 @interface SearchTableViewController () <UISearchBarDelegate>

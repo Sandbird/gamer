@@ -20,7 +20,7 @@
 	[MagicalRecord setupCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
-#if (TARGET_IPHONE_SIMULATOR)
+#if !(TARGET_IPHONE_SIMULATOR)
 //	// Tapstream Analytics
 //	TSConfig *config = [TSConfig configWithDefaults];
 //	[config setIdfa:[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];

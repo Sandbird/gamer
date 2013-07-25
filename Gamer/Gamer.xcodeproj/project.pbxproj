@@ -11,14 +11,12 @@
 		2531E820176CDA35005881A4 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E81F176CDA35005881A4 /* CoreData.framework */; };
 		2531E822176CDA48005881A4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E821176CDA48005881A4 /* QuartzCore.framework */; };
 		2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */; };
-		2531E83B176CDB60005881A4 /* LibraryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A182176CD5380010E61D /* LibraryTableViewController.m */; };
 		2531E83C176CDB60005881A4 /* SearchTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A184176CD5480010E61D /* SearchTableViewController.m */; };
 		2531E83D176CDB60005881A4 /* GameTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A186176CD5540010E61D /* GameTableViewController.m */; };
 		2531E83E176CDB60005881A4 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A188176CD5620010E61D /* SettingsTableViewController.m */; };
 		2531E83F176CDB60005881A4 /* FetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A18A176CD5B80010E61D /* FetchedTableViewController.m */; };
 		2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A17C176CD4B30010E61D /* WishlistSectionHeaderView.m */; };
 		2531E841176CDB60005881A4 /* WishlistCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A174176CD4160010E61D /* WishlistCell.m */; };
-		2531E843176CDB60005881A4 /* LibraryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A176176CD4210010E61D /* LibraryCell.m */; };
 		2531E849176CDB60005881A4 /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E834176CDA97005881A4 /* Franchise.m */; };
 		2531E84B176CDB60005881A4 /* Publisher.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E830176CDA97005881A4 /* Publisher.m */; };
 		2531E84C176CDB60005881A4 /* Developer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E82E176CDA97005881A4 /* Developer.m */; };
@@ -51,8 +49,10 @@
 		25AE80D81773C71E00FBE9FC /* CoverImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80D71773C71E00FBE9FC /* CoverImage.m */; };
 		25AE80DE1773CE6C00FBE9FC /* ReleaseDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80DD1773CE6C00FBE9FC /* ReleaseDate.m */; };
 		25AE80E41773D65D00FBE9FC /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80E31773D65D00FBE9FC /* Theme.m */; };
+		25B9E9C017A0B70200881089 /* LibraryCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryCollectionViewController.m */; };
+		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
+		25B9E9C617A0CA8500881089 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C517A0CA8500881089 /* Game.m */; };
 		25CBCBB9177B9944002FD0AD /* ReleasePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CBCBB8177B9944002FD0AD /* ReleasePeriod.m */; };
-		25CBCBBC177B9944002FD0AD /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CBCBBB177B9944002FD0AD /* Game.m */; };
 		25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ZoomViewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
 		25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */; };
@@ -73,14 +73,10 @@
 /* Begin PBXFileReference section */
 		2506A173176CD4160010E61D /* WishlistCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WishlistCell.h; sourceTree = "<group>"; };
 		2506A174176CD4160010E61D /* WishlistCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WishlistCell.m; sourceTree = "<group>"; };
-		2506A175176CD4210010E61D /* LibraryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryCell.h; sourceTree = "<group>"; };
-		2506A176176CD4210010E61D /* LibraryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryCell.m; sourceTree = "<group>"; };
 		2506A17B176CD4B30010E61D /* WishlistSectionHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WishlistSectionHeaderView.h; sourceTree = "<group>"; };
 		2506A17C176CD4B30010E61D /* WishlistSectionHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WishlistSectionHeaderView.m; sourceTree = "<group>"; };
 		2506A17D176CD4EA0010E61D /* WishlistTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WishlistTableViewController.h; sourceTree = "<group>"; };
 		2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WishlistTableViewController.m; sourceTree = "<group>"; };
-		2506A181176CD5380010E61D /* LibraryTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LibraryTableViewController.h; sourceTree = "<group>"; };
-		2506A182176CD5380010E61D /* LibraryTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LibraryTableViewController.m; sourceTree = "<group>"; };
 		2506A183176CD5480010E61D /* SearchTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchTableViewController.h; sourceTree = "<group>"; };
 		2506A184176CD5480010E61D /* SearchTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchTableViewController.m; sourceTree = "<group>"; };
 		2506A185176CD5540010E61D /* GameTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameTableViewController.h; sourceTree = "<group>"; };
@@ -144,10 +140,14 @@
 		25AE80DD1773CE6C00FBE9FC /* ReleaseDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseDate.m; sourceTree = "<group>"; };
 		25AE80E21773D65D00FBE9FC /* Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theme.h; sourceTree = "<group>"; };
 		25AE80E31773D65D00FBE9FC /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
+		25B9E9BE17A0B70200881089 /* LibraryCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCollectionViewController.h; sourceTree = "<group>"; };
+		25B9E9BF17A0B70200881089 /* LibraryCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCollectionViewController.m; sourceTree = "<group>"; };
+		25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCollectionCell.h; sourceTree = "<group>"; };
+		25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCollectionCell.m; sourceTree = "<group>"; };
+		25B9E9C417A0CA8500881089 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		25B9E9C517A0CA8500881089 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		25CBCBB7177B9944002FD0AD /* ReleasePeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasePeriod.h; sourceTree = "<group>"; };
 		25CBCBB8177B9944002FD0AD /* ReleasePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasePeriod.m; sourceTree = "<group>"; };
-		25CBCBBA177B9944002FD0AD /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		25CBCBBB177B9944002FD0AD /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		25D2E5FF178BB22900C7EDDB /* ZoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZoomViewController.h; sourceTree = "<group>"; };
 		25D2E600178BB22900C7EDDB /* ZoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZoomViewController.m; sourceTree = "<group>"; };
 		25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionCell.h; sourceTree = "<group>"; };
@@ -209,8 +209,8 @@
 			children = (
 				2506A173176CD4160010E61D /* WishlistCell.h */,
 				2506A174176CD4160010E61D /* WishlistCell.m */,
-				2506A175176CD4210010E61D /* LibraryCell.h */,
-				2506A176176CD4210010E61D /* LibraryCell.m */,
+				25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */,
+				25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */,
 				25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */,
 				25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */,
 				25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */,
@@ -341,8 +341,8 @@
 			children = (
 				2506A17D176CD4EA0010E61D /* WishlistTableViewController.h */,
 				2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */,
-				2506A181176CD5380010E61D /* LibraryTableViewController.h */,
-				2506A182176CD5380010E61D /* LibraryTableViewController.m */,
+				25B9E9BE17A0B70200881089 /* LibraryCollectionViewController.h */,
+				25B9E9BF17A0B70200881089 /* LibraryCollectionViewController.m */,
 				2506A183176CD5480010E61D /* SearchTableViewController.h */,
 				2506A184176CD5480010E61D /* SearchTableViewController.m */,
 				2506A185176CD5540010E61D /* GameTableViewController.h */,
@@ -367,12 +367,12 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				25B9E9C417A0CA8500881089 /* Game.h */,
+				25B9E9C517A0CA8500881089 /* Game.m */,
 				258D3B3B178F906800EAB7B9 /* Image.h */,
 				258D3B3C178F906800EAB7B9 /* Image.m */,
 				25A5188D178A54A5001692AD /* Video.h */,
 				25A5188E178A54A5001692AD /* Video.m */,
-				25CBCBBA177B9944002FD0AD /* Game.h */,
-				25CBCBBB177B9944002FD0AD /* Game.m */,
 				25CBCBB7177B9944002FD0AD /* ReleasePeriod.h */,
 				25CBCBB8177B9944002FD0AD /* ReleasePeriod.m */,
 				25AE80E21773D65D00FBE9FC /* Theme.h */,
@@ -534,15 +534,14 @@
 				2531E85B176CDC68005881A4 /* SearchResult.m in Sources */,
 				25AE80D81773C71E00FBE9FC /* CoverImage.m in Sources */,
 				2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */,
+				25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */,
 				2531E856176CDBDD005881A4 /* Tools.m in Sources */,
 				25A5188F178A54A5001692AD /* Video.m in Sources */,
 				258D3B3D178F906800EAB7B9 /* Image.m in Sources */,
 				2531E857176CDBDD005881A4 /* SessionManager.m in Sources */,
-				25CBCBBC177B9944002FD0AD /* Game.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
 				2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */,
-				2531E83B176CDB60005881A4 /* LibraryTableViewController.m in Sources */,
 				2531E83C176CDB60005881A4 /* SearchTableViewController.m in Sources */,
 				2531E83D176CDB60005881A4 /* GameTableViewController.m in Sources */,
 				2531E83E176CDB60005881A4 /* SettingsTableViewController.m in Sources */,
@@ -550,13 +549,14 @@
 				2531E83F176CDB60005881A4 /* FetchedTableViewController.m in Sources */,
 				2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */,
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
-				2531E843176CDB60005881A4 /* LibraryCell.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */,
 				25F45891179DFD3E008C15B3 /* GameSectionHeaderView.m in Sources */,
 				2531E849176CDB60005881A4 /* Franchise.m in Sources */,
 				2531E84B176CDB60005881A4 /* Publisher.m in Sources */,
 				25AE80E41773D65D00FBE9FC /* Theme.m in Sources */,
 				25AE80DE1773CE6C00FBE9FC /* ReleaseDate.m in Sources */,
+				25B9E9C017A0B70200881089 /* LibraryCollectionViewController.m in Sources */,
+				25B9E9C617A0CA8500881089 /* Game.m in Sources */,
 				2531E84C176CDB60005881A4 /* Developer.m in Sources */,
 				25CBCBB9177B9944002FD0AD /* ReleasePeriod.m in Sources */,
 				2531E84D176CDB60005881A4 /* SimilarGame.m in Sources */,

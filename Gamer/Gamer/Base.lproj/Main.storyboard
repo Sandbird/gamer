@@ -569,95 +569,6 @@
             </objects>
             <point key="canvasLocation" x="1690" y="79"/>
         </scene>
-        <!--Library Table View Controller - Library-->
-        <scene sceneID="Eoy-gu-WI4">
-            <objects>
-                <tableViewController id="OzM-l7-y3v" customClass="LibraryTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="90" sectionHeaderHeight="44" sectionFooterHeight="22" id="8Ma-m4-8D4">
-                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="hTv-pv-HlZ">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <subviews>
-                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="uMJ-YB-19H">
-                                    <rect key="frame" x="7" y="8" width="306" height="29"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <segments>
-                                        <segment title="First"/>
-                                        <segment title="Second"/>
-                                    </segments>
-                                    <connections>
-                                        <action selector="segmentedControlValueChanged:" destination="OzM-l7-y3v" eventType="valueChanged" id="dMp-WU-yre"/>
-                                    </connections>
-                                </segmentedControl>
-                            </subviews>
-                        </view>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="EQo-I4-2WZ" userLabel="Library Cell" customClass="LibraryCell">
-                                <rect key="frame" x="0.0" y="88" width="320" height="90"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EQo-I4-2WZ" id="bhY-RF-Zv7">
-                                    <rect key="frame" x="0.0" y="0.0" width="322" height="89"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eh5-2X-xlS" userLabel="Cover Image View">
-                                            <rect key="frame" x="10" y="10" width="56" height="70"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="183" translatesAutoresizingMaskIntoConstraints="NO" id="MgM-nf-uCn" userLabel="Title Label">
-                                            <rect key="frame" x="74" y="10" width="183" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" relation="lessThanOrEqual" priority="159" constant="41" id="bPc-cO-0sJ"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="PS4" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0cT-KH-FI0" userLabel="Platform Label">
-                                            <rect key="frame" x="74" y="59" width="50" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="90" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Vo-4e-25v" userLabel="Metascore Label">
-                                            <rect key="frame" x="272" y="30" width="30" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" red="0.31372549019607843" green="0.58823529411764708" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
-                                <connections>
-                                    <outlet property="coverImageView" destination="eh5-2X-xlS" id="RgC-PT-nvX"/>
-                                    <outlet property="metascoreLabel" destination="8Vo-4e-25v" id="NZV-vm-xom"/>
-                                    <outlet property="platformLabel" destination="0cT-KH-FI0" id="Ebg-ee-SHt"/>
-                                    <outlet property="titleLabel" destination="MgM-nf-uCn" id="e7s-Kf-o3b"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="OzM-l7-y3v" id="oYI-c6-Quq"/>
-                            <outlet property="delegate" destination="OzM-l7-y3v" id="86K-t9-IBL"/>
-                        </connections>
-                    </tableView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" title="Library" id="X01-IC-kb9"/>
-                    <connections>
-                        <outlet property="segmentedControl" destination="uMJ-YB-19H" id="Vo6-iJ-vB9"/>
-                        <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="ErO-my-toj"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UJg-WN-sp1" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="626" y="79"/>
-        </scene>
         <!--Settings Table View Controller - Settings-->
         <scene sceneID="nC7-aY-Zyh">
             <objects>
@@ -801,19 +712,81 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="OzM-l7-y3v" kind="relationship" relationship="rootViewController" id="tER-rM-Bxj"/>
+                        <segue destination="AEQ-18-ifU" kind="relationship" relationship="rootViewController" id="sFs-ek-4K0"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Nk-T0-ZUr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="144" y="79"/>
         </scene>
-        <!--Navigation Controller - Settings-->
+        <!--Library Collection View Controller-->
+        <scene sceneID="B6l-qI-8Ku">
+            <objects>
+                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="AEQ-18-ifU" customClass="LibraryCollectionViewController" sceneMemberID="viewController">
+                    <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="GtL-7c-Tyo">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="JOS-0d-UXM">
+                            <size key="itemSize" width="106" height="130"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="Ncj-We-Ihx" customClass="LibraryCollectionCell">
+                                <rect key="frame" x="0.0" y="64" width="106" height="130"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="106" height="130"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mca-hS-zR6">
+                                            <rect key="frame" x="10" y="10" width="86" height="108"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <connections>
+                                    <outlet property="imageView" destination="mca-hS-zR6" id="Tag-y3-uiC"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="AEQ-18-ifU" id="s3s-Y1-wUK"/>
+                            <outlet property="delegate" destination="AEQ-18-ifU" id="2GB-LG-uOa"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="0lx-vn-CDS">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="hE7-R7-hjC">
+                            <rect key="frame" x="10" y="6" width="300" height="32"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="First"/>
+                                <segment title="Second"/>
+                            </segments>
+                            <connections>
+                                <action selector="segmentedControlValueChanged:" destination="AEQ-18-ifU" eventType="valueChanged" id="Tpx-Ng-Hz8"/>
+                            </connections>
+                        </segmentedControl>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="segmentedControl" destination="hE7-R7-hjC" id="E6r-b4-kMB"/>
+                        <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="agp-eq-OJx"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EfZ-qu-q2A" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="626" y="79"/>
+        </scene>
+        <!--Navigation Controller-->
         <scene sceneID="K76-F1-Dqm">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="EXW-1z-fZk" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Settings" id="9qH-rw-EIv"/>
+                    <tabBarItem key="tabBarItem" systemItem="more" id="9qH-rw-EIv"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="TyA-Ee-XZY">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -856,6 +829,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="ErO-my-toj"/>
+        <segue reference="agp-eq-OJx"/>
     </inferredMetricsTieBreakers>
 </document>

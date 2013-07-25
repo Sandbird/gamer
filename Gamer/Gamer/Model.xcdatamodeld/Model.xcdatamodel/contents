@@ -20,14 +20,15 @@
     <entity name="Game" representedClassName="Game" syncable="YES">
         <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="libraryThumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="metascore" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="released" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="releaseDateText" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="wanted" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="wishlistThumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="coverImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoverImage" inverseName="game" inverseEntity="CoverImage" syncable="YES"/>
         <relationship name="developers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Developer" inverseName="games" inverseEntity="Developer" syncable="YES"/>
         <relationship name="franchises" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Franchise" inverseName="games" inverseEntity="Franchise" syncable="YES"/>
@@ -115,7 +116,7 @@
         <element name="CoverImage" positionX="-108" positionY="-313" width="128" height="88"/>
         <element name="Developer" positionX="261" positionY="-319" width="128" height="103"/>
         <element name="Franchise" positionX="-137" positionY="-202" width="128" height="103"/>
-        <element name="Game" positionX="63" positionY="-220" width="128" height="403"/>
+        <element name="Game" positionX="63" positionY="-220" width="128" height="418"/>
         <element name="Genre" positionX="-180" positionY="-79" width="128" height="88"/>
         <element name="Image" positionX="439" positionY="126" width="128" height="133"/>
         <element name="Platform" positionX="358" positionY="-40" width="128" height="148"/>

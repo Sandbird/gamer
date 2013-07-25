@@ -22,6 +22,8 @@
 - (id)init{
 	self = [super initWithFrame:CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height)];
 	if (self){
+		[self setUserInteractionEnabled:NO];
+		
 //		[self setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 		[self setBackgroundColor:[UIColor colorWithRed:.352941176 green:.352941176 blue:.352941176 alpha:1]];
 		

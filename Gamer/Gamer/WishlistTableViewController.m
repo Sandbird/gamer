@@ -18,7 +18,6 @@
 #import "ReleasePeriod.h"
 #import "ReleaseDate.h"
 #import "GameTableViewController.h"
-#import "SearchTableViewController.h"
 
 @interface WishlistTableViewController () <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
 
@@ -136,7 +135,7 @@
 	WishlistCell *customCell = (WishlistCell *)cell;
 	[customCell.titleLabel setText:game.title];
 	[customCell.dateLabel setText:([game.releasePeriod.identifier isEqualToNumber:@(9)]) ? @"" : game.releaseDateText];
-	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];
+	[customCell.coverImageView setImage:[UIImage imageWithData:game.wishlistThumbnail]];
 	[customCell.platformLabel setText:game.selectedPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.selectedPlatform.color];
 }

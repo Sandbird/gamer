@@ -484,7 +484,7 @@
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _platforms.count > 0)
 				[self requestMetascoreForGameWithTitle:_game.title platform:_platforms[0]];
 			
-			[self requestMediaForGame:_game];
+//			[self requestMediaForGame:_game];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -504,11 +504,13 @@
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
 		if (image.size.width > image.size.height){
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:280])];
-			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:56])];
+			[_game setWishlistThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:56])];
+			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:86])];
 		}
 		else{
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:200])];
-			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:70])];
+			[_game setWishlistThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:70])];
+			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:108])];
 		}
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
