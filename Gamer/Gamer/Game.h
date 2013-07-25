@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 24/07/2013.
+//  Created by Caio Mello on 25/07/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -15,15 +15,15 @@
 
 @property (nonatomic, retain) NSNumber * hidden;
 @property (nonatomic, retain) NSNumber * identifier;
+@property (nonatomic, retain) NSData * libraryThumbnail;
 @property (nonatomic, retain) NSString * metascore;
 @property (nonatomic, retain) NSString * overview;
 @property (nonatomic, retain) NSNumber * owned;
 @property (nonatomic, retain) NSNumber * released;
 @property (nonatomic, retain) NSString * releaseDateText;
-@property (nonatomic, retain) NSData * wishlistThumbnail;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * wanted;
-@property (nonatomic, retain) NSData * libraryThumbnail;
+@property (nonatomic, retain) NSData * wishlistThumbnail;
 @property (nonatomic, retain) CoverImage *coverImage;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
@@ -34,10 +34,11 @@
 @property (nonatomic, retain) NSSet *publishers;
 @property (nonatomic, retain) ReleaseDate *releaseDate;
 @property (nonatomic, retain) ReleasePeriod *releasePeriod;
-@property (nonatomic, retain) Platform *selectedPlatform;
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
+@property (nonatomic, retain) Platform *wishlistPlatform;
+@property (nonatomic, retain) Platform *libraryPlatform;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)

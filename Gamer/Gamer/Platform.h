@@ -2,7 +2,7 @@
 //  Platform.h
 //  Gamer
 //
-//  Created by Caio Mello on 6/15/13.
+//  Created by Caio Mello on 25/07/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -19,7 +19,8 @@
 @property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSSet *games;
-@property (nonatomic, retain) NSSet *savedGames;
+@property (nonatomic, retain) NSSet *wishlistGames;
+@property (nonatomic, retain) NSSet *libraryGames;
 @end
 
 @interface Platform (CoreDataGeneratedAccessors)
@@ -29,9 +30,14 @@
 - (void)addGames:(NSSet *)values;
 - (void)removeGames:(NSSet *)values;
 
-- (void)addSavedGamesObject:(Game *)value;
-- (void)removeSavedGamesObject:(Game *)value;
-- (void)addSavedGames:(NSSet *)values;
-- (void)removeSavedGames:(NSSet *)values;
+- (void)addWishlistGamesObject:(Game *)value;
+- (void)removeWishlistGamesObject:(Game *)value;
+- (void)addWishlistGames:(NSSet *)values;
+- (void)removeWishlistGames:(NSSet *)values;
+
+- (void)addLibraryGamesObject:(Game *)value;
+- (void)removeLibraryGamesObject:(Game *)value;
+- (void)addLibraryGames:(NSSet *)values;
+- (void)removeLibraryGames:(NSSet *)values;
 
 @end

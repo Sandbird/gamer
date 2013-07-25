@@ -11,11 +11,12 @@
 #import "Game.h"
 #import "Platform.h"
 #import "GameTableViewController.h"
+#import "LibraryHeaderReusableView.h"
 
-@interface LibraryCollectionViewController () <NSFetchedResultsControllerDelegate>
+@interface LibraryCollectionViewController () <NSFetchedResultsControllerDelegate, UICollectionViewDelegateFlowLayout>
 
-@property (nonatomic, strong) IBOutlet UISegmentedControl *segmentedControl;
 @property (nonatomic, strong) NSArray *platforms;
+@property (nonatomic, assign) NSInteger platformSelection;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSMutableArray *sectionChanges;
 @property (nonatomic, strong) NSMutableArray *objectChanges;
@@ -31,6 +32,8 @@
 	
 	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(platformChangeNotification:) name:@"PlatformChange" object:nil];
+	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
 	
@@ -40,15 +43,12 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@", @(YES)]];
-	[_segmentedControl removeAllSegments];
-	[_segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
-	
-	for (Platform *platform in _platforms)
-//		if ([Game countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"owned = %@ AND selectedPlatform = %@", @(YES), platform]] > 0)
-		[_segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
-	
-	[_segmentedControl setSelectedSegmentIndex:0];
+//	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND libraryGames.@count > 0", @(YES)]];
+//	[_segmentedControl removeAllSegments];
+//	[_segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
+//	for (Platform *platform in _platforms)
+//		[_segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
+//	[_segmentedControl setSelectedSegmentIndex:0];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -60,6 +60,29 @@
 }
 
 #pragma mark - CollectionView
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
+	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND libraryGames.@count > 0", @(YES)]];
+	return (_platforms.count > 1) ? CGSizeMake(0, 50) : CGSizeMake(0, 11);
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section{
+	return CGSizeMake(0, 11);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
+	LibraryHeaderReusableView *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
+	if (_platforms.count > 1){
+		[header.segmentedControl removeAllSegments];
+		[header.segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
+		for (Platform *platform in _platforms) [header.segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
+		[header.segmentedControl setSelectedSegmentIndex:0];
+		[header.segmentedControl setSelectedSegmentIndex:_platformSelection];
+		return header;
+	}
+	else
+		return nil;
+}
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
 	return [self.fetchedResultsController.sections[section] numberOfObjects];
@@ -251,13 +274,18 @@
 
 #pragma mark - Actions
 
+- (void)platformChangeNotification:(NSNotification *)notification{
+	[self.collectionView reloadData];
+}
+
 - (IBAction)segmentedControlValueChanged:(UISegmentedControl *)sender{
+	_platformSelection = sender.selectedSegmentIndex;
+	
 	NSPredicate *predicate;
 	
 	if (sender.selectedSegmentIndex > 0){
-		NSArray *platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@", @(YES)]];
-		Platform *selectedPlatform = platforms[sender.selectedSegmentIndex - 1];
-		predicate = [NSPredicate predicateWithFormat:@"owned = %@ AND selectedPlatform = %@", @(YES), selectedPlatform];
+		Platform *selectedPlatform = _platforms[sender.selectedSegmentIndex - 1];
+		predicate = [NSPredicate predicateWithFormat:@"owned = %@ AND libraryPlatform = %@", @(YES), selectedPlatform];
 	}
 	else
 		predicate = nil;

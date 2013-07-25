@@ -34,15 +34,16 @@
         <relationship name="franchises" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Franchise" inverseName="games" inverseEntity="Franchise" syncable="YES"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="game" inverseEntity="Image" syncable="YES"/>
+        <relationship name="libraryPlatform" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="libraryGames" inverseEntity="Platform" syncable="YES"/>
         <relationship name="placeholderPeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="placeholderGame" inverseEntity="ReleasePeriod" syncable="YES"/>
         <relationship name="platforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="games" inverseEntity="Platform" syncable="YES"/>
         <relationship name="publishers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Publisher" inverseName="games" inverseEntity="Publisher" syncable="YES"/>
         <relationship name="releaseDate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleaseDate" inverseName="games" inverseEntity="ReleaseDate" syncable="YES"/>
         <relationship name="releasePeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="games" inverseEntity="ReleasePeriod" syncable="YES"/>
-        <relationship name="selectedPlatform" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="savedGames" inverseEntity="Platform" syncable="YES"/>
         <relationship name="similarGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SimilarGame" inverseName="game" inverseEntity="SimilarGame" syncable="YES"/>
         <relationship name="themes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Theme" inverseName="games" inverseEntity="Theme" syncable="YES"/>
         <relationship name="videos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Video" inverseName="game" inverseEntity="Video" syncable="YES"/>
+        <relationship name="wishlistPlatform" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="wishlistGames" inverseEntity="Platform" syncable="YES"/>
     </entity>
     <entity name="Genre" representedClassName="Genre" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
@@ -64,7 +65,8 @@
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="platforms" inverseEntity="Game" syncable="YES"/>
-        <relationship name="savedGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="selectedPlatform" inverseEntity="Game" syncable="YES"/>
+        <relationship name="libraryGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="libraryPlatform" inverseEntity="Game" syncable="YES"/>
+        <relationship name="wishlistGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="wishlistPlatform" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="Publisher" representedClassName="Publisher" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
@@ -116,10 +118,10 @@
         <element name="CoverImage" positionX="-108" positionY="-313" width="128" height="88"/>
         <element name="Developer" positionX="261" positionY="-319" width="128" height="103"/>
         <element name="Franchise" positionX="-137" positionY="-202" width="128" height="103"/>
-        <element name="Game" positionX="63" positionY="-220" width="128" height="418"/>
+        <element name="Game" positionX="63" positionY="-220" width="128" height="433"/>
         <element name="Genre" positionX="-180" positionY="-79" width="128" height="88"/>
         <element name="Image" positionX="439" positionY="126" width="128" height="133"/>
-        <element name="Platform" positionX="358" positionY="-40" width="128" height="148"/>
+        <element name="Platform" positionX="358" positionY="-40" width="128" height="163"/>
         <element name="Publisher" positionX="-225" positionY="27" width="128" height="103"/>
         <element name="ReleaseDate" positionX="304" positionY="-196" width="128" height="133"/>
         <element name="ReleasePeriod" positionX="-36" positionY="275" width="128" height="103"/>

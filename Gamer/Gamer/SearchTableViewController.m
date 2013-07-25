@@ -28,7 +28,7 @@
 	
 	// Search bar setup
 	if (!_searchBar) _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
-	[_searchBar setPlaceholder:@"Search"];
+	[_searchBar setPlaceholder:@"Find games"];
 	[_searchBar setDelegate:self];
 	
 	for(UIView *subView in _searchBar.subviews)

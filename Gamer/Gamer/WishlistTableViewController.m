@@ -45,7 +45,7 @@
 //	[self.tableView setContentInset:UIEdgeInsetsMake(0, 0, 49, 0)];
 	
 	// Update game release periods
-	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND selectedPlatform.favorite = %@", @(YES), @(YES)]];
+	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND wishlistPlatform.favorite = %@", @(YES), @(YES)]];
 	for (Game *game in games)
 		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -53,7 +53,7 @@
 		NSArray *releasePeriods = [ReleasePeriod findAll];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
 //			NSArray *games = [Game findAllWithPredicate:predicate];
 			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 			
@@ -117,8 +117,9 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[game setWanted:@(NO)];
+	[game setWishlistPlatform:nil];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", game.releasePeriod.identifier, @(YES), @(YES)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform.favorite = %@)", game.releasePeriod.identifier, @(YES), @(YES)];
 	NSArray *games = [Game findAllWithPredicate:predicate inContext:_context];
 	
 	if (games.count == 0)
@@ -136,14 +137,14 @@
 	[customCell.titleLabel setText:game.title];
 	[customCell.dateLabel setText:([game.releasePeriod.identifier isEqualToNumber:@(9)]) ? @"" : game.releaseDateText];
 	[customCell.coverImageView setImage:[UIImage imageWithData:game.wishlistThumbnail]];
-	[customCell.platformLabel setText:game.selectedPlatform.abbreviation];
-	[customCell.platformLabel setBackgroundColor:game.selectedPlatform.color];
+	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
+	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
 }
 
 #pragma mark - HidingSectionView
 
 - (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)sectionView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
 	NSArray *games = [Game findAllWithPredicate:predicate];
 	
 	for (Game *game in games)
@@ -156,7 +157,7 @@
 
 - (NSFetchedResultsController *)fetch{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND selectedPlatform.favorite = %@) OR identifier = nil)", @(NO), @(YES), @(YES)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND wishlistPlatform.favorite = %@) OR identifier = nil)", @(NO), @(YES), @(YES)];
 		
 		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
 	}

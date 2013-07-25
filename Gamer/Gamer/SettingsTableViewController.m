@@ -103,7 +103,9 @@
 			NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 			Platform *platform = [self.fetchedResultsController objectAtIndexPath:indexPath];
 			[platform setFavorite:(cell.accessoryType == UITableViewCellAccessoryCheckmark) ? @(YES) : @(NO)];
-			[context saveToPersistentStoreAndWait];
+			[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"PlatformChange" object:nil];
+			}];
 			break;
 		}
 		case 1:{

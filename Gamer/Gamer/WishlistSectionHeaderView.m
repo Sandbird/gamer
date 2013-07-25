@@ -24,7 +24,7 @@
 	self = [super initWithFrame:CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height)];
 	if (self){
 		_releasePeriod = releasePeriod;
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND selectedPlatform.favorite = %@)", releasePeriod.identifier, @(NO), @(YES), @(YES)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform = %@)", releasePeriod.identifier, @(NO), @(YES), @(YES)];
 		NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 		_hidden = (gamesCount > 0) ? NO : YES;
 		

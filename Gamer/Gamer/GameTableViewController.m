@@ -505,12 +505,12 @@
 		if (image.size.width > image.size.height){
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:280])];
 			[_game setWishlistThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:56])];
-			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:86])];
+			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:92])];
 		}
 		else{
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:200])];
 			[_game setWishlistThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:70])];
-			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:108])];
+			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:116])];
 		}
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -755,9 +755,16 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex != actionSheet.cancelButtonIndex){
-		[_game setSelectedPlatform:_selectablePlatforms[buttonIndex]];
-		[_game setWanted:(actionSheet.tag == 1) ? @(YES) : @(NO)];
-		[_game setOwned:(actionSheet.tag == 2) ? @(YES) : @(NO)];
+		if (actionSheet.tag == 1){
+			[_game setWishlistPlatform:_selectablePlatforms[buttonIndex]];
+			[_game setWanted:@(YES)];
+			[_game setOwned:@(NO)];
+		}
+		else{
+			[_game setLibraryPlatform:_selectablePlatforms[buttonIndex]];
+			[_game setWanted:@(NO)];
+			[_game setOwned:@(YES)];
+		}
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationController popToRootViewControllerAnimated:YES];
 //			[self.tabBarController setSelectedIndex:(actionSheet.tag == 1) ? 0 : 1];
@@ -863,9 +870,22 @@
 		[actionSheet showInView:self.tabBarController.view];
 	}
 	else{
-		if (_selectablePlatforms.count > 0) [_game setSelectedPlatform:_selectablePlatforms[0]];
-		[_game setWanted:(sender == _wishlistButton) ? @(YES) : @(NO)];
-		[_game setOwned:(sender == _libraryButton) ? @(YES) : @(NO)];
+		if (buttonPressed == 1){
+			if (_selectablePlatforms.count > 0){
+				[_game setWishlistPlatform:_selectablePlatforms[0]];
+				[_game setLibraryPlatform:nil];
+			}
+			[_game setWanted:@(YES)];
+			[_game setOwned:@(NO)];
+		}
+		else{
+			if (_selectablePlatforms.count > 0){
+				[_game setWishlistPlatform:nil];
+				[_game setLibraryPlatform:_selectablePlatforms[0]];
+			}
+			[_game setWanted:@(NO)];
+			[_game setOwned:@(YES)];
+		}
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationController popToRootViewControllerAnimated:YES];
 //			[self.tabBarController setSelectedIndex:(sender == _wantButton) ? 0 : 1];
