@@ -29,9 +29,6 @@
 	
 	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
 	
-	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
-	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
-	
 	// Search bar setup
 	if (!_searchBar) _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
 	[_searchBar setPlaceholder:@"Search"];
@@ -44,6 +41,10 @@
 	[self.navigationItem setTitleView:_searchBar];
 	
 	if (!_results) _results = [[NSMutableArray alloc] init];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+	[[SessionManager tracker] sendView:@"Search"];
 }
 
 - (void)didReceiveMemoryWarning{

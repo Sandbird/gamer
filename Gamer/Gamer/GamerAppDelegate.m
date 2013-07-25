@@ -7,7 +7,6 @@
 //
 
 #import "GamerAppDelegate.h"
-#import <FlurrySDK/Flurry.h>
 #import "Game.h"
 #import "ReleasePeriod.h"
 #import "Platform.h"
@@ -21,12 +20,17 @@
 	[MagicalRecord setupCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
-#if !(TARGET_IPHONE_SIMULATOR)
-//	[Flurry startSession:@"P9BVWFKVSP4PD66TGNXV"];
-	
+#if (TARGET_IPHONE_SIMULATOR)
+//	// Tapstream Analytics
 //	TSConfig *config = [TSConfig configWithDefaults];
 //	[config setIdfa:[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];
 //	[TSTapstream createWithAccountName:@"caiomello" developerSecret:@"6W5Kiz2jSXWbUqQaRe1jxw" config:config];
+	
+	// Google Analytics
+	[[GAI sharedInstance] setTrackUncaughtExceptions:YES];
+	[[GAI sharedInstance] setDispatchInterval:20];
+//	[[GAI sharedInstance] setDebug:YES];
+	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
 #endif
 	
 	[self.window setTintColor:[UIColor orangeColor]];
@@ -37,6 +41,17 @@
 	
 	[[UINavigationBar appearance] setBarStyle:UIBarStyleBlack];
 	[[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:self.window.tintColor}];
+	
+	[[UITableView appearance] setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
+	[[UITableView appearance] setSeparatorColor:[UIColor darkGrayColor]];
+	
+	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+	UITabBarItem *wishlistTab = tabBarController.tabBar.items[0];
+	[wishlistTab setImage:[UIImage imageNamed:@"WishlistTab"]];
+	[wishlistTab setSelectedImage:[UIImage imageNamed:@"WishlistTabSelected"]];
+	UITabBarItem *libraryTab = tabBarController.tabBar.items[1];
+	[libraryTab setImage:[UIImage imageNamed:@"LibraryTab"]];
+	[libraryTab setSelectedImage:[UIImage imageNamed:@"LibraryTabSelected"]];
 	
 	// Starting data
 	if ([ReleasePeriod findAll].count == 0){

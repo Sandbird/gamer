@@ -12,3 +12,4 @@
 #define MR_ENABLE_ACTIVE_RECORD_LOGGING 0
 #import <MagicalRecord/CoreData+MagicalRecord.h>
 #import "Tools.h"
+#import "SessionManager.h"

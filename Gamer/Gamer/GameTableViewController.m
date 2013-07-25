@@ -18,13 +18,13 @@
 #import "ReleasePeriod.h"
 #import "CoverImage.h"
 #import "ReleaseDate.h"
-#import "SessionManager.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "ImageCollectionCell.h"
 #import "VideoCollectionCell.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 #import "ZoomViewController.h"
 #import "PlatformCollectionCell.h"
+#import "GameSectionHeaderView.h"
 
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -69,9 +69,7 @@
 	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateNormal];
 	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButtonHighlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateHighlighted];
 	
-//	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
 	[self.tableView setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
-	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
@@ -82,9 +80,9 @@
 	if (!_game)
 		_game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
 	if (_game){
+		[self setCoverImageAnimated:NO];
+		
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[self setCoverImageAnimated:NO];
-			
 			[_metascoreLabel setText:_game.metascore];
 			[_titleLabel setText:_game.title];
 			
@@ -112,19 +110,38 @@
 //	[_metascoreView setHidden:YES];
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+	[[SessionManager tracker] sendView:@"Game"];
+}
+
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 }
 
 #pragma mark - TableView
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-	if (section == 2)
-		return [NSString stringWithFormat:@"Images - %d          ", _images.count];
-	else if (section == 3)
-		return [NSString stringWithFormat:@"Videos - %d          ", _videos.count];
-	
-	return [super tableView:tableView titleForHeaderInSection:section];
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+//	if (section == 2)
+//		return [NSString stringWithFormat:@"Images - %d          ", _images.count];
+//	else if (section == 3)
+//		return [NSString stringWithFormat:@"Videos - %d          ", _videos.count];
+//	
+//	return [super tableView:tableView titleForHeaderInSection:section];
+//}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+	if (section != 0){
+		GameSectionHeaderView *headerView = [[GameSectionHeaderView alloc] init];
+		switch (section) {
+			case 1: [headerView.titleLabel setText:@"Details"]; break;
+			case 2: [headerView.titleLabel setText:[NSString stringWithFormat:@"Images - %d", _images.count]]; break;
+			case 3: [headerView.titleLabel setText:[NSString stringWithFormat:@"Videos - %d", _videos.count]]; break;
+			default: break;
+		}
+		return headerView;
+	}
+	else
+		return nil;
 }
 
 // REFACTOR THIS
@@ -357,8 +374,8 @@
 			for (NSDictionary *dictionary in results[@"platforms"]){
 				Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
 				if (platform){
-					[platform setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-					[platform setAbbreviation:[Tools stringFromSourceIfNotNull:dictionary[@"abbreviation"]]];
+//					[platform setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+//					[platform setAbbreviation:[Tools stringFromSourceIfNotNull:dictionary[@"abbreviation"]]];
 					[_game addPlatformsObject:platform];
 				}
 			}
@@ -661,8 +678,6 @@
 }
 
 - (void)requestInformationForVideo:(Video *)video{
-	[video setIsDownloading:@(YES)];
-	
 	NSURLRequest *request = [SessionManager URLRequestForVideoWithFields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image" identifier:video.identifier];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -703,13 +718,14 @@
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		NSLog(@"Failure in %@ - Status code: %d - Video", self, response.statusCode);
-		[video setIsDownloading:@(NO)];
 	}];
 //	[operation start];
 	[_operationQueue addOperation:operation];
 }
 
 - (void)downloadThumbnailForVideo:(Video *)video{
+	[video setIsDownloading:@(YES)];
+	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:video.thumbnailURL]];
 	[request setHTTPMethod:@"GET"];
 	

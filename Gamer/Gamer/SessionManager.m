@@ -12,6 +12,10 @@
 
 static NSMutableURLRequest *REQUEST;
 
++ (id<GAITracker>)tracker{
+	return [GAI sharedInstance].defaultTracker;
+}
+
 + (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms name:(NSString *)name{
 	NSString *apiKey = @"d92c258adb509ded409d28f4e51de2c83e297011";
 	NSString *platformIdentifiers = [[platforms valueForKey:@"identifier"] componentsJoinedByString:@"|"];

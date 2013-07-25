@@ -33,10 +33,11 @@
 	
 	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
 	
-	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
-	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
-	
 	self.fetchedResultsController = [self fetch];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+	[[SessionManager tracker] sendView:@"Settings"];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -51,7 +52,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	switch (section) {
-		case 0: return @"Plataforms";
+		case 0: return @"Platforms";
 		default: return @"";
 	}
 }

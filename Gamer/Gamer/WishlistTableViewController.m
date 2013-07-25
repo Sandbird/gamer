@@ -31,39 +31,40 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[self setEdgesForExtendedLayout:UIExtendedEdgeBottom];
-	
-	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
-	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
+//	[self setEdgesForExtendedLayout:UIExtendedEdgeBottom];
+	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
 	
 	self.fetchedResultsController = [self fetch];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+	[[SessionManager tracker] sendView:@"Wishlist"];
+	
+//	[self.tableView setContentInset:UIEdgeInsetsMake(0, 0, 49, 0)];
 	
 	// Update game release periods
 	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND selectedPlatform.favorite = %@", @(YES), @(YES)]];
 	for (Game *game in games)
 		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
-	[_context saveToPersistentStoreAndWait];
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-	[self.tableView setContentInset:UIEdgeInsetsMake(0, 0, 49, 0)];
-	
-	// Set sections to show if they have tracked games
-	NSArray *releasePeriods = [ReleasePeriod findAll];
-	
-	for (ReleasePeriod *releasePeriod in releasePeriods){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
-		NSArray *games = [Game findAllWithPredicate:predicate];
+	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		// Set sections to show if they have tracked games
+		NSArray *releasePeriods = [ReleasePeriod findAll];
 		
-//		NSLog(@"hidden? %@ - %@ - %@ - %@ - count: %d", releasePeriod.placeholderGame.hidden, releasePeriod.placeholderGame.title, releasePeriod.identifier, releasePeriod.name, games.count);
+		for (ReleasePeriod *releasePeriod in releasePeriods){
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND selectedPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
+//			NSArray *games = [Game findAllWithPredicate:predicate];
+			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+			
+//			NSLog(@"hidden? %@ - %@ - %@ - %@ - count: %d", releasePeriod.placeholderGame.hidden, releasePeriod.placeholderGame.title, releasePeriod.identifier, releasePeriod.name, games.count);
+			
+			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
+		}
 		
-		[releasePeriod.placeholderGame setHidden:(games.count > 0) ? @(NO) : @(YES)];
-	}
-	
-	[_context saveToPersistentStoreAndWait];
+		[_context saveToPersistentStoreAndWait];
+	}];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -97,7 +98,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-	[cell setSeparatorInset:UIEdgeInsetsMake(0, 74, 0, 0)];
+	
+	BOOL lastRow = (indexPath.row == ([tableView numberOfRowsInSection:indexPath.section] - 2)) ? YES : NO;
+	[cell setSeparatorInset:UIEdgeInsetsMake(0, ((lastRow) ? 320 : 74), 0, 0)];
 	
 	[self configureCell:cell atIndexPath:indexPath];
 	
@@ -156,7 +159,7 @@
 	if (!self.fetchedResultsController){
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND selectedPlatform.favorite = %@) OR identifier = nil)", @(NO), @(YES), @(YES)];
 		
-		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date" ascending:YES delegate:self];
+		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
 	}
 	
 	return self.fetchedResultsController;

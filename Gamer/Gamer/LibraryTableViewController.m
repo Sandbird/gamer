@@ -16,6 +16,7 @@
 @interface LibraryTableViewController () <FetchedTableViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UISegmentedControl *segmentedControl;
+@property (nonatomic, strong) NSArray *platforms;
 @property (nonatomic, strong) NSPredicate *predicate;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
@@ -28,10 +29,6 @@
 	
 	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
 	
-	[self.tableView setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
-	[self.tableView.tableHeaderView setBackgroundColor:[UIColor clearColor]];
-	[self.tableView setSeparatorColor:[UIColor darkGrayColor]];
-	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
 	
@@ -39,15 +36,19 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	NSArray *favoritePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@", @(YES)]];
-	
+	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@", @(YES)]];
 	[_segmentedControl removeAllSegments];
-	
 	[_segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
-	for (Platform *platform in favoritePlatforms)
-		[_segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([favoritePlatforms indexOfObject:platform] + 1) animated:NO];
+	
+	for (Platform *platform in _platforms)
+//		if ([Game countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"owned = %@ AND selectedPlatform = %@", @(YES), platform]] > 0)
+		[_segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
 	
 	[_segmentedControl setSelectedSegmentIndex:0];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+	[[SessionManager tracker] sendView:@"Library"];
 }
 
 - (void)didReceiveMemoryWarning{

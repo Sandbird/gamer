@@ -30,6 +30,10 @@
 	[self initializeImageViewWithImage:_image];
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+	[[SessionManager tracker] sendView:@"Zoom"];
+}
+
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
 }

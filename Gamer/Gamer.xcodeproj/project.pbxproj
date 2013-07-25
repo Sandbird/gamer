@@ -30,6 +30,8 @@
 		2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2570405D176CB55500642430 /* Model.xcdatamodeld */; };
 		2531E85B176CDC68005881A4 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E85A176CDC3B005881A4 /* SearchResult.m */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
+		255BAA77179B55E4009B42BF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA76179B55E4009B42BF /* SystemConfiguration.framework */; };
+		255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA78179B566E009B42BF /* AdSupport.framework */; };
 		25704026176CB12800642430 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704025176CB12800642430 /* Foundation.framework */; };
 		25704028176CB12800642430 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704027176CB12800642430 /* CoreGraphics.framework */; };
 		2570402A176CB12800642430 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704029176CB12800642430 /* UIKit.framework */; };
@@ -54,6 +56,8 @@
 		25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ZoomViewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
 		25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */; };
+		25F4588E179DFB2C008C15B3 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F4588D179DFB2C008C15B3 /* EventKit.framework */; };
+		25F45891179DFD3E008C15B3 /* GameSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F45890179DFD3E008C15B3 /* GameSectionHeaderView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +112,8 @@
 		2531E859176CDC3B005881A4 /* SearchResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResult.h; sourceTree = "<group>"; };
 		2531E85A176CDC3B005881A4 /* SearchResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
 		2531E860176CDF09005881A4 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry.a; path = Pods/FlurrySDK/Flurry/libFlurry.a; sourceTree = "<group>"; };
+		255BAA76179B55E4009B42BF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		255BAA78179B566E009B42BF /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		25704022176CB12800642430 /* Gamer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gamer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25704025176CB12800642430 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		25704027176CB12800642430 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -148,6 +154,9 @@
 		25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionCell.m; sourceTree = "<group>"; };
 		25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCollectionCell.h; sourceTree = "<group>"; };
 		25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCollectionCell.m; sourceTree = "<group>"; };
+		25F4588D179DFB2C008C15B3 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		25F4588F179DFD3E008C15B3 /* GameSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameSectionHeaderView.h; sourceTree = "<group>"; };
+		25F45890179DFD3E008C15B3 /* GameSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSectionHeaderView.m; sourceTree = "<group>"; };
 		3636943419C34655B50F4EDC /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		AFBC96E4CE0C44DF858F57A6 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -157,6 +166,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25F4588E179DFB2C008C15B3 /* EventKit.framework in Frameworks */,
+				255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */,
+				255BAA77179B55E4009B42BF /* SystemConfiguration.framework in Frameworks */,
 				2531E822176CDA48005881A4 /* QuartzCore.framework in Frameworks */,
 				2531E820176CDA35005881A4 /* CoreData.framework in Frameworks */,
 				25704028176CB12800642430 /* CoreGraphics.framework in Frameworks */,
@@ -216,6 +228,8 @@
 			children = (
 				2506A17B176CD4B30010E61D /* WishlistSectionHeaderView.h */,
 				2506A17C176CD4B30010E61D /* WishlistSectionHeaderView.m */,
+				25F4588F179DFD3E008C15B3 /* GameSectionHeaderView.h */,
+				25F45890179DFD3E008C15B3 /* GameSectionHeaderView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -243,6 +257,9 @@
 		25704024176CB12800642430 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				25F4588D179DFB2C008C15B3 /* EventKit.framework */,
+				255BAA78179B566E009B42BF /* AdSupport.framework */,
+				255BAA76179B55E4009B42BF /* SystemConfiguration.framework */,
 				2531E860176CDF09005881A4 /* libFlurry.a */,
 				2531E821176CDA48005881A4 /* QuartzCore.framework */,
 				2531E81F176CDA35005881A4 /* CoreData.framework */,
@@ -535,6 +552,7 @@
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
 				2531E843176CDB60005881A4 /* LibraryCell.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */,
+				25F45891179DFD3E008C15B3 /* GameSectionHeaderView.m in Sources */,
 				2531E849176CDB60005881A4 /* Franchise.m in Sources */,
 				2531E84B176CDB60005881A4 /* Publisher.m in Sources */,
 				25AE80E41773D65D00FBE9FC /* Theme.m in Sources */,

@@ -21,10 +21,10 @@
 
 @interface WishlistSectionHeaderView : UIView
 
-@property (nonatomic, strong) UIImageView *iconImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIImageView *hideIndicator;
 @property (nonatomic, strong) UITapGestureRecognizer *gestureRecognizer;
+@property (nonatomic, assign) BOOL hidden;
 
 @property (nonatomic, strong) ReleasePeriod *releasePeriod;
 

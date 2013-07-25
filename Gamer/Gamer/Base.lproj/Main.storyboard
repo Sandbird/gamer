@@ -115,7 +115,7 @@
             </objects>
             <point key="canvasLocation" x="626" y="777"/>
         </scene>
-        <!--Game Table View Controller - Details-->
+        <!--Game Table View Controller - Info-->
         <scene sceneID="CL6-FV-ggD">
             <objects>
                 <tableViewController id="daZ-J4-g3E" customClass="GameTableViewController" sceneMemberID="viewController">
@@ -487,7 +487,7 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" title="Details" id="bdX-97-Kle">
+                    <navigationItem key="navigationItem" title="Info" id="bdX-97-Kle">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="no5-IQ-HTM">
                             <connections>
                                 <action selector="refreshBarButtonAction:" destination="daZ-J4-g3E" id="wTs-GT-CuM"/>
@@ -592,7 +592,6 @@
                                     </connections>
                                 </segmentedControl>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="EQo-I4-2WZ" userLabel="Library Cell" customClass="LibraryCell">
@@ -829,12 +828,12 @@
             </objects>
             <point key="canvasLocation" x="144" y="1469"/>
         </scene>
-        <!--Navigation Controller - Search-->
+        <!--Navigation Controller-->
         <scene sceneID="yod-gW-aGR">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yr8-Di-rCM" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Search" id="Agd-gp-p5S"/>
+                    <tabBarItem key="tabBarItem" systemItem="search" id="Agd-gp-p5S"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="g04-9A-9wi">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

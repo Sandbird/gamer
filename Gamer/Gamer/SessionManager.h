@@ -7,8 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <GoogleAnalytics-iOS-SDK/GAI.h>
 
 @interface SessionManager : NSObject
+
++ (id<GAITracker>)tracker;
 
 + (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms name:(NSString *)name;
 
