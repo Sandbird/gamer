@@ -28,8 +28,7 @@
 		NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 		_hidden = (gamesCount > 0) ? NO : YES;
 		
-		[self setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
-//		[self setBackgroundColor:[UIColor colorWithRed:.156862745 green:.156862745 blue:.156862745 alpha:1]];
+		[self setBackgroundColor:[UIColor colorWithRed:.203921569 green:.203921569 blue:.203921569 alpha:1]];
 		
 		_titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 11, 221, 22)];
 		[_titleLabel setBackgroundColor:[UIColor clearColor]];

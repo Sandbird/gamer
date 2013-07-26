@@ -306,7 +306,7 @@
 			[releaseDate setQuarter:@(originalReleaseDateComponents.quarter)];
 			[releaseDate setYear:@(originalReleaseDateComponents.year)];
 			
-			[[Tools dateFormatter] setDateFormat:@"d MMM yyyy"];
+			[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
 			[_game setReleaseDateText:[[Tools dateFormatter] stringFromDate:releaseDateFromComponents]];
 			[_game setReleased:@(YES)];
 			

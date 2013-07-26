@@ -97,9 +97,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-	
-	BOOL lastRow = (indexPath.row == ([tableView numberOfRowsInSection:indexPath.section] - 2)) ? YES : NO;
-	[cell setSeparatorInset:UIEdgeInsetsMake(0, ((lastRow) ? 320 : 74), 0, 0)];
+	[cell setSeparatorInset:UIEdgeInsetsMake(0, 74, 0, 0)];
+//	BOOL lastRow = (indexPath.row == ([tableView numberOfRowsInSection:indexPath.section] - 2)) ? YES : NO;
+//	[cell setSeparatorInset:UIEdgeInsetsMake(0, ((lastRow) ? 320 : 74), 0, 0)];
 	
 	[self configureCell:cell atIndexPath:indexPath];
 	

@@ -76,6 +76,7 @@
 	switch (indexPath.section) {
 		case 0:{
 			PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
+			[cell setSeparatorInset:UIEdgeInsetsMake(0, 90, 0, 0)];
 			[self configureCell:cell atIndexPath:indexPath];
 			return cell;
 		}

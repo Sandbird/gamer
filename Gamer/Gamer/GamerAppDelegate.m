@@ -42,8 +42,8 @@
 	[[UINavigationBar appearance] setBarStyle:UIBarStyleBlack];
 	[[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:self.window.tintColor}];
 	
-	[[UITableView appearance] setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
-	[[UITableView appearance] setSeparatorColor:[UIColor darkGrayColor]];
+//	[[UITableView appearance] setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
+//	[[UITableView appearance] setSeparatorColor:[UIColor darkGrayColor]];
 	
 	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
 	UITabBarItem *wishlistTab = tabBarController.tabBar.items[0];
@@ -105,6 +105,7 @@
 		
 		Game *placeholderGame = [Game createInContext:context];
 //		[placeholderGame setTitle:[NSString stringWithFormat:@"placeholder%@", releasePeriod.identifier]];
+		[placeholderGame setTitle:@"ZZZ"];
 		[placeholderGame setReleasePeriod:releasePeriod];
 		[placeholderGame setReleaseDate:releaseDate];
 		[placeholderGame setHidden:@(YES)];

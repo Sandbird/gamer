@@ -27,17 +27,17 @@
 	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
 	
 	// Search bar setup
-	if (!_searchBar) _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
+	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
 	[_searchBar setPlaceholder:@"Find games"];
 	[_searchBar setDelegate:self];
 	
-	for(UIView *subView in _searchBar.subviews)
-		if([subView isKindOfClass: [UITextField class]])
-			[(UITextField *)subView setKeyboardAppearance:UIKeyboardAppearanceDark];
+//	for(UIView *subView in _searchBar.subviews)
+//		if([subView isKindOfClass: [UITextField class]])
+//			[(UITextField *)subView setKeyboardAppearance:UIKeyboardAppearanceDark];
 	
 	[self.navigationItem setTitleView:_searchBar];
 	
-	if (!_results) _results = [[NSMutableArray alloc] init];
+	_results = [[NSMutableArray alloc] init];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -85,8 +85,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
-	[cell.textLabel setTextColor:[UIColor lightGrayColor]];
 	
 	SearchResult *result = _results[indexPath.row];
 	[cell.textLabel setText:result.title];
@@ -120,8 +118,7 @@
 //		NSLog(@"%@", JSON);
 		
 		for (NSDictionary *dictionary in JSON[@"results"]){
-			SearchResult *result;
-			if (!result) result = [[SearchResult alloc] init];
+			SearchResult *result = [[SearchResult alloc] init];
 			[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[_results addObject:result];
