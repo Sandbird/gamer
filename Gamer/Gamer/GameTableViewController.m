@@ -479,12 +479,12 @@
 			[_platformsCollectionView reloadData];
 			
 			[self.tableView reloadData];
-			NSLog(@"%@ - %d", _game.releasePeriod.identifier, _platforms.count);
+			
 			// If game is released and has at least one platform, request metascore
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _platforms.count > 0)
 				[self requestMetascoreForGameWithTitle:_game.title platform:_platforms[0]];
 			
-//			[self requestMediaForGame:_game];
+			[self requestMediaForGame:_game];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
