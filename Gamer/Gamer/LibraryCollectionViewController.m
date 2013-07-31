@@ -76,10 +76,8 @@
 		for (Platform *platform in _platforms) [header.segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
 		[header.segmentedControl setSelectedSegmentIndex:0];
 		[header.segmentedControl setSelectedSegmentIndex:_platformSelection];
-		return header;
 	}
-	else
-		return nil;
+	return header;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{

@@ -279,6 +279,8 @@
 			
 			if (!coverImage.data || ![coverImage.url isEqualToString:stringURL])
 				[self downloadImageForCoverImage:coverImage];
+			else
+				[self requestMediaForGame:_game];
 		}
 		
 		// Release date
@@ -483,15 +485,12 @@
 			// If game is released and has at least one platform, request metascore
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _platforms.count > 0)
 				[self requestMetascoreForGameWithTitle:_game.title platform:_platforms[0]];
-			
-			[self requestMediaForGame:_game];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 	}];
-//	[operation start];
-	[_operationQueue addOperation:operation];
+	[operation start];
 }
 
 - (void)downloadImageForCoverImage:(CoverImage *)coverImage{
@@ -519,16 +518,16 @@
 				[_progressIndicator setHidden:YES];
 				[self setCoverImageAnimated:YES];
 			});
+			[self requestMediaForGame:_game];
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-		;
+		[self requestMediaForGame:_game];
 	}];
 	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 //		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
 		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
 	}];
-//	[operation start];
-	[_operationQueue addOperation:operation];
+	[operation start];
 }
 
 - (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
@@ -581,8 +580,7 @@
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"Failure in %@ - Metascore", self);
 	}];
-//	[operation start];
-	[_operationQueue addOperation:operation];
+	[operation start];
 }
 
 - (void)requestMediaForGame:(Game *)game{
@@ -646,8 +644,7 @@
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d", self, response.statusCode);
 	}];
-//	[operation start];
-	[_operationQueue addOperation:operation];
+	[operation start];
 }
 
 - (void)downloadImageWithImageObject:(Image *)imageObject{
@@ -675,7 +672,6 @@
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		[imageObject setIsDownloading:@(NO)];
 	}];
-//	[operation start];
 	[_operationQueue addOperation:operation];
 }
 
@@ -711,7 +707,7 @@
 		[video setThumbnailURL:stringURL];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//			if (video.index.integerValue <= 1)
+			if (video.index.integerValue <= 1 && !video.thumbnail)
 				[self downloadThumbnailForVideo:video];
 			
 			_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
@@ -721,7 +717,6 @@
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		NSLog(@"Failure in %@ - Status code: %d - Video", self, response.statusCode);
 	}];
-//	[operation start];
 	[_operationQueue addOperation:operation];
 }
 
@@ -747,7 +742,6 @@
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		[video setIsDownloading:@(NO)];
 	}];
-//	[operation start];
 	[_operationQueue addOperation:operation];
 }
 

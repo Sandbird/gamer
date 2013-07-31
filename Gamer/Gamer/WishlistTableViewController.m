@@ -133,7 +133,7 @@
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	
 	WishlistCell *customCell = (WishlistCell *)cell;
-	[customCell.titleLabel setText:game.title];
+	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.dateLabel setText:([game.releasePeriod.identifier isEqualToNumber:@(9)]) ? @"" : game.releaseDateText];
 	[customCell.coverImageView setImage:[UIImage imageWithData:game.wishlistThumbnail]];
 	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];

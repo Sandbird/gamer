@@ -797,7 +797,7 @@
                     </collectionView>
                     <navigationItem key="navigationItem" title="Library" id="0lx-vn-CDS">
                         <barButtonItem key="leftBarButtonItem" systemItem="edit" id="Bld-bV-ejj"/>
-                        <barButtonItem key="rightBarButtonItem" title="Filter" id="Z3D-0p-yEm"/>
+                        <barButtonItem key="rightBarButtonItem" title="Stats" id="Z3D-0p-yEm"/>
                     </navigationItem>
                     <connections>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="agp-eq-OJx"/>
@@ -855,6 +855,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="YGP-WK-AF2"/>
+        <segue reference="5qi-Mj-SGM"/>
     </inferredMetricsTieBreakers>
 </document>
