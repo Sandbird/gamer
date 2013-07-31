@@ -30,8 +30,6 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
-	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(platformChangeNotification:) name:@"PlatformChange" object:nil];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];

@@ -31,7 +31,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
+	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
 	self.fetchedResultsController = [self fetch];
 }

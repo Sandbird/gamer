@@ -152,4 +152,19 @@ static NSDateFormatter *DATEFORMATTER;
 	return newImage;
 }
 
++ (CGRect)frameForImageInImageView:(UIImageView *)imageView{
+	CGFloat heightFactor = imageView.image.size.width/imageView.frame.size.width;
+	CGFloat widthFactor = imageView.image.size.height/imageView.frame.size.height;
+	
+	CGFloat factor = fmax(heightFactor, widthFactor);
+	
+	CGFloat width = imageView.image.size.width/factor;
+	CGFloat height = imageView.image.size.height/factor;
+	
+	CGFloat x = (imageView.frame.size.width - width)/2;
+	CGFloat y = (imageView.frame.size.height - height)/2;
+	
+	return CGRectMake(x, y, width, height);
+}
+
 @end

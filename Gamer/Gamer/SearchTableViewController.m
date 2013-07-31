@@ -24,8 +24,6 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
-	
 	// Search bar setup
 	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
 	[_searchBar setPlaceholder:@"Find games"];

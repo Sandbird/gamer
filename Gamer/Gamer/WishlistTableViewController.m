@@ -30,8 +30,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-//	[self setEdgesForExtendedLayout:UIExtendedEdgeBottom];
-	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
+	[self setEdgesForExtendedLayout:UIRectEdgeBottom];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];

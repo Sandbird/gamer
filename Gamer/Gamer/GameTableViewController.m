@@ -62,7 +62,7 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
-	[self setEdgesForExtendedLayout:UIExtendedEdgeAll];
+	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
 	[_wishlistButton setBackgroundImage:[[UIImage imageNamed:@"AddButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateNormal];
 	[_wishlistButton setBackgroundImage:[[UIImage imageNamed:@"AddButtonHighlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateHighlighted];
@@ -786,13 +786,7 @@
 	else
 		[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
 	
-	CGRect shadowRect;
-	if (_coverImageView.image.size.width > _coverImageView.image.size.height)
-		shadowRect = CGRectMake(_coverImageView.bounds.origin.x, (_coverImageView.bounds.size.height - _coverImageView.image.size.height/2)/2, _coverImageView.bounds.size.width, _coverImageView.image.size.height/2);
-	else
-		shadowRect = CGRectMake((_coverImageView.bounds.size.width - _coverImageView.image.size.width/2)/2, _coverImageView.bounds.origin.y, _coverImageView.image.size.width/2, _coverImageView.bounds.size.height);
-	
-	[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:shadowRect];
+	[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:[Tools frameForImageInImageView:_coverImageView]];
 }
 
 - (NSInteger)quarterForMonth:(NSInteger)month{

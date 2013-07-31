@@ -43,4 +43,6 @@
 
 + (UIImage *)imageWithImage:(UIImage *)image scaledToHeight:(CGFloat)height;
 
++ (CGRect)frameForImageInImageView:(UIImageView *)imageView;
+
 @end
