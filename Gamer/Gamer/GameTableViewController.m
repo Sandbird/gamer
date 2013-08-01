@@ -751,6 +751,12 @@
 	if (buttonIndex != actionSheet.cancelButtonIndex){
 		if (actionSheet.tag == 1){
 			[_game setWishlistPlatform:_selectablePlatforms[buttonIndex]];
+			
+			// CHANGE THIS (RELEASEPERIOD.HIDDEN?)
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform.favorite = %@)", _game.releasePeriod.identifier, @(NO), @(YES), @(YES)];
+			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+			[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
+			
 			[_game setWanted:@(YES)];
 			[_game setOwned:@(NO)];
 		}
@@ -863,6 +869,12 @@
 				[_game setWishlistPlatform:_selectablePlatforms[0]];
 				[_game setLibraryPlatform:nil];
 			}
+			
+			// CHANGE THIS (RELEASEPERIOD.HIDDEN?)
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform.favorite = %@)", _game.releasePeriod.identifier, @(NO), @(YES), @(YES)];
+			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+			[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
+			
 			[_game setWanted:@(YES)];
 			[_game setOwned:@(NO)];
 		}

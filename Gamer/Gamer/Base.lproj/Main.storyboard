@@ -24,9 +24,6 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Qp3-vf-9Vb" userLabel="Cover Image View">
                                             <rect key="frame" x="10" y="10" width="56" height="70"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="56" id="H4a-rO-ZHm"/>
-                                            </constraints>
                                         </imageView>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="228" translatesAutoresizingMaskIntoConstraints="NO" id="lsG-q7-pdC" userLabel="Title Label">
                                             <rect key="frame" x="74" y="27" width="228" height="17"/>
@@ -66,15 +63,15 @@
                                     <constraints>
                                         <constraint firstItem="dQd-a9-NPJ" firstAttribute="top" secondItem="8QG-z2-acR" secondAttribute="top" id="B4T-wq-Ot3"/>
                                         <constraint firstAttribute="bottom" secondItem="dQd-a9-NPJ" secondAttribute="bottom" priority="151" constant="27" id="Cii-2j-24v"/>
-                                        <constraint firstItem="lsG-q7-pdC" firstAttribute="leading" secondItem="Qp3-vf-9Vb" secondAttribute="trailing" constant="8" symbolic="YES" id="RDd-J8-OQK"/>
-                                        <constraint firstItem="Qp3-vf-9Vb" firstAttribute="leading" secondItem="L0B-2k-UYk" secondAttribute="leading" constant="10" id="RxF-jo-5qz"/>
+                                        <constraint firstItem="Qp3-vf-9Vb" firstAttribute="leading" secondItem="L0B-2k-UYk" secondAttribute="leading" constant="10" id="ED8-3x-jch"/>
                                         <constraint firstItem="8QG-z2-acR" firstAttribute="leading" secondItem="dQd-a9-NPJ" secondAttribute="trailing" constant="72" id="WS2-CC-qf5"/>
-                                        <constraint firstItem="dQd-a9-NPJ" firstAttribute="leading" secondItem="Qp3-vf-9Vb" secondAttribute="trailing" constant="8" symbolic="YES" id="XL2-JP-G1q"/>
-                                        <constraint firstAttribute="bottom" secondItem="Qp3-vf-9Vb" secondAttribute="bottom" constant="9" id="gvF-cZ-x3E"/>
                                         <constraint firstItem="dQd-a9-NPJ" firstAttribute="top" secondItem="lsG-q7-pdC" secondAttribute="bottom" constant="4" id="hcV-C4-RhN"/>
                                         <constraint firstItem="lsG-q7-pdC" firstAttribute="top" relation="greaterThanOrEqual" secondItem="L0B-2k-UYk" secondAttribute="top" constant="19" id="icF-hS-JVP"/>
                                         <constraint firstAttribute="trailing" secondItem="lsG-q7-pdC" secondAttribute="trailing" constant="18" id="lD5-QC-V2m"/>
-                                        <constraint firstItem="Qp3-vf-9Vb" firstAttribute="top" secondItem="L0B-2k-UYk" secondAttribute="top" constant="10" id="tjH-ZG-b38"/>
+                                        <constraint firstItem="Qp3-vf-9Vb" firstAttribute="top" secondItem="L0B-2k-UYk" secondAttribute="top" constant="10" id="nTf-kt-Br9"/>
+                                        <constraint firstAttribute="bottom" secondItem="Qp3-vf-9Vb" secondAttribute="bottom" priority="774" constant="9" id="qh7-OZ-JFu"/>
+                                        <constraint firstItem="dQd-a9-NPJ" firstAttribute="leading" secondItem="Qp3-vf-9Vb" secondAttribute="trailing" constant="8" symbolic="YES" id="wAi-6P-Pgp"/>
+                                        <constraint firstItem="lsG-q7-pdC" firstAttribute="leading" secondItem="Qp3-vf-9Vb" secondAttribute="trailing" constant="8" symbolic="YES" id="zHh-CK-Q08"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
