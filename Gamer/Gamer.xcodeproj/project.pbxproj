@@ -702,10 +702,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Pods/FlurrySDK/Flurry",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "6948D9A0-6C41-434B-BF36-8BC0D3E142FE";
 				WRAPPER_EXTENSION = app;
@@ -722,10 +719,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Pods/FlurrySDK/Flurry",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "6948D9A0-6C41-434B-BF36-8BC0D3E142FE";
 				WRAPPER_EXTENSION = app;

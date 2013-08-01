@@ -147,8 +147,8 @@
 // REFACTOR THIS
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	if (indexPath.section == 1 && indexPath.row == 0){
-		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(280, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
-		return textRect.size.height + 30;
+		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(270, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
+		return textRect.size.height + 40;
 	}
 	else if (indexPath.section == 1 && indexPath.row == 2)
 		return (_platforms.count > 4) ? 120 : 100;
