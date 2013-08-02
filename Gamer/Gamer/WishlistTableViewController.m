@@ -41,23 +41,17 @@
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] sendView:@"Wishlist"];
 	
-//	[self.tableView setContentInset:UIEdgeInsetsMake(0, 0, 49, 0)];
-	
 	// Update game release periods
 	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND wishlistPlatform.favorite = %@", @(YES), @(YES)]];
 	for (Game *game in games)
 		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		// Set sections to show if they have tracked games
+		// Show section if it has tracked games
 		NSArray *releasePeriods = [ReleasePeriod findAll];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
-//			NSArray *games = [Game findAllWithPredicate:predicate];
 			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
-			
-//			NSLog(@"hidden? %@ - %@ - %@ - %@ - count: %d", releasePeriod.placeholderGame.hidden, releasePeriod.placeholderGame.title, releasePeriod.identifier, releasePeriod.name, games.count);
-			
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}
 		

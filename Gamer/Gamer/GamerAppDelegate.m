@@ -17,7 +17,7 @@
 @implementation GamerAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
-	[MagicalRecord setupCoreDataStack];
+	[MagicalRecord setupAutoMigratingCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
 #if !(TARGET_IPHONE_SIMULATOR)
