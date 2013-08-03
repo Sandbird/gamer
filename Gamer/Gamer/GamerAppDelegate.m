@@ -20,6 +20,8 @@
 	[MagicalRecord setupAutoMigratingCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
+	// Analytics setup
+	
 #if !(TARGET_IPHONE_SIMULATOR)
 //	// Tapstream Analytics
 //	TSConfig *config = [TSConfig configWithDefaults];
@@ -33,6 +35,8 @@
 	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
 #endif
 	
+	// UI setup
+	
 	[self.window setTintColor:[UIColor orangeColor]];
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -42,9 +46,6 @@
 	[[UINavigationBar appearance] setBarStyle:UIBarStyleBlack];
 	[[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:self.window.tintColor}];
 	
-//	[[UITableView appearance] setBackgroundColor:[UIColor colorWithRed:.098039216 green:.098039216 blue:.098039216 alpha:1]];
-//	[[UITableView appearance] setSeparatorColor:[UIColor darkGrayColor]];
-	
 	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
 	UITabBarItem *wishlistTab = tabBarController.tabBar.items[0];
 	[wishlistTab setImage:[UIImage imageNamed:@"WishlistTab"]];
@@ -52,6 +53,17 @@
 	UITabBarItem *libraryTab = tabBarController.tabBar.items[1];
 	[libraryTab setImage:[UIImage imageNamed:@"LibraryTab"]];
 	[libraryTab setSelectedImage:[UIImage imageNamed:@"LibraryTabSelected"]];
+	
+	// Data setup
+	
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+	Gamer *gamer = [Gamer findFirst];
+	if (!gamer) gamer = [Gamer createInContext:context];
+	[context saveToPersistentStoreAndWait];
+	[SessionManager setGamer:gamer];
+	
+	EKEventStore *eventStore = [[EKEventStore alloc] init];
+	[SessionManager setEventStore:eventStore];
 	
 	// Starting data
 	if ([ReleasePeriod findAll].count == 0){

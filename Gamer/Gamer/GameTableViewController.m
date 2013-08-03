@@ -120,15 +120,6 @@
 
 #pragma mark - TableView
 
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-//	if (section == 2)
-//		return [NSString stringWithFormat:@"Images - %d          ", _images.count];
-//	else if (section == 3)
-//		return [NSString stringWithFormat:@"Videos - %d          ", _videos.count];
-//	
-//	return [super tableView:tableView titleForHeaderInSection:section];
-//}
-
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
 	if (section != 0){
 		GameSectionHeaderView *headerView = [[GameSectionHeaderView alloc] init];
@@ -144,7 +135,7 @@
 		return nil;
 }
 
-// REFACTOR THIS
+// REWRITE THIS
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	if (indexPath.section == 1 && indexPath.row == 0){
 		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(270, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
@@ -230,13 +221,13 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _imagesCollectionView){
 		Image *image = _images[indexPath.item];
-		if (image.data)
+//		if (image.data)
 			[self performSegueWithIdentifier:@"ZoomSegue" sender:image];
 	}
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
-		if (video.highQualityURL){
-			MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
+		if (video.lowQualityURL){
+			MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.lowQualityURL]];
 			[self presentMoviePlayerViewControllerAnimated:player];
 		}
 	}
@@ -250,7 +241,7 @@
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-//		NSLog(@"%@", JSON);
+		NSLog(@"%@", JSON);
 		
 		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
@@ -267,8 +258,7 @@
 		
 		// Cover image
 		if (results[@"image"] != [NSNull null]){
-			NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-			if (stringURL) stringURL = [stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"];
+			NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"small_url"]];
 			
 			CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:stringURL];
 			if (!coverImage){
@@ -319,12 +309,15 @@
 			NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 			[expectedReleaseDateComponents setHour:10];
 			
+			BOOL defined = NO;
+			
 			if (expectedReleaseDay){
 				[expectedReleaseDateComponents setDay:expectedReleaseDay];
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
 				[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
 				[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
+				defined = YES;
 			}
 			else if (expectedReleaseMonth){
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
@@ -363,6 +356,9 @@
 			[releaseDate setMonth:@(expectedReleaseDateComponents.month)];
 			[releaseDate setQuarter:@(expectedReleaseDateComponents.quarter)];
 			[releaseDate setYear:@(expectedReleaseDateComponents.year)];
+			
+			if (defined)
+				[releaseDate setDefined:@(YES)];
 			
 			[_game setReleaseDateText:(expectedReleaseYear) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
 			[_game setReleased:@(NO)];
@@ -494,13 +490,14 @@
 }
 
 - (void)downloadImageForCoverImage:(CoverImage *)coverImage{
+	[_progressIndicator setValue:0];
+	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:coverImage.url]];
 	[request setHTTPMethod:@"GET"];
 	
-	[_progressIndicator setValue:0];
-	[_progressIndicator setHidden:NO];
-	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
+		[self requestMediaForGame:_game];
+		
 		if (image.size.width > image.size.height){
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:280])];
 			[_game setWishlistThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:56])];
@@ -515,10 +512,8 @@
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[_progressIndicator setHidden:YES];
 				[self setCoverImageAnimated:YES];
 			});
-			[self requestMediaForGame:_game];
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		[self requestMediaForGame:_game];
@@ -598,11 +593,11 @@
 			NSInteger index = 0;
 			for (NSDictionary *dictionary in results[@"images"]){
 				NSString *stringURL = [Tools stringFromSourceIfNotNull:dictionary[@"super_url"]];
-				if (stringURL) stringURL = [stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"];
-				Image *image = [Image findFirstByAttribute:@"url" withValue:stringURL inContext:_context];
+				Image *image = [Image findFirstByAttribute:@"thumbnailURL" withValue:stringURL inContext:_context];
 				if (!image){
 					image = [Image createInContext:_context];
-					[image setUrl:stringURL];
+					[image setThumbnailURL:stringURL];
+					[image setOriginalURL:[stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"]];
 				}
 				[image setIndex:@(index)];
 				[game addImagesObject:image];
@@ -650,13 +645,13 @@
 - (void)downloadImageWithImageObject:(Image *)imageObject{
 	[imageObject setIsDownloading:@(YES)];
 	
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageObject.url]];
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageObject.thumbnailURL]];
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
 //		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
 //		NSLog(@"image downloaded index: %@", imageObject.index);
-		[imageObject setData:UIImagePNGRepresentation(image)];
+//		[imageObject setData:UIImagePNGRepresentation(image)];
 		[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -681,7 +676,7 @@
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-		NSLog(@"%@", JSON);
+//		NSLog(@"%@", JSON);
 		
 		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
@@ -700,11 +695,7 @@
 		[video setPublishDate:[[Tools dateFormatter] dateFromString:results[@"publish_date"]]];
 		[video setHighQualityURL:[Tools stringFromSourceIfNotNull:results[@"high_url"]]];
 		[video setLowQualityURL:[Tools stringFromSourceIfNotNull:results[@"low_url"]]];
-		
-		NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-		if (stringURL) stringURL = [stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"];
-		
-		[video setThumbnailURL:stringURL];
+		[video setThumbnailURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]]];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			if (video.index.integerValue <= 1 && !video.thumbnail)
@@ -747,13 +738,29 @@
 
 #pragma mark - ActionSheet
 
+// REWRITE
+
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex != actionSheet.cancelButtonIndex){
 		if (actionSheet.tag == 1){
 			[_game setWishlistPlatform:_selectablePlatforms[buttonIndex]];
 			
+			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
+				EKEventStore *eventStore = [SessionManager eventStore];
+				EKEvent *event = [EKEvent eventWithEventStore:eventStore];
+				[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
+				[event setStartDate:_game.releaseDate.date];
+				[event setEndDate:event.startDate];
+				[event setAllDay:YES];
+				[event setAvailability:EKEventAvailabilityFree];
+				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+				[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+				
+				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+			}
+			
 			if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-				NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform.favorite = %@)", _game.releasePeriod.identifier, @(NO), @(YES), @(YES)];
+				NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", _game.releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
 				NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 				[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
 			}
@@ -768,7 +775,6 @@
 		}
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationController popToRootViewControllerAnimated:YES];
-//			[self.tabBarController setSelectedIndex:(actionSheet.tag == 1) ? 0 : 1];
 		}];
 	}
 }
@@ -848,10 +854,12 @@
 
 #pragma mark - Actions
 
+// REWRITE
+
 - (IBAction)addButtonPressAction:(UIButton *)sender{
 	NSInteger buttonPressed = (sender == _wishlistButton) ? 1 : 2;
 	
-	_selectablePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND self IN %@", @(YES), _game.platforms]];
+	_selectablePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
 	
 	if (_selectablePlatforms.count > 1){
 		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
@@ -871,8 +879,22 @@
 				[_game setLibraryPlatform:nil];
 			}
 			
+			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
+				EKEventStore *eventStore = [SessionManager eventStore];
+				EKEvent *event = [EKEvent eventWithEventStore:eventStore];
+				[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
+				[event setStartDate:_game.releaseDate.date];
+				[event setEndDate:event.startDate];
+				[event setAllDay:YES];
+				[event setAvailability:EKEventAvailabilityFree];
+				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+				[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+				
+				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+			}
+			
 			if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-				NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform.favorite = %@)", _game.releasePeriod.identifier, @(NO), @(YES), @(YES)];
+				NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", _game.releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
 				NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 				[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
 			}
@@ -888,9 +910,9 @@
 			[_game setWanted:@(NO)];
 			[_game setOwned:@(YES)];
 		}
+		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationController popToRootViewControllerAnimated:YES];
-//			[self.tabBarController setSelectedIndex:(sender == _wantButton) ? 0 : 1];
 		}];
 	}
 }
@@ -903,7 +925,7 @@
 	Image *image = sender;
 	
 	ZoomViewController *destination = segue.destinationViewController;
-	[destination setImage:[UIImage imageWithData:image.data]];
+	[destination setImage:image];
 }
 
 @end

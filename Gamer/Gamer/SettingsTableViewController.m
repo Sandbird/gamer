@@ -24,6 +24,8 @@
 
 @interface SettingsTableViewController () <FetchedTableViewDelegate>
 
+@property (nonatomic, strong) NSManagedObjectContext *context;
+
 @end
 
 @implementation SettingsTableViewController
@@ -32,6 +34,9 @@
     [super viewDidLoad];
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
+	
+	_context = [NSManagedObjectContext contextForCurrentThread];
+	[_context setUndoManager:nil];
 	
 	self.fetchedResultsController = [self fetch];
 }
@@ -101,16 +106,19 @@
 			UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 			[cell setAccessoryType:(cell.accessoryType == UITableViewCellAccessoryCheckmark) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryCheckmark];
 			
-			NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 			Platform *platform = [self.fetchedResultsController objectAtIndexPath:indexPath];
-			[platform setFavorite:(cell.accessoryType == UITableViewCellAccessoryCheckmark) ? @(YES) : @(NO)];
-			[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+//			[platform setFavorite:(cell.accessoryType == UITableViewCellAccessoryCheckmark) ? @(YES) : @(NO)];
+			if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
+				[[SessionManager gamer] addPlatformsObject:platform];
+			else
+				[[SessionManager gamer] removePlatformsObject:platform];
+			
+			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"PlatformChange" object:nil];
 			}];
 			break;
 		}
 		case 1:{
-			NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 			[Game truncateAll];
 			[Genre truncateAll];
 			[Platform truncateAll];
@@ -124,7 +132,8 @@
 			[Image truncateAll];
 			[CoverImage truncateAll];
 			[SimilarGame truncateAll];
-			[context saveToPersistentStoreAndWait];
+			[Gamer truncateAll];
+			[_context saveToPersistentStoreAndWait];
 			break;
 		}
 		default:
@@ -141,7 +150,7 @@
 	[customCell.titleLabel setText:platform.name];
 	[customCell.abbreviationLabel setText:platform.abbreviation];
 	[customCell.abbreviationLabel setBackgroundColor:platform.color];
-	[customCell setAccessoryType:([platform.favorite isEqualToNumber:@(YES)]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+	[customCell setAccessoryType:([[SessionManager gamer].platforms containsObject:platform]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
 }
 
 #pragma mark - FetchedTableView

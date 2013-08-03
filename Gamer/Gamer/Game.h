@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 25/07/2013.
+//  Created by Caio Mello on 03/08/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -29,6 +29,7 @@
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
 @property (nonatomic, retain) NSSet *images;
+@property (nonatomic, retain) Platform *libraryPlatform;
 @property (nonatomic, retain) ReleasePeriod *placeholderPeriod;
 @property (nonatomic, retain) NSSet *platforms;
 @property (nonatomic, retain) NSSet *publishers;
@@ -38,7 +39,6 @@
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
 @property (nonatomic, retain) Platform *wishlistPlatform;
-@property (nonatomic, retain) Platform *libraryPlatform;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)

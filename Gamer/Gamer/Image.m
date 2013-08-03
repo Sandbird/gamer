@@ -2,7 +2,7 @@
 //  Image.m
 //  Gamer
 //
-//  Created by Caio Mello on 7/11/13.
+//  Created by Caio Mello on 03/08/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -16,7 +16,8 @@
 @dynamic index;
 @dynamic isDownloading;
 @dynamic thumbnail;
-@dynamic url;
+@dynamic originalURL;
+@dynamic thumbnailURL;
 @dynamic game;
 
 @end

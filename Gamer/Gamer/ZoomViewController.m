@@ -7,14 +7,19 @@
 //
 
 #import "ZoomViewController.h"
+#import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 
 @interface ZoomViewController () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
 
 @property (nonatomic, strong) IBOutlet UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) IBOutlet UITapGestureRecognizer *doubleTapGestureRecognizer;
+
+@property (nonatomic, strong) UIImageView *imageView;
+
+@property (nonatomic, strong) NSOperation *currentOperation;
 
 @end
 
@@ -23,15 +28,24 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
+	[_progressIndicator setColor:[UIColor whiteColor]];
+	
 	[_singleTapGestureRecognizer requireGestureRecognizerToFail:_doubleTapGestureRecognizer];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	[self initializeImageViewWithImage:_image];
+	if (_image.data)
+		[self initializeImageViewWithImage:[UIImage imageWithData:_image.data] animated:NO];
+	else
+		[self downloadImageWithImageObject:_image];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] sendView:@"Zoom"];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+	[_currentOperation cancel];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -64,12 +78,45 @@
     _imageView.frame = contentFrame;
 }
 
+#pragma mark - Networking
+
+- (void)downloadImageWithImageObject:(Image *)imageObject{
+	[_progressIndicator setValue:0];
+	
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageObject.originalURL]];
+	[request setHTTPMethod:@"GET"];
+	
+	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
+		[imageObject setData:UIImagePNGRepresentation(image)];
+		[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[self initializeImageViewWithImage:image animated:YES];
+		}];
+	}];
+	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
+		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
+	}];
+	[operation start];
+	_currentOperation = operation;
+}
+
 #pragma mark - Custom
 
-- (void)initializeImageViewWithImage:(UIImage *)image{
+- (void)initializeImageViewWithImage:(UIImage *)image animated:(BOOL)animated{
 	_imageView = [[UIImageView alloc] initWithImage:image];
 	[_scrollView setContentSize:CGSizeMake(_imageView.frame.size.width, _imageView.frame.size.height)];
-	[_scrollView addSubview:_imageView];
+	
+	if (animated){
+		CATransition *transition = [CATransition animation];
+		transition.type = kCATransitionFade;
+		transition.duration = 0.2;
+		transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+		[_scrollView addSubview:_imageView];
+		[_scrollView.layer addAnimation:transition forKey:nil];
+	}
+	else
+		[_scrollView addSubview:_imageView];
+	
 	[_scrollView setMinimumZoomScale:320/_imageView.frame.size.width];
 	[_scrollView setZoomScale:_scrollView.minimumZoomScale];
 	[_imageView setCenter:CGPointMake(_imageView.frame.size.width/2, self.view.center.y)];

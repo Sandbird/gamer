@@ -89,7 +89,9 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" title="Wishlist" id="4x8-vH-4ca"/>
+                    <navigationItem key="navigationItem" title="Wishlist" id="4x8-vH-4ca">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Ptj-iH-xdS"/>
+                    </navigationItem>
                     <connections>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="5qi-Mj-SGM"/>
                     </connections>
@@ -161,15 +163,15 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="279"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ivh-Tr-p21" userLabel="Cover Image View">
-                                                    <rect key="frame" x="20" y="20" width="280" height="200"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
-                                                <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oo5-jN-rbJ" userLabel="Progress Indicator" customClass="MACircleProgressIndicator">
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oo5-jN-rbJ" userLabel="Progress Indicator" customClass="MACircleProgressIndicator">
                                                     <rect key="frame" x="144" y="104" width="32" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                 </view>
+                                                <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ivh-Tr-p21" userLabel="Cover Image View">
+                                                    <rect key="frame" x="20" y="20" width="280" height="200"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="282" translatesAutoresizingMaskIntoConstraints="NO" id="5TF-nW-hqd" userLabel="Title Label">
                                                     <rect key="frame" x="20" y="228" width="282" height="41"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -562,6 +564,13 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" maximumZoomScale="2" translatesAutoresizingMaskIntoConstraints="NO" id="M43-zG-daH">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Afl-Ih-deV" customClass="MACircleProgressIndicator">
+                                        <rect key="frame" x="138" y="262" width="44" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outlet property="delegate" destination="d8G-2S-1tf" id="hlP-kZ-rkW"/>
@@ -580,6 +589,7 @@
                     </view>
                     <connections>
                         <outlet property="doubleTapGestureRecognizer" destination="phs-gP-aIa" id="W2A-ZD-6Xe"/>
+                        <outlet property="progressIndicator" destination="Afl-Ih-deV" id="Euh-9R-8BV"/>
                         <outlet property="scrollView" destination="M43-zG-daH" id="WFD-82-0lk"/>
                         <outlet property="singleTapGestureRecognizer" destination="Y03-Tc-2y8" id="Q6W-dx-GNX"/>
                     </connections>
@@ -596,7 +606,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1690" y="79"/>
+            <point key="canvasLocation" x="1687" y="79"/>
         </scene>
         <!--Settings Table View Controller - Settings-->
         <scene sceneID="nC7-aY-Zyh">

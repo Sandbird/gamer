@@ -60,7 +60,7 @@
 #pragma mark - CollectionView
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
-	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND libraryGames.@count > 0", @(YES)]];
+	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND libraryGames.@count > 0", [SessionManager gamer].platforms]];
 	return (_platforms.count > 1) ? CGSizeMake(0, 50) : CGSizeMake(0, 11);
 }
 

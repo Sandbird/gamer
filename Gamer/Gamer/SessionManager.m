@@ -11,6 +11,69 @@
 @implementation SessionManager
 
 static NSMutableURLRequest *REQUEST;
+static EKEventStore *EVENTSTORE;
+static Gamer *GAMER;
+
++ (void)setGamer:(Gamer *)gamer{
+	GAMER = gamer;
+}
+
++ (Gamer *)gamer{
+	return GAMER;
+}
+
++ (void)setEventStore:(EKEventStore *)eventStore{
+	EVENTSTORE = eventStore;
+}
+
++ (EKEventStore *)eventStore{
+	return EVENTSTORE;
+}
+
++ (BOOL)calendarEnabled{
+	__block BOOL accessGranted = NO;
+	
+	if([EVENTSTORE respondsToSelector:@selector(requestAccessToEntityType:completion:)]) {
+		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+		[EVENTSTORE requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+			accessGranted = granted;
+			dispatch_semaphore_signal(semaphore);
+		}];
+		dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+	}
+	else
+		accessGranted = YES;
+	
+	if (accessGranted && !GAMER.calendarIdentifier){
+		EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:EVENTSTORE];
+		[calendar setTitle:@"Game Releases"];
+		[calendar setCGColor:[UIColor orangeColor].CGColor];
+		EKSource *source = nil;
+		for (EKSource *storeSource in EVENTSTORE.sources){
+			if (storeSource.sourceType == EKSourceTypeCalDAV && [storeSource.title isEqualToString:@"iCloud"]){
+				source = storeSource;
+				break;
+			}
+		}
+		if (!source){
+			for (EKSource *storeSource in EVENTSTORE.sources){
+				if (storeSource.sourceType == EKSourceTypeLocal){
+					source = storeSource;
+					break;
+				}
+			}
+		}
+		[calendar setSource:source];
+		
+		NSError *error;
+		[EVENTSTORE saveCalendar:calendar commit:YES error:&error];
+		
+		[GAMER setCalendarIdentifier:calendar.calendarIdentifier];
+		[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreAndWait];
+	}
+	
+	return accessGranted;
+}
 
 + (id<GAITracker>)tracker{
 	return [GAI sharedInstance].defaultTracker;

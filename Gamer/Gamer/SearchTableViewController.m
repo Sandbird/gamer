@@ -104,7 +104,7 @@
 #pragma mark - Networking
 
 - (void)requestGamesWithName:(NSString *)name{
-	NSArray *platforms = [Platform findAllWithPredicate:[NSPredicate predicateWithFormat:@"favorite = %@", @(YES)]];
+	NSArray *platforms = [Platform findAllWithPredicate:[NSPredicate predicateWithFormat:@"self in %@", [SessionManager gamer].platforms]];
 	
 	NSURLRequest *request = [SessionManager URLRequestForGamesWithFields:@"id,name" platforms:platforms name:name];
 	

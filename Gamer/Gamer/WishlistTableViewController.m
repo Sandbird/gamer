@@ -42,7 +42,7 @@
 	[[SessionManager tracker] sendView:@"Wishlist"];
 	
 	// Update game release periods
-	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND wishlistPlatform.favorite = %@", @(YES), @(YES)]];
+	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND wishlistPlatform in %@", @(YES), [SessionManager gamer].platforms]];
 	for (Game *game in games)
 		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -50,7 +50,7 @@
 		NSArray *releasePeriods = [ReleasePeriod findAll];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform in %@)", releasePeriod.identifier, @(YES), [SessionManager gamer].platforms];
 			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}
@@ -112,7 +112,9 @@
 	[game setWanted:@(NO)];
 	[game setWishlistPlatform:nil];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform.favorite = %@)", game.releasePeriod.identifier, @(YES), @(YES)];
+	[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform in %@)", game.releasePeriod.identifier, @(YES), [SessionManager gamer].platforms];
 	NSArray *games = [Game findAllWithPredicate:predicate inContext:_context];
 	
 	if (games.count == 0)
@@ -137,7 +139,7 @@
 #pragma mark - HidingSectionView
 
 - (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)sectionView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform.favorite = %@)", releasePeriod.identifier, @(YES), @(YES)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform in %@)", releasePeriod.identifier, @(YES), [SessionManager gamer].platforms];
 	NSArray *games = [Game findAllWithPredicate:predicate];
 	
 	for (Game *game in games)
@@ -150,7 +152,7 @@
 
 - (NSFetchedResultsController *)fetch{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND wishlistPlatform.favorite = %@) OR identifier = nil)", @(NO), @(YES), @(YES)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND wishlistPlatform in %@) OR identifier = nil)", @(NO), @(YES), [SessionManager gamer].platforms];
 		
 		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
 	}

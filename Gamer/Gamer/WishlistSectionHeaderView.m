@@ -25,7 +25,7 @@
 	if (self){
 		_releasePeriod = releasePeriod;
 		
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform.favorite = %@)", releasePeriod.identifier, @(NO), @(YES), @(YES)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
 		NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 		_hidden = (gamesCount > 0) ? NO : YES;
 		

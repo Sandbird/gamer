@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Image.h"
 
 @interface ZoomViewController : UIViewController
 
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) Image *image;
 
 @end
