@@ -2,14 +2,14 @@
 //  Platform.h
 //  Gamer
 //
-//  Created by Caio Mello on 03/08/2013.
+//  Created by Caio Mello on 04/08/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Game;
+@class Game, Gamer;
 
 @interface Platform : NSManagedObject
 
@@ -19,8 +19,8 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSSet *games;
 @property (nonatomic, retain) NSSet *libraryGames;
+@property (nonatomic, retain) Gamer *gamer;
 @property (nonatomic, retain) NSSet *wishlistGames;
-@property (nonatomic, retain) NSManagedObject *user;
 @end
 
 @interface Platform (CoreDataGeneratedAccessors)

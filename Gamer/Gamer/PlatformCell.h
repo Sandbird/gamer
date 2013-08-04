@@ -10,7 +10,8 @@
 
 @interface PlatformCell : UITableViewCell
 
-@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) IBOutlet UILabel *abbreviationLabel;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) IBOutlet UISwitch *switchControl;
 
 @end

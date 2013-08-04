@@ -10,6 +10,7 @@
 
 @implementation SessionManager
 
+static NSString *APIKEY = @"d92c258adb509ded409d28f4e51de2c83e297011";
 static NSMutableURLRequest *REQUEST;
 static EKEventStore *EVENTSTORE;
 static Gamer *GAMER;
@@ -79,10 +80,9 @@ static Gamer *GAMER;
 	return [GAI sharedInstance].defaultTracker;
 }
 
-+ (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms name:(NSString *)name{
-	NSString *apiKey = @"d92c258adb509ded409d28f4e51de2c83e297011";
++ (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms title:(NSString *)title{
 	NSString *platformIdentifiers = [[platforms valueForKey:@"identifier"] componentsJoinedByString:@"|"];
-	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/games/3030/?api_key=%@&format=json&sort=date_added:desc&field_list=%@&filter=platforms:%@,name:%@", apiKey, fields, platformIdentifiers, name];
+	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/games/3030/?api_key=%@&format=json&sort=date_added:desc&field_list=%@&filter=platforms:%@,name:%@", APIKEY, fields, platformIdentifiers, title];
 	
 	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
 	[REQUEST setHTTPMethod:@"GET"];
@@ -92,8 +92,7 @@ static Gamer *GAMER;
 }
 
 + (NSMutableURLRequest *)URLRequestForGameWithFields:(NSString *)fields identifier:(NSNumber *)identifier{
-	NSString *apiKey = @"d92c258adb509ded409d28f4e51de2c83e297011";
-	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/game/3030-%@/?api_key=%@&format=json&field_list=%@", identifier, apiKey, fields];
+	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/game/3030-%@/?api_key=%@&format=json&field_list=%@", identifier, APIKEY, fields];
 	
 	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
 	[REQUEST setHTTPMethod:@"GET"];
@@ -103,8 +102,7 @@ static Gamer *GAMER;
 }
 
 + (NSMutableURLRequest *)URLRequestForVideoWithFields:(NSString *)fields identifier:(NSNumber *)identifier{
-	NSString *apiKey = @"d92c258adb509ded409d28f4e51de2c83e297011";
-	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/video/2300-%@/?api_key=%@&format=json&field_list=%@", identifier, apiKey, fields];
+	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/video/2300-%@/?api_key=%@&format=json&field_list=%@", identifier, APIKEY, fields];
 	
 //	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
 //	[REQUEST setHTTPMethod:@"GET"];

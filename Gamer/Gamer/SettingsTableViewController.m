@@ -81,7 +81,7 @@
 	switch (indexPath.section) {
 		case 0:{
 			PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
-			[cell setSeparatorInset:UIEdgeInsetsMake(0, 90, 0, 0)];
+			[cell setSeparatorInset:UIEdgeInsetsMake(0, 20, 0, 0)];
 			[self configureCell:cell atIndexPath:indexPath];
 			return cell;
 		}
@@ -93,51 +93,26 @@
 		default:
 			return nil;
 	}
-    
-//	[cell setBackgroundColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
-//	[cell.textLabel setTextColor:[UIColor lightGrayColor]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
-	switch (indexPath.section) {
-		case 0:{
-			UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-			[cell setAccessoryType:(cell.accessoryType == UITableViewCellAccessoryCheckmark) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryCheckmark];
-			
-			Platform *platform = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//			[platform setFavorite:(cell.accessoryType == UITableViewCellAccessoryCheckmark) ? @(YES) : @(NO)];
-			if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
-				[[SessionManager gamer] addPlatformsObject:platform];
-			else
-				[[SessionManager gamer] removePlatformsObject:platform];
-			
-			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"PlatformChange" object:nil];
-			}];
-			break;
-		}
-		case 1:{
-			[Game truncateAll];
-			[Genre truncateAll];
-			[Platform truncateAll];
-			[Developer truncateAll];
-			[Publisher truncateAll];
-			[Franchise truncateAll];
-			[Theme truncateAll];
-			[ReleasePeriod truncateAll];
-			[ReleaseDate truncateAll];
-			[Video truncateAll];
-			[Image truncateAll];
-			[CoverImage truncateAll];
-			[SimilarGame truncateAll];
-			[Gamer truncateAll];
-			[_context saveToPersistentStoreAndWait];
-			break;
-		}
-		default:
-			break;
+	if (indexPath.section == 1){
+		[tableView deselectRowAtIndexPath:indexPath animated:YES];
+		[Game truncateAll];
+		[Genre truncateAll];
+		[Platform truncateAll];
+		[Developer truncateAll];
+		[Publisher truncateAll];
+		[Franchise truncateAll];
+		[Theme truncateAll];
+		[ReleasePeriod truncateAll];
+		[ReleaseDate truncateAll];
+		[Video truncateAll];
+		[Image truncateAll];
+		[CoverImage truncateAll];
+		[SimilarGame truncateAll];
+		[Gamer truncateAll];
+		[_context saveToPersistentStoreAndWait];
 	}
 }
 
@@ -150,7 +125,8 @@
 	[customCell.titleLabel setText:platform.name];
 	[customCell.abbreviationLabel setText:platform.abbreviation];
 	[customCell.abbreviationLabel setBackgroundColor:platform.color];
-	[customCell setAccessoryType:([[SessionManager gamer].platforms containsObject:platform]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+	[customCell.switchControl setOn:([[SessionManager gamer].platforms containsObject:platform]) ? YES : NO];
+	[customCell.switchControl setTag:indexPath.row];
 }
 
 #pragma mark - FetchedTableView
@@ -159,6 +135,20 @@
 	if (!self.fetchedResultsController)
 		self.fetchedResultsController = [Platform fetchAllSortedBy:@"name" ascending:YES withPredicate:nil groupBy:nil delegate:self];
 	return self.fetchedResultsController;
+}
+
+#pragma mark - Actions
+
+- (IBAction)switchAction:(UISwitch *)sender{
+	Platform *platform = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
+	if (sender.isOn)
+		[[SessionManager gamer] addPlatformsObject:platform];
+	else
+		[[SessionManager gamer] removePlatformsObject:platform];
+	
+	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"PlatformChange" object:nil];
+	}];
 }
 
 @end

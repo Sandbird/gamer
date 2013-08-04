@@ -91,16 +91,6 @@
 	UIImage *image = [UIImage imageWithData:game.libraryThumbnail];
 	[cell.imageView setImage:image];
 	
-//	CGRect shadowRect;
-//	if (cell.imageView.image.size.width > cell.imageView.image.size.height)
-//		shadowRect = CGRectMake(cell.imageView.bounds.origin.x, (cell.imageView.bounds.size.height - cell.imageView.image.size.height/2)/2, cell.imageView.bounds.size.width, cell.imageView.image.size.height/2);
-//	else
-//		shadowRect = CGRectMake((cell.imageView.bounds.size.width - cell.imageView.image.size.width/2)/2, cell.imageView.bounds.origin.y, cell.imageView.image.size.width/2, cell.imageView.bounds.size.height);
-//	NSLog(@"imag:     %.f %.f", cell.imageView.image.size.width, cell.imageView.image.size.height);
-//	NSLog(@"boun: %.f %.f %.f %.f", cell.imageView.bounds.origin.x, cell.imageView.bounds.origin.y, cell.imageView.bounds.size.width, cell.imageView.bounds.size.height);
-//	NSLog(@"rect: %.f %.f %.f %.f", shadowRect.origin.x, shadowRect.origin.y, shadowRect.size.width, shadowRect.size.height);
-//	[Tools addDropShadowToView:cell.imageView color:[UIColor redColor] opacity:1 radius:5 offset:CGSizeMake(0, 0) bounds:shadowRect];
-	
 	return cell;
 }
 

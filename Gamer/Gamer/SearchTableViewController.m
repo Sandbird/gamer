@@ -10,10 +10,12 @@
 #import "GameTableViewController.h"
 #import "SearchResult.h"
 #import "Platform.h"
+#import "SearchCell.h"
 
 @interface SearchTableViewController () <UISearchBarDelegate>
 
 @property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) NSArray *localResults;
 @property (nonatomic, strong) NSMutableArray *results;
 @property (nonatomic, strong) AFJSONRequestOperation *previousOperation;
 
@@ -35,7 +37,7 @@
 	
 	[self.navigationItem setTitleView:_searchBar];
 	
-	_results = [[NSMutableArray alloc] init];
+	_results = [[NSMutableArray alloc] initWithCapacity:100];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -55,7 +57,11 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[_previousOperation cancel];
 	if (searchText.length > 0){
-		[self requestGamesWithName:[searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
+		NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+		[self requestGamesWithTitlesContainingQuery:query];
+		_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, query]];
+		[self.tableView reloadData];
+		
 //		NSString *name = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 //		[self performSelector:@selector(requestGamesWithName:) withObject:name afterDelay:(searchText.length == 1) ? 0 : 1];
 	}
@@ -64,7 +70,10 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 	[searchBar resignFirstResponder];
 	[_previousOperation cancel];
-	[self requestGamesWithName:[searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
+	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+	[self requestGamesWithTitlesContainingQuery:query];
+	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, query]];
+	[self.tableView reloadData];
 }
 
 - (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar{
@@ -78,13 +87,28 @@
 #pragma mark - TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return _results.count;
+    return _localResults.count + _results.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	return (indexPath.row < _localResults.count) ? 60 : tableView.rowHeight;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+	if (indexPath.row < _localResults.count){
+		SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SearchCell"];
+		[cell setSeparatorInset:UIEdgeInsetsMake(0, 63, 0, 0)];
+		
+		Game *game = _localResults[indexPath.row];
+		[cell.coverImageView setImage:[UIImage imageWithData:game.wishlistThumbnail]];
+		[cell.titleLabel setText:game.title];
+		
+		return cell;
+	}
+	
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	
-	SearchResult *result = _results[indexPath.row];
+	SearchResult *result = _results[indexPath.row - _localResults.count];
 	[cell.textLabel setText:result.title];
 	
     return cell;
@@ -103,10 +127,10 @@
 
 #pragma mark - Networking
 
-- (void)requestGamesWithName:(NSString *)name{
-	NSArray *platforms = [Platform findAllWithPredicate:[NSPredicate predicateWithFormat:@"self in %@", [SessionManager gamer].platforms]];
+- (void)requestGamesWithTitlesContainingQuery:(NSString *)query{
+//	NSArray *platforms = [Platform findAllWithPredicate:[NSPredicate predicateWithFormat:@"self in %@", [SessionManager gamer].platforms]];
 	
-	NSURLRequest *request = [SessionManager URLRequestForGamesWithFields:@"id,name" platforms:platforms name:name];
+	NSURLRequest *request = [SessionManager URLRequestForGamesWithFields:@"id,name" platforms:[SessionManager gamer].platforms.allObjects title:query];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 //		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -115,11 +139,13 @@
 		
 //		NSLog(@"%@", JSON);
 		
+		NSArray *localIdentifiers = [_localResults valueForKey:@"identifier"];
+		
 		for (NSDictionary *dictionary in JSON[@"results"]){
 			SearchResult *result = [[SearchResult alloc] init];
 			[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[_results addObject:result];
+			if (![localIdentifiers containsObject:result.identifier]) [_results addObject:result];
 		}
 		
 		[self.tableView reloadData];
@@ -138,8 +164,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameTableViewController *destination = segue.destinationViewController;
-	[destination setSearchResult:_results[self.tableView.indexPathForSelectedRow.row]];
-//	[destination setOrigin:_origin];
+	[destination setSearchResult:(self.tableView.indexPathForSelectedRow.row < _localResults.count) ? _localResults[self.tableView.indexPathForSelectedRow.row] : _results[self.tableView.indexPathForSelectedRow.row - _localResults.count]];
 }
 
 @end
