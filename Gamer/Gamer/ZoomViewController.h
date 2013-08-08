@@ -13,4 +13,7 @@
 
 @property (nonatomic, strong) Image *image;
 
+- (IBAction)doubleTapGestureRecognizerAction:(UITapGestureRecognizer *)sender;
+- (IBAction)tapGestureRecognizerAction:(UITapGestureRecognizer *)sender;
+
 @end

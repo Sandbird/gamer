@@ -11,4 +11,6 @@
 
 @interface SettingsTableViewController : FetchedTableViewController
 
+- (IBAction)switchAction:(UISwitch *)sender;
+
 @end

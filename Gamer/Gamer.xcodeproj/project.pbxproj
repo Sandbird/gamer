@@ -37,7 +37,7 @@
 		25704030176CB12800642430 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2570402E176CB12800642430 /* InfoPlist.strings */; };
 		25704032176CB12800642430 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704031176CB12800642430 /* main.m */; };
 		25704036176CB12800642430 /* GamerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704035176CB12800642430 /* GamerAppDelegate.m */; };
-		25704039176CB12800642430 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25704037176CB12800642430 /* Main.storyboard */; };
+		25704039176CB12800642430 /* iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25704037176CB12800642430 /* iPhone.storyboard */; };
 		2570403E176CB12800642430 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2570403D176CB12800642430 /* Images.xcassets */; };
 		25704045176CB12800642430 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704044176CB12800642430 /* XCTest.framework */; };
 		25704046176CB12800642430 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704025176CB12800642430 /* Foundation.framework */; };
@@ -56,6 +56,7 @@
 		25B9E9C017A0B70200881089 /* LibraryCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryCollectionViewController.m */; };
 		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
 		25C24A5317AD99EF00F98DE4 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C24A5217AD99EF00F98DE4 /* Image.m */; };
+		25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */; };
 		25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ZoomViewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
 		25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */; };
@@ -125,7 +126,7 @@
 		25704033176CB12800642430 /* Gamer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Gamer-Prefix.pch"; sourceTree = "<group>"; };
 		25704034176CB12800642430 /* GamerAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GamerAppDelegate.h; sourceTree = "<group>"; };
 		25704035176CB12800642430 /* GamerAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GamerAppDelegate.m; sourceTree = "<group>"; };
-		25704038176CB12800642430 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		25704038176CB12800642430 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/iPhone.storyboard; sourceTree = "<group>"; };
 		2570403D176CB12800642430 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		25704043176CB12800642430 /* GamerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GamerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		25704044176CB12800642430 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -157,6 +158,7 @@
 		25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCollectionCell.m; sourceTree = "<group>"; };
 		25C24A5117AD99EF00F98DE4 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		25C24A5217AD99EF00F98DE4 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
+		25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPad.storyboard; sourceTree = "<group>"; };
 		25D2E5FF178BB22900C7EDDB /* ZoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZoomViewController.h; sourceTree = "<group>"; };
 		25D2E600178BB22900C7EDDB /* ZoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZoomViewController.m; sourceTree = "<group>"; };
 		25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionCell.h; sourceTree = "<group>"; };
@@ -332,7 +334,8 @@
 		2570405A176CB1D900642430 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
-				25704037176CB12800642430 /* Main.storyboard */,
+				25704037176CB12800642430 /* iPhone.storyboard */,
+				25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -510,9 +513,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */,
 				2570403E176CB12800642430 /* Images.xcassets in Resources */,
 				25704030176CB12800642430 /* InfoPlist.strings in Resources */,
-				25704039176CB12800642430 /* Main.storyboard in Resources */,
+				25704039176CB12800642430 /* iPhone.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -629,12 +633,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		25704037176CB12800642430 /* Main.storyboard */ = {
+		25704037176CB12800642430 /* iPhone.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				25704038176CB12800642430 /* Base */,
 			);
-			name = Main.storyboard;
+			name = iPhone.storyboard;
 			sourceTree = "<group>";
 		};
 		2570404D176CB12800642430 /* InfoPlist.strings */ = {
@@ -664,8 +668,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -703,8 +707,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -726,13 +730,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "6948D9A0-6C41-434B-BF36-8BC0D3E142FE";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -743,13 +749,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "6948D9A0-6C41-434B-BF36-8BC0D3E142FE";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

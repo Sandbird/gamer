@@ -15,4 +15,7 @@
 @property (nonatomic, strong) Game *game;
 @property (nonatomic, strong) SearchResult *searchResult;
 
+- (IBAction)addButtonPressAction:(UIButton *)sender;
+- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender;
+
 @end

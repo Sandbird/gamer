@@ -41,9 +41,9 @@
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 	
-	[[UITabBar appearance] setBarStyle:UIBarStyleBlack];
+//	[[UITabBar appearance] setBarStyle:UIBarStyleBlack];
 	
-	[[UINavigationBar appearance] setBarStyle:UIBarStyleBlack];
+//	[[UINavigationBar appearance] setBarStyle:UIBarStyleBlack];
 	[[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:self.window.tintColor}];
 	
 	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
