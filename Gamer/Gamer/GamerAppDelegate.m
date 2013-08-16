@@ -147,7 +147,7 @@
 							   @"VITA",
 							   @"WIIU",
 							   @"X360",
-							   @"X180"];
+							   @"XB1"];
 	NSArray *colors = @[[UIColor colorWithRed:.764705882 green:0 blue:.058823529 alpha:1],
 						[UIColor colorWithRed:0 green:0 blue:0 alpha:1],
 						[UIColor colorWithRed:0 green:.039215686 blue:.525490196 alpha:1],

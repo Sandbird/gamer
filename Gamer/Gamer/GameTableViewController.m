@@ -138,7 +138,7 @@
 // REWRITE THIS
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	if (indexPath.section == 1 && indexPath.row == 0){
-		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(270, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
+		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(280, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
 		return textRect.size.height + 40;
 	}
 	else if (indexPath.section == 1 && indexPath.row == 2)
@@ -221,8 +221,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _imagesCollectionView){
 		Image *image = _images[indexPath.item];
-//		if (image.data)
-			[self performSegueWithIdentifier:@"ZoomSegue" sender:image];
+		[self performSegueWithIdentifier:@"ZoomSegue" sender:image];
 	}
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
@@ -258,7 +257,7 @@
 		
 		// Cover image
 		if (results[@"image"] != [NSNull null]){
-			NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"small_url"]];
+			NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
 			
 			CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:stringURL];
 			if (!coverImage){
@@ -500,12 +499,12 @@
 		
 		if (image.size.width > image.size.height){
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:280])];
-			[_game setWishlistThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:56])];
+			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:50])];
 			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:92])];
 		}
 		else{
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:200])];
-			[_game setWishlistThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:70])];
+			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:50])];
 			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:116])];
 		}
 		return nil;

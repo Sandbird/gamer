@@ -32,6 +32,8 @@
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
+	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
 	
@@ -90,9 +92,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-	[cell setSeparatorInset:UIEdgeInsetsMake(0, 74, 0, 0)];
-//	BOOL lastRow = (indexPath.row == ([tableView numberOfRowsInSection:indexPath.section] - 2)) ? YES : NO;
-//	[cell setSeparatorInset:UIEdgeInsetsMake(0, ((lastRow) ? 320 : 74), 0, 0)];
+	BOOL lastRow = (indexPath.row >= ([tableView numberOfRowsInSection:indexPath.section] - 2)) ? YES : NO;
+	[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? tableView.frame.size.width : 68), 0, 0)];
 	
 	[self configureCell:cell atIndexPath:indexPath];
 	
@@ -130,8 +131,8 @@
 	
 	WishlistCell *customCell = (WishlistCell *)cell;
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
-	[customCell.dateLabel setText:([game.releasePeriod.identifier isEqualToNumber:@(9)]) ? @"" : game.releaseDateText];
-	[customCell.coverImageView setImage:[UIImage imageWithData:game.wishlistThumbnail]];
+	[customCell.dateLabel setText:game.releaseDateText];
+	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];
 	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
 }

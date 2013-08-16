@@ -2,13 +2,13 @@
 //  SearchCell.m
 //  Gamer
 //
-//  Created by Caio Mello on 16/08/2013.
+//  Created by Caio Mello on 03/08/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "SearchCell.h"
+#import "LocalSearchCell.h"
 
-@implementation SearchCell
+@implementation LocalSearchCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

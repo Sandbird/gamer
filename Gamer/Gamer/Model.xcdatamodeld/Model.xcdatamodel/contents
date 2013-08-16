@@ -26,9 +26,9 @@
         <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="released" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="releaseDateText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="wanted" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="wishlistThumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="coverImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoverImage" inverseName="game" inverseEntity="CoverImage" syncable="YES"/>
         <relationship name="developers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Developer" inverseName="games" inverseEntity="Developer" syncable="YES"/>
         <relationship name="franchises" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Franchise" inverseName="games" inverseEntity="Franchise" syncable="YES"/>

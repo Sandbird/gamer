@@ -117,7 +117,7 @@
 	else
 		[_scrollView addSubview:_imageView];
 	
-	[_scrollView setMinimumZoomScale:320/_imageView.frame.size.width];
+	[_scrollView setMinimumZoomScale:self.view.frame.size.width/_imageView.frame.size.width];
 	[_scrollView setZoomScale:_scrollView.minimumZoomScale];
 	[_imageView setCenter:CGPointMake(_imageView.frame.size.width/2, self.view.center.y)];
 }
