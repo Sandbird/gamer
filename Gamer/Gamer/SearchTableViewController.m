@@ -83,6 +83,10 @@
 	[self.tableView reloadData];
 }
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+	[_previousOperation cancel];
+}
+
 - (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar{
 	[searchBar resignFirstResponder];
 }
@@ -127,12 +131,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-#pragma mark - ScrollView
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-	[_searchBar resignFirstResponder];
 }
 
 #pragma mark - Networking

@@ -107,12 +107,8 @@
 	[_scrollView setContentSize:CGSizeMake(_imageView.frame.size.width, _imageView.frame.size.height)];
 	
 	if (animated){
-		CATransition *transition = [CATransition animation];
-		transition.type = kCATransitionFade;
-		transition.duration = 0.2;
-		transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
 		[_scrollView addSubview:_imageView];
-		[_scrollView.layer addAnimation:transition forKey:nil];
+		[_scrollView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 	}
 	else
 		[_scrollView addSubview:_imageView];

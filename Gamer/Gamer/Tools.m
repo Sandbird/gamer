@@ -167,4 +167,33 @@ static NSDateFormatter *DATEFORMATTER;
 	return CGRectMake(x, y, width, height);
 }
 
+#pragma mark - Animation
+
++ (CAAnimation *)fadeTransitionWithDuration:(CGFloat)duration{
+	CATransition *transition = [CATransition animation];
+	[transition setType:kCATransitionFade];
+	[transition setDuration:duration];
+	return transition;
+}
+
++ (CAAnimation *)transitionWithType:(NSString *)type duration:(CGFloat)duration timingFunction:(CAMediaTimingFunction *)function{
+	CATransition *transition = [CATransition animation];
+	[transition setType:type];
+	[transition setDuration:duration];
+	[transition setTimingFunction:function];
+	return transition;
+}
+
+#pragma mark - Layout
+
++ (void)addEdgeConstraint:(NSLayoutAttribute)edge superview:(UIView *)superview subview:(UIView *)subview{
+	[superview addConstraint:[NSLayoutConstraint constraintWithItem:subview
+														  attribute:edge
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:superview
+														  attribute:edge
+														 multiplier:1
+														   constant:0]];
+}
+
 @end

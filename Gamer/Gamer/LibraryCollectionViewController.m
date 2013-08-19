@@ -70,13 +70,13 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
 	LibraryHeaderReusableView *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
-	if (_platforms.count > 1){
-		[header.segmentedControl removeAllSegments];
-		[header.segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
-		for (Platform *platform in _platforms) [header.segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
-		[header.segmentedControl setSelectedSegmentIndex:0];
-		[header.segmentedControl setSelectedSegmentIndex:_platformSelection];
-	}
+//	if (_platforms.count > 1){
+//		[header.segmentedControl removeAllSegments];
+//		[header.segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
+//		for (Platform *platform in _platforms) [header.segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
+//		[header.segmentedControl setSelectedSegmentIndex:0];
+//		[header.segmentedControl setSelectedSegmentIndex:_platformSelection];
+//	}
 	return header;
 }
 
