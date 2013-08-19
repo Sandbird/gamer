@@ -37,17 +37,20 @@
 		[_titleLabel setTextColor:[UIColor orangeColor]];
 //		[_titleLabel setFont:[UIFont systemFontOfSize:18]];
 		[_titleLabel setText:releasePeriod.name];
+		[self addSubview:_titleLabel];
 		
 		_hideIndicator = [[UIImageView alloc] initWithFrame:CGRectMake(276, 10, 24, 24)];
+		[_hideIndicator setTranslatesAutoresizingMaskIntoConstraints:NO];
 		[_hideIndicator setImage:[UIImage imageNamed:@"HideArrow"]];
-		
-		[self addSubview:_titleLabel];
 		[self addSubview:_hideIndicator];
 		
 		if (!_hidden) [_hideIndicator setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		
 		_gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizerAction:)];
 		[self addGestureRecognizer:_gestureRecognizer];
+		
+		NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:_hideIndicator attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTrailing multiplier:1 constant:-20];
+		[self addConstraint:constraint];
 	}
 	
 	return  self;
