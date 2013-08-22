@@ -163,7 +163,9 @@
                             <outlet property="delegate" destination="ynH-Xp-nAC" id="EEN-OW-Va1"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="xpC-Un-hPL"/>
+                    <navigationItem key="navigationItem" id="xpC-Un-hPL">
+                        <barButtonItem key="backBarButtonItem" title="Search" id="ZLd-mF-ZMj"/>
+                    </navigationItem>
                     <connections>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="YGP-WK-AF2"/>
                     </connections>
@@ -220,29 +222,29 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Release" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hgp-fA-juX" userLabel="Release Label">
-                                                    <rect key="frame" x="20" y="23" width="70" height="21"/>
+                                                    <rect key="frame" x="20" y="24" width="70" height="14"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="25 September 2013" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SV0-L3-EX0" userLabel="Release Date Label">
-                                                    <rect key="frame" x="20" y="48" width="114" height="21"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="25 November 2013" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="SV0-L3-EX0" userLabel="Release Date Label">
+                                                    <rect key="frame" x="20" y="45" width="134" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aGi-nA-yvy" userLabel="Want Button">
                                                     <rect key="frame" x="162" y="11" width="140" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
-                                                    <state key="normal" title="Add to Wishlist">
-                                                        <color key="titleColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                                    <state key="normal" title="ADD TO WISHLIST">
+                                                        <color key="titleColor" red="1" green="0.50196078431372548" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <state key="highlighted">
-                                                        <color key="titleColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="titleColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="addButtonPressAction:" destination="daZ-J4-g3E" eventType="touchUpInside" id="kCI-ki-PF0"/>
@@ -251,13 +253,13 @@
                                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Szq-Ge-fAn" userLabel="Own Button">
                                                     <rect key="frame" x="162" y="49" width="140" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
-                                                    <state key="normal" title="Add to Library">
-                                                        <color key="titleColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                                    <state key="normal" title="ADD TO LIBRARY">
+                                                        <color key="titleColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <state key="highlighted">
-                                                        <color key="titleColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="titleColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="addButtonPressAction:" destination="daZ-J4-g3E" eventType="touchUpInside" id="nqS-hD-HNo"/>
@@ -269,7 +271,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Information" id="MWv-ts-CJI">
+                            <tableViewSection headerTitle="Details" id="MWv-ts-CJI">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" ambiguous="YES" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="110" id="ezx-cq-Cna">
                                         <rect key="frame" x="0.0" y="392" width="320" height="110"/>
@@ -437,9 +439,13 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="179"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Kwg-Br-TqV" userLabel="Images Collection View">
+                                                <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Kwg-Br-TqV" userLabel="Images Collection View">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="180" id="7Fn-l9-aCl"/>
+                                                        <constraint firstAttribute="width" constant="320" id="wzS-TN-S6B"/>
+                                                    </constraints>
                                                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="Ix1-su-ZvE">
                                                         <size key="itemSize" width="320" height="180"/>
                                                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -479,6 +485,20 @@
                                                     </connections>
                                                 </collectionView>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="Kwg-Br-TqV" secondAttribute="trailing" id="FDg-JR-zUY"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="top" secondItem="50l-zz-Med" secondAttribute="top" id="FtD-0t-M5X"/>
+                                                <constraint firstAttribute="trailing" secondItem="Kwg-Br-TqV" secondAttribute="trailing" id="H5C-AY-SlY"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="centerX" secondItem="50l-zz-Med" secondAttribute="centerX" id="PJf-qM-dVK"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="leading" secondItem="50l-zz-Med" secondAttribute="leading" id="SlZ-It-gT6"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="top" secondItem="50l-zz-Med" secondAttribute="top" id="TXb-P1-VQ8"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="leading" secondItem="50l-zz-Med" secondAttribute="leading" id="a3U-ux-ddO"/>
+                                                <constraint firstAttribute="bottom" secondItem="Kwg-Br-TqV" secondAttribute="bottom" constant="-1" id="cSh-NT-zEr"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="leading" secondItem="50l-zz-Med" secondAttribute="leading" id="gdV-d0-9mx"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="top" secondItem="50l-zz-Med" secondAttribute="top" id="qC9-Hs-NzX"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="leading" secondItem="50l-zz-Med" secondAttribute="leading" id="sX8-ui-IoO"/>
+                                                <constraint firstItem="Kwg-Br-TqV" firstAttribute="top" secondItem="50l-zz-Med" secondAttribute="top" id="swn-5b-Cf6"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
@@ -493,10 +513,14 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="179"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PtU-8u-YEg" userLabel="Videos Collection View">
+                                                <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PtU-8u-YEg" userLabel="Videos Collection View">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="180" id="fcD-k5-Lht"/>
+                                                        <constraint firstAttribute="width" constant="320" id="gSK-n2-QW5"/>
+                                                    </constraints>
                                                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="53m-XJ-hr4">
                                                         <size key="itemSize" width="320" height="180"/>
                                                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -535,6 +559,20 @@
                                                     </connections>
                                                 </collectionView>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="PtU-8u-YEg" secondAttribute="bottom" constant="-1" id="8Hi-Dx-CM9"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="leading" secondItem="dKF-LK-S5u" secondAttribute="leading" id="Bwb-uv-CXr"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="top" secondItem="dKF-LK-S5u" secondAttribute="top" id="Dgo-6f-mFG"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="top" secondItem="dKF-LK-S5u" secondAttribute="top" id="Nmp-pO-I7B"/>
+                                                <constraint firstAttribute="trailing" secondItem="PtU-8u-YEg" secondAttribute="trailing" id="XLv-sd-vVo"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="top" secondItem="dKF-LK-S5u" secondAttribute="top" id="bG7-rj-yBm"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="top" secondItem="dKF-LK-S5u" secondAttribute="top" id="c1b-VM-U4c"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="leading" secondItem="dKF-LK-S5u" secondAttribute="leading" id="eoU-jY-uAY"/>
+                                                <constraint firstAttribute="trailing" secondItem="PtU-8u-YEg" secondAttribute="trailing" id="gcC-3Q-c2f"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="leading" secondItem="dKF-LK-S5u" secondAttribute="leading" id="klF-ED-yHT"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="leading" secondItem="dKF-LK-S5u" secondAttribute="leading" id="px1-Kx-GLD"/>
+                                                <constraint firstItem="PtU-8u-YEg" firstAttribute="centerX" secondItem="dKF-LK-S5u" secondAttribute="centerX" id="weU-tU-4dD"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.16470588235294117" green="0.16470588235294117" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
@@ -821,13 +859,13 @@
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="11" minimumInteritemSpacing="11" id="JOS-0d-UXM">
                             <size key="itemSize" width="92" height="116"/>
-                            <size key="headerReferenceSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="11" minY="11" maxX="11" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="Ncj-We-Ihx" customClass="LibraryCollectionCell">
-                                <rect key="frame" x="11" y="125" width="92" height="116"/>
+                                <rect key="frame" x="11" y="75" width="92" height="116"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="92" height="116"/>
@@ -845,26 +883,6 @@
                                 </connections>
                             </collectionViewCell>
                         </cells>
-                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Header" id="AMD-Ma-fbb" customClass="LibraryHeaderReusableView">
-                            <rect key="frame" x="0.0" y="64" width="320" height="50"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                            <subviews>
-                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="AXw-qh-Ouv">
-                                    <rect key="frame" x="10" y="11" width="300" height="29"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <segments>
-                                        <segment title="First"/>
-                                        <segment title="Second"/>
-                                    </segments>
-                                    <connections>
-                                        <action selector="segmentedControlValueChanged:" destination="AEQ-18-ifU" eventType="valueChanged" id="yWd-aM-UCs"/>
-                                    </connections>
-                                </segmentedControl>
-                            </subviews>
-                            <connections>
-                                <outlet property="segmentedControl" destination="AXw-qh-Ouv" id="dZ6-Tv-Z67"/>
-                            </connections>
-                        </collectionReusableView>
                         <connections>
                             <outlet property="dataSource" destination="AEQ-18-ifU" id="s3s-Y1-wUK"/>
                             <outlet property="delegate" destination="AEQ-18-ifU" id="2GB-LG-uOa"/>
@@ -931,6 +949,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="YGP-WK-AF2"/>
+        <segue reference="5qi-Mj-SGM"/>
     </inferredMetricsTieBreakers>
 </document>

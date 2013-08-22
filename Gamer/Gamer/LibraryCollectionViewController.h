@@ -10,6 +10,4 @@
 
 @interface LibraryCollectionViewController : UICollectionViewController
 
-- (IBAction)segmentedControlValueChanged:(UISegmentedControl *)sender;
-
 @end

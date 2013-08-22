@@ -206,8 +206,8 @@
 	}
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
-		if (video.lowQualityURL){
-			MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.lowQualityURL]];
+		if (video.highQualityURL){
+			MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
 			[self presentMoviePlayerViewControllerAnimated:player];
 		}
 	}
@@ -477,12 +477,12 @@
 		[self requestMediaForGame:_game];
 		
 		if (image.size.width > image.size.height){
-			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:280])];
+			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:_coverImageView.frame.size.width])];
 			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:50])];
 			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:92])];
 		}
 		else{
-			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:200])];
+			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:_coverImageView.frame.size.height])];
 			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:50])];
 			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:116])];
 		}
@@ -639,7 +639,13 @@
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
 //		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
-		[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+//		NSLog(@"%f - %f", _imagesCollectionView.collectionViewLayout.collectionViewContentSize.width, _imagesCollectionView.collectionViewLayout.collectionViewContentSize.height);
+		if (image.size.width > image.size.height)
+			[imageObject setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:320])];
+		else
+			[imageObject setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:180])];
+		
+//		[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[imageObject setIsDownloading:@(NO)];

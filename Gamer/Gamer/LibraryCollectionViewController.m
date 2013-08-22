@@ -15,8 +15,6 @@
 
 @interface LibraryCollectionViewController () <NSFetchedResultsControllerDelegate, UICollectionViewDelegateFlowLayout>
 
-@property (nonatomic, strong) NSArray *platforms;
-@property (nonatomic, assign) NSInteger platformSelection;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSMutableArray *sectionChanges;
 @property (nonatomic, strong) NSMutableArray *objectChanges;
@@ -40,15 +38,6 @@
 	_fetchedResultsController = [self fetchWithPredicate:_predicate];
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-//	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"favorite = %@ AND libraryGames.@count > 0", @(YES)]];
-//	[_segmentedControl removeAllSegments];
-//	[_segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
-//	for (Platform *platform in _platforms)
-//		[_segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
-//	[_segmentedControl setSelectedSegmentIndex:0];
-}
-
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] sendView:@"Library"];
 }
@@ -60,24 +49,11 @@
 #pragma mark - CollectionView
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
-	_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND libraryGames.@count > 0", [SessionManager gamer].platforms]];
-	return (_platforms.count > 1) ? CGSizeMake(0, 50) : CGSizeMake(0, 11);
+	return CGSizeMake(0, 11);
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section{
 	return CGSizeMake(0, 11);
-}
-
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-	LibraryHeaderReusableView *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
-//	if (_platforms.count > 1){
-//		[header.segmentedControl removeAllSegments];
-//		[header.segmentedControl insertSegmentWithTitle:@"All" atIndex:0 animated:NO];
-//		for (Platform *platform in _platforms) [header.segmentedControl insertSegmentWithTitle:platform.abbreviation atIndex:([_platforms indexOfObject:platform] + 1) animated:NO];
-//		[header.segmentedControl setSelectedSegmentIndex:0];
-//		[header.segmentedControl setSelectedSegmentIndex:_platformSelection];
-//	}
-	return header;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
@@ -96,7 +72,6 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:indexPath];
-//	[collectionView deselectItemAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Fetch
@@ -261,23 +236,6 @@
 #pragma mark - Actions
 
 - (void)platformChangeNotification:(NSNotification *)notification{
-	[self.collectionView reloadData];
-}
-
-- (IBAction)segmentedControlValueChanged:(UISegmentedControl *)sender{
-	_platformSelection = sender.selectedSegmentIndex;
-	
-	NSPredicate *predicate;
-	
-	if (sender.selectedSegmentIndex > 0){
-		Platform *selectedPlatform = _platforms[sender.selectedSegmentIndex - 1];
-		predicate = [NSPredicate predicateWithFormat:@"owned = %@ AND libraryPlatform = %@", @(YES), selectedPlatform];
-	}
-	else
-		predicate = nil;
-	
-	_fetchedResultsController = nil;
-	_fetchedResultsController = [self fetchWithPredicate:predicate];
 	[self.collectionView reloadData];
 }
 
