@@ -102,6 +102,12 @@ static NSDateFormatter *DATEFORMATTER;
 	return [NSDate dateWithTimeInterval:interval sinceDate:date];
 }
 
+#pragma mark - Stuff
+
++ (BOOL)deviceIsiPad{
+	return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
+}
+
 #pragma mark - Graphics
 
 + (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset bounds:(CGRect)bounds{

@@ -29,6 +29,9 @@
 + (NSDate *)dateWithoutTimeFromDate:(NSDate *)date;
 + (NSDate *)dateWithSystemTimeFromDate:(NSDate *)date;
 
+// Stuff
++ (BOOL)deviceIsiPad;
+
 // Graphics
 + (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset bounds:(CGRect)bounds;
 + (void)setMaskToView:(UIView *)view roundCorners:(UIRectCorner)corners radius:(CGFloat)radius;
