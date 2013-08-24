@@ -18,6 +18,7 @@
 #import "ReleasePeriod.h"
 #import "ReleaseDate.h"
 #import "GameTableViewController.h"
+#import "WishlistSectionHeaderView.h"
 
 @interface WishlistTableViewController () <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
 
@@ -140,7 +141,7 @@
 
 #pragma mark - HidingSectionView
 
-- (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)sectionView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
+- (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)headerView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform in %@)", releasePeriod.identifier, @(YES), [SessionManager gamer].platforms];
 	NSArray *games = [Game findAllWithPredicate:predicate];
 	

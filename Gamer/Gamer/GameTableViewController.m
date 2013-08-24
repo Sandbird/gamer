@@ -25,13 +25,13 @@
 #import "ZoomViewController.h"
 #import "PlatformCollectionCell.h"
 #import "ContentStatusView.h"
+#import "MetacriticViewController.h"
 
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 @property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
-@property (nonatomic, strong) IBOutlet UIView *metascoreView;
-@property (nonatomic, strong) IBOutlet UILabel *metascoreLabel;
+@property (nonatomic, strong) IBOutlet UIButton *metascoreButton;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 @property (nonatomic, strong) IBOutlet UIButton *wishlistButton;
@@ -72,6 +72,8 @@
 	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateNormal];
 	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButtonHighlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateHighlighted];
 	
+	[Tools setMaskToView:_metascoreButton roundCorners:UIRectCornerAllCorners radius:32];
+	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
 	
@@ -88,7 +90,8 @@
 	if (_game){
 		[self setCoverImageAnimated:NO];
 		
-		[_metascoreLabel setText:_game.metascore];
+		[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
+		[_metascoreButton setHidden:_game.metascore ? NO : YES];
 		[_titleLabel setText:_game.title];
 		
 		[_releaseDateLabel setText:_game.releaseDateText];
@@ -117,7 +120,6 @@
 	}
 	
 	[_progressIndicator setColor:[UIColor whiteColor]];
-//	[_metascoreView setHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -437,7 +439,8 @@
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self setCoverImageAnimated:NO];
 			
-			[_metascoreLabel setText:_game.metascore];
+			[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
+			[_metascoreButton setHidden:_game.metascore ? NO : YES];
 			[_titleLabel setText:_game.title];
 			
 			[_releaseDateLabel setText:_game.releaseDateText];
@@ -541,11 +544,16 @@
 //			NSLog(@"Metascore: %@", metascore);
 			
 			[_game setMetascore:metascore];
+			[_game setMetacriticURL:url];
+			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				if (metascore.length > 0){
-					[_metascoreView setHidden:NO];
-					[_metascoreLabel setText:metascore];
+					[_metascoreButton setHidden:NO];
+					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
 				}
+				else
+					[_metascoreButton setHidden:YES];
+				[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			}];
 		}
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -910,15 +918,25 @@
 	}
 }
 
+- (IBAction)metascoreButtonAction:(UIButton *)sender{
+	[self performSegueWithIdentifier:@"MetacriticSegue" sender:nil];
+}
+
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	[self requestGameWithIdentifier:_game.identifier];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-	Image *image = sender;
-	
-	ZoomViewController *destination = segue.destinationViewController;
-	[destination setImage:image];
+	if ([segue.identifier isEqualToString:@"ZoomSegue"]){
+		Image *image = sender;
+		
+		ZoomViewController *destination = segue.destinationViewController;
+		[destination setImage:image];
+	}
+	else{
+		MetacriticViewController *destination = segue.destinationViewController;
+		[destination setURL:[NSURL URLWithString:_game.metacriticURL]];
+	}
 }
 
 @end

@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "FetchedTableViewController.h"
-#import "WishlistSectionHeaderView.h"
 
 @interface WishlistTableViewController : FetchedTableViewController
 

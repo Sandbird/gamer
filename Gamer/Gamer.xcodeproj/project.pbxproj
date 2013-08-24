@@ -47,7 +47,8 @@
 		2570404F176CB12800642430 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2570404D176CB12800642430 /* InfoPlist.strings */; };
 		25704051176CB12800642430 /* GamerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704050176CB12800642430 /* GamerTests.m */; };
 		257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 257880571794EF70004C28E3 /* PlatformCollectionCell.m */; };
-		2594714917BDC1A800344F22 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 2594714817BDC1A800344F22 /* Game.m */; };
+		2593051417C8FEE9001DC04B /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051317C8FEE9001DC04B /* Game.m */; };
+		2593051717C90017001DC04B /* MetacriticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051617C90017001DC04B /* MetacriticViewController.m */; };
 		2595539817AEAB3E003A4F59 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 2595539717AEAB3E003A4F59 /* Platform.m */; };
 		2595539B17AEAB3F003A4F59 /* Gamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2595539A17AEAB3F003A4F59 /* Gamer.m */; };
 		2596DD3117ACBABD00D89765 /* ReleaseDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2596DD3017ACBABD00D89765 /* ReleaseDate.m */; };
@@ -141,8 +142,10 @@
 		2570405E176CB55500642430 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		257880561794EF70004C28E3 /* PlatformCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCollectionCell.h; sourceTree = "<group>"; };
 		257880571794EF70004C28E3 /* PlatformCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCollectionCell.m; sourceTree = "<group>"; };
-		2594714717BDC1A800344F22 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		2594714817BDC1A800344F22 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		2593051217C8FEE9001DC04B /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		2593051317C8FEE9001DC04B /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		2593051517C90017001DC04B /* MetacriticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetacriticViewController.h; sourceTree = "<group>"; };
+		2593051617C90017001DC04B /* MetacriticViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetacriticViewController.m; sourceTree = "<group>"; };
 		2595539617AEAB3E003A4F59 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
 		2595539717AEAB3E003A4F59 /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
 		2595539917AEAB3F003A4F59 /* Gamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gamer.h; sourceTree = "<group>"; };
@@ -378,8 +381,8 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				2594714717BDC1A800344F22 /* Game.h */,
-				2594714817BDC1A800344F22 /* Game.m */,
+				2593051217C8FEE9001DC04B /* Game.h */,
+				2593051317C8FEE9001DC04B /* Game.m */,
 				2595539917AEAB3F003A4F59 /* Gamer.h */,
 				2595539A17AEAB3F003A4F59 /* Gamer.m */,
 				2595539617AEAB3E003A4F59 /* Platform.h */,
@@ -430,6 +433,8 @@
 			children = (
 				2506A185176CD5540010E61D /* GameTableViewController.h */,
 				2506A186176CD5540010E61D /* GameTableViewController.m */,
+				2593051517C90017001DC04B /* MetacriticViewController.h */,
+				2593051617C90017001DC04B /* MetacriticViewController.m */,
 				25D2E5FF178BB22900C7EDDB /* ZoomViewController.h */,
 				25D2E600178BB22900C7EDDB /* ZoomViewController.m */,
 			);
@@ -579,12 +584,13 @@
 				25A5188F178A54A5001692AD /* Video.m in Sources */,
 				2531E857176CDBDD005881A4 /* SessionManager.m in Sources */,
 				259DD14617ADBE8600FAD645 /* LocalSearchCell.m in Sources */,
+				2593051717C90017001DC04B /* MetacriticViewController.m in Sources */,
 				25467F5417AB41DE00CB6342 /* ReleasePeriod.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
-				2594714917BDC1A800344F22 /* Game.m in Sources */,
 				2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */,
 				2531E83C176CDB60005881A4 /* SearchTableViewController.m in Sources */,
+				2593051417C8FEE9001DC04B /* Game.m in Sources */,
 				2531E83D176CDB60005881A4 /* GameTableViewController.m in Sources */,
 				2531E83E176CDB60005881A4 /* SettingsTableViewController.m in Sources */,
 				251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */,
