@@ -91,7 +91,7 @@
 		[self setCoverImageAnimated:NO];
 		
 		[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
-		[_metascoreButton setHidden:_game.metascore ? NO : YES];
+		[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
 		[_titleLabel setText:_game.title];
 		
 		[_releaseDateLabel setText:_game.releaseDateText];
@@ -120,6 +120,19 @@
 	}
 	
 	[_progressIndicator setColor:[UIColor whiteColor]];
+}
+
+- (void)viewDidLayoutSubviews{
+	if (![Tools deviceIsiPad]){
+		if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight){
+			[_imagesCollectionView setPagingEnabled:NO];
+			[_videosCollectionView setPagingEnabled:NO];
+		}
+		else{
+			[_imagesCollectionView setPagingEnabled:YES];
+			[_videosCollectionView setPagingEnabled:YES];
+		}
+	}
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -440,7 +453,7 @@
 			[self setCoverImageAnimated:NO];
 			
 			[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
-			[_metascoreButton setHidden:_game.metascore ? NO : YES];
+			[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
 			[_titleLabel setText:_game.title];
 			
 			[_releaseDateLabel setText:_game.releaseDateText];
@@ -517,14 +530,12 @@
 	
 	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
 	
-//	NSLog(@"%@", url);
-	
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"GET"];
 	
 	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
 	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-//		NSLog(@"Success in %@ - Metascore", self);
+		NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 		
 		NSString *html = [NSString stringWithUTF8String:[responseObject bytes]];
 		
@@ -551,8 +562,12 @@
 					[_metascoreButton setHidden:NO];
 					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
 				}
-				else
-					[_metascoreButton setHidden:YES];
+				else{
+					if (_platforms.count > 1 && platform != _platforms[1])
+						[self requestMetascoreForGameWithTitle:title platform:_platforms[1]];
+					else
+						[_metascoreButton setHidden:YES];
+				}
 				[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			}];
 		}

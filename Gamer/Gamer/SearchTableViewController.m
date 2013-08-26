@@ -110,7 +110,7 @@
 	
 	if (indexPath.row < _localResults.count){
 		LocalSearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LocalCell"];
-		[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? tableView.frame.size.width : 68), 0, 0)];
+		[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? (tableView.frame.size.width * 2) : 68), 0, 0)];
 		
 		Game *game = _localResults[indexPath.row];
 		[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];

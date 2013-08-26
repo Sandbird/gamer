@@ -28,7 +28,7 @@
 	[[SessionManager tracker] sendView:@"Metacritic"];
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
+- (void)viewDidDisappear:(BOOL)animated{
 	[_webView stopLoading];
 }
 
