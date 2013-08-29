@@ -45,8 +45,8 @@
 @property (nonatomic, strong) IBOutlet UICollectionView *imagesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *videosCollectionView;
 
-@property (nonatomic, strong) ContentStatusView *imagesStatusView;
-@property (nonatomic, strong) ContentStatusView *videosStatusView;
+@property (nonatomic, strong) IBOutlet ContentStatusView *imagesStatusView;
+@property (nonatomic, strong) IBOutlet ContentStatusView *videosStatusView;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
@@ -79,11 +79,6 @@
 	
 	_operationQueue = [[NSOperationQueue alloc] init];
 	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
-	
-	_imagesStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No images available"];
-	[_imagesCollectionView addSubview:_imagesStatusView];
-	_videosStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No videos available"];
-	[_videosCollectionView addSubview:_videosStatusView];
 	
 	if (!_game)
 		_game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
@@ -153,6 +148,8 @@
 	}
 	else if (indexPath.section == 1 && indexPath.row == 2)
 		return (_platforms.count > 4) ? 120 : 100;
+	else if ([Tools deviceIsiPad] && indexPath.section == 2 && _images.count <= 3)
+		return 180;
 	else
 		return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
@@ -187,7 +184,7 @@
 	}
 	else if (collectionView == _imagesCollectionView){
 		// If before last cell, download image for next cell
-		if ((_images.count - 1) > indexPath.item){
+		if (_images.count > (indexPath.item + 1)){
 			Image *nextImage = _images[indexPath.item + 1];
 			if (!nextImage.thumbnail && [nextImage.isDownloading isEqualToNumber:@(NO)])
 				[self downloadImageWithImageObject:nextImage];
@@ -200,7 +197,8 @@
 		return cell;
 	}
 	else{
-		if ((_videos.count - 1) > indexPath.item){
+		// If before last cell, download image for next cell
+		if (_videos.count > (indexPath.item + 1)){
 			Video *nextVideo = _videos[indexPath.item + 1];
 			if (!nextVideo.thumbnail && [nextVideo.isDownloading isEqualToNumber:@(NO)])
 				[self downloadThumbnailForVideo:nextVideo];
@@ -210,6 +208,8 @@
 		Video *video = _videos[indexPath.item];
 		[cell.imageView setImage:[UIImage imageWithData:video.thumbnail]];
 		[video.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
+		[cell.titleLabel setText:video.title];
+		[cell.lengthLabel setText:[Tools formattedStringForDuration:video.length.integerValue]];
 		return cell;
 	}
 }
@@ -262,7 +262,7 @@
 			}
 			[_game setCoverImage:coverImage];
 			
-			if (!coverImage.data || ![coverImage.url isEqualToString:stringURL])
+			if (!_game.thumbnail || !coverImage.data || ![coverImage.url isEqualToString:stringURL])
 				[self downloadImageForCoverImage:coverImage];
 			else
 				[self requestMediaForGame:_game];
@@ -494,13 +494,13 @@
 		
 		if (image.size.width > image.size.height){
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:_coverImageView.frame.size.width])];
-			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:50])];
-			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 128 : 92])];
+			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 160 : 50])];
+			[_game setThumbnailLarge:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 128 : 92])];
 		}
 		else{
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:_coverImageView.frame.size.height])];
-			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:50])];
-			[_game setLibraryThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 161 : 116])];
+			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 85 : 50])];
+			[_game setThumbnailLarge:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 161 : 116])];
 		}
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -524,6 +524,7 @@
 	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"];
 	
 	NSString *formattedPlatform = platform.name.lowercaseString;
+	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@"nintendo " withString:@""];
 	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""];
 	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""];
 	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"];
@@ -563,14 +564,19 @@
 					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
 				}
 				else{
-					if (_platforms.count > 1 && platform != _platforms[1])
-						[self requestMetascoreForGameWithTitle:title platform:_platforms[1]];
+					if (_platforms.count > ([_platforms indexOfObject:platform] + 1))
+						[self requestMetascoreForGameWithTitle:title platform:_platforms[[_platforms indexOfObject:platform] + 1]];
 					else
 						[_metascoreButton setHidden:YES];
 				}
 				[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			}];
 		}
+		else{
+			if (_platforms.count > ([_platforms indexOfObject:platform] + 1))
+				[self requestMetascoreForGameWithTitle:title platform:_platforms[[_platforms indexOfObject:platform] + 1]];
+		}
+		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"Failure in %@ - Metascore", self);
 	}];
@@ -644,7 +650,11 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
+			
 			_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
+			[self.tableView reloadData];
+			[_videosCollectionView reloadData];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -794,7 +804,8 @@
 			[_game setOwned:@(YES)];
 		}
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self.navigationController popToRootViewControllerAnimated:YES];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
+//			[self.navigationController popToRootViewControllerAnimated:YES];
 		}];
 	}
 }
@@ -928,7 +939,8 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self.navigationController popToRootViewControllerAnimated:YES];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
+//			[self.navigationController popToRootViewControllerAnimated:YES];
 		}];
 	}
 }

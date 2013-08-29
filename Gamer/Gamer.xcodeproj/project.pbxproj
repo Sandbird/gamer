@@ -10,7 +10,6 @@
 		250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 250D487717BFFFB1006B4C29 /* ContentStatusView.m */; };
 		251B828C17BDDEA200C1FB7D /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251B828B17BDDEA200C1FB7D /* SearchCell.m */; };
 		251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251DEA41178CF3EA0094A6CB /* PlatformCell.m */; };
-		25219C5B17A1853E00629A46 /* LibraryHeaderReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25219C5A17A1853E00629A46 /* LibraryHeaderReusableView.m */; };
 		2531E820176CDA35005881A4 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E81F176CDA35005881A4 /* CoreData.framework */; };
 		2531E822176CDA48005881A4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E821176CDA48005881A4 /* QuartzCore.framework */; };
 		2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */; };
@@ -47,7 +46,6 @@
 		2570404F176CB12800642430 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2570404D176CB12800642430 /* InfoPlist.strings */; };
 		25704051176CB12800642430 /* GamerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704050176CB12800642430 /* GamerTests.m */; };
 		257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 257880571794EF70004C28E3 /* PlatformCollectionCell.m */; };
-		2593051417C8FEE9001DC04B /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051317C8FEE9001DC04B /* Game.m */; };
 		2593051717C90017001DC04B /* MetacriticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051617C90017001DC04B /* MetacriticViewController.m */; };
 		2595539817AEAB3E003A4F59 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 2595539717AEAB3E003A4F59 /* Platform.m */; };
 		2595539B17AEAB3F003A4F59 /* Gamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2595539A17AEAB3F003A4F59 /* Gamer.m */; };
@@ -58,7 +56,11 @@
 		25AE80E41773D65D00FBE9FC /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AE80E31773D65D00FBE9FC /* Theme.m */; };
 		25B9E9C017A0B70200881089 /* LibraryCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryCollectionViewController.m */; };
 		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
-		25C24A5317AD99EF00F98DE4 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C24A5217AD99EF00F98DE4 /* Image.m */; };
+		25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */; };
+		25C9FE3617CC427800CCDD59 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3517CC427800CCDD59 /* Image.m */; };
+		25C9FE3917CC4C4500CCDD59 /* WishlistCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */; };
+		25C9FE4517CD729E00CCDD59 /* WishlistCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4417CD729E00CCDD59 /* WishlistCollectionReusableView.m */; };
+		25C9FE4817CEEAC300CCDD59 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4717CEEAC300CCDD59 /* Game.m */; };
 		25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */; };
 		25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ZoomViewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
@@ -97,8 +99,6 @@
 		251B828B17BDDEA200C1FB7D /* SearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCell.m; sourceTree = "<group>"; };
 		251DEA40178CF3EA0094A6CB /* PlatformCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCell.h; sourceTree = "<group>"; };
 		251DEA41178CF3EA0094A6CB /* PlatformCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCell.m; sourceTree = "<group>"; };
-		25219C5917A1853E00629A46 /* LibraryHeaderReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryHeaderReusableView.h; sourceTree = "<group>"; };
-		25219C5A17A1853E00629A46 /* LibraryHeaderReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryHeaderReusableView.m; sourceTree = "<group>"; };
 		2531E81F176CDA35005881A4 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2531E821176CDA48005881A4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2531E825176CDA97005881A4 /* Genre.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
@@ -142,8 +142,6 @@
 		2570405E176CB55500642430 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		257880561794EF70004C28E3 /* PlatformCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCollectionCell.h; sourceTree = "<group>"; };
 		257880571794EF70004C28E3 /* PlatformCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCollectionCell.m; sourceTree = "<group>"; };
-		2593051217C8FEE9001DC04B /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		2593051317C8FEE9001DC04B /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		2593051517C90017001DC04B /* MetacriticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetacriticViewController.h; sourceTree = "<group>"; };
 		2593051617C90017001DC04B /* MetacriticViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetacriticViewController.m; sourceTree = "<group>"; };
 		2595539617AEAB3E003A4F59 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
@@ -164,8 +162,16 @@
 		25B9E9BF17A0B70200881089 /* LibraryCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCollectionViewController.m; sourceTree = "<group>"; };
 		25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCollectionCell.h; sourceTree = "<group>"; };
 		25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCollectionCell.m; sourceTree = "<group>"; };
-		25C24A5117AD99EF00F98DE4 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
-		25C24A5217AD99EF00F98DE4 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
+		25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionCell.h; sourceTree = "<group>"; };
+		25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionCell.m; sourceTree = "<group>"; };
+		25C9FE3417CC427800CCDD59 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
+		25C9FE3517CC427800CCDD59 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
+		25C9FE3717CC4C4500CCDD59 /* WishlistCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionViewController.h; sourceTree = "<group>"; };
+		25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionViewController.m; sourceTree = "<group>"; };
+		25C9FE4317CD729E00CCDD59 /* WishlistCollectionReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionReusableView.h; sourceTree = "<group>"; };
+		25C9FE4417CD729E00CCDD59 /* WishlistCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionReusableView.m; sourceTree = "<group>"; };
+		25C9FE4617CEEAC300CCDD59 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		25C9FE4717CEEAC300CCDD59 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPad.storyboard; sourceTree = "<group>"; };
 		25D2E5FF178BB22900C7EDDB /* ZoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZoomViewController.h; sourceTree = "<group>"; };
 		25D2E600178BB22900C7EDDB /* ZoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZoomViewController.m; sourceTree = "<group>"; };
@@ -226,6 +232,8 @@
 			children = (
 				2506A173176CD4160010E61D /* WishlistCell.h */,
 				2506A174176CD4160010E61D /* WishlistCell.m */,
+				25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */,
+				25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */,
 				25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */,
 				25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */,
 				25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */,
@@ -249,10 +257,10 @@
 			children = (
 				2506A17B176CD4B30010E61D /* WishlistSectionHeaderView.h */,
 				2506A17C176CD4B30010E61D /* WishlistSectionHeaderView.m */,
-				25219C5917A1853E00629A46 /* LibraryHeaderReusableView.h */,
-				25219C5A17A1853E00629A46 /* LibraryHeaderReusableView.m */,
 				250D487617BFFFB1006B4C29 /* ContentStatusView.h */,
 				250D487717BFFFB1006B4C29 /* ContentStatusView.m */,
+				25C9FE4317CD729E00CCDD59 /* WishlistCollectionReusableView.h */,
+				25C9FE4417CD729E00CCDD59 /* WishlistCollectionReusableView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -381,14 +389,14 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				2593051217C8FEE9001DC04B /* Game.h */,
-				2593051317C8FEE9001DC04B /* Game.m */,
+				25C9FE4617CEEAC300CCDD59 /* Game.h */,
+				25C9FE4717CEEAC300CCDD59 /* Game.m */,
+				25C9FE3417CC427800CCDD59 /* Image.h */,
+				25C9FE3517CC427800CCDD59 /* Image.m */,
 				2595539917AEAB3F003A4F59 /* Gamer.h */,
 				2595539A17AEAB3F003A4F59 /* Gamer.m */,
 				2595539617AEAB3E003A4F59 /* Platform.h */,
 				2595539717AEAB3E003A4F59 /* Platform.m */,
-				25C24A5117AD99EF00F98DE4 /* Image.h */,
-				25C24A5217AD99EF00F98DE4 /* Image.m */,
 				2596DD2F17ACBABD00D89765 /* ReleaseDate.h */,
 				2596DD3017ACBABD00D89765 /* ReleaseDate.m */,
 				25467F5217AB41DE00CB6342 /* ReleasePeriod.h */,
@@ -418,6 +426,8 @@
 			children = (
 				2506A17D176CD4EA0010E61D /* WishlistTableViewController.h */,
 				2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */,
+				25C9FE3717CC4C4500CCDD59 /* WishlistCollectionViewController.h */,
+				25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */,
 				25B9E9BE17A0B70200881089 /* LibraryCollectionViewController.h */,
 				25B9E9BF17A0B70200881089 /* LibraryCollectionViewController.m */,
 				2506A183176CD5480010E61D /* SearchTableViewController.h */,
@@ -586,11 +596,11 @@
 				259DD14617ADBE8600FAD645 /* LocalSearchCell.m in Sources */,
 				2593051717C90017001DC04B /* MetacriticViewController.m in Sources */,
 				25467F5417AB41DE00CB6342 /* ReleasePeriod.m in Sources */,
+				25C9FE4517CD729E00CCDD59 /* WishlistCollectionReusableView.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
 				2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */,
 				2531E83C176CDB60005881A4 /* SearchTableViewController.m in Sources */,
-				2593051417C8FEE9001DC04B /* Game.m in Sources */,
 				2531E83D176CDB60005881A4 /* GameTableViewController.m in Sources */,
 				2531E83E176CDB60005881A4 /* SettingsTableViewController.m in Sources */,
 				251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */,
@@ -600,19 +610,21 @@
 				25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */,
 				2595539817AEAB3E003A4F59 /* Platform.m in Sources */,
 				2531E849176CDB60005881A4 /* Franchise.m in Sources */,
+				25C9FE3917CC4C4500CCDD59 /* WishlistCollectionViewController.m in Sources */,
 				250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */,
 				2531E84B176CDB60005881A4 /* Publisher.m in Sources */,
+				25C9FE4817CEEAC300CCDD59 /* Game.m in Sources */,
 				2596DD3117ACBABD00D89765 /* ReleaseDate.m in Sources */,
-				25219C5B17A1853E00629A46 /* LibraryHeaderReusableView.m in Sources */,
 				25AE80E41773D65D00FBE9FC /* Theme.m in Sources */,
+				25C9FE3617CC427800CCDD59 /* Image.m in Sources */,
 				25B9E9C017A0B70200881089 /* LibraryCollectionViewController.m in Sources */,
 				2531E84C176CDB60005881A4 /* Developer.m in Sources */,
 				2595539B17AEAB3F003A4F59 /* Gamer.m in Sources */,
 				251B828C17BDDEA200C1FB7D /* SearchCell.m in Sources */,
 				2531E84D176CDB60005881A4 /* SimilarGame.m in Sources */,
 				25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */,
+				25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */,
 				2531E850176CDB60005881A4 /* Genre.m in Sources */,
-				25C24A5317AD99EF00F98DE4 /* Image.m in Sources */,
 				25704032176CB12800642430 /* main.m in Sources */,
 				25704036176CB12800642430 /* GamerAppDelegate.m in Sources */,
 			);

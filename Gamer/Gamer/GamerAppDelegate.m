@@ -10,6 +10,7 @@
 #import "Game.h"
 #import "ReleasePeriod.h"
 #import "Platform.h"
+#import "Image.h"
 #import "ReleaseDate.h"
 #import <Tapstream/TSTapstream.h>
 #import <AdSupport/ASIdentifierManager.h>
@@ -93,7 +94,16 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application{
-	[MagicalRecord cleanUp];
+	// Delete images older than two weeks
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	NSDateComponents *components = [calendar components:NSDayCalendarUnit fromDate:[NSDate date]];
+	[components setDay:-15];
+	NSDate *twoWeeksAgo = [calendar dateByAddingComponents:components toDate:[NSDate date] options:NSCalendarWrapComponents];
+	
+	[Image deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"dateLastOpened < %@", twoWeeksAgo]];
+	[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[MagicalRecord cleanUp];
+	}];
 }
 
 #pragma mark - Initialization

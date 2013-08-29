@@ -20,7 +20,6 @@
     <entity name="Game" representedClassName="Game" syncable="YES">
         <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
-        <attribute name="libraryThumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="metacriticURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="metascore" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
@@ -28,6 +27,7 @@
         <attribute name="released" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="releaseDateText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="thumbnailLarge" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="wanted" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="coverImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoverImage" inverseName="game" inverseEntity="CoverImage" syncable="YES"/>
@@ -57,6 +57,7 @@
     </entity>
     <entity name="Image" representedClassName="Image" syncable="YES">
         <attribute name="data" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="dateLastOpened" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="isDownloading" optional="YES" transient="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
@@ -129,13 +130,13 @@
         <element name="Game" positionX="-272" positionY="-243" width="128" height="448"/>
         <element name="Gamer" positionX="-648" positionY="-243" width="128" height="73"/>
         <element name="Genre" positionX="106" positionY="-124" width="128" height="88"/>
-        <element name="Image" positionX="286" positionY="-241" width="128" height="148"/>
+        <element name="Image" positionX="286" positionY="-241" width="128" height="163"/>
         <element name="Platform" positionX="-461" positionY="-243" width="128" height="163"/>
         <element name="Publisher" positionX="106" positionY="131" width="128" height="103"/>
         <element name="ReleaseDate" positionX="-83" positionY="-109" width="128" height="163"/>
         <element name="ReleasePeriod" positionX="-83" positionY="-243" width="128" height="103"/>
         <element name="SimilarGame" positionX="106" positionY="518" width="128" height="103"/>
         <element name="Theme" positionX="106" positionY="398" width="128" height="88"/>
-        <element name="Video" positionX="286" positionY="-76" width="128" height="238"/>
+        <element name="Video" positionX="286" positionY="-54" width="128" height="238"/>
     </elements>
 </model>

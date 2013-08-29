@@ -150,6 +150,9 @@
 		[_scrollView setMinimumZoomScale:self.view.bounds.size.height/_imageSize.height];
 	
 	[_scrollView setZoomScale:_scrollView.minimumZoomScale];
+	
+	[_image setDateLastOpened:[NSDate date]];
+	[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreAndWait];
 }
 
 #pragma mark - Actions

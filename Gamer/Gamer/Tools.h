@@ -21,6 +21,7 @@
 + (NSString *)dateStringFromString:(NSString *)string withFormat:(NSString *)sourceFormat toFormat:(NSString *)resultFormat;
 + (NSString *)dateStringFromDateAndTimeString:(NSString *)string;
 + (NSString *)timeStringFromDateAndTimeString:(NSString *)string;
++ (NSString *)formattedStringForDuration:(NSTimeInterval)duration;
 
 // Numbers
 + (NSDecimalNumber *)absoluteValueOfDecimalNumber:(NSDecimalNumber *)decimalNumber;

@@ -73,6 +73,12 @@ static NSDateFormatter *DATEFORMATTER;
 	return [NSString stringWithFormat:@"%@:%@", ([time componentsSeparatedByString:@":"])[0], ([time componentsSeparatedByString:@":"])[1]];
 }
 
++ (NSString *)formattedStringForDuration:(NSTimeInterval)duration{
+	NSInteger minutes = floor(duration/60);
+	NSInteger seconds = round(duration - minutes * 60);
+	return [NSString stringWithFormat:@"%d:%02d", minutes, seconds];
+}
+
 #pragma mark - Numbers
 
 + (NSDecimalNumber *)absoluteValueOfDecimalNumber:(NSDecimalNumber *)decimalNumber{
