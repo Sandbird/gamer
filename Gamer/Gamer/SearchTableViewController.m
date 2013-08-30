@@ -40,6 +40,8 @@
 	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
+	
 	_results = [[NSMutableArray alloc] initWithCapacity:100];
 }
 
@@ -66,7 +68,7 @@
 	if (searchText.length > 0){
 		NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 		[self requestGamesWithTitlesContainingQuery:query];
-		_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, query]];
+		_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, searchText]];
 		[self.tableView reloadData];
 		
 //		NSString *name = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
@@ -79,7 +81,7 @@
 	[_previousOperation cancel];
 	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 	[self requestGamesWithTitlesContainingQuery:query];
-	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, query]];
+	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, searchBar.text]];
 	[self.tableView reloadData];
 }
 
@@ -130,7 +132,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+//	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Networking
@@ -167,6 +169,12 @@
 }
 
 #pragma mark - Actions
+
+- (void)gameDownloadedNotification:(NSNotification *)notification{
+	[_results removeObjectAtIndex:[self.tableView indexPathForSelectedRow].row - _localResults.count];
+	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, _searchBar.text]];
+	[self.tableView reloadData];
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	GameTableViewController *destination = segue.destinationViewController;

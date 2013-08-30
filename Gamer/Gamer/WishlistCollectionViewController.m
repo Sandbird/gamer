@@ -36,6 +36,7 @@
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameUpdatedNotification:) name:@"GameUpdated" object:nil];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
@@ -339,6 +340,10 @@
 }
 
 #pragma mark - Actions
+
+- (void)gameDownloadedNotification:(NSNotification *)notification{
+	[self.collectionView reloadData];
+}
 
 - (void)gameUpdatedNotification:(NSNotification *)notification{
 	[self.collectionView reloadData];

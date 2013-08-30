@@ -107,7 +107,7 @@
         <scene sceneID="Hhh-wE-Bez">
             <objects>
                 <tableViewController id="ynH-Xp-nAC" customClass="SearchTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="sMt-A5-gnZ">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="sMt-A5-gnZ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -1041,9 +1041,7 @@
                             <outlet property="delegate" destination="AEQ-18-ifU" id="2GB-LG-uOa"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="Library" id="0lx-vn-CDS">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="Bld-bV-ejj"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Library" id="0lx-vn-CDS"/>
                     <connections>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="agp-eq-OJx"/>
                     </connections>
@@ -1105,6 +1103,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="5qi-Mj-SGM"/>
+        <segue reference="agp-eq-OJx"/>
     </inferredMetricsTieBreakers>
 </document>

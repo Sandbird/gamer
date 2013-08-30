@@ -505,6 +505,7 @@
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameDownloaded" object:nil];
 			[self setCoverImageAnimated:YES];
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
@@ -650,8 +651,6 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
-			
 			_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
 			[self.tableView reloadData];
 			[_videosCollectionView reloadData];

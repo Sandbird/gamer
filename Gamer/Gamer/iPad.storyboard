@@ -793,7 +793,7 @@
         <scene sceneID="HAc-n0-Wnw">
             <objects>
                 <tableViewController id="8Ww-e5-LEJ" customClass="SearchTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Ekc-2E-e51">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Ekc-2E-e51">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -1055,9 +1055,7 @@
                             <outlet property="delegate" destination="XFT-Gc-7qz" id="7rk-9a-8Pj"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="Library" id="OMt-g0-gVe">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="scg-1W-bcH"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Library" id="OMt-g0-gVe"/>
                     <connections>
                         <segue destination="3iO-2E-Tja" kind="push" identifier="GameSegue" id="ic3-Ue-uny"/>
                     </connections>
@@ -1117,6 +1115,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="p0P-JS-jK3"/>
+        <segue reference="ic3-Ue-uny"/>
     </inferredMetricsTieBreakers>
 </document>
