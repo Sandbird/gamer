@@ -47,6 +47,8 @@
 
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] sendView:@"Search"];
+	
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -171,14 +173,20 @@
 #pragma mark - Actions
 
 - (void)gameDownloadedNotification:(NSNotification *)notification{
-	[_results removeObjectAtIndex:[self.tableView indexPathForSelectedRow].row - _localResults.count];
+	[_results removeObjectAtIndex:self.tableView.indexPathForSelectedRow.row - _localResults.count];
 	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, _searchBar.text]];
 	[self.tableView reloadData];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-	GameTableViewController *destination = segue.destinationViewController;
-	[destination setSearchResult:(self.tableView.indexPathForSelectedRow.row < _localResults.count) ? _localResults[self.tableView.indexPathForSelectedRow.row] : _results[self.tableView.indexPathForSelectedRow.row - _localResults.count]];
+	if ([segue.identifier isEqualToString:@"GameSegue"]){
+		for (UIViewController *viewController in self.tabBarController.viewControllers){
+			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+		}
+		
+		GameTableViewController *destination = segue.destinationViewController;
+		[destination setSearchResult:(self.tableView.indexPathForSelectedRow.row < _localResults.count) ? _localResults[self.tableView.indexPathForSelectedRow.row] : _results[self.tableView.indexPathForSelectedRow.row - _localResults.count]];
+	}
 }
 
 @end

@@ -90,8 +90,11 @@
 		[_titleLabel setText:_game.title];
 		
 		[_releaseDateLabel setText:_game.releaseDateText];
-		[_wishlistButton setEnabled:([_game.wanted isEqualToNumber:@(NO)]) ? YES : NO];
-		[_libraryButton setEnabled:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(YES)]) ? YES : NO];
+		
+		[_wishlistButton setHidden:NO];
+		[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+		[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
+		[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 		
 		// Just for testing
 		[_descriptionTextView setText:_game.overview];
@@ -457,8 +460,11 @@
 			[_titleLabel setText:_game.title];
 			
 			[_releaseDateLabel setText:_game.releaseDateText];
-			[_wishlistButton setEnabled:([_game.wanted isEqualToNumber:@(NO)]) ? YES : NO];
-			[_libraryButton setEnabled:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(YES)]) ? YES : NO];
+			
+			[_wishlistButton setHidden:NO];
+			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+			[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
+			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			
 			// This mess is just for demo purposes
 			[_descriptionTextView setText:_game.overview];
@@ -672,12 +678,9 @@
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
 //		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
 //		NSLog(@"%f - %f", _imagesCollectionView.collectionViewLayout.collectionViewContentSize.width, _imagesCollectionView.collectionViewLayout.collectionViewContentSize.height);
-		if (image.size.width > image.size.height)
-			[imageObject setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:320])];
-		else
-			[imageObject setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:180])];
 		
-//		[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[imageObject setIsDownloading:@(NO)];
@@ -772,39 +775,58 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex != actionSheet.cancelButtonIndex){
 		if (actionSheet.tag == 1){
-			[_game setWishlistPlatform:_selectablePlatforms[buttonIndex]];
-			
-			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
-				EKEventStore *eventStore = [SessionManager eventStore];
-				EKEvent *event = [EKEvent eventWithEventStore:eventStore];
-				[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
-				[event setStartDate:_game.releaseDate.date];
-				[event setEndDate:event.startDate];
-				[event setAllDay:YES];
-				[event setAvailability:EKEventAvailabilityFree];
-				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-				[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+			if ([_game.wanted isEqualToNumber:@(YES)]){
+				[_game setWanted:@(NO)];
+				[_game setOwned:@(NO)];
 				
-				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+				[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
 			}
-			
-			if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-				NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", _game.releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
-				NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
-				[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
+			else{
+				[_game setWishlistPlatform:_selectablePlatforms[buttonIndex]];
+				
+				// Add game release to calendar
+				if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
+					EKEventStore *eventStore = [SessionManager eventStore];
+					EKEvent *event = [EKEvent eventWithEventStore:eventStore];
+					[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
+					[event setStartDate:_game.releaseDate.date];
+					[event setEndDate:event.startDate];
+					[event setAllDay:YES];
+					[event setAvailability:EKEventAvailabilityFree];
+					[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+					[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+					
+					[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+				}
+				
+				if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
+					NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", _game.releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
+					NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+					[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
+				}
+				
+				[_game setWanted:@(YES)];
+				[_game setOwned:@(NO)];
 			}
-			
-			[_game setWanted:@(YES)];
-			[_game setOwned:@(NO)];
 		}
 		else{
-			[_game setLibraryPlatform:_selectablePlatforms[buttonIndex]];
-			[_game setWanted:@(NO)];
-			[_game setOwned:@(YES)];
+			if ([_game.owned isEqualToNumber:@(YES)]){
+				[_game setWanted:@(NO)];
+				[_game setOwned:@(NO)];
+			}
+			else{
+				[_game setLibraryPlatform:_selectablePlatforms[buttonIndex]];
+				[_game setWanted:@(NO)];
+				[_game setOwned:@(YES)];
+			}
 		}
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
-//			[self.navigationController popToRootViewControllerAnimated:YES];
 		}];
 	}
 }
@@ -900,46 +922,67 @@
 	}
 	else{
 		if (buttonPressed == 1){
-			if (_selectablePlatforms.count > 0){
-				[_game setWishlistPlatform:_selectablePlatforms[0]];
-				[_game setLibraryPlatform:nil];
-			}
-			
-			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
-				EKEventStore *eventStore = [SessionManager eventStore];
-				EKEvent *event = [EKEvent eventWithEventStore:eventStore];
-				[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
-				[event setStartDate:_game.releaseDate.date];
-				[event setEndDate:event.startDate];
-				[event setAllDay:YES];
-				[event setAvailability:EKEventAvailabilityFree];
-				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-				[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+			if ([_game.wanted isEqualToNumber:@(YES)]){
+				[_game setWanted:@(NO)];
+				[_game setOwned:@(NO)];
 				
-				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+				[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
 			}
-			
-			if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-				NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", _game.releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
-				NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
-				[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
+			else{
+				if (_selectablePlatforms.count > 0){
+					[_game setWishlistPlatform:_selectablePlatforms[0]];
+					[_game setLibraryPlatform:nil];
+				}
+				
+				// Add game release to calendar
+				if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
+					EKEventStore *eventStore = [SessionManager eventStore];
+					EKEvent *event = [EKEvent eventWithEventStore:eventStore];
+					[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
+					[event setStartDate:_game.releaseDate.date];
+					[event setEndDate:event.startDate];
+					[event setAllDay:YES];
+					[event setAvailability:EKEventAvailabilityFree];
+					[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+					[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+					
+					[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+				}
+				
+				// If release period is collapsed, set game to hidden
+				if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
+					NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", _game.releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
+					NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+					[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
+				}
+				
+				[_game setWanted:@(YES)];
+				[_game setOwned:@(NO)];
 			}
-			
-			[_game setWanted:@(YES)];
-			[_game setOwned:@(NO)];
 		}
 		else{
-			if (_selectablePlatforms.count > 0){
-				[_game setWishlistPlatform:nil];
-				[_game setLibraryPlatform:_selectablePlatforms[0]];
+			if ([_game.owned isEqualToNumber:@(YES)]){
+				[_game setWanted:@(NO)];
+				[_game setOwned:@(NO)];
 			}
-			[_game setWanted:@(NO)];
-			[_game setOwned:@(YES)];
+			else{
+				if (_selectablePlatforms.count > 0){
+					[_game setWishlistPlatform:nil];
+					[_game setLibraryPlatform:_selectablePlatforms[0]];
+				}
+				
+				[_game setWanted:@(NO)];
+				[_game setOwned:@(YES)];
+			}
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
-//			[self.navigationController popToRootViewControllerAnimated:YES];
 		}];
 	}
 }

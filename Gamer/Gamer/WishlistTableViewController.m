@@ -44,6 +44,8 @@
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] sendView:@"Wishlist"];
 	
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+	
 	// Update game release periods
 	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND wishlistPlatform in %@", @(YES), [SessionManager gamer].platforms]];
 	for (Game *game in games)
@@ -225,6 +227,10 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
+		for (UIViewController *viewController in self.tabBarController.viewControllers){
+			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+		}
+		
 		GameTableViewController *destination = [segue destinationViewController];
 		[destination setGame:[self.fetchedResultsController objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
 	}

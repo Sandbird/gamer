@@ -881,7 +881,7 @@
             </objects>
             <point key="canvasLocation" x="1160" y="2481"/>
         </scene>
-        <!--Settings Table View Controller - Settings-->
+        <!--Settings Table View Controller - More-->
         <scene sceneID="CvS-Kw-Aiy">
             <objects>
                 <tableViewController id="maw-XN-MDd" customClass="SettingsTableViewController" sceneMemberID="viewController">
@@ -970,7 +970,7 @@
                             <outlet property="delegate" destination="maw-XN-MDd" id="1h1-a0-4Tm"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Settings" id="DvZ-2V-4cE"/>
+                    <navigationItem key="navigationItem" title="More" id="DvZ-2V-4cE"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hVB-Ix-Fcs" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

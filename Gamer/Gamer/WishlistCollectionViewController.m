@@ -355,6 +355,10 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
+		for (UIViewController *viewController in self.tabBarController.viewControllers){
+			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+		}
+		
 		GameTableViewController *destination = [segue destinationViewController];
 		[destination setGame:sender];
 	}
