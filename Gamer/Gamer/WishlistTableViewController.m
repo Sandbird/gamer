@@ -71,6 +71,13 @@
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+	if (self.fetchedResultsController.sections.count == 0){
+		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil][0];
+		[tableView setBackgroundView:view];
+	}
+	else
+		[tableView setBackgroundView:nil];
+	
     return self.fetchedResultsController.sections.count;
 }
 

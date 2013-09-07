@@ -41,6 +41,7 @@
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(platformChangeNotification:) name:@"PlatformChange" object:nil];
 	
 	_results = [[NSMutableArray alloc] initWithCapacity:100];
 }
@@ -102,6 +103,16 @@
 #pragma mark - TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+	if ((_localResults.count + _results.count == 0) && [SessionManager gamer].platforms.count == 0){
+		UIView *view = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][2];
+		[tableView setBackgroundView:view];
+		[_searchBar setUserInteractionEnabled:NO];
+	}
+	else{
+		[tableView setBackgroundView:nil];
+		[_searchBar setUserInteractionEnabled:YES];
+	}
+	
     return _localResults.count + _results.count;
 }
 
@@ -175,6 +186,10 @@
 - (void)gameDownloadedNotification:(NSNotification *)notification{
 	[_results removeObjectAtIndex:self.tableView.indexPathForSelectedRow.row - _localResults.count];
 	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, _searchBar.text]];
+	[self.tableView reloadData];
+}
+
+- (void)platformChangeNotification:(NSNotification *)notification{
 	[self.tableView reloadData];
 }
 

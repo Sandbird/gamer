@@ -50,6 +50,13 @@
 #pragma mark - CollectionView
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+	if ([self.fetchedResultsController.sections[section] numberOfObjects] == 0){
+		UIView *view = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][1];
+		[collectionView setBackgroundView:view];
+	}
+	else
+		[collectionView setBackgroundView:nil];
+	
 	return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 

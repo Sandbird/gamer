@@ -61,6 +61,9 @@
 		25C9FE3917CC4C4500CCDD59 /* WishlistCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */; };
 		25C9FE4517CD729E00CCDD59 /* WishlistCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4417CD729E00CCDD59 /* WishlistCollectionReusableView.m */; };
 		25C9FE4817CEEAC300CCDD59 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4717CEEAC300CCDD59 /* Game.m */; };
+		25C9FE7217DA2B0100CCDD59 /* iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C9FE7117DA2B0100CCDD59 /* iPhone.xib */; };
+		25C9FE7417DA2B0E00CCDD59 /* iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C9FE7317DA2B0E00CCDD59 /* iPad.xib */; };
+		25C9FE7717DA7FB400CCDD59 /* TrailerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE7617DA7FB400CCDD59 /* TrailerViewController.m */; };
 		25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */; };
 		25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ZoomViewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
@@ -172,6 +175,10 @@
 		25C9FE4417CD729E00CCDD59 /* WishlistCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionReusableView.m; sourceTree = "<group>"; };
 		25C9FE4617CEEAC300CCDD59 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		25C9FE4717CEEAC300CCDD59 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		25C9FE7117DA2B0100CCDD59 /* iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = iPhone.xib; sourceTree = "<group>"; };
+		25C9FE7317DA2B0E00CCDD59 /* iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = iPad.xib; sourceTree = "<group>"; };
+		25C9FE7517DA7FB400CCDD59 /* TrailerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrailerViewController.h; sourceTree = "<group>"; };
+		25C9FE7617DA7FB400CCDD59 /* TrailerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrailerViewController.m; sourceTree = "<group>"; };
 		25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPad.storyboard; sourceTree = "<group>"; };
 		25D2E5FF178BB22900C7EDDB /* ZoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZoomViewController.h; sourceTree = "<group>"; };
 		25D2E600178BB22900C7EDDB /* ZoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZoomViewController.m; sourceTree = "<group>"; };
@@ -351,7 +358,9 @@
 			isa = PBXGroup;
 			children = (
 				25704037176CB12800642430 /* iPhone.storyboard */,
+				25C9FE7117DA2B0100CCDD59 /* iPhone.xib */,
 				25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */,
+				25C9FE7317DA2B0E00CCDD59 /* iPad.xib */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -447,6 +456,8 @@
 				2593051617C90017001DC04B /* MetacriticViewController.m */,
 				25D2E5FF178BB22900C7EDDB /* ZoomViewController.h */,
 				25D2E600178BB22900C7EDDB /* ZoomViewController.m */,
+				25C9FE7517DA7FB400CCDD59 /* TrailerViewController.h */,
+				25C9FE7617DA7FB400CCDD59 /* TrailerViewController.m */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -533,8 +544,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25C9FE7217DA2B0100CCDD59 /* iPhone.xib in Resources */,
 				25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */,
 				2570403E176CB12800642430 /* Images.xcassets in Resources */,
+				25C9FE7417DA2B0E00CCDD59 /* iPad.xib in Resources */,
 				25704030176CB12800642430 /* InfoPlist.strings in Resources */,
 				25704039176CB12800642430 /* iPhone.storyboard in Resources */,
 			);
@@ -596,6 +609,7 @@
 				259DD14617ADBE8600FAD645 /* LocalSearchCell.m in Sources */,
 				2593051717C90017001DC04B /* MetacriticViewController.m in Sources */,
 				25467F5417AB41DE00CB6342 /* ReleasePeriod.m in Sources */,
+				25C9FE7717DA7FB400CCDD59 /* TrailerViewController.m in Sources */,
 				25C9FE4517CD729E00CCDD59 /* WishlistCollectionReusableView.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,

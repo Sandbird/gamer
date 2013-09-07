@@ -26,6 +26,7 @@
 #import "PlatformCollectionCell.h"
 #import "ContentStatusView.h"
 #import "MetacriticViewController.h"
+#import "TrailerViewController.h"
 
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -120,19 +121,6 @@
 	[_progressIndicator setColor:[UIColor whiteColor]];
 }
 
-- (void)viewDidLayoutSubviews{
-	if (![Tools deviceIsiPad]){
-		if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight){
-			[_imagesCollectionView setPagingEnabled:NO];
-			[_videosCollectionView setPagingEnabled:NO];
-		}
-		else{
-			[_imagesCollectionView setPagingEnabled:YES];
-			[_videosCollectionView setPagingEnabled:YES];
-		}
-	}
-}
-
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] sendView:@"Game"];
 }
@@ -225,7 +213,7 @@
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
 		if (video.highQualityURL){
-			MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
+			TrailerViewController *player = [[TrailerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
 			[self presentMoviePlayerViewControllerAnimated:player];
 		}
 	}

@@ -73,7 +73,14 @@
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-	return self.fetchedResultsController.sections.count;
+	if (self.fetchedResultsController.sections.count == 0){
+		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][0];
+		[collectionView setBackgroundView:view];
+	}
+	else
+		[collectionView setBackgroundView:nil];
+	
+    return self.fetchedResultsController.sections.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
