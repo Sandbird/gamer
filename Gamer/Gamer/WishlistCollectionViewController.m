@@ -43,6 +43,9 @@
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
 	
+	_operationQueue = [[NSOperationQueue alloc] init];
+	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+	
 	self.fetchedResultsController = [self fetch];
 }
 
