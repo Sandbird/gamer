@@ -94,11 +94,14 @@ static Gamer *GAMER;
 + (NSMutableURLRequest *)URLRequestForGameWithFields:(NSString *)fields identifier:(NSNumber *)identifier{
 	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/game/3030-%@/?api_key=%@&format=json&field_list=%@", identifier, APIKEY, fields];
 	
-	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
-	[REQUEST setHTTPMethod:@"GET"];
-	[REQUEST setURL:[NSURL URLWithString:stringURL]];
+//	if (!REQUEST) REQUEST = [[NSMutableURLRequest alloc] init];
+//	[REQUEST setHTTPMethod:@"GET"];
+//	[REQUEST setURL:[NSURL URLWithString:stringURL]];
 	
-	return  REQUEST;
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
+	[request setHTTPMethod:@"GET"];
+	
+	return  request;
 }
 
 + (NSMutableURLRequest *)URLRequestForVideoWithFields:(NSString *)fields identifier:(NSNumber *)identifier{

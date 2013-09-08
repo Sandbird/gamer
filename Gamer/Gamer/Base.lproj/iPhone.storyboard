@@ -93,7 +93,11 @@
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Wishlist" id="4x8-vH-4ca">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Ptj-iH-xdS"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Ptj-iH-xdS">
+                            <connections>
+                                <action selector="reloadBarButtonAction:" destination="jJE-qT-4zt" id="0v2-VA-giT"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="5qi-Mj-SGM"/>
