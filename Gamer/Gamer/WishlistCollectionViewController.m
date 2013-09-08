@@ -48,22 +48,7 @@
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] sendView:@"Wishlist"];
 	
-	// Update game release periods
-	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND wishlistPlatform in %@", @(YES), [SessionManager gamer].platforms]];
-	for (Game *game in games)
-		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
-	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		// Show section if it has tracked games
-		NSArray *releasePeriods = [ReleasePeriod findAll];
-		
-		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform in %@)", releasePeriod.identifier, @(YES), [SessionManager gamer].platforms];
-			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
-			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
-		}
-		
-		[_context saveToPersistentStoreAndWait];
-	}];
+	[self updateGamesReleasePeriods];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -129,7 +114,7 @@
 
 - (NSFetchedResultsController *)fetch{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"wanted = %@ AND wishlistPlatform in %@", @(YES), [SessionManager gamer].platforms];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"wanted = %@", @(YES)];
 		
 		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
 	}
@@ -344,6 +329,25 @@
 	}
 	
 	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
+}
+
+- (void)updateGamesReleasePeriods{
+	// Update game release periods
+	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)]];
+	for (Game *game in games)
+		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
+	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		// Show section if it has tracked games
+		NSArray *releasePeriods = [ReleasePeriod findAll];
+		
+		for (ReleasePeriod *releasePeriod in releasePeriods){
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", releasePeriod.identifier, @(YES)];
+			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
+		}
+		
+		[_context saveToPersistentStoreAndWait];
+	}];
 }
 
 #pragma mark - Actions

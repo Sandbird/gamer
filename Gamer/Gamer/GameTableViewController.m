@@ -788,7 +788,7 @@
 				}
 				
 				if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-					NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", _game.releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
+					NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", _game.releasePeriod.identifier, @(NO), @(YES)];
 					NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 					[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
 				}
@@ -939,7 +939,7 @@
 				
 				// If release period is collapsed, set game to hidden
 				if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-					NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@ AND wishlistPlatform in %@)", _game.releasePeriod.identifier, @(NO), @(YES), [SessionManager gamer].platforms];
+					NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", _game.releasePeriod.identifier, @(NO), @(YES)];
 					NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 					[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
 				}

@@ -50,7 +50,7 @@
 	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	
-	[self updateGameReleasePeriods];
+	[self updateGamesReleasePeriods];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -115,7 +115,7 @@
 	
 	[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform in %@)", game.releasePeriod.identifier, @(YES), [SessionManager gamer].platforms];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", game.releasePeriod.identifier, @(YES)];
 	NSArray *games = [Game findAllWithPredicate:predicate inContext:_context];
 	
 	if (games.count == 0)
@@ -140,7 +140,7 @@
 #pragma mark - HidingSectionView
 
 - (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)headerView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform in %@)", releasePeriod.identifier, @(YES), [SessionManager gamer].platforms];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", releasePeriod.identifier, @(YES)];
 	NSArray *games = [Game findAllWithPredicate:predicate];
 	
 	for (Game *game in games)
@@ -153,7 +153,7 @@
 
 - (NSFetchedResultsController *)fetch{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND ((wanted = %@ AND wishlistPlatform in %@) OR identifier = nil)", @(NO), @(YES), [SessionManager gamer].platforms];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND (wanted = %@ OR identifier = nil)", @(NO), @(YES)];
 		
 		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
 	}
@@ -163,7 +163,7 @@
 
 #pragma mark - Networking
 
-- (void)requestInfoForGame:(Game *)game{
+- (void)requestInformationForGame:(Game *)game{
 	NSURLRequest *request = [SessionManager URLRequestForGameWithFields:@"expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,id,name,original_release_date" identifier:game.identifier];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -273,7 +273,7 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			if (_operationQueue.operationCount == 0) [self updateGameReleasePeriods];
+			if (_operationQueue.operationCount == 0) [self updateGamesReleasePeriods];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -340,8 +340,8 @@
 	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
 }
 
-- (void)updateGameReleasePeriods{
-	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND wishlistPlatform in %@", @(YES), [SessionManager gamer].platforms]];
+- (void)updateGamesReleasePeriods{
+	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)]];
 	for (Game *game in games)
 		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -349,7 +349,7 @@
 		NSArray *releasePeriods = [ReleasePeriod findAll];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (wanted = %@ AND wishlistPlatform in %@)", releasePeriod.identifier, @(YES), [SessionManager gamer].platforms];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", releasePeriod.identifier, @(YES)];
 			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}
@@ -363,7 +363,7 @@
 - (IBAction)reloadBarButtonAction:(UIBarButtonItem *)sender{
 	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
 		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects] - 1); row++)
-			[self requestInfoForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+			[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
