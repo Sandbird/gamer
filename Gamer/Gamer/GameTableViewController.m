@@ -222,8 +222,14 @@
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
 		if (video.highQualityURL){
-			TrailerViewController *player = [[TrailerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
-			[self presentMoviePlayerViewControllerAnimated:player];
+			if ([Tools deviceIsiPad]){
+				MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
+				[self presentMoviePlayerViewControllerAnimated:player];
+			}
+			else{
+				TrailerViewController *player = [[TrailerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
+				[self presentMoviePlayerViewControllerAnimated:player];
+			}
 		}
 	}
 }
