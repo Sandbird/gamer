@@ -164,15 +164,23 @@
                                             <rect key="frame" x="0.0" y="0.0" width="768" height="419"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
+                                                <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ieo-vM-YR7" customClass="MACircleProgressIndicator">
+                                                    <rect key="frame" x="200" y="194" width="32" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="32" id="Dea-pB-nLt"/>
+                                                        <constraint firstAttribute="height" constant="32" id="Ksa-9P-hyv"/>
+                                                    </constraints>
+                                                </view>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DwU-TC-GxR">
                                                     <rect key="frame" x="66" y="60" width="300" height="300"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="300" id="k9I-Fu-Kdi"/>
+                                                        <constraint firstAttribute="width" constant="300" id="s8b-i8-4UC"/>
+                                                    </constraints>
                                                 </imageView>
-                                                <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ieo-vM-YR7" customClass="MACircleProgressIndicator">
-                                                    <rect key="frame" x="194" y="194" width="32" height="32"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                                </view>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="328" translatesAutoresizingMaskIntoConstraints="NO" id="nc1-jV-C64">
                                                     <rect key="frame" x="400" y="143" width="328" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -246,6 +254,7 @@
                                             <constraints>
                                                 <constraint firstItem="X8X-53-Q2r" firstAttribute="leading" secondItem="e8Y-DQ-Nvs" secondAttribute="trailing" constant="48" id="2rZ-qy-9W5"/>
                                                 <constraint firstItem="aEr-lM-Urh" firstAttribute="leading" secondItem="DwU-TC-GxR" secondAttribute="trailing" constant="20" id="8FJ-d6-hPr"/>
+                                                <constraint firstItem="DwU-TC-GxR" firstAttribute="top" secondItem="mQs-re-foJ" secondAttribute="top" constant="60" id="IWe-eq-MbW"/>
                                                 <constraint firstItem="nc1-jV-C64" firstAttribute="leading" secondItem="aEr-lM-Urh" secondAttribute="trailing" constant="20" id="N8y-So-tRU"/>
                                                 <constraint firstItem="ieo-vM-YR7" firstAttribute="centerY" secondItem="DwU-TC-GxR" secondAttribute="centerY" id="P0X-es-V3Q"/>
                                                 <constraint firstItem="MBO-XY-qsP" firstAttribute="top" secondItem="YFI-fd-FJ0" secondAttribute="bottom" constant="4" id="U7O-OS-Z8y"/>
@@ -1024,22 +1033,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="20" minimumInteritemSpacing="20" id="goo-ol-MUW">
-                            <size key="itemSize" width="128" height="161"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="11" minimumInteritemSpacing="11" id="goo-ol-MUW">
+                            <size key="itemSize" width="140" height="176"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="20" minY="20" maxX="20" maxY="20"/>
+                            <inset key="sectionInset" minX="11" minY="11" maxX="11" maxY="11"/>
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="Iq4-zI-bgw" customClass="LibraryCollectionCell">
-                                <rect key="frame" x="20" y="84" width="128" height="161"/>
+                                <rect key="frame" x="11" y="75" width="140" height="176"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="128" height="161"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="140" height="176"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0FR-ES-vWa">
-                                            <rect key="frame" x="0.0" y="0.0" width="128" height="161"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="140" height="176"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </imageView>
                                     </subviews>

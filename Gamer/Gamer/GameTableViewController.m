@@ -134,7 +134,7 @@
 // REWRITE THIS
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	if (indexPath.section == 1 && indexPath.row == 0){
-		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(_descriptionTextView.frame.size.width, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
+		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(_descriptionTextView.frame.size.width - 10, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
 		return textRect.size.height + 40;
 	}
 	else if (indexPath.section == 1 && indexPath.row == 2)
@@ -184,6 +184,7 @@
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = _images[indexPath.item];
 		[cell.imageView setImage:[UIImage imageWithData:image.thumbnail]];
+		if (!image.thumbnail && [image.isDownloading isEqualToNumber:@(NO)]) [self downloadImageWithImageObject:image];
 		[image.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
 		return cell;
 	}
@@ -198,9 +199,10 @@
 		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Video *video = _videos[indexPath.item];
 		[cell.imageView setImage:[UIImage imageWithData:video.thumbnail]];
-		[video.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
 		[cell.titleLabel setText:video.title];
 		[cell.lengthLabel setText:[Tools formattedStringForDuration:video.length.integerValue]];
+		if (!video.thumbnail && [video.isDownloading isEqualToNumber:@(NO)]) [self downloadThumbnailForVideo:video];
+		[video.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
 		return cell;
 	}
 }
@@ -489,12 +491,12 @@
 		if (image.size.width > image.size.height){
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:_coverImageView.frame.size.width])];
 			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 160 : 50])];
-			[_game setThumbnailLarge:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 128 : 92])];
+			[_game setThumbnailLarge:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 140 : 92])];
 		}
 		else{
 			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:_coverImageView.frame.size.height])];
 			[_game setThumbnail:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 85 : 50])];
-			[_game setThumbnailLarge:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 161 : 116])];
+			[_game setThumbnailLarge:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 176 : 116])];
 		}
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
