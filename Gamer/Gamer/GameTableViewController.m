@@ -86,6 +86,13 @@
 	if (_game){
 		[self setCoverImageAnimated:NO];
 		
+		if (_game.metascore.integerValue >= 75)
+			[_metascoreButton setBackgroundColor:[UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1]];
+		else if (_game.metascore.integerValue >= 50)
+			[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1]];
+		else
+			[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:0 blue:0 alpha:1]];
+		
 		[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
 		[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
 		[_titleLabel setText:_game.title];
@@ -557,6 +564,13 @@
 			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				if (metascore.length > 0){
+					if (metascore.integerValue >= 75)
+						[_metascoreButton setBackgroundColor:[UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1]];
+					else if (metascore.integerValue >= 50)
+						[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1]];
+					else
+						[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:0 blue:0 alpha:1]];
+					
 					[_metascoreButton setHidden:NO];
 					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
 				}
