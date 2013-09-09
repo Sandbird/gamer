@@ -915,30 +915,39 @@
 // REWRITE
 
 - (IBAction)addButtonPressAction:(UIButton *)sender{
-	NSInteger buttonPressed = (sender == _wishlistButton) ? 1 : 2;
-	
-	_selectablePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
-	
-	if (_selectablePlatforms.count > 1){
-		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-		[actionSheet setTag:buttonPressed];
+	if ((sender == _wishlistButton && [_game.wanted isEqualToNumber:@(YES)]) || (sender == _libraryButton && [_game.owned isEqualToNumber:@(YES)])){
+		[_game setWanted:@(NO)];
+		[_game setOwned:@(NO)];
+		[_game setWishlistPlatform:nil];
+		[_game setLibraryPlatform:nil];
 		
-		for (Platform *platform in _selectablePlatforms)
-			[actionSheet addButtonWithTitle:platform.name];
-		[actionSheet addButtonWithTitle:@"Cancel"];
-		[actionSheet setCancelButtonIndex:_selectablePlatforms.count];
+		[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
 		
-		[actionSheet showInView:self.tabBarController.view];
+		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
+		}];
 	}
 	else{
-		if (buttonPressed == 1){
-			if ([_game.wanted isEqualToNumber:@(YES)]){
-				[_game setWanted:@(NO)];
-				[_game setOwned:@(NO)];
-				
-				[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
-			}
-			else{
+		_selectablePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
+		
+		if (_selectablePlatforms.count > 1){
+			UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+			[actionSheet setTag:(sender == _wishlistButton) ? 1 : 2];
+			
+			for (Platform *platform in _selectablePlatforms)
+				[actionSheet addButtonWithTitle:platform.name];
+			[actionSheet addButtonWithTitle:@"Cancel"];
+			[actionSheet setCancelButtonIndex:_selectablePlatforms.count];
+			
+			[actionSheet showInView:self.tabBarController.view];
+		}
+		else{
+			if (sender == _wishlistButton){
 				if (_selectablePlatforms.count > 0){
 					[_game setWishlistPlatform:_selectablePlatforms[0]];
 					[_game setLibraryPlatform:nil];
@@ -969,12 +978,6 @@
 				[_game setWanted:@(YES)];
 				[_game setOwned:@(NO)];
 			}
-		}
-		else{
-			if ([_game.owned isEqualToNumber:@(YES)]){
-				[_game setWanted:@(NO)];
-				[_game setOwned:@(NO)];
-			}
 			else{
 				if (_selectablePlatforms.count > 0){
 					[_game setWishlistPlatform:nil];
@@ -984,16 +987,16 @@
 				[_game setWanted:@(NO)];
 				[_game setOwned:@(YES)];
 			}
-		}
-		
-		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
-			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
-		}];
+			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+				[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+				[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+				[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+				
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
+			}];
+		}
 	}
 }
 
