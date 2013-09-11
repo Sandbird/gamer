@@ -8,6 +8,7 @@
 
 #import "ZoomViewController.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
+#import <AFNetworking/AFNetworking.h>
 
 @interface ZoomViewController () <UIScrollViewDelegate>
 
@@ -46,7 +47,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] sendView:@"Zoom"];
+//	[[SessionManager tracker] set:kGAIScreenName value:@"Zoom"];
+//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{

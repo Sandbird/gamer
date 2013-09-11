@@ -27,6 +27,7 @@
 #import "ContentStatusView.h"
 #import "MetacriticViewController.h"
 #import "TrailerViewController.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -129,7 +130,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] sendView:@"Game"];
+//	[[SessionManager tracker] set:kGAIScreenName value:@"Game"];
+//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning{

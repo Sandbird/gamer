@@ -76,9 +76,9 @@ static Gamer *GAMER;
 	return accessGranted;
 }
 
-+ (id<GAITracker>)tracker{
-	return [GAI sharedInstance].defaultTracker;
-}
+//+ (id<GAITracker>)tracker{
+//	return [GAI sharedInstance].defaultTracker;
+//}
 
 + (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms title:(NSString *)title{
 	NSString *platformIdentifiers = [[platforms valueForKey:@"identifier"] componentsJoinedByString:@"|"];

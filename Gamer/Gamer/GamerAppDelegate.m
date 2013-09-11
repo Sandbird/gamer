@@ -12,8 +12,8 @@
 #import "Platform.h"
 #import "Image.h"
 #import "ReleaseDate.h"
-#import <Tapstream/TSTapstream.h>
 #import <AdSupport/ASIdentifierManager.h>
+#import <AFNetworking/AFNetworking.h>
 
 @implementation GamerAppDelegate
 
@@ -22,19 +22,13 @@
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
 	// Analytics setup
-	
-#if !(TARGET_IPHONE_SIMULATOR)
-//	// Tapstream Analytics
-//	TSConfig *config = [TSConfig configWithDefaults];
-//	[config setIdfa:[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];
-//	[TSTapstream createWithAccountName:@"caiomello" developerSecret:@"6W5Kiz2jSXWbUqQaRe1jxw" config:config];
-	
-	// Google Analytics
-	[[GAI sharedInstance] setTrackUncaughtExceptions:YES];
-	[[GAI sharedInstance] setDispatchInterval:20];
-//	[[GAI sharedInstance] setDebug:YES];
-	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
-#endif
+//#if !(TARGET_IPHONE_SIMULATOR)
+//	// Google Analytics
+//	[[GAI sharedInstance] setTrackUncaughtExceptions:YES];
+//	[[GAI sharedInstance] setDispatchInterval:20];
+////	[[GAI sharedInstance] setDebug:YES];
+//	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
+//#endif
 	
 	// UI setup
 	

@@ -212,9 +212,7 @@ NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) {
 @synthesize networkReachabilityStatus = _networkReachabilityStatus;
 @synthesize networkReachabilityStatusBlock = _networkReachabilityStatusBlock;
 #endif
-#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
 @synthesize defaultSSLPinningMode = _defaultSSLPinningMode;
-#endif
 @synthesize allowsInvalidSSLCertificate = _allowsInvalidSSLCertificate;
 
 + (instancetype)clientWithBaseURL:(NSURL *)url {
@@ -305,7 +303,9 @@ static BOOL AFURLHostIsIPAddress(NSURL *url) {
 static AFNetworkReachabilityStatus AFNetworkReachabilityStatusForFlags(SCNetworkReachabilityFlags flags) {
     BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
     BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
-    BOOL isNetworkReachable = (isReachable && !needsConnection);
+    BOOL canConnectionAutomatically = (((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) || ((flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0));
+    BOOL canConnectWithoutUserInteraction = (canConnectionAutomatically && (flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0);
+    BOOL isNetworkReachable = (isReachable && (!needsConnection || canConnectWithoutUserInteraction));
 
     AFNetworkReachabilityStatus status = AFNetworkReachabilityStatusUnknown;
     if (isNetworkReachable == NO) {
@@ -554,9 +554,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     [operation setCompletionBlockWithSuccess:success failure:failure];
 
     operation.credential = self.defaultCredential;
-#ifdef _AFNETWORKING_PIN_SSL_CERTIFICATES_
     operation.SSLPinningMode = self.defaultSSLPinningMode;
-#endif
     operation.allowsInvalidSSLCertificate = self.allowsInvalidSSLCertificate;
 
     return operation;
@@ -737,8 +735,8 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
 
     HTTPClient.stringEncoding = self.stringEncoding;
     HTTPClient.parameterEncoding = self.parameterEncoding;
-    HTTPClient.registeredHTTPOperationClassNames = [self.registeredHTTPOperationClassNames copyWithZone:zone];
-    HTTPClient.defaultHeaders = [self.defaultHeaders copyWithZone:zone];
+    HTTPClient.registeredHTTPOperationClassNames = [self.registeredHTTPOperationClassNames mutableCopyWithZone:zone];
+    HTTPClient.defaultHeaders = [self.defaultHeaders mutableCopyWithZone:zone];
 #ifdef _SYSTEMCONFIGURATION_H
     HTTPClient.networkReachabilityStatusBlock = self.networkReachabilityStatusBlock;
 #endif

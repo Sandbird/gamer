@@ -25,7 +25,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] sendView:@"Metacritic"];
+//	[[SessionManager tracker] set:kGAIScreenName value:@"Metacritic"];
+//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)viewDidDisappear:(BOOL)animated{

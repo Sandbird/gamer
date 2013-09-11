@@ -7,9 +7,12 @@
 #import <Availability.h>
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import <AFNetworking/AFNetworking.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <SystemConfiguration/SystemConfiguration.h>
 #define MR_SHORTHAND
 #define MR_ENABLE_ACTIVE_RECORD_LOGGING 0
 #import <MagicalRecord/CoreData+MagicalRecord.h>
+//#import <GoogleAnalytics-iOS-SDK/GAIDictionaryBuilder.h>
+//#import <GoogleAnalytics-iOS-SDK/GAIFields.h>
 #import "Tools.h"
 #import "SessionManager.h"

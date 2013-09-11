@@ -42,7 +42,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] sendView:@"Settings"];
+//	[[SessionManager tracker] set:kGAIScreenName value:@"Settings"];
+//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning{

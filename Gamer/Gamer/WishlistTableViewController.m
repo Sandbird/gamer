@@ -19,6 +19,7 @@
 #import "ReleaseDate.h"
 #import "GameTableViewController.h"
 #import "WishlistSectionHeaderView.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface WishlistTableViewController () <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
 
@@ -46,7 +47,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] sendView:@"Wishlist"];
+//	[[SessionManager tracker] set:kGAIScreenName value:@"Wishlist"];
+//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	

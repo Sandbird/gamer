@@ -12,13 +12,14 @@
 #import "Platform.h"
 #import "LocalSearchCell.h"
 #import "SearchCell.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface SearchTableViewController () <UISearchBarDelegate>
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) NSArray *localResults;
 @property (nonatomic, strong) NSMutableArray *results;
-@property (nonatomic, strong) AFJSONRequestOperation *previousOperation;
+@property (nonatomic, strong) NSOperation *previousOperation;
 
 @end
 
@@ -47,7 +48,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] sendView:@"Search"];
+//	[[SessionManager tracker] set:kGAIScreenName value:@"Search"];
+//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }

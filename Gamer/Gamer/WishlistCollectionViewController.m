@@ -19,6 +19,7 @@
 #import "GameTableViewController.h"
 #import "WishlistCollectionCell.h"
 #import "WishlistCollectionReusableView.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface WishlistCollectionViewController () <NSFetchedResultsControllerDelegate>
 
@@ -50,7 +51,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] sendView:@"Wishlist"];
+//	[[SessionManager tracker] set:kGAIScreenName value:@"Wishlist"];
+//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
 	[self updateGamesReleasePeriods];
 }

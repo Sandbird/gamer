@@ -40,7 +40,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] sendView:@"Library"];
+//	[[SessionManager tracker] set:kGAIScreenName value:@"Library"];
+//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning{

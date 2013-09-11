@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 250D487717BFFFB1006B4C29 /* ContentStatusView.m */; };
+		25180CA117DFD534002675F1 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25180CA017DFD534002675F1 /* MobileCoreServices.framework */; };
+		25180CA217DFD541002675F1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA76179B55E4009B42BF /* SystemConfiguration.framework */; };
 		251B828C17BDDEA200C1FB7D /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251B828B17BDDEA200C1FB7D /* SearchCell.m */; };
 		251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251DEA41178CF3EA0094A6CB /* PlatformCell.m */; };
 		2531E820176CDA35005881A4 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E81F176CDA35005881A4 /* CoreData.framework */; };
@@ -30,7 +32,6 @@
 		2531E85B176CDC68005881A4 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E85A176CDC3B005881A4 /* SearchResult.m */; };
 		25467F5417AB41DE00CB6342 /* ReleasePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 25467F5317AB41DE00CB6342 /* ReleasePeriod.m */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
-		255BAA77179B55E4009B42BF /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA76179B55E4009B42BF /* SystemConfiguration.framework */; };
 		255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA78179B566E009B42BF /* AdSupport.framework */; };
 		25704026176CB12800642430 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704025176CB12800642430 /* Foundation.framework */; };
 		25704028176CB12800642430 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704027176CB12800642430 /* CoreGraphics.framework */; };
@@ -98,6 +99,7 @@
 		2506A18A176CD5B80010E61D /* FetchedTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FetchedTableViewController.m; sourceTree = "<group>"; };
 		250D487617BFFFB1006B4C29 /* ContentStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentStatusView.h; sourceTree = "<group>"; };
 		250D487717BFFFB1006B4C29 /* ContentStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentStatusView.m; sourceTree = "<group>"; };
+		25180CA017DFD534002675F1 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		251B828A17BDDEA200C1FB7D /* SearchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCell.h; sourceTree = "<group>"; };
 		251B828B17BDDEA200C1FB7D /* SearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCell.m; sourceTree = "<group>"; };
 		251DEA40178CF3EA0094A6CB /* PlatformCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCell.h; sourceTree = "<group>"; };
@@ -196,9 +198,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25180CA217DFD541002675F1 /* SystemConfiguration.framework in Frameworks */,
+				25180CA117DFD534002675F1 /* MobileCoreServices.framework in Frameworks */,
 				25F4588E179DFB2C008C15B3 /* EventKit.framework in Frameworks */,
 				255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */,
-				255BAA77179B55E4009B42BF /* SystemConfiguration.framework in Frameworks */,
 				2531E822176CDA48005881A4 /* QuartzCore.framework in Frameworks */,
 				2531E820176CDA35005881A4 /* CoreData.framework in Frameworks */,
 				25704028176CB12800642430 /* CoreGraphics.framework in Frameworks */,
@@ -295,6 +298,7 @@
 		25704024176CB12800642430 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				25180CA017DFD534002675F1 /* MobileCoreServices.framework */,
 				25F4588D179DFB2C008C15B3 /* EventKit.framework */,
 				255BAA78179B566E009B42BF /* AdSupport.framework */,
 				255BAA76179B55E4009B42BF /* SystemConfiguration.framework */,
