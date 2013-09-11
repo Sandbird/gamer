@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3389" systemVersion="12E55" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="12E55" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CoverImage" representedClassName="CoverImage" syncable="YES">
         <attribute name="data" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
@@ -18,6 +18,7 @@
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="franchises" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="Game" representedClassName="Game" syncable="YES">
+        <attribute name="dateLastOpened" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="metacriticURL" optional="YES" attributeType="String" syncable="YES"/>
@@ -56,8 +57,6 @@
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="genres" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="Image" representedClassName="Image" syncable="YES">
-        <attribute name="data" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
-        <attribute name="dateLastOpened" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="isDownloading" optional="YES" transient="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
@@ -127,10 +126,10 @@
         <element name="CoverImage" positionX="106" positionY="-241" width="128" height="88"/>
         <element name="Developer" positionX="106" positionY="-4" width="128" height="103"/>
         <element name="Franchise" positionX="106" positionY="261" width="128" height="103"/>
-        <element name="Game" positionX="-272" positionY="-243" width="128" height="448"/>
+        <element name="Game" positionX="-272" positionY="-243" width="128" height="463"/>
         <element name="Gamer" positionX="-648" positionY="-243" width="128" height="73"/>
         <element name="Genre" positionX="106" positionY="-124" width="128" height="88"/>
-        <element name="Image" positionX="286" positionY="-241" width="128" height="163"/>
+        <element name="Image" positionX="286" positionY="-241" width="128" height="133"/>
         <element name="Platform" positionX="-461" positionY="-243" width="128" height="163"/>
         <element name="Publisher" positionX="106" positionY="131" width="128" height="103"/>
         <element name="ReleaseDate" positionX="-83" positionY="-109" width="128" height="163"/>

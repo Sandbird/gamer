@@ -37,13 +37,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	if (_image.data){
-		UIImage *image = [UIImage imageWithData:_image.data];
-		_imageSize = image.size;
-		[self initializeImageViewWithImage:image animated:NO];
-	}
-	else
-		[self downloadImageWithImageObject:_image];
+	[self downloadImageWithImageObject:_image];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -120,7 +114,6 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
-		[imageObject setData:UIImagePNGRepresentation(image)];
 		[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			_imageSize = image.size;
 			[self initializeImageViewWithImage:image animated:YES];
@@ -153,7 +146,6 @@
 	
 	[_scrollView setZoomScale:_scrollView.minimumZoomScale];
 	
-	[_image setDateLastOpened:[NSDate date]];
 	[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreAndWait];
 }
 

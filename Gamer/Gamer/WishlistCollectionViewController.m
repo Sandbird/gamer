@@ -64,6 +64,7 @@
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
+	NSLog(@"count: %d", self.fetchedResultsController.sections.count);
 	if (self.fetchedResultsController.sections.count == 0){
 		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][0];
 		[collectionView setBackgroundView:view];

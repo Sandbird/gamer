@@ -41,10 +41,13 @@
 	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(platformChangeNotification:) name:@"PlatformChange" object:nil];
 	
 	_results = [[NSMutableArray alloc] initWithCapacity:100];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -56,6 +59,10 @@
 
 - (void)viewWillDisappear:(BOOL)animated{
 	[_previousOperation cancel];
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"GameDownloaded" object:nil];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -127,6 +134,7 @@
 	
 	if (indexPath.row < _localResults.count){
 		LocalSearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LocalCell"];
+		[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 		[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? (tableView.frame.size.width * 2) : 68), 0, 0)];
 		
 		Game *game = _localResults[indexPath.row];
@@ -137,6 +145,7 @@
 	}
 	
     SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? tableView.frame.size.width : 15), 0, 0)];
 	
 	SearchResult *result = _results[indexPath.row - _localResults.count];
@@ -147,7 +156,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
-//	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Networking

@@ -65,7 +65,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section{
 	switch (section) {
-		case 0: return @"Select your platforms";
+		case 0: return @"Select your platforms. This affects search results";
 		default: return @"";
 	}
 }
@@ -82,12 +82,14 @@
 	switch (indexPath.section) {
 		case 0:{
 			PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
-			[cell setSeparatorInset:UIEdgeInsetsMake(0, 20, 0, 0)];
+			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+//			[cell setSeparatorInset:UIEdgeInsetsMake(0, 20, 0, 0)];
 			[self configureCell:cell atIndexPath:indexPath];
 			return cell;
 		}
 		case 1:{
 			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
+			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			[cell.textLabel setText:@"Delete all data"];
 			return cell;
 		}

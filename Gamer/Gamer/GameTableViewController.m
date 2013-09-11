@@ -119,6 +119,9 @@
 		
 		(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
 		(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
+		
+		[_game setDateLastOpened:[NSDate date]];
+		[_context saveToPersistentStoreAndWait];
 	}
 	else{
 		[_imagesStatusView setStatus:ContentStatusLoading];
@@ -140,6 +143,18 @@
 
 #pragma mark - TableView
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+	if (_game){
+		[tableView setSeparatorColor:[UIColor darkGrayColor]];
+		return [super numberOfSectionsInTableView:tableView];
+	}
+	else{
+		[tableView setSeparatorColor:[UIColor clearColor]];
+		return 0;
+	}
+//	return _game ? [super numberOfSectionsInTableView:tableView] : 0;
+}
+
 // REWRITE THIS
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	if (indexPath.section == 1 && indexPath.row == 0){
@@ -155,8 +170,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	if (indexPath.section == tableView.numberOfSections - 1)
-		[cell setSeparatorInset:UIEdgeInsetsMake(0, self.tableView.frame.size.width, 0, 0)];
+		[cell setSeparatorInset:UIEdgeInsetsMake(0, self.tableView.frame.size.width * 2, 0, 0)];
 }
 
 #pragma mark - CollectionView
@@ -258,6 +274,7 @@
 		[_game setIdentifier:identifier];
 		[_game setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
 		[_game setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
+		[_game setDateLastOpened:[NSDate date]];
 		
 		// Cover image
 		if (results[@"image"] != [NSNull null]){

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 250D487717BFFFB1006B4C29 /* ContentStatusView.m */; };
+		2511AD2517E121BF0077A1AE /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 2511AD2417E121BF0077A1AE /* Game.m */; };
+		2511AD2817E121C00077A1AE /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 2511AD2717E121C00077A1AE /* Image.m */; };
 		25180CA117DFD534002675F1 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25180CA017DFD534002675F1 /* MobileCoreServices.framework */; };
 		25180CA217DFD541002675F1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA76179B55E4009B42BF /* SystemConfiguration.framework */; };
 		251B828C17BDDEA200C1FB7D /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251B828B17BDDEA200C1FB7D /* SearchCell.m */; };
@@ -58,10 +60,8 @@
 		25B9E9C017A0B70200881089 /* LibraryCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryCollectionViewController.m */; };
 		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
 		25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */; };
-		25C9FE3617CC427800CCDD59 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3517CC427800CCDD59 /* Image.m */; };
 		25C9FE3917CC4C4500CCDD59 /* WishlistCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */; };
 		25C9FE4517CD729E00CCDD59 /* WishlistCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4417CD729E00CCDD59 /* WishlistCollectionReusableView.m */; };
-		25C9FE4817CEEAC300CCDD59 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4717CEEAC300CCDD59 /* Game.m */; };
 		25C9FE7217DA2B0100CCDD59 /* iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C9FE7117DA2B0100CCDD59 /* iPhone.xib */; };
 		25C9FE7417DA2B0E00CCDD59 /* iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C9FE7317DA2B0E00CCDD59 /* iPad.xib */; };
 		25C9FE7717DA7FB400CCDD59 /* TrailerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE7617DA7FB400CCDD59 /* TrailerViewController.m */; };
@@ -99,6 +99,10 @@
 		2506A18A176CD5B80010E61D /* FetchedTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FetchedTableViewController.m; sourceTree = "<group>"; };
 		250D487617BFFFB1006B4C29 /* ContentStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentStatusView.h; sourceTree = "<group>"; };
 		250D487717BFFFB1006B4C29 /* ContentStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentStatusView.m; sourceTree = "<group>"; };
+		2511AD2317E121BF0077A1AE /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		2511AD2417E121BF0077A1AE /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		2511AD2617E121C00077A1AE /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
+		2511AD2717E121C00077A1AE /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
 		25180CA017DFD534002675F1 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		251B828A17BDDEA200C1FB7D /* SearchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCell.h; sourceTree = "<group>"; };
 		251B828B17BDDEA200C1FB7D /* SearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCell.m; sourceTree = "<group>"; };
@@ -125,6 +129,7 @@
 		2531E860176CDF09005881A4 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry.a; path = Pods/FlurrySDK/Flurry/libFlurry.a; sourceTree = "<group>"; };
 		25467F5217AB41DE00CB6342 /* ReleasePeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasePeriod.h; sourceTree = "<group>"; };
 		25467F5317AB41DE00CB6342 /* ReleasePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasePeriod.m; sourceTree = "<group>"; };
+		2555469F17DFF9430069F8A5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		255BAA76179B55E4009B42BF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		255BAA78179B566E009B42BF /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		25704022176CB12800642430 /* Gamer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gamer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -169,14 +174,10 @@
 		25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCollectionCell.m; sourceTree = "<group>"; };
 		25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionCell.h; sourceTree = "<group>"; };
 		25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionCell.m; sourceTree = "<group>"; };
-		25C9FE3417CC427800CCDD59 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
-		25C9FE3517CC427800CCDD59 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
 		25C9FE3717CC4C4500CCDD59 /* WishlistCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionViewController.h; sourceTree = "<group>"; };
 		25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionViewController.m; sourceTree = "<group>"; };
 		25C9FE4317CD729E00CCDD59 /* WishlistCollectionReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionReusableView.h; sourceTree = "<group>"; };
 		25C9FE4417CD729E00CCDD59 /* WishlistCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionReusableView.m; sourceTree = "<group>"; };
-		25C9FE4617CEEAC300CCDD59 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		25C9FE4717CEEAC300CCDD59 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		25C9FE7117DA2B0100CCDD59 /* iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = iPhone.xib; sourceTree = "<group>"; };
 		25C9FE7317DA2B0E00CCDD59 /* iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = iPad.xib; sourceTree = "<group>"; };
 		25C9FE7517DA7FB400CCDD59 /* TrailerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrailerViewController.h; sourceTree = "<group>"; };
@@ -298,6 +299,7 @@
 		25704024176CB12800642430 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2555469F17DFF9430069F8A5 /* libz.dylib */,
 				25180CA017DFD534002675F1 /* MobileCoreServices.framework */,
 				25F4588D179DFB2C008C15B3 /* EventKit.framework */,
 				255BAA78179B566E009B42BF /* AdSupport.framework */,
@@ -402,10 +404,10 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				25C9FE4617CEEAC300CCDD59 /* Game.h */,
-				25C9FE4717CEEAC300CCDD59 /* Game.m */,
-				25C9FE3417CC427800CCDD59 /* Image.h */,
-				25C9FE3517CC427800CCDD59 /* Image.m */,
+				2511AD2617E121C00077A1AE /* Image.h */,
+				2511AD2717E121C00077A1AE /* Image.m */,
+				2511AD2317E121BF0077A1AE /* Game.h */,
+				2511AD2417E121BF0077A1AE /* Game.m */,
 				2595539917AEAB3F003A4F59 /* Gamer.h */,
 				2595539A17AEAB3F003A4F59 /* Gamer.m */,
 				2595539617AEAB3E003A4F59 /* Platform.h */,
@@ -630,13 +632,13 @@
 				2531E849176CDB60005881A4 /* Franchise.m in Sources */,
 				25C9FE3917CC4C4500CCDD59 /* WishlistCollectionViewController.m in Sources */,
 				250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */,
+				2511AD2817E121C00077A1AE /* Image.m in Sources */,
 				2531E84B176CDB60005881A4 /* Publisher.m in Sources */,
-				25C9FE4817CEEAC300CCDD59 /* Game.m in Sources */,
 				2596DD3117ACBABD00D89765 /* ReleaseDate.m in Sources */,
 				25AE80E41773D65D00FBE9FC /* Theme.m in Sources */,
-				25C9FE3617CC427800CCDD59 /* Image.m in Sources */,
 				25B9E9C017A0B70200881089 /* LibraryCollectionViewController.m in Sources */,
 				2531E84C176CDB60005881A4 /* Developer.m in Sources */,
+				2511AD2517E121BF0077A1AE /* Game.m in Sources */,
 				2595539B17AEAB3F003A4F59 /* Gamer.m in Sources */,
 				251B828C17BDDEA200C1FB7D /* SearchCell.m in Sources */,
 				2531E84D176CDB60005881A4 /* SimilarGame.m in Sources */,
@@ -778,7 +780,10 @@
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/Caio/Xcode/gamer/Gamer/Gamer,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -798,7 +803,10 @@
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/Caio/Xcode/gamer/Gamer/Gamer,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
