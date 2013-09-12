@@ -3,8 +3,26 @@ Gamer
 
 iOS
 
+Credit
+=====
+
+Game information and media comes from the GiantBomb Wiki at [GiantBomb](http://www.giantbomb.com).
+
+Metascore comes from [Metacritic](http://www.metacritic.com).
+
+
+Contributing
+=====
+
+This app is open source from the start so that everyone can help in developing it.
+
+All data in the GiantBomb Wiki comes from the contributions of its users, so a great way to improving this app is contributing to it, therefore I encourage you to create an account on [GiantBomb](http://www.giantbomb.com) and help in making it even better.
+
+
 License
 =====
+
+**You're welcome to use this code, suggest (or make) new features and report (or fix) bugs, all I ask is that you give credit where it's due and don't make another app with the same goals or functionalities.**
 
 Copyright (c) 2013 Caio Mello
 
