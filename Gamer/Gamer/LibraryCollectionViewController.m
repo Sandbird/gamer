@@ -29,7 +29,6 @@
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameUpdatedNotification:) name:@"GameUpdated" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(platformChangeNotification:) name:@"PlatformChange" object:nil];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
@@ -40,8 +39,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-//	[[SessionManager tracker] set:kGAIScreenName value:@"Library"];
-//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[SessionManager tracker] set:kGAIScreenName value:@"Library"];
+	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -241,10 +240,6 @@
 }
 
 - (void)gameUpdatedNotification:(NSNotification *)notification{
-	[self.collectionView reloadData];
-}
-
-- (void)platformChangeNotification:(NSNotification *)notification{
 	[self.collectionView reloadData];
 }
 

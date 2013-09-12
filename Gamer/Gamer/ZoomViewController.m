@@ -41,8 +41,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-//	[[SessionManager tracker] set:kGAIScreenName value:@"Zoom"];
-//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[SessionManager tracker] set:kGAIScreenName value:@"Zoom"];
+	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{

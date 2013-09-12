@@ -51,8 +51,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-//	[[SessionManager tracker] set:kGAIScreenName value:@"Wishlist"];
-//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[SessionManager tracker] set:kGAIScreenName value:@"Wishlist"];
+	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
 	[self updateGamesReleasePeriods];
 }

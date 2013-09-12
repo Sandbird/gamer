@@ -12,7 +12,7 @@
 #define MR_SHORTHAND
 //#define MR_ENABLE_ACTIVE_RECORD_LOGGING 0
 #import <MagicalRecord/CoreData+MagicalRecord.h>
-//#import <GoogleAnalytics-iOS-SDK/GAIDictionaryBuilder.h>
-//#import <GoogleAnalytics-iOS-SDK/GAIFields.h>
+#import <GoogleAnalytics-iOS-SDK/GAIDictionaryBuilder.h>
+#import <GoogleAnalytics-iOS-SDK/GAIFields.h>
 #import "Tools.h"
 #import "SessionManager.h"

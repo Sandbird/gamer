@@ -42,8 +42,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-//	[[SessionManager tracker] set:kGAIScreenName value:@"Settings"];
-//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[SessionManager tracker] set:kGAIScreenName value:@"More"];
+	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -65,7 +65,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section{
 	switch (section) {
-		case 0: return @"Select your platforms. This affects search results";
+		case 0: return @"Select your platforms. This affects search results.";
 		default: return @"";
 	}
 }
@@ -149,9 +149,7 @@
 	else
 		[[SessionManager gamer] removePlatformsObject:platform];
 	
-	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"PlatformChange" object:nil];
-	}];
+	[_context saveToPersistentStoreAndWait];
 }
 
 @end

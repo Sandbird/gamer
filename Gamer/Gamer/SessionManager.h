@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-//#import <GoogleAnalytics-iOS-SDK/GAI.h>
+#import <GoogleAnalytics-iOS-SDK/GAI.h>
 #import <EventKit/EventKit.h>
 #import "Gamer.h"
 
@@ -23,7 +23,7 @@
 
 + (BOOL)calendarEnabled;
 
-//+ (id<GAITracker>)tracker;
++ (id<GAITracker>)tracker;
 
 + (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms title:(NSString *)title;
 

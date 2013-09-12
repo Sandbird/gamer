@@ -133,8 +133,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-//	[[SessionManager tracker] set:kGAIScreenName value:@"Game"];
-//	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[SessionManager tracker] set:kGAIScreenName value:@"Game"];
+	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -152,7 +152,6 @@
 		[tableView setSeparatorColor:[UIColor clearColor]];
 		return 0;
 	}
-//	return _game ? [super numberOfSectionsInTableView:tableView] : 0;
 }
 
 // REWRITE THIS

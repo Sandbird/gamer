@@ -12,7 +12,6 @@
 #import "Platform.h"
 #import "Image.h"
 #import "ReleaseDate.h"
-#import <AdSupport/ASIdentifierManager.h>
 #import <AFNetworking/AFNetworking.h>
 
 @implementation GamerAppDelegate
@@ -22,13 +21,13 @@
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
 	// Analytics setup
-//#if !(TARGET_IPHONE_SIMULATOR)
-//	// Google Analytics
-//	[[GAI sharedInstance] setTrackUncaughtExceptions:YES];
-//	[[GAI sharedInstance] setDispatchInterval:20];
-////	[[GAI sharedInstance] setDebug:YES];
-//	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
-//#endif
+#if !(TARGET_IPHONE_SIMULATOR)
+	// Google Analytics
+	[[GAI sharedInstance] setTrackUncaughtExceptions:YES];
+	[[GAI sharedInstance] setDispatchInterval:20];
+//	[[GAI sharedInstance] setDebug:YES];
+	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
+#endif
 	
 	// UI setup
 	
@@ -49,8 +48,10 @@
 	[libraryTab setImage:[UIImage imageNamed:@"LibraryTab"]];
 	[libraryTab setSelectedImage:[UIImage imageNamed:@"LibraryTabSelected"]];
 	
+	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+	
 	// Initial data
-	NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
 	EKEventStore *eventStore = [[EKEventStore alloc] init];
 	[SessionManager setEventStore:eventStore];
@@ -62,6 +63,7 @@
 	}
 	else {
 		gamer = [Gamer createInContext:context];
+		[SessionManager setGamer:gamer];
 		
 		NSCalendar *calendar = [NSCalendar currentCalendar];
 		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
