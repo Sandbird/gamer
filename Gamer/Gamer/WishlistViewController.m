@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "WishlistCollectionViewController.h"
+#import "WishlistViewController.h"
 #import "Game.h"
 #import "Genre.h"
 #import "Platform.h"
@@ -21,17 +21,17 @@
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
 
-@interface WishlistCollectionViewController () <NSFetchedResultsControllerDelegate>
+@interface WishlistViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
+@property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
+@property (nonatomic, strong) UIView *guideView;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, strong) NSMutableArray *sectionChanges;
-@property (nonatomic, strong) NSMutableArray *objectChanges;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
 @end
 
-@implementation WishlistCollectionViewController
+@implementation WishlistViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -39,7 +39,7 @@
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameUpdatedNotification:) name:@"GameUpdated" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistCollectionNotification:) name:@"RefreshWishlistCollection" object:nil];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
@@ -47,7 +47,12 @@
 	_operationQueue = [[NSOperationQueue alloc] init];
 	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	
-	self.fetchedResultsController = [self fetch];
+	_fetchedResultsController = [self fetch];
+	
+	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][1];
+	[self.view insertSubview:_guideView aboveSubview:_collectionView];
+	[_guideView setFrame:self.view.frame];
+	[_guideView setHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -57,6 +62,10 @@
 	[self updateGamesReleasePeriods];
 }
 
+- (void)viewDidLayoutSubviews{
+	[_guideView setCenter:self.view.center];
+}
+
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
 }
@@ -64,19 +73,13 @@
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-	NSLog(@"count: %d", self.fetchedResultsController.sections.count);
-	if (self.fetchedResultsController.sections.count == 0){
-		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][0];
-		[collectionView setBackgroundView:view];
-	}
-	else
-		[collectionView setBackgroundView:nil];
+	[_guideView setHidden:(_fetchedResultsController.sections.count == 0) ? NO : YES];
 	
-    return self.fetchedResultsController.sections.count;
+    return _fetchedResultsController.sections.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-	NSString *sectionName = [self.fetchedResultsController.sections[indexPath.section] name];
+	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
 	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue)];
 	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
@@ -86,199 +89,38 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	return [self.fetchedResultsController.sections[section] numberOfObjects];
+	return [_fetchedResultsController.sections[section] numberOfObjects];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
+	
 	WishlistCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
-	[self configureCell:cell atIndexPath:indexPath];
+	[cell.titleLabel setText:(game.identifier) ? game.title : nil];
+	[cell.dateLabel setText:game.releaseDateText];
+	[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnailLarge]];
+	[cell.platformLabel setText:game.wishlistPlatform.abbreviation];
+	[cell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
+	
+	CGFloat coverImageAspectRatio = cell.coverImageView.image.size.width/cell.coverImageView.image.size.height;
+	CGFloat imageViewAspectRatio = cell.coverImageView.bounds.size.width/cell.coverImageView.bounds.size.height;
+	[cell.coverImageView setBackgroundColor:(coverImageAspectRatio >= imageViewAspectRatio) ? [UIColor blackColor] : [UIColor clearColor]];
+	
 	return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	[self performSegueWithIdentifier:@"GameSegue" sender:game];
-}
-
-#pragma mark - FetchedCollectionView
-
-- (void)configureCell:(UICollectionViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
-	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-
-	WishlistCollectionCell *customCell = (WishlistCollectionCell *)cell;
-	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
-	[customCell.dateLabel setText:game.releaseDateText];
-	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnailLarge]];
-	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
-	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
-	
-	CGFloat coverImageAspectRatio = customCell.coverImageView.image.size.width/customCell.coverImageView.image.size.height;
-	CGFloat imageViewAspectRatio = customCell.coverImageView.bounds.size.width/customCell.coverImageView.bounds.size.height;
-	
-	[customCell.coverImageView setBackgroundColor:(coverImageAspectRatio >= imageViewAspectRatio) ? [UIColor blackColor] : [UIColor clearColor]];
+	[self performSegueWithIdentifier:@"GameSegue" sender:indexPath];
 }
 
 #pragma mark - FetchedResultsController
 
 - (NSFetchedResultsController *)fetch{
-	if (!self.fetchedResultsController){
+	if (!_fetchedResultsController){
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"wanted = %@", @(YES)];
-		
-		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
+		_fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES];
 	}
-	
-	return self.fetchedResultsController;
-}
-
-#pragma mark - FetchedResultsController
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
-{
-    
-    NSMutableDictionary *change = [NSMutableDictionary new];
-    
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            change[@(type)] = @(sectionIndex);
-            break;
-        case NSFetchedResultsChangeDelete:
-            change[@(type)] = @(sectionIndex);
-            break;
-    }
-    
-    [_sectionChanges addObject:change];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
-    
-    NSMutableDictionary *change = [NSMutableDictionary new];
-    switch(type)
-    {
-        case NSFetchedResultsChangeInsert:
-            change[@(type)] = newIndexPath;
-            break;
-        case NSFetchedResultsChangeDelete:
-            change[@(type)] = indexPath;
-            break;
-        case NSFetchedResultsChangeUpdate:
-            change[@(type)] = indexPath;
-            break;
-        case NSFetchedResultsChangeMove:
-            change[@(type)] = @[indexPath, newIndexPath];
-            break;
-    }
-    [_objectChanges addObject:change];
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    if ([_sectionChanges count] > 0)
-    {
-        [self.collectionView performBatchUpdates:^{
-            
-            for (NSDictionary *change in _sectionChanges)
-            {
-                [change enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, id obj, BOOL *stop) {
-                    
-                    NSFetchedResultsChangeType type = [key unsignedIntegerValue];
-                    switch (type)
-                    {
-                        case NSFetchedResultsChangeInsert:
-                            [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:[obj unsignedIntegerValue]]];
-                            break;
-                        case NSFetchedResultsChangeDelete:
-                            [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:[obj unsignedIntegerValue]]];
-                            break;
-                        case NSFetchedResultsChangeUpdate:
-                            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:[obj unsignedIntegerValue]]];
-                            break;
-                    }
-                }];
-            }
-        } completion:nil];
-    }
-    
-    if ([_objectChanges count] > 0 && [_sectionChanges count] == 0)
-    {
-        
-        if ([self shouldReloadCollectionViewToPreventKnownIssue] || self.collectionView.window == nil) {
-            // This is to prevent a bug in UICollectionView from occurring.
-            // The bug presents itself when inserting the first object or deleting the last object in a collection view.
-            // http://stackoverflow.com/questions/12611292/uicollectionview-assertion-failure
-            // This code should be removed once the bug has been fixed, it is tracked in OpenRadar
-            // http://openradar.appspot.com/12954582
-            [self.collectionView reloadData];
-            
-        } else {
-			
-            [self.collectionView performBatchUpdates:^{
-                
-                for (NSDictionary *change in _objectChanges)
-                {
-                    [change enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, id obj, BOOL *stop) {
-                        
-                        NSFetchedResultsChangeType type = [key unsignedIntegerValue];
-                        switch (type)
-                        {
-                            case NSFetchedResultsChangeInsert:
-                                [self.collectionView insertItemsAtIndexPaths:@[obj]];
-                                break;
-                            case NSFetchedResultsChangeDelete:
-                                [self.collectionView deleteItemsAtIndexPaths:@[obj]];
-                                break;
-                            case NSFetchedResultsChangeUpdate:
-                                [self.collectionView reloadItemsAtIndexPaths:@[obj]];
-                                break;
-                            case NSFetchedResultsChangeMove:
-                                [self.collectionView moveItemAtIndexPath:obj[0] toIndexPath:obj[1]];
-                                break;
-                        }
-                    }];
-                }
-            } completion:nil];
-        }
-    }
-	
-    [_sectionChanges removeAllObjects];
-    [_objectChanges removeAllObjects];
-}
-
-- (BOOL)shouldReloadCollectionViewToPreventKnownIssue {
-    __block BOOL shouldReload = NO;
-    for (NSDictionary *change in self.objectChanges) {
-        [change enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            NSFetchedResultsChangeType type = [key unsignedIntegerValue];
-            NSIndexPath *indexPath = obj;
-            switch (type) {
-                case NSFetchedResultsChangeInsert:
-                    if ([self.collectionView numberOfItemsInSection:indexPath.section] == 0) {
-                        shouldReload = YES;
-                    } else {
-                        shouldReload = NO;
-                    }
-                    break;
-                case NSFetchedResultsChangeDelete:
-                    if ([self.collectionView numberOfItemsInSection:indexPath.section] == 1) {
-                        shouldReload = YES;
-                    } else {
-                        shouldReload = NO;
-                    }
-                    break;
-                case NSFetchedResultsChangeUpdate:
-                    shouldReload = NO;
-                    break;
-                case NSFetchedResultsChangeMove:
-                    shouldReload = NO;
-                    break;
-            }
-        }];
-    }
-    
-    return shouldReload;
+	return _fetchedResultsController;
 }
 
 #pragma mark - Networking
@@ -476,7 +318,9 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self.collectionView reloadData];
+			_fetchedResultsController = nil;
+			_fetchedResultsController = [self fetch];
+			[_collectionView reloadData];
 		}];
 	}];
 }
@@ -484,17 +328,19 @@
 #pragma mark - Actions
 
 - (void)gameDownloadedNotification:(NSNotification *)notification{
-	[self.collectionView reloadData];
+	[_collectionView reloadData];
 }
 
-- (void)gameUpdatedNotification:(NSNotification *)notification{
-	[self.collectionView reloadData];
+- (void)refreshWishlistCollectionNotification:(NSNotification *)notification{
+	_fetchedResultsController = nil;
+	_fetchedResultsController = [self fetch];
+	[_collectionView reloadData];
 }
 
 - (IBAction)reloadBarButtonAction:(UIBarButtonItem *)sender{
-	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
-		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects]); row++)
-			[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
+		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
+			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
@@ -504,7 +350,7 @@
 		}
 		
 		GameTableViewController *destination = [segue destinationViewController];
-		[destination setGame:sender];
+		[destination setGame:[_fetchedResultsController objectAtIndexPath:sender]];
 	}
 }
 

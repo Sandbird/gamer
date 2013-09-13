@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WishlistCollectionViewController : UICollectionViewController
+@interface WishlistViewController : UIViewController
 
 @end

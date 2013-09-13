@@ -128,23 +128,23 @@
 	BOOL lastRow = (indexPath.row == ([tableView numberOfRowsInSection:indexPath.section] - 1)) ? YES : NO;
 	
 	if (indexPath.row < _localResults.count){
-		LocalSearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LocalCell"];
-		[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
-		[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? (tableView.frame.size.width * 2) : 68), 0, 0)];
-		
 		Game *game = _localResults[indexPath.row];
+		
+		LocalSearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LocalCell"];
 		[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];
 		[cell.titleLabel setText:game.title];
+		[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+		[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? (tableView.frame.size.width * 2) : 68), 0, 0)];
 		
 		return cell;
 	}
 	
-    SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	SearchResult *result = _results[indexPath.row - _localResults.count];
+	
+	SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	[cell.titleLabel setText:result.title];
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? tableView.frame.size.width : 15), 0, 0)];
-	
-	SearchResult *result = _results[indexPath.row - _localResults.count];
-	[cell.titleLabel setText:result.title];
 	
     return cell;
 }

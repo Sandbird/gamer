@@ -56,7 +56,7 @@
 		25B9E9C017A0B70200881089 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryViewController.m */; };
 		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
 		25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */; };
-		25C9FE3917CC4C4500CCDD59 /* WishlistCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */; };
+		25C9FE3917CC4C4500CCDD59 /* WishlistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3817CC4C4500CCDD59 /* WishlistViewController.m */; };
 		25C9FE4517CD729E00CCDD59 /* HeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4417CD729E00CCDD59 /* HeaderCollectionReusableView.m */; };
 		25C9FE7217DA2B0100CCDD59 /* iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C9FE7117DA2B0100CCDD59 /* iPhone.xib */; };
 		25C9FE7417DA2B0E00CCDD59 /* iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C9FE7317DA2B0E00CCDD59 /* iPad.xib */; };
@@ -166,8 +166,8 @@
 		25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCollectionCell.m; sourceTree = "<group>"; };
 		25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionCell.h; sourceTree = "<group>"; };
 		25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionCell.m; sourceTree = "<group>"; };
-		25C9FE3717CC4C4500CCDD59 /* WishlistCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionViewController.h; sourceTree = "<group>"; };
-		25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionViewController.m; sourceTree = "<group>"; };
+		25C9FE3717CC4C4500CCDD59 /* WishlistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistViewController.h; sourceTree = "<group>"; };
+		25C9FE3817CC4C4500CCDD59 /* WishlistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistViewController.m; sourceTree = "<group>"; };
 		25C9FE4317CD729E00CCDD59 /* HeaderCollectionReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderCollectionReusableView.h; sourceTree = "<group>"; };
 		25C9FE4417CD729E00CCDD59 /* HeaderCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderCollectionReusableView.m; sourceTree = "<group>"; };
 		25C9FE7117DA2B0100CCDD59 /* iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = iPhone.xib; sourceTree = "<group>"; };
@@ -441,8 +441,8 @@
 			children = (
 				2506A17D176CD4EA0010E61D /* WishlistTableViewController.h */,
 				2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */,
-				25C9FE3717CC4C4500CCDD59 /* WishlistCollectionViewController.h */,
-				25C9FE3817CC4C4500CCDD59 /* WishlistCollectionViewController.m */,
+				25C9FE3717CC4C4500CCDD59 /* WishlistViewController.h */,
+				25C9FE3817CC4C4500CCDD59 /* WishlistViewController.m */,
 				25B9E9BE17A0B70200881089 /* LibraryViewController.h */,
 				25B9E9BF17A0B70200881089 /* LibraryViewController.m */,
 				2506A183176CD5480010E61D /* SearchTableViewController.h */,
@@ -629,7 +629,7 @@
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ZoomViewController.m in Sources */,
 				2531E849176CDB60005881A4 /* Franchise.m in Sources */,
-				25C9FE3917CC4C4500CCDD59 /* WishlistCollectionViewController.m in Sources */,
+				25C9FE3917CC4C4500CCDD59 /* WishlistViewController.m in Sources */,
 				250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */,
 				25DDDEB217E2B8B600492301 /* Image.m in Sources */,
 				25DDDEB517E2B8B700492301 /* Video.m in Sources */,

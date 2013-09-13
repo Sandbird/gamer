@@ -1073,23 +1073,11 @@
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="PlayStation 4" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SDd-Xj-ppH" userLabel="Platform Label">
                                             <rect key="frame" x="11" y="11" width="299" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="21" id="p34-f5-ARG"/>
-                                            </constraints>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
-                                    <constraints>
-                                        <constraint firstItem="SDd-Xj-ppH" firstAttribute="centerX" secondItem="jyL-4D-12d" secondAttribute="centerX" id="Fdo-qh-8Wd"/>
-                                        <constraint firstItem="SDd-Xj-ppH" firstAttribute="leading" secondItem="Urj-gg-0hD" secondAttribute="leading" id="OQ9-N9-lg0"/>
-                                        <constraint firstItem="Urj-gg-0hD" firstAttribute="top" secondItem="jyL-4D-12d" secondAttribute="top" id="fjG-js-Kpo"/>
-                                        <constraint firstItem="SDd-Xj-ppH" firstAttribute="top" secondItem="Urj-gg-0hD" secondAttribute="bottom" constant="10" id="kYU-iz-tHe"/>
-                                        <constraint firstAttribute="trailing" secondItem="Urj-gg-0hD" secondAttribute="trailing" id="neV-pC-3ke"/>
-                                        <constraint firstAttribute="bottom" secondItem="SDd-Xj-ppH" secondAttribute="bottom" constant="8" id="oL2-NA-Fqs"/>
-                                        <constraint firstItem="Urj-gg-0hD" firstAttribute="leading" secondItem="jyL-4D-12d" secondAttribute="leading" constant="10" id="y58-GD-kp3"/>
-                                    </constraints>
                                     <connections>
                                         <outlet property="separator" destination="Urj-gg-0hD" id="gOE-xq-xNC"/>
                                         <outlet property="titleLabel" destination="SDd-Xj-ppH" id="OZF-2g-l15"/>
@@ -1101,7 +1089,17 @@
                                 </connections>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="leading" secondItem="Sdw-iW-wrB" secondAttribute="leading" id="5Th-ZO-TBa"/>
+                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="top" secondItem="Sdw-iW-wrB" secondAttribute="top" id="D13-kk-ahI"/>
+                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="top" secondItem="Sdw-iW-wrB" secondAttribute="top" id="DZJ-3o-s9l"/>
+                            <constraint firstAttribute="bottom" secondItem="YQt-ka-CWZ" secondAttribute="bottom" id="FPH-cX-M3R"/>
+                            <constraint firstAttribute="bottom" secondItem="YQt-ka-CWZ" secondAttribute="bottom" id="Uep-jB-oOy"/>
+                            <constraint firstAttribute="trailing" secondItem="YQt-ka-CWZ" secondAttribute="trailing" id="jjy-SP-XMI"/>
+                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="leading" secondItem="Sdw-iW-wrB" secondAttribute="leading" id="nNX-R4-jCq"/>
+                            <constraint firstAttribute="trailing" secondItem="YQt-ka-CWZ" secondAttribute="trailing" id="tRo-70-lJg"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u"/>
                     <connections>
@@ -1166,6 +1164,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="HYd-CU-5hN"/>
+        <segue reference="YGP-WK-AF2"/>
     </inferredMetricsTieBreakers>
 </document>

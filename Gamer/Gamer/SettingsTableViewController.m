@@ -84,15 +84,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
 		case 0:{
-			PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
-			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
-			
 			Platform *platform = _platforms[indexPath.row];
+			
+			PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
 			[cell.titleLabel setText:platform.name];
 			[cell.abbreviationLabel setText:platform.abbreviation];
 			[cell.abbreviationLabel setBackgroundColor:platform.color];
 			[cell.switchControl setOn:([[SessionManager gamer].platforms containsObject:platform]) ? YES : NO];
 			[cell.switchControl setTag:indexPath.row];
+			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			
 			return cell;
 		}
