@@ -10,15 +10,38 @@
             <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="No games in your Wishlist" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yvU-a8-SDy">
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No games in your Wishlist" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yvU-a8-SDy">
                     <rect key="frame" x="282" y="501" width="205" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search for games" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="80" translatesAutoresizingMaskIntoConstraints="NO" id="I7u-fo-SBM">
+                    <rect key="frame" x="344" y="624" width="80" height="36"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="36" id="wLm-qb-rv9"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GuideArrow" translatesAutoresizingMaskIntoConstraints="NO" id="CJ2-lO-hfE">
+                    <rect key="frame" x="344" y="668" width="80" height="20"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="CJ2-lO-hfE" firstAttribute="top" secondItem="I7u-fo-SBM" secondAttribute="bottom" constant="8" symbolic="YES" id="4pA-U7-8PO"/>
+                <constraint firstItem="I7u-fo-SBM" firstAttribute="trailing" secondItem="CJ2-lO-hfE" secondAttribute="trailing" id="95G-Be-enA"/>
+                <constraint firstItem="yvU-a8-SDy" firstAttribute="centerX" secondItem="1EB-eW-AL4" secondAttribute="centerX" id="L3M-hz-EFG"/>
+                <constraint firstItem="yvU-a8-SDy" firstAttribute="top" secondItem="1EB-eW-AL4" secondAttribute="top" constant="501" id="faM-pu-1ne"/>
+                <constraint firstItem="I7u-fo-SBM" firstAttribute="centerX" secondItem="yvU-a8-SDy" secondAttribute="centerX" id="itb-vM-ezO"/>
+                <constraint firstItem="CJ2-lO-hfE" firstAttribute="leading" secondItem="I7u-fo-SBM" secondAttribute="leading" id="obZ-TG-zMi"/>
+                <constraint firstAttribute="bottom" secondItem="CJ2-lO-hfE" secondAttribute="bottom" constant="336" id="xce-1s-s4Q"/>
+            </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
@@ -66,4 +89,7 @@
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
         </view>
     </objects>
+    <resources>
+        <image name="GuideArrow" width="80" height="20"/>
+    </resources>
 </document>

@@ -18,7 +18,7 @@
 #import "ReleaseDate.h"
 #import "GameTableViewController.h"
 #import "WishlistCollectionCell.h"
-#import "WishlistCollectionReusableView.h"
+#import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
 
 @interface WishlistCollectionViewController () <NSFetchedResultsControllerDelegate>
@@ -79,8 +79,9 @@
 	NSString *sectionName = [self.fetchedResultsController.sections[indexPath.section] name];
 	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue)];
 	
-	WishlistCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
+	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 	[headerView.titleLabel setText:releasePeriod.name];
+	[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
 	return headerView;
 }
 
@@ -474,7 +475,9 @@
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}
 		
-		[_context saveToPersistentStoreAndWait];
+		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[self.collectionView reloadData];
+		}];
 	}];
 }
 

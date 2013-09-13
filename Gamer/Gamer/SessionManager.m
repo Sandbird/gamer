@@ -10,7 +10,7 @@
 
 @implementation SessionManager
 
-static NSString *APIKEY = @"d92c258adb509ded409d28f4e51de2c83e297011";
+static NSString *APIKEY = @"bb5b34c59426946bea05a8b0b2877789fb374d3c";
 static NSMutableURLRequest *REQUEST;
 static EKEventStore *EVENTSTORE;
 static Gamer *GAMER;

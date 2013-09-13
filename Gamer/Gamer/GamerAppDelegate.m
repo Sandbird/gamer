@@ -122,6 +122,7 @@
 				[platform setName:names[index]];
 				[platform setAbbreviation:abbreviations[index]];
 				[platform setColor:colors[index]];
+				[platform setIndex:@(index)];
 			}
 			
 			[context saveToPersistentStoreAndWait];

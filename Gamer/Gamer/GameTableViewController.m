@@ -201,14 +201,14 @@
 		// If before last cell, download image for next cell
 		if (_images.count > (indexPath.item + 1)){
 			Image *nextImage = _images[indexPath.item + 1];
-			if (!nextImage.thumbnail && [nextImage.isDownloading isEqualToNumber:@(NO)])
+			if ((!nextImage.thumbnail && !nextImage.thumbnailTemporary) && [nextImage.isDownloading isEqualToNumber:@(NO)])
 				[self downloadImageWithImageObject:nextImage];
 		}
 		
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = _images[indexPath.item];
-		[cell.imageView setImage:[UIImage imageWithData:image.thumbnail]];
-		if (!image.thumbnail && [image.isDownloading isEqualToNumber:@(NO)]) [self downloadImageWithImageObject:image];
+		[cell.imageView setImage:[UIImage imageWithData:(image.index.integerValue <= ([Tools deviceIsiPad] ? 8 : 0)) ? image.thumbnail : image.thumbnailTemporary]];
+		if ((!image.thumbnail && !image.thumbnailTemporary) && [image.isDownloading isEqualToNumber:@(NO)]) [self downloadImageWithImageObject:image];
 		[image.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
 		return cell;
 	}
@@ -216,16 +216,16 @@
 		// If before last cell, download image for next cell
 		if (_videos.count > (indexPath.item + 1)){
 			Video *nextVideo = _videos[indexPath.item + 1];
-			if (!nextVideo.thumbnail && [nextVideo.isDownloading isEqualToNumber:@(NO)])
+			if ((!nextVideo.thumbnail && !nextVideo.thumbnailTemporary) && [nextVideo.isDownloading isEqualToNumber:@(NO)])
 				[self downloadThumbnailForVideo:nextVideo];
 		}
 		
 		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Video *video = _videos[indexPath.item];
-		[cell.imageView setImage:[UIImage imageWithData:video.thumbnail]];
+		[cell.imageView setImage:[UIImage imageWithData:(video.index.integerValue <= ([Tools deviceIsiPad] ? 4 : 0)) ? video.thumbnail : video.thumbnailTemporary]];
 		[cell.titleLabel setText:video.title];
 		[cell.lengthLabel setText:[Tools formattedStringForDuration:video.length.integerValue]];
-		if (!video.thumbnail && [video.isDownloading isEqualToNumber:@(NO)]) [self downloadThumbnailForVideo:video];
+		if ((!video.thumbnail && !video.thumbnailTemporary) && [video.isDownloading isEqualToNumber:@(NO)]) [self downloadThumbnailForVideo:video];
 		[video.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
 		return cell;
 	}
@@ -707,7 +707,12 @@
 //		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
 //		NSLog(@"%f - %f", _imagesCollectionView.collectionViewLayout.collectionViewContentSize.width, _imagesCollectionView.collectionViewLayout.collectionViewContentSize.height);
 		
-		[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		if (imageObject.index.integerValue <= ([Tools deviceIsiPad] ? 8 : 1)){
+			[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		}
+		else{
+			[imageObject setThumbnailTemporary:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		}
 		
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -781,7 +786,13 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-		[video setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		if (video.index.integerValue <= ([Tools deviceIsiPad] ? 4 : 0)){
+			[video setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		}
+		else{
+			[video setThumbnailTemporary:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
+		}
+		
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[video setIsDownloading:@(NO)];
@@ -854,7 +865,7 @@
 			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
 }
@@ -947,7 +958,7 @@
 			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
 	else{
@@ -1012,7 +1023,7 @@
 				[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 				[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 				
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"GameUpdated" object:nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 			}];
 		}
 	}

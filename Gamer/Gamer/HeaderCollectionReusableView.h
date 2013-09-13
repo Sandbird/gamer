@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WishlistCollectionReusableView : UICollectionReusableView
+@interface HeaderCollectionReusableView : UICollectionReusableView
 
+@property (nonatomic, strong) IBOutlet UIView *separator;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 
 @end

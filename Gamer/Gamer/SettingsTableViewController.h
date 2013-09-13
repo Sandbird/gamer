@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FetchedTableViewController.h"
 
-@interface SettingsTableViewController : FetchedTableViewController
+@interface SettingsTableViewController : UITableViewController
 
 - (IBAction)switchAction:(UISwitch *)sender;
 

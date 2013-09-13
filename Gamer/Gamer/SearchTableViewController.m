@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) NSArray *localResults;
 @property (nonatomic, strong) NSMutableArray *results;
+@property (nonatomic, assign) NSInteger lastSelectedRow;
 @property (nonatomic, strong) NSOperation *previousOperation;
 
 @end
@@ -27,6 +28,8 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
 	
 	// Search bar setup
 	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
@@ -41,8 +44,6 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
-	
 	if ((_localResults.count + _results.count == 0) && [SessionManager gamer].platforms.count == 0){
 		UIView *view = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][2];
 		[self.tableView setBackgroundView:view];
@@ -66,7 +67,7 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"GameDownloaded" object:nil];
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"GameDownloaded" object:nil];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -149,6 +150,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+	_lastSelectedRow = indexPath.row;
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
 }
 
@@ -188,9 +190,11 @@
 #pragma mark - Actions
 
 - (void)gameDownloadedNotification:(NSNotification *)notification{
-	[_results removeObjectAtIndex:self.tableView.indexPathForSelectedRow.row - _localResults.count];
-	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, _searchBar.text]];
-	[self.tableView reloadData];
+	if (_lastSelectedRow < (_results.count + _localResults.count)){
+		[_results removeObjectAtIndex:_lastSelectedRow - _localResults.count];
+		_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, _searchBar.text]];
+		[self.tableView reloadData];
+	}
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
