@@ -24,6 +24,8 @@ For features and bugs, please open a new [issue](https://github.com/caiomello/ga
 License
 =====
 
-**You're welcome to use this code, suggest (or make) new features and report (or fix) bugs, all I ask is that you give credit where it's due and don't make another app with the same goals or functionalities.**
+**You're welcome to use this code, suggest (or make) new features and report (or fix) bugs, all I ask is that you give credit where it's due and don't use it to make another app with the same goals.**
+
+**And of course please don't submit this code to the App Store. The idea here is having an app that everyone can help improve.**
 
 Gamer is available under the MIT license. See the LICENSE file for more info.
