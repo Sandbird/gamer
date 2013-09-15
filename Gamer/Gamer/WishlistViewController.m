@@ -234,6 +234,21 @@
 			[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
 		}
 		
+		// Refresh game release calendar event
+		if ([SessionManager calendarEnabled] && [game.releaseDate.defined isEqualToNumber:@(YES)]){
+			EKEventStore *eventStore = [SessionManager eventStore];
+			EKEvent *event = [eventStore eventWithIdentifier:game.releaseDate.eventIdentifier];
+			[event setTitle:[NSString stringWithFormat:@"%@ release", game.title]];
+			[event setStartDate:game.releaseDate.date];
+			[event setEndDate:event.startDate];
+			[event setAllDay:YES];
+			[event setAvailability:EKEventAvailabilityFree];
+			[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+			[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+			
+			[game.releaseDate setEventIdentifier:event.eventIdentifier];
+		}
+		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			if (_operationQueue.operationCount == 0) [self updateGamesReleasePeriods];
 		}];
