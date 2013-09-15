@@ -49,7 +49,7 @@
 	
 	_fetchedResultsController = [self fetch];
 	
-	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][1];
+	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][0];
 	[self.view insertSubview:_guideView aboveSubview:_collectionView];
 	[_guideView setFrame:self.view.frame];
 	[_guideView setHidden:YES];

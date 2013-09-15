@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Game;
+@class Game, Thumbnail;
 
 @interface Video : NSManagedObject
 
@@ -21,11 +21,10 @@
 @property (nonatomic, retain) NSString * lowQualityURL;
 @property (nonatomic, retain) NSString * overview;
 @property (nonatomic, retain) NSDate * publishDate;
-@property (nonatomic, retain) NSData * thumbnail;
-@property (nonatomic, retain) NSString * thumbnailURL;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * type;
-@property (nonatomic, retain) NSData * thumbnailTemporary;
+@property (nonatomic, retain) NSString * thumbnailURL;
 @property (nonatomic, retain) Game *game;
+@property (nonatomic, retain) Thumbnail *thumbnail;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "Video.h"
 #import "Game.h"
+#import "Thumbnail.h"
 
 
 @implementation Video
@@ -20,11 +21,10 @@
 @dynamic lowQualityURL;
 @dynamic overview;
 @dynamic publishDate;
-@dynamic thumbnail;
-@dynamic thumbnailURL;
 @dynamic title;
 @dynamic type;
-@dynamic thumbnailTemporary;
+@dynamic thumbnailURL;
 @dynamic game;
+@dynamic thumbnail;
 
 @end

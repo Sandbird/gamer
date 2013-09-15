@@ -1,5 +1,5 @@
 //
-//  ZoomViewController.h
+//  ImageViewerViewController.h
 //  Gamer
 //
 //  Created by Caio Mello on 7/8/13.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Image.h"
 
-@interface ZoomViewController : UIViewController
+@interface ImageViewerViewController : UIViewController
 
 @property (nonatomic, strong) Image *image;
 

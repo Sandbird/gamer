@@ -1,16 +1,16 @@
 //
-//  ZoomViewController.m
+//  ImageViewerViewController.m
 //  Gamer
 //
 //  Created by Caio Mello on 7/8/13.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "ZoomViewController.h"
+#import "ImageViewerViewController.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 #import <AFNetworking/AFNetworking.h>
 
-@interface ZoomViewController () <UIScrollViewDelegate>
+@interface ImageViewerViewController () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
@@ -26,7 +26,7 @@
 
 @end
 
-@implementation ZoomViewController
+@implementation ImageViewerViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -41,7 +41,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] set:kGAIScreenName value:@"Zoom"];
+	[[SessionManager tracker] set:kGAIScreenName value:@"ImageViewer"];
 	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
@@ -51,6 +51,8 @@
 
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
+	
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)prefersStatusBarHidden{
@@ -114,6 +116,7 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
+		NSLog(@"%f x %f", image.size.width, image.size.height);
 		[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			_imageSize = image.size;
 			[self initializeImageViewWithImage:image animated:YES];

@@ -46,6 +46,11 @@
 	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
+- (void)viewDidLayoutSubviews{
+	if ([Tools deviceIsiPad])
+		[_guideView setCenter:self.view.center];
+}
+
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
 }

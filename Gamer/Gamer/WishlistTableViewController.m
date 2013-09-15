@@ -35,6 +35,8 @@
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
+	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
@@ -49,8 +51,6 @@
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] set:kGAIScreenName value:@"Wishlist"];
 	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
-	
-	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	
 	[self updateGamesReleasePeriods];
 }
@@ -103,6 +103,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -273,6 +274,21 @@
 			[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
 		}
 		
+		// Refresh game release calendar event
+		if ([SessionManager calendarEnabled] && [game.releaseDate.defined isEqualToNumber:@(YES)]){
+			EKEventStore *eventStore = [SessionManager eventStore];
+			EKEvent *event = [eventStore eventWithIdentifier:game.releaseDate.eventIdentifier];
+			[event setTitle:[NSString stringWithFormat:@"%@ release", game.title]];
+			[event setStartDate:game.releaseDate.date];
+			[event setEndDate:event.startDate];
+			[event setAllDay:YES];
+			[event setAvailability:EKEventAvailabilityFree];
+			[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+			[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+			
+			[game.releaseDate setEventIdentifier:event.eventIdentifier];
+		}
+		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			if (_operationQueue.operationCount == 0) [self updateGamesReleasePeriods];
 		}];
@@ -360,6 +376,10 @@
 }
 
 #pragma mark - Actions
+
+- (void)gameDownloadedNotification:(NSNotification *)notification{
+	[self.tableView reloadData];
+}
 
 - (IBAction)reloadBarButtonAction:(UIBarButtonItem *)sender{
 	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)

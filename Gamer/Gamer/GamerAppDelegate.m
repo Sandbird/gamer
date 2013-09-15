@@ -10,7 +10,7 @@
 #import "Game.h"
 #import "ReleasePeriod.h"
 #import "Platform.h"
-#import "Image.h"
+#import "Thumbnail.h"
 #import "ReleaseDate.h"
 #import <AFNetworking/AFNetworking.h>
 
@@ -80,7 +80,6 @@
 			[releasePeriod setName:periods[period - 1]];
 			
 			Game *placeholderGame = [Game createInContext:context];
-//			[placeholderGame setTitle:[NSString stringWithFormat:@"placeholder%@", releasePeriod.identifier]];
 			[placeholderGame setTitle:@"ZZZ"];
 			[placeholderGame setReleasePeriod:releasePeriod];
 			[placeholderGame setReleaseDate:releaseDate];
@@ -151,6 +150,10 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application{
+	// Delete non-initial thumbnails
+	[Thumbnail truncateAll];
+//	[Thumbnail deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"image.index > %@ OR video.index > %@", ([Tools deviceIsiPad] ? @(7) : @(1)), ([Tools deviceIsiPad] ? @(3) : @(1))]];
+	
 	// Delete games not opened in the last ten days
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	NSDateComponents *components = [calendar components:NSDayCalendarUnit fromDate:[NSDate date]];
@@ -158,7 +161,8 @@
 	NSDate *tenDaysAgo = [calendar dateByAddingComponents:components toDate:[NSDate date] options:NSCalendarWrapComponents];
 	
 	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"wanted = %@ AND owned = %@ AND dateLastOpened < %@", @(NO), @(NO), tenDaysAgo]];
-	[[NSManagedObjectContext defaultContext] saveToPersistentStoreAndWait];
+	
+	[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreAndWait];
 	
 	[MagicalRecord cleanUp];
 }

@@ -15,6 +15,7 @@
 #import "Theme.h"
 #import "Image.h"
 #import "Video.h"
+#import "Thumbnail.h"
 #import "ReleasePeriod.h"
 #import "CoverImage.h"
 #import "ReleaseDate.h"
@@ -22,7 +23,7 @@
 #import "ImageCollectionCell.h"
 #import "VideoCollectionCell.h"
 #import <MACircleProgressIndicator/MACircleProgressIndicator.h>
-#import "ZoomViewController.h"
+#import "ImageViewerViewController.h"
 #import "PlatformCollectionCell.h"
 #import "ContentStatusView.h"
 #import "MetacriticViewController.h"
@@ -107,10 +108,10 @@
 		
 		// Just for testing
 		[_descriptionTextView setText:_game.overview];
-		if (_game.genres.count > 0) [_genreFirstLabel setText:[_game.genres.allObjects[0] name]];
-		if (_game.genres.count > 1) [_genreSecondLabel setText:[_game.genres.allObjects[1] name]];
-		if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
-		if (_game.publishers.count > 0) [_publisherLabel setText:[_game.publishers.allObjects[0] name]];
+		[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
+		[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
+		[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
+		[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
 		
 		_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
 		
@@ -201,14 +202,14 @@
 		// If before last cell, download image for next cell
 		if (_images.count > (indexPath.item + 1)){
 			Image *nextImage = _images[indexPath.item + 1];
-			if ((!nextImage.thumbnail && !nextImage.thumbnailTemporary) && [nextImage.isDownloading isEqualToNumber:@(NO)])
+			if (!nextImage.thumbnail && [nextImage.isDownloading isEqualToNumber:@(NO)])
 				[self downloadImageWithImageObject:nextImage];
 		}
 		
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = _images[indexPath.item];
-		[cell.imageView setImage:[UIImage imageWithData:(image.index.integerValue <= ([Tools deviceIsiPad] ? 8 : 0)) ? image.thumbnail : image.thumbnailTemporary]];
-		if ((!image.thumbnail && !image.thumbnailTemporary) && [image.isDownloading isEqualToNumber:@(NO)]) [self downloadImageWithImageObject:image];
+		[cell.imageView setImage:[UIImage imageWithData:image.thumbnail.data]];
+		if (!image.thumbnail && [image.isDownloading isEqualToNumber:@(NO)]) [self downloadImageWithImageObject:image];
 		[image.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
 		return cell;
 	}
@@ -216,16 +217,16 @@
 		// If before last cell, download image for next cell
 		if (_videos.count > (indexPath.item + 1)){
 			Video *nextVideo = _videos[indexPath.item + 1];
-			if ((!nextVideo.thumbnail && !nextVideo.thumbnailTemporary) && [nextVideo.isDownloading isEqualToNumber:@(NO)])
+			if (!nextVideo.thumbnail && [nextVideo.isDownloading isEqualToNumber:@(NO)])
 				[self downloadThumbnailForVideo:nextVideo];
 		}
 		
 		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Video *video = _videos[indexPath.item];
-		[cell.imageView setImage:[UIImage imageWithData:(video.index.integerValue <= ([Tools deviceIsiPad] ? 4 : 0)) ? video.thumbnail : video.thumbnailTemporary]];
+		[cell.imageView setImage:[UIImage imageWithData:video.thumbnail.data]];
 		[cell.titleLabel setText:video.title];
 		[cell.lengthLabel setText:[Tools formattedStringForDuration:video.length.integerValue]];
-		if ((!video.thumbnail && !video.thumbnailTemporary) && [video.isDownloading isEqualToNumber:@(NO)]) [self downloadThumbnailForVideo:video];
+		if (!video.thumbnail && [video.isDownloading isEqualToNumber:@(NO)]) [self downloadThumbnailForVideo:video];
 		[video.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
 		return cell;
 	}
@@ -234,7 +235,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _imagesCollectionView){
 		Image *image = _images[indexPath.item];
-		[self performSegueWithIdentifier:@"ZoomSegue" sender:image];
+		[self performSegueWithIdentifier:@"ViewerSegue" sender:image];
 	}
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
@@ -487,12 +488,11 @@
 			[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
 			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			
-			// This mess is just for demo purposes
 			[_descriptionTextView setText:_game.overview];
-			if (_game.genres.count > 0) [_genreFirstLabel setText:[_game.genres.allObjects[0] name]];
-			if (_game.genres.count > 1) [_genreSecondLabel setText:[_game.genres.allObjects[1] name]];
-			if (_game.developers.count > 0) [_developerLabel setText:[_game.developers.allObjects[0] name]];
-			if (_game.publishers.count > 0) [_publisherLabel setText:[_game.publishers.allObjects[0] name]];
+			[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
+			[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
+			[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
+			[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
 			
 			_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
 			[_platformsCollectionView reloadData];
@@ -639,14 +639,13 @@
 				Image *image = [Image findFirstByAttribute:@"thumbnailURL" withValue:stringURL inContext:_context];
 				if (!image){
 					image = [Image createInContext:_context];
+					
 					[image setThumbnailURL:stringURL];
 					[image setOriginalURL:[stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"]];
 				}
+					
 				[image setIndex:@(index)];
 				[game addImagesObject:image];
-				
-				if (index <= 1)
-					[self downloadImageWithImageObject:image];
 				
 				index++;
 			}
@@ -654,8 +653,8 @@
 			// No images available
 			if (index == 0){
 				[_imagesStatusView setStatus:ContentStatusUnavailable];
-				[_imagesStatusView setHidden:NO];
 			}
+			[_imagesStatusView setHidden:(index == 0) ? NO : YES];
 		}
 		
 		// Videos
@@ -668,6 +667,7 @@
 					video = [Video createInContext:_context];
 					[video setIdentifier:identifier];
 				}
+				
 				[video setIndex:@(index)];
 				[video setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
 				[game addVideosObject:video];
@@ -680,20 +680,20 @@
 			// No videos available
 			if (index == 0){
 				[_videosStatusView setStatus:ContentStatusUnavailable];
-				[_videosStatusView setHidden:NO];
 			}
+			[_videosStatusView setHidden:(index == 0) ? NO : YES];
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
 			[self.tableView reloadData];
+			[_imagesCollectionView reloadData];
 			[_videosCollectionView reloadData];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d", self, response.statusCode);
 	}];
-//	[operation start];
 	[_operationQueue addOperation:operation];
 }
 
@@ -703,18 +703,16 @@
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageObject.thumbnailURL]];
 	[request setHTTPMethod:@"GET"];
 	
+	if (!imageObject.thumbnail)
+		[imageObject setThumbnail:[Thumbnail createInContext:_context]];
+	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
 //		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
 //		NSLog(@"%f - %f", _imagesCollectionView.collectionViewLayout.collectionViewContentSize.width, _imagesCollectionView.collectionViewLayout.collectionViewContentSize.height);
 		
-		if (imageObject.index.integerValue <= ([Tools deviceIsiPad] ? 8 : 1)){
-			[imageObject setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
-		}
-		else{
-			[imageObject setThumbnailTemporary:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
-		}
-		
+		[imageObject.thumbnail setData:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
 		return nil;
+		
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[imageObject setIsDownloading:@(NO)];
 		
@@ -732,7 +730,7 @@
 	NSURLRequest *request = [SessionManager URLRequestForVideoWithFields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image" identifier:video.identifier];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+//		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
 //		NSLog(@"%@", JSON);
 		
@@ -761,10 +759,8 @@
 			[video deleteEntity];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			if (video && video.index.integerValue <= 1 && !video.thumbnail && [video.type isEqualToString:@"Trailers"])
-				[self downloadThumbnailForVideo:video];
-			
 			_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
+			[_videosCollectionView reloadData];
 			
 			// No videos available
 			if (_videos.count == 0 && _operationQueue.operationCount == 0){
@@ -785,15 +781,13 @@
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:video.thumbnailURL]];
 	[request setHTTPMethod:@"GET"];
 	
+	if (!video.thumbnail)
+		[video setThumbnail:[Thumbnail createInContext:_context]];
+	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-		if (video.index.integerValue <= ([Tools deviceIsiPad] ? 4 : 0)){
-			[video setThumbnail:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
-		}
-		else{
-			[video setThumbnailTemporary:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
-		}
-		
+		[video.thumbnail setData:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
 		return nil;
+		
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[video setIsDownloading:@(NO)];
 		
@@ -822,21 +816,6 @@
 			}
 			else{
 				[_game setWishlistPlatform:_selectablePlatforms[buttonIndex]];
-				
-				// Add game release to calendar
-				if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
-					EKEventStore *eventStore = [SessionManager eventStore];
-					EKEvent *event = [EKEvent eventWithEventStore:eventStore];
-					[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
-					[event setStartDate:_game.releaseDate.date];
-					[event setEndDate:event.startDate];
-					[event setAllDay:YES];
-					[event setAvailability:EKEventAvailabilityFree];
-					[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-					[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
-					
-					[_game.releaseDate setEventIdentifier:event.eventIdentifier];
-				}
 				
 				if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
 					NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", _game.releasePeriod.identifier, @(NO), @(YES)];
@@ -867,6 +846,23 @@
 			
 			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+			
+			// Add game release to calendar
+			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
+				EKEventStore *eventStore = [SessionManager eventStore];
+				EKEvent *event = [EKEvent eventWithEventStore:eventStore];
+				[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
+				[event setStartDate:_game.releaseDate.date];
+				[event setEndDate:event.startDate];
+				[event setAllDay:YES];
+				[event setAvailability:EKEventAvailabilityFree];
+				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+				[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+				
+				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+				
+				[_context saveToPersistentStoreAndWait];
+			}
 		}];
 	}
 }
@@ -984,21 +980,6 @@
 					[_game setLibraryPlatform:nil];
 				}
 				
-				// Add game release to calendar
-				if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
-					EKEventStore *eventStore = [SessionManager eventStore];
-					EKEvent *event = [EKEvent eventWithEventStore:eventStore];
-					[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
-					[event setStartDate:_game.releaseDate.date];
-					[event setEndDate:event.startDate];
-					[event setAllDay:YES];
-					[event setAvailability:EKEventAvailabilityFree];
-					[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-					[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
-					
-					[_game.releaseDate setEventIdentifier:event.eventIdentifier];
-				}
-				
 				// If release period is collapsed, set game to hidden
 				if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
 					NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", _game.releasePeriod.identifier, @(NO), @(YES)];
@@ -1027,6 +1008,23 @@
 				
 				if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+				
+				// Add game release to calendar
+				if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
+					EKEventStore *eventStore = [SessionManager eventStore];
+					EKEvent *event = [EKEvent eventWithEventStore:eventStore];
+					[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
+					[event setStartDate:_game.releaseDate.date];
+					[event setEndDate:event.startDate];
+					[event setAllDay:YES];
+					[event setAvailability:EKEventAvailabilityFree];
+					[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+					[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
+					
+					[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+					
+					[_context saveToPersistentStoreAndWait];
+				}
 			}];
 		}
 	}
@@ -1041,10 +1039,10 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-	if ([segue.identifier isEqualToString:@"ZoomSegue"]){
+	if ([segue.identifier isEqualToString:@"ViewerSegue"]){
 		Image *image = sender;
 		
-		ZoomViewController *destination = segue.destinationViewController;
+		ImageViewerViewController *destination = segue.destinationViewController;
 		[destination setImage:image];
 	}
 	else{

@@ -8,6 +8,7 @@
 
 #import "Image.h"
 #import "Game.h"
+#import "Thumbnail.h"
 
 
 @implementation Image
@@ -15,9 +16,8 @@
 @dynamic index;
 @dynamic isDownloading;
 @dynamic originalURL;
-@dynamic thumbnail;
 @dynamic thumbnailURL;
-@dynamic thumbnailTemporary;
 @dynamic game;
+@dynamic thumbnail;
 
 @end
