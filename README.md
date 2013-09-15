@@ -28,4 +28,4 @@ License
 
 **And of course please don't submit this code to the App Store. The idea here is having an app that everyone can help improve.**
 
-Gamer is available under the MIT license. See the LICENSE file for more info.
+Gamer is available under the GPL license. See the LICENSE file for more info.
