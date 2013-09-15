@@ -116,11 +116,8 @@
 	[request setHTTPMethod:@"GET"];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
-		NSLog(@"%f x %f", image.size.width, image.size.height);
-		[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			_imageSize = image.size;
-			[self initializeImageViewWithImage:image animated:YES];
-		}];
+		_imageSize = image.size;
+		[self initializeImageViewWithImage:image animated:YES];
 	}];
 	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 //		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
@@ -148,8 +145,6 @@
 		[_scrollView setMinimumZoomScale:self.view.bounds.size.height/_imageSize.height];
 	
 	[_scrollView setZoomScale:_scrollView.minimumZoomScale];
-	
-	[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreAndWait];
 }
 
 #pragma mark - Actions

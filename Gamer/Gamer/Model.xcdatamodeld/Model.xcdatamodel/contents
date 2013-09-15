@@ -31,20 +31,20 @@
         <attribute name="thumbnailLarge" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="wanted" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <relationship name="coverImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoverImage" inverseName="game" inverseEntity="CoverImage" syncable="YES"/>
-        <relationship name="developers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Developer" inverseName="games" inverseEntity="Developer" syncable="YES"/>
-        <relationship name="franchises" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Franchise" inverseName="games" inverseEntity="Franchise" syncable="YES"/>
-        <relationship name="genres" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
-        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="game" inverseEntity="Image" syncable="YES"/>
+        <relationship name="coverImage" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CoverImage" inverseName="game" inverseEntity="CoverImage" syncable="YES"/>
+        <relationship name="developers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Developer" inverseName="games" inverseEntity="Developer" syncable="YES"/>
+        <relationship name="franchises" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Franchise" inverseName="games" inverseEntity="Franchise" syncable="YES"/>
+        <relationship name="genres" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Image" inverseName="game" inverseEntity="Image" syncable="YES"/>
         <relationship name="libraryPlatform" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="libraryGames" inverseEntity="Platform" syncable="YES"/>
         <relationship name="placeholderPeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="placeholderGame" inverseEntity="ReleasePeriod" syncable="YES"/>
         <relationship name="platforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="games" inverseEntity="Platform" syncable="YES"/>
-        <relationship name="publishers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Publisher" inverseName="games" inverseEntity="Publisher" syncable="YES"/>
+        <relationship name="publishers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Publisher" inverseName="games" inverseEntity="Publisher" syncable="YES"/>
         <relationship name="releaseDate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleaseDate" inverseName="games" inverseEntity="ReleaseDate" syncable="YES"/>
         <relationship name="releasePeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="games" inverseEntity="ReleasePeriod" syncable="YES"/>
-        <relationship name="similarGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SimilarGame" inverseName="game" inverseEntity="SimilarGame" syncable="YES"/>
-        <relationship name="themes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Theme" inverseName="games" inverseEntity="Theme" syncable="YES"/>
-        <relationship name="videos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Video" inverseName="game" inverseEntity="Video" syncable="YES"/>
+        <relationship name="similarGames" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SimilarGame" inverseName="game" inverseEntity="SimilarGame" syncable="YES"/>
+        <relationship name="themes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Theme" inverseName="games" inverseEntity="Theme" syncable="YES"/>
+        <relationship name="videos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Video" inverseName="game" inverseEntity="Video" syncable="YES"/>
         <relationship name="wishlistPlatform" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="wishlistGames" inverseEntity="Platform" syncable="YES"/>
     </entity>
     <entity name="Gamer" representedClassName="Gamer" syncable="YES">
@@ -62,7 +62,7 @@
         <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbnailURL" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="images" inverseEntity="Game" syncable="YES"/>
-        <relationship name="thumbnail" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Thumbnail" inverseName="image" inverseEntity="Thumbnail" syncable="YES"/>
+        <relationship name="thumbnail" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Thumbnail" inverseName="image" inverseEntity="Thumbnail" syncable="YES"/>
     </entity>
     <entity name="Platform" representedClassName="Platform" syncable="YES">
         <attribute name="abbreviation" optional="YES" attributeType="String" syncable="YES"/>
@@ -126,7 +126,7 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="videos" inverseEntity="Game" syncable="YES"/>
-        <relationship name="thumbnail" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Thumbnail" inverseName="video" inverseEntity="Thumbnail" syncable="YES"/>
+        <relationship name="thumbnail" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Thumbnail" inverseName="video" inverseEntity="Thumbnail" syncable="YES"/>
     </entity>
     <elements>
         <element name="CoverImage" positionX="106" positionY="-241" width="128" height="88"/>
@@ -142,7 +142,7 @@
         <element name="ReleasePeriod" positionX="-83" positionY="-243" width="128" height="103"/>
         <element name="SimilarGame" positionX="106" positionY="518" width="128" height="103"/>
         <element name="Theme" positionX="106" positionY="398" width="128" height="88"/>
+        <element name="Thumbnail" positionX="468" positionY="-54" width="128" height="88"/>
         <element name="Video" positionX="286" positionY="-54" width="128" height="238"/>
-        <element name="Thumbnail" positionX="468" positionY="-52" width="128" height="88"/>
     </elements>
 </model>

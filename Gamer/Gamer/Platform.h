@@ -2,7 +2,7 @@
 //  Platform.h
 //  Gamer
 //
-//  Created by Caio Mello on 12/09/2013.
+//  Created by Caio Mello on 15/09/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -16,8 +16,8 @@
 @property (nonatomic, retain) NSString * abbreviation;
 @property (nonatomic, retain) id color;
 @property (nonatomic, retain) NSNumber * identifier;
-@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * index;
+@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) Gamer *gamer;
 @property (nonatomic, retain) NSSet *games;
 @property (nonatomic, retain) NSSet *libraryGames;

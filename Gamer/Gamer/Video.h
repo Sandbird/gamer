@@ -2,7 +2,7 @@
 //  Video.h
 //  Gamer
 //
-//  Created by Caio Mello on 13/09/2013.
+//  Created by Caio Mello on 15/09/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -21,9 +21,9 @@
 @property (nonatomic, retain) NSString * lowQualityURL;
 @property (nonatomic, retain) NSString * overview;
 @property (nonatomic, retain) NSDate * publishDate;
+@property (nonatomic, retain) NSString * thumbnailURL;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * type;
-@property (nonatomic, retain) NSString * thumbnailURL;
 @property (nonatomic, retain) Game *game;
 @property (nonatomic, retain) Thumbnail *thumbnail;
 
