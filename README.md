@@ -3,6 +3,8 @@ Gamer
 
 Gamer is a tool for exploring, organizing and keeping track of all our games.
 
+(Version 1.0 has been submitted to Apple and is currently waiting for review. This page will get updated as soon as the app is released.)
+
 
 Credits
 =====
