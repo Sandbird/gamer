@@ -1,7 +1,8 @@
 Gamer
 =====
 
-Gamer is an iOS app that helps us organize and keep track of all the games we care about.
+Gamer is a tool for exploring, organizing and keeping track of all our games.
+
 
 Credits
 =====
@@ -24,8 +25,8 @@ For features and bugs, please open a new [issue](https://github.com/caiomello/ga
 License
 =====
 
-**You're welcome to use this code, suggest (or make) new features and report (or fix) bugs, all I ask is that you give credit where it's due and don't use it to make another app with the same goals.**
+**You're welcome to check out the code, suggest or make new features and report or fix bugs, all I ask is that you give credit where it's due and don't use it to make another app with the same goals.**
 
-**And of course please don't submit this code to the App Store. The idea here is having an app that everyone can help improve.**
+**And of course please don't submit this code to the App Store. The idea here is having an app that we can all work together to improve.**
 
 Gamer is available under the GPL license. See the LICENSE file for more info.
