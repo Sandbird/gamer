@@ -245,27 +245,6 @@
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 			
-//			// Refresh game's calendar event
-//			if ([SessionManager calendarEnabled] && [game.releaseDate.defined isEqualToNumber:@(YES)]){
-//				EKEventStore *eventStore = [SessionManager eventStore];
-//				EKEvent *event = [eventStore eventWithIdentifier:game.releaseDate.eventIdentifier];
-//				if (!event) [EKEvent eventWithEventStore:eventStore];
-//				[event setTitle:[NSString stringWithFormat:@"%@ Release", game.title]];
-//				[event setStartDate:game.releaseDate.date];
-//				[event setEndDate:event.startDate];
-//				[event setAllDay:YES];
-//				[event setAvailability:EKEventAvailabilityFree];
-//				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-//				NSError *calendarError;
-//				[eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&calendarError];
-//				NSLog(@"ERROR: %@", calendarError);
-//				NSLog(@"EVENT: %@", event.eventIdentifier);
-//				
-//				[game.releaseDate setEventIdentifier:event.eventIdentifier];
-//				
-//				[_context saveToPersistentStoreAndWait];
-//			}
-			
 			// If refresh is done, update release periods
 			if (_operationQueue.operationCount == 0) [self updateGameReleasePeriods];
 		}];

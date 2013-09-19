@@ -48,9 +48,6 @@
 	// Initial data
 	NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
 	
-//	EKEventStore *eventStore = [[EKEventStore alloc] init];
-//	[SessionManager setEventStore:eventStore];
-	
 	// (AKA the user)
 	Gamer *gamer = [Gamer findFirst];
 	

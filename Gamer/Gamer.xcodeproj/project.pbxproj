@@ -70,7 +70,6 @@
 		25D2E601178BB22900C7EDDB /* ImageViewerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ImageViewerViewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
 		25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */; };
-		25F4588E179DFB2C008C15B3 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F4588D179DFB2C008C15B3 /* EventKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -204,7 +203,6 @@
 			files = (
 				25180CA217DFD541002675F1 /* SystemConfiguration.framework in Frameworks */,
 				25180CA117DFD534002675F1 /* MobileCoreServices.framework in Frameworks */,
-				25F4588E179DFB2C008C15B3 /* EventKit.framework in Frameworks */,
 				255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */,
 				2531E822176CDA48005881A4 /* QuartzCore.framework in Frameworks */,
 				2531E820176CDA35005881A4 /* CoreData.framework in Frameworks */,

@@ -469,47 +469,6 @@
 			// If game is released and has at least one platform, request metascore
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _platforms.count > 0)
 				[self requestMetascoreForGameWithTitle:_game.title platform:_platforms[0]];
-			
-//			NSLog(@"DEFINED: %@", _game.releaseDate.defined);
-//			NSLog(@"date:    %@", _game.releaseDate.date);
-//			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)] && [_game.wanted isEqualToNumber:@(YES)]){
-//				EKEventStore *eventStore = [SessionManager eventStore];
-//				
-//				EKEvent *event;
-//				
-//				BOOL eventExists = NO;
-//				NSArray *events = [eventStore eventsMatchingPredicate:[eventStore predicateForEventsWithStartDate:_game.releaseDate.date endDate:_game.releaseDate.date calendars:nil]];
-//				for (EKEvent *existingEvent in events){
-//					if ([existingEvent.title isEqualToString:[NSString stringWithFormat:@"%@ Release", _game.title]]){
-//						eventExists = YES;
-//						event = existingEvent;
-//						break;
-//					}
-//				}
-//				
-//				if (!eventExists) event = [EKEvent eventWithEventStore:eventStore];
-//				
-//				// REMINDER: REWRITE ALL CALENDAR EVENT METHODS (WISHLIST & WISHLIST COLLECTION)
-//				
-//				// MOVE THIS TO A NEW METHOD
-//				
-////				EKEvent *event = [eventStore eventWithIdentifier:_game.releaseDate.eventIdentifier];
-////				if (!event) [EKEvent eventWithEventStore:eventStore];
-//				[event setTitle:[NSString stringWithFormat:@"%@ Release", _game.title]];
-//				[event setStartDate:_game.releaseDate.date];
-//				[event setEndDate:event.startDate];
-//				[event setAllDay:YES];
-//				[event setAvailability:EKEventAvailabilityFree];
-//				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-//				NSError *calendarError;
-//				[eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&calendarError];
-//				NSLog(@"ERROR: %@", calendarError);
-//				NSLog(@"EVENT: %@", event.eventIdentifier);
-//				
-//				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
-//				NSLog(@"id: %@", _game.releaseDate.eventIdentifier);
-//				[_context saveToPersistentStoreAndWait];
-//			}
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -831,8 +790,6 @@
 			if ([_game.wanted isEqualToNumber:@(YES)]){
 				[_game setWanted:@(NO)];
 				[_game setOwned:@(NO)];
-				
-//				[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
 			}
 			else{
 				[_game setWishlistPlatform:_selectablePlatforms[buttonIndex]];
@@ -866,27 +823,6 @@
 			
 			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
-			
-//			// Add game release to calendar
-//			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)] && [_game.wanted isEqualToNumber:@(YES)]){
-//				EKEventStore *eventStore = [SessionManager eventStore];
-//				EKEvent *event = [eventStore eventWithIdentifier:_game.releaseDate.eventIdentifier];
-//				if (!event) [EKEvent eventWithEventStore:eventStore];
-//				[event setTitle:[NSString stringWithFormat:@"%@ Release", _game.title]];
-//				[event setStartDate:_game.releaseDate.date];
-//				[event setEndDate:event.startDate];
-//				[event setAllDay:YES];
-//				[event setAvailability:EKEventAvailabilityFree];
-//				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-//				NSError *calendarError;
-//				[eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&calendarError];
-//				NSLog(@"ERROR: %@", calendarError);
-//				NSLog(@"EVENT: %@", event.eventIdentifier);
-//				
-//				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
-//				
-//				[_context saveToPersistentStoreAndWait];
-//			}
 		}];
 	}
 }
@@ -932,10 +868,6 @@
 	[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
 	[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
 }
-
-//- (void)updateCalendarEvent{
-//	
-//}
 
 - (NSInteger)quarterForMonth:(NSInteger)month{
 	switch (month) {
@@ -1004,8 +936,6 @@
 		[_game setWishlistPlatform:nil];
 		[_game setLibraryPlatform:nil];
 		
-//		[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
-		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
@@ -1065,27 +995,6 @@
 				
 				if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
-				
-//				// Add game release to calendar
-//				if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)] && [_game.wanted isEqualToNumber:@(YES)]){
-//					EKEventStore *eventStore = [SessionManager eventStore];
-//					EKEvent *event = [eventStore eventWithIdentifier:_game.releaseDate.eventIdentifier];
-//					if (!event) [EKEvent eventWithEventStore:eventStore];
-//					[event setTitle:[NSString stringWithFormat:@"%@ Release", _game.title]];
-//					[event setStartDate:_game.releaseDate.date];
-//					[event setEndDate:event.startDate];
-//					[event setAllDay:YES];
-//					[event setAvailability:EKEventAvailabilityFree];
-//					[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-//					NSError *calendarError;
-//					[eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&calendarError];
-//					NSLog(@"ERROR: %@", calendarError);
-//					NSLog(@"EVENT: %@", event.eventIdentifier);
-//					
-//					[_game.releaseDate setEventIdentifier:event.eventIdentifier];
-//					
-//					[_context saveToPersistentStoreAndWait];
-//				}
 			}];
 		}
 	}

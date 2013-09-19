@@ -12,7 +12,6 @@
 
 static NSString *APIKEY = @"bb5b34c59426946bea05a8b0b2877789fb374d3c";
 static NSMutableURLRequest *SEARCHREQUEST;
-//static EKEventStore *EVENTSTORE;
 static Gamer *GAMER;
 
 + (void)setGamer:(Gamer *)gamer{
@@ -26,64 +25,6 @@ static Gamer *GAMER;
 + (id<GAITracker>)tracker{
 	return [GAI sharedInstance].defaultTracker;
 }
-
-//+ (void)setEventStore:(EKEventStore *)eventStore{
-//	EVENTSTORE = eventStore;
-//}
-
-//+ (EKEventStore *)eventStore{
-//	return EVENTSTORE;
-//}
-
-//+ (BOOL)calendarEnabled{
-//	__block BOOL accessGranted = NO;
-//	
-//	// If calendar access has not been requested, do it
-//	if([EVENTSTORE respondsToSelector:@selector(requestAccessToEntityType:completion:)]) {
-//		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-//		[EVENTSTORE requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-//			accessGranted = granted;
-//			dispatch_semaphore_signal(semaphore);
-//		}];
-//		dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-//	}
-//	else
-//		accessGranted = YES;
-//	
-//	if (accessGranted){
-//		// Check sources for iCloud
-//		EKSource *source = nil;
-//		for (EKSource *storeSource in EVENTSTORE.sources){
-//			if (storeSource.sourceType == EKSourceTypeCalDAV && [storeSource.title isEqualToString:@"iCloud"]){
-//				source = storeSource;
-//				break;
-//			}
-//		}
-//		// If iCloud disabled, use local store
-//		if (!source){
-//			for (EKSource *storeSource in EVENTSTORE.sources){
-//				if (storeSource.sourceType == EKSourceTypeLocal){
-//					source = storeSource;
-//					break;
-//				}
-//			}
-//		}
-//		
-//		EKCalendar *calendar = [EVENTSTORE calendarWithIdentifier:GAMER.calendarIdentifier];
-//		if (!calendar) calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent eventStore:EVENTSTORE];
-//		[calendar setTitle:@"Game Releases"];
-//		[calendar setCGColor:[UIColor orangeColor].CGColor];
-//		[calendar setSource:source];
-//		
-//		NSError *error;
-//		[EVENTSTORE saveCalendar:calendar commit:YES error:&error];
-//		
-//		[GAMER setCalendarIdentifier:calendar.calendarIdentifier];
-//		[[NSManagedObjectContext contextForCurrentThread] saveToPersistentStoreAndWait];
-//	}
-//	
-//	return accessGranted;
-//}
 
 + (NSMutableURLRequest *)requestForGamesWithTitle:(NSString *)title fields:(NSString *)fields platforms:(NSArray *)platforms{
 	NSString *platformIdentifiers = [[platforms valueForKey:@"identifier"] componentsJoinedByString:@"|"];

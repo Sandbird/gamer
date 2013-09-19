@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <GoogleAnalytics-iOS-SDK/GAI.h>
-//#import <EventKit/EventKit.h>
 #import "Gamer.h"
 
 @interface SessionManager : NSObject
@@ -18,12 +17,6 @@
 + (Gamer *)gamer;
 
 + (id<GAITracker>)tracker;
-
-//+ (void)setEventStore:(EKEventStore *)eventStore;
-
-//+ (EKEventStore *)eventStore;
-
-//+ (BOOL)calendarEnabled;
 
 + (NSMutableURLRequest *)requestForGamesWithTitle:(NSString *)title fields:(NSString *)fields platforms:(NSArray *)platforms;
 
