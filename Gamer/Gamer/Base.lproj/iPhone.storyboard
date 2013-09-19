@@ -95,7 +95,7 @@
                     <navigationItem key="navigationItem" title="Wishlist" id="4x8-vH-4ca">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Ptj-iH-xdS">
                             <connections>
-                                <action selector="reloadBarButtonAction:" destination="jJE-qT-4zt" id="0v2-VA-giT"/>
+                                <action selector="refreshBarButtonAction:" destination="jJE-qT-4zt" id="dbV-vd-deD"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -1116,6 +1116,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="HYd-CU-5hN"/>
+        <segue reference="5qi-Mj-SGM"/>
     </inferredMetricsTieBreakers>
 </document>

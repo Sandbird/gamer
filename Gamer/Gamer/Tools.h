@@ -32,6 +32,7 @@
 
 // Stuff
 + (BOOL)deviceIsiPad;
++ (BOOL)deviceIsiPhone;
 
 // Graphics
 + (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset bounds:(CGRect)bounds;

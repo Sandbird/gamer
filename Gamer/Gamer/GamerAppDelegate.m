@@ -20,24 +20,19 @@
 	[MagicalRecord setupAutoMigratingCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
-	// Analytics setup
 #if !(TARGET_IPHONE_SIMULATOR)
-	// Google Analytics
+	// Google Analytics setup
 	[[GAI sharedInstance] setTrackUncaughtExceptions:YES];
 	[[GAI sharedInstance] setDispatchInterval:20];
 //	[[GAI sharedInstance] setDebug:YES];
 	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
 #endif
 	
-	// UI setup
-	
+	// UI
 	[self.window setTintColor:[UIColor orangeColor]];
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 	
-//	[[UITabBar appearance] setBarStyle:UIBarStyleBlack];
-	
-//	[[UINavigationBar appearance] setBarStyle:UIBarStyleBlack];
 	[[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:self.window.tintColor}];
 	
 	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
@@ -53,9 +48,10 @@
 	// Initial data
 	NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
 	
-	EKEventStore *eventStore = [[EKEventStore alloc] init];
-	[SessionManager setEventStore:eventStore];
+//	EKEventStore *eventStore = [[EKEventStore alloc] init];
+//	[SessionManager setEventStore:eventStore];
 	
+	// (AKA the user)
 	Gamer *gamer = [Gamer findFirst];
 	
 	if (gamer){
@@ -74,9 +70,11 @@
 		[context saveToPersistentStoreAndWait];
 	}
 	else {
+		// New user
 		gamer = [Gamer createInContext:context];
 		[SessionManager setGamer:gamer];
 		
+		// Release periods
 		NSCalendar *calendar = [NSCalendar currentCalendar];
 		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 		NSDateComponents *components = [calendar components:NSYearCalendarUnit fromDate:[NSDate date]];
@@ -101,6 +99,7 @@
 		}
 		
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			// Platforms
 			NSArray *identifiers = @[@(117), @(94), @(35), @(146), @(129), @(139), @(20), @(145)];
 			NSArray *names = @[@"Nintendo 3DS",
 							   @"PC",

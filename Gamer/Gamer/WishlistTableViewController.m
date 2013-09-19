@@ -35,7 +35,7 @@
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
@@ -45,23 +45,35 @@
 	_operationQueue = [[NSOperationQueue alloc] init];
 	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	
-	self.fetchedResultsController = [self fetch];
+	self.fetchedResultsController = [self fetchData];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] set:kGAIScreenName value:@"Wishlist"];
 	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
-	[self updateGamesReleasePeriods];
+	[self updateGameReleasePeriods];
 }
 
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
 }
 
+#pragma mark - FetchedResultsController
+
+- (NSFetchedResultsController *)fetchData{
+	if (!self.fetchedResultsController){
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND (wanted = %@ OR identifier = nil)", @(NO), @(YES)];
+		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
+	}
+	
+	return self.fetchedResultsController;
+}
+
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+	// Show guide view if table empty
 	if (self.fetchedResultsController.sections.count == 0){
 		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil][0];
 		[tableView setBackgroundView:view];
@@ -115,13 +127,13 @@
 	[game setWanted:@(NO)];
 	[game setWishlistPlatform:nil];
 	
-	[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
+//	[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
 	
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", game.releasePeriod.identifier, @(YES)];
 	NSArray *games = [Game findAllWithPredicate:predicate inContext:_context];
 	
-	if (games.count == 0)
-		[game.releasePeriod.placeholderGame setHidden:@(YES)];
+	// If no more games in section, hide placeholder so section is removed
+	if (games.count == 0) [game.releasePeriod.placeholderGame setHidden:@(YES)];
 	
 	[_context saveToPersistentStoreAndWait];
 }
@@ -145,33 +157,22 @@
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", releasePeriod.identifier, @(YES)];
 	NSArray *games = [Game findAllWithPredicate:predicate];
 	
+	// Switch hidden property of all games in section
 	for (Game *game in games)
 		[game setHidden:@(!game.hidden.boolValue)];
 	
 	[_context saveToPersistentStoreAndWait];
 }
 
-#pragma mark - FetchedResultsController
-
-- (NSFetchedResultsController *)fetch{
-	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND (wanted = %@ OR identifier = nil)", @(NO), @(YES)];
-		
-		self.fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
-	}
-	
-	return self.fetchedResultsController;
-}
-
 #pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game{
-	NSURLRequest *request = [SessionManager URLRequestForGameWithFields:@"expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,id,name,original_release_date" identifier:game.identifier];
+	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:game.identifier fields:@"expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,id,name,original_release_date"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-		//		NSLog(@"%@", JSON);
+//		NSLog(@"%@", JSON);
 		
 		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
@@ -190,6 +191,7 @@
 		NSCalendar *calendar = [NSCalendar currentCalendar];
 		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 		
+		// Game is released
 		if (originalReleaseDate){
 			NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Tools dateFormatter] dateFromString:originalReleaseDate]];
 			[originalReleaseDateComponents setHour:10];
@@ -212,12 +214,14 @@
 			[game setReleaseDate:releaseDate];
 			[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
 		}
+		// Game is not yet released
 		else{
 			NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 			[expectedReleaseDateComponents setHour:10];
 			
 			BOOL defined = NO;
 			
+			// Exact release date is known
 			if (expectedReleaseDay){
 				[expectedReleaseDateComponents setDay:expectedReleaseDay];
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
@@ -226,6 +230,7 @@
 				[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
 				defined = YES;
 			}
+			// Release month is known
 			else if (expectedReleaseMonth){
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
 				[expectedReleaseDateComponents setDay:0];
@@ -233,6 +238,7 @@
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
 				[[Tools dateFormatter] setDateFormat:@"MMMM yyyy"];
 			}
+			// Release quarter is known
 			else if (expectedReleaseQuarter){
 				[expectedReleaseDateComponents setQuarter:expectedReleaseQuarter];
 				[expectedReleaseDateComponents setMonth:((expectedReleaseQuarter * 3) + 1)];
@@ -240,6 +246,7 @@
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
 				[[Tools dateFormatter] setDateFormat:@"QQQ yyyy"];
 			}
+			// Release year is known
 			else if (expectedReleaseYear){
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
 				[expectedReleaseDateComponents setQuarter:4];
@@ -247,6 +254,7 @@
 				[expectedReleaseDateComponents setDay:0];
 				[[Tools dateFormatter] setDateFormat:@"yyyy"];
 			}
+			// Release date unknown
 			else{
 				[expectedReleaseDateComponents setYear:2050];
 				[expectedReleaseDateComponents setQuarter:4];
@@ -274,27 +282,37 @@
 			[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
 		}
 		
-		// Refresh game release calendar event
-		if ([SessionManager calendarEnabled] && [game.releaseDate.defined isEqualToNumber:@(YES)]){
-			EKEventStore *eventStore = [SessionManager eventStore];
-			EKEvent *event = [eventStore eventWithIdentifier:game.releaseDate.eventIdentifier];
-			[event setTitle:[NSString stringWithFormat:@"%@ release", game.title]];
-			[event setStartDate:game.releaseDate.date];
-			[event setEndDate:event.startDate];
-			[event setAllDay:YES];
-			[event setAvailability:EKEventAvailabilityFree];
-			[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-			[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
-			
-			[game.releaseDate setEventIdentifier:event.eventIdentifier];
-		}
-		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			if (_operationQueue.operationCount == 0) [self updateGamesReleasePeriods];
+			[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			
+//			// Refresh game's calendar event
+//			if ([SessionManager calendarEnabled] && [game.releaseDate.defined isEqualToNumber:@(YES)]){
+//				EKEventStore *eventStore = [SessionManager eventStore];
+//				EKEvent *event = [eventStore eventWithIdentifier:game.releaseDate.eventIdentifier];
+//				if (!event) [EKEvent eventWithEventStore:eventStore];
+//				[event setTitle:[NSString stringWithFormat:@"%@ Release", game.title]];
+//				[event setStartDate:game.releaseDate.date];
+//				[event setEndDate:event.startDate];
+//				[event setAllDay:YES];
+//				[event setAvailability:EKEventAvailabilityFree];
+//				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+//				NSError *calendarError;
+//				[eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&calendarError];
+//				NSLog(@"ERROR: %@", calendarError);
+//				NSLog(@"EVENT: %@", event.eventIdentifier);
+//				[game.releaseDate setEventIdentifier:event.eventIdentifier];
+//				
+//				[_context saveToPersistentStoreAndWait];
+//			}
+			
+			// If refresh is done, update release periods
+			if (_operationQueue.operationCount == 0) [self updateGameReleasePeriods];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
+		
+		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
 	[_operationQueue addOperation:operation];
 }
@@ -357,12 +375,14 @@
 	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
 }
 
-- (void)updateGamesReleasePeriods{
+- (void)updateGameReleasePeriods{
+	// Set release period for all games in Wishlist
 	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)]];
 	for (Game *game in games)
 		[game setReleasePeriod:[self releasePeriodForReleaseDate:game.releaseDate]];
+	
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		// Show section if it has tracked games
+		// Show section if it has  any games
 		NSArray *releasePeriods = [ReleasePeriod findAll];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
@@ -377,11 +397,14 @@
 
 #pragma mark - Actions
 
-- (void)gameDownloadedNotification:(NSNotification *)notification{
+- (void)coverImageDownloadedNotification:(NSNotification *)notification{
 	[self.tableView reloadData];
 }
 
-- (IBAction)reloadBarButtonAction:(UIBarButtonItem *)sender{
+- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
+	[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	
+	// Request info for all games in the Wishlist
 	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
 		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects] - 1); row++)
 			[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
@@ -389,6 +412,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
+		// Pop other tabs when opening game details
 		for (UIViewController *viewController in self.tabBarController.viewControllers){
 			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
 		}

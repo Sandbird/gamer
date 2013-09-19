@@ -60,19 +60,7 @@
 }
 
 - (void)viewDidLayoutSubviews{
-	CGRect contentFrame = _imageView.frame;
-	
-	if (_imageView.frame.size.width < _scrollView.bounds.size.width)
-		contentFrame.origin.x = (_scrollView.bounds.size.width - _imageView.frame.size.width)/2;
-	else
-		contentFrame.origin.x = 0;
-	
-	if (contentFrame.size.height < _scrollView.bounds.size.height)
-		contentFrame.origin.y = (_scrollView.bounds.size.height - contentFrame.size.height)/2;
-	else
-		contentFrame.origin.y = 0;
-	
-	_imageView.frame = contentFrame;
+	[self centerImageView];
 	
 	CGFloat imageAspectRatio = _imageSize.width/_imageSize.height;
 	CGFloat screenAspectRatio = self.view.bounds.size.width/self.view.bounds.size.height;
@@ -92,19 +80,7 @@
 }
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView{
-	CGRect contentFrame = _imageView.frame;
-	
-	if (_imageView.frame.size.width < _scrollView.bounds.size.width)
-		contentFrame.origin.x = (_scrollView.bounds.size.width - _imageView.frame.size.width)/2;
-	else
-		contentFrame.origin.x = 0;
-	
-	if (contentFrame.size.height < _scrollView.bounds.size.height)
-		contentFrame.origin.y = (_scrollView.bounds.size.height - contentFrame.size.height)/2;
-	else
-		contentFrame.origin.y = 0;
-	
-	_imageView.frame = contentFrame;
+	[self centerImageView];
 }
 
 #pragma mark - Networking
@@ -145,6 +121,22 @@
 		[_scrollView setMinimumZoomScale:self.view.bounds.size.height/_imageSize.height];
 	
 	[_scrollView setZoomScale:_scrollView.minimumZoomScale];
+}
+
+- (void)centerImageView{
+	CGRect contentFrame = _imageView.frame;
+	
+	if (_imageView.frame.size.width < _scrollView.bounds.size.width)
+		contentFrame.origin.x = (_scrollView.bounds.size.width - _imageView.frame.size.width)/2;
+	else
+		contentFrame.origin.x = 0;
+	
+	if (contentFrame.size.height < _scrollView.bounds.size.height)
+		contentFrame.origin.y = (_scrollView.bounds.size.height - contentFrame.size.height)/2;
+	else
+		contentFrame.origin.y = 0;
+	
+	_imageView.frame = contentFrame;
 }
 
 #pragma mark - Actions

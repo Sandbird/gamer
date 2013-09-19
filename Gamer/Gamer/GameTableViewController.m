@@ -86,32 +86,7 @@
 	if (!_game)
 		_game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
 	if (_game){
-		[self setCoverImageAnimated:NO];
-		
-		if (_game.metascore.integerValue >= 75)
-			[_metascoreButton setBackgroundColor:[UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1]];
-		else if (_game.metascore.integerValue >= 50)
-			[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1]];
-		else
-			[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:0 blue:0 alpha:1]];
-		
-		[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
-		[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
-		[_titleLabel setText:_game.title];
-		
-		[_releaseDateLabel setText:_game.releaseDateText];
-		
-		[_wishlistButton setHidden:NO];
-		[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-		[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
-		[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
-		
-		// Just for testing
-		[_descriptionTextView setText:_game.overview];
-		[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
-		[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
-		[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
-		[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
+		[self refreshAnimated:NO];
 		
 		_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
 		
@@ -210,7 +185,8 @@
 		Image *image = _images[indexPath.item];
 		[cell.imageView setImage:[UIImage imageWithData:image.thumbnail.data]];
 		if (!image.thumbnail && [image.isDownloading isEqualToNumber:@(NO)]) [self downloadImageWithImageObject:image];
-		[image.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
+//		[image.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
+		[cell.activityIndicator startAnimating];
 		return cell;
 	}
 	else{
@@ -240,6 +216,7 @@
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
 		if (video.highQualityURL){
+			// Regular player if iPad. Rotation locked player if iPhone.
 			if ([Tools deviceIsiPad]){
 				MPMoviePlayerViewController *player = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:video.highQualityURL]];
 				[self presentMoviePlayerViewControllerAnimated:player];
@@ -255,7 +232,7 @@
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
-	NSURLRequest *request = [SessionManager URLRequestForGameWithFields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers" identifier:identifier];
+	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -303,6 +280,7 @@
 		NSCalendar *calendar = [NSCalendar currentCalendar];
 		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 		
+		// Game is released
 		if (originalReleaseDate){
 			NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Tools dateFormatter] dateFromString:originalReleaseDate]];
 			[originalReleaseDateComponents setHour:10];
@@ -323,14 +301,17 @@
 			[_game setReleased:@(YES)];
 			
 			[_game setReleaseDate:releaseDate];
+			[_game.releaseDate setDefined:@(YES)];
 			[_game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
 		}
+		// Game is not yet released
 		else{
 			NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 			[expectedReleaseDateComponents setHour:10];
 			
 			BOOL defined = NO;
 			
+			// Exact release date is known
 			if (expectedReleaseDay){
 				[expectedReleaseDateComponents setDay:expectedReleaseDay];
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
@@ -339,6 +320,7 @@
 				[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
 				defined = YES;
 			}
+			// Release month is known
 			else if (expectedReleaseMonth){
 				[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
 				[expectedReleaseDateComponents setDay:0];
@@ -346,6 +328,7 @@
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
 				[[Tools dateFormatter] setDateFormat:@"MMMM yyyy"];
 			}
+			// Release quarter is known
 			else if (expectedReleaseQuarter){
 				[expectedReleaseDateComponents setQuarter:expectedReleaseQuarter];
 				[expectedReleaseDateComponents setMonth:((expectedReleaseQuarter * 3) + 1)];
@@ -353,6 +336,7 @@
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
 				[[Tools dateFormatter] setDateFormat:@"QQQ yyyy"];
 			}
+			// Release year is known
 			else if (expectedReleaseYear){
 				[expectedReleaseDateComponents setYear:expectedReleaseYear];
 				[expectedReleaseDateComponents setQuarter:4];
@@ -360,6 +344,7 @@
 				[expectedReleaseDateComponents setDay:0];
 				[[Tools dateFormatter] setDateFormat:@"yyyy"];
 			}
+			// Release date is unknown
 			else{
 				[expectedReleaseDateComponents setYear:2050];
 				[expectedReleaseDateComponents setQuarter:4];
@@ -377,8 +362,7 @@
 			[releaseDate setQuarter:@(expectedReleaseDateComponents.quarter)];
 			[releaseDate setYear:@(expectedReleaseDateComponents.year)];
 			
-			if (defined)
-				[releaseDate setDefined:@(YES)];
+			[releaseDate setDefined:@(defined)];
 			
 			[_game setReleaseDateText:(expectedReleaseYear) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
 			[_game setReleased:@(NO)];
@@ -475,24 +459,7 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self setCoverImageAnimated:NO];
-			
-			[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
-			[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
-			[_titleLabel setText:_game.title];
-			
-			[_releaseDateLabel setText:_game.releaseDateText];
-			
-			[_wishlistButton setHidden:NO];
-			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-			[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
-			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
-			
-			[_descriptionTextView setText:_game.overview];
-			[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
-			[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
-			[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
-			[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
+			[self refreshAnimated:NO];
 			
 			_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
 			[_platformsCollectionView reloadData];
@@ -502,10 +469,53 @@
 			// If game is released and has at least one platform, request metascore
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _platforms.count > 0)
 				[self requestMetascoreForGameWithTitle:_game.title platform:_platforms[0]];
+			
+//			NSLog(@"DEFINED: %@", _game.releaseDate.defined);
+//			NSLog(@"date:    %@", _game.releaseDate.date);
+//			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)] && [_game.wanted isEqualToNumber:@(YES)]){
+//				EKEventStore *eventStore = [SessionManager eventStore];
+//				
+//				EKEvent *event;
+//				
+//				BOOL eventExists = NO;
+//				NSArray *events = [eventStore eventsMatchingPredicate:[eventStore predicateForEventsWithStartDate:_game.releaseDate.date endDate:_game.releaseDate.date calendars:nil]];
+//				for (EKEvent *existingEvent in events){
+//					if ([existingEvent.title isEqualToString:[NSString stringWithFormat:@"%@ Release", _game.title]]){
+//						eventExists = YES;
+//						event = existingEvent;
+//						break;
+//					}
+//				}
+//				
+//				if (!eventExists) event = [EKEvent eventWithEventStore:eventStore];
+//				
+//				// REMINDER: REWRITE ALL CALENDAR EVENT METHODS (WISHLIST & WISHLIST COLLECTION)
+//				
+//				// MOVE THIS TO A NEW METHOD
+//				
+////				EKEvent *event = [eventStore eventWithIdentifier:_game.releaseDate.eventIdentifier];
+////				if (!event) [EKEvent eventWithEventStore:eventStore];
+//				[event setTitle:[NSString stringWithFormat:@"%@ Release", _game.title]];
+//				[event setStartDate:_game.releaseDate.date];
+//				[event setEndDate:event.startDate];
+//				[event setAllDay:YES];
+//				[event setAvailability:EKEventAvailabilityFree];
+//				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+//				NSError *calendarError;
+//				[eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&calendarError];
+//				NSLog(@"ERROR: %@", calendarError);
+//				NSLog(@"EVENT: %@", event.eventIdentifier);
+//				
+//				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+//				NSLog(@"id: %@", _game.releaseDate.eventIdentifier);
+//				[_context saveToPersistentStoreAndWait];
+//			}
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
+		
+		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
 	[operation start];
 }
@@ -549,6 +559,7 @@
 	NSString *formattedTitle = title.lowercaseString;
 	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""];
 	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""];
+	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@"& " withString:@""];
 	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"];
 	
 	NSString *formattedPlatform = platform.name.lowercaseString;
@@ -571,7 +582,8 @@
 //		NSLog(@"%@", html);
 		
 		if (html){
-			NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"v:average\">" options:NSRegularExpressionCaseInsensitive error:nil];
+			// Regex magic
+			NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"ratingValue\">" options:NSRegularExpressionCaseInsensitive error:nil];
 			NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(0, html.length)];
 			NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
 			
@@ -622,7 +634,7 @@
 	[_imagesStatusView setStatus:ContentStatusLoading];
 	[_videosStatusView setStatus:ContentStatusLoading];
 	
-	NSURLRequest *request = [SessionManager URLRequestForGameWithFields:@"images,videos" identifier:game.identifier];
+	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:game.identifier fields:@"images,videos"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Media - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -685,14 +697,20 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			
 			_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
 			[self.tableView reloadData];
 			[_imagesCollectionView reloadData];
 			[_videosCollectionView reloadData];
+			
+			if (_images.count > 0) [self downloadImageWithImageObject:_images[0]];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d", self, response.statusCode);
+		
+		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
 	[_operationQueue addOperation:operation];
 }
@@ -727,7 +745,7 @@
 }
 
 - (void)requestInformationForVideo:(Video *)video{
-	NSURLRequest *request = [SessionManager URLRequestForVideoWithFields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image" identifier:video.identifier];
+	NSURLRequest *request = [SessionManager requestForVideoWithIdentifier:video.identifier fields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 //		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -761,6 +779,8 @@
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
 			[_videosCollectionView reloadData];
+			
+			if (_videos.count > 0) [self downloadThumbnailForVideo:_videos[0]];
 			
 			// No videos available
 			if (_videos.count == 0 && _operationQueue.operationCount == 0){
@@ -812,7 +832,7 @@
 				[_game setWanted:@(NO)];
 				[_game setOwned:@(NO)];
 				
-				[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
+//				[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
 			}
 			else{
 				[_game setWishlistPlatform:_selectablePlatforms[buttonIndex]];
@@ -847,22 +867,26 @@
 			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 			
-			// Add game release to calendar
-			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
-				EKEventStore *eventStore = [SessionManager eventStore];
-				EKEvent *event = [EKEvent eventWithEventStore:eventStore];
-				[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
-				[event setStartDate:_game.releaseDate.date];
-				[event setEndDate:event.startDate];
-				[event setAllDay:YES];
-				[event setAvailability:EKEventAvailabilityFree];
-				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-				[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
-				
-				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
-				
-				[_context saveToPersistentStoreAndWait];
-			}
+//			// Add game release to calendar
+//			if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)] && [_game.wanted isEqualToNumber:@(YES)]){
+//				EKEventStore *eventStore = [SessionManager eventStore];
+//				EKEvent *event = [eventStore eventWithIdentifier:_game.releaseDate.eventIdentifier];
+//				if (!event) [EKEvent eventWithEventStore:eventStore];
+//				[event setTitle:[NSString stringWithFormat:@"%@ Release", _game.title]];
+//				[event setStartDate:_game.releaseDate.date];
+//				[event setEndDate:event.startDate];
+//				[event setAllDay:YES];
+//				[event setAvailability:EKEventAvailabilityFree];
+//				[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+//				NSError *calendarError;
+//				[eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&calendarError];
+//				NSLog(@"ERROR: %@", calendarError);
+//				NSLog(@"EVENT: %@", event.eventIdentifier);
+//				
+//				[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+//				
+//				[_context saveToPersistentStoreAndWait];
+//			}
 		}];
 	}
 }
@@ -879,6 +903,39 @@
 	
 	[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:[Tools frameForImageInImageView:_coverImageView]];
 }
+
+- (void)refreshAnimated:(BOOL)animated{
+	[self setCoverImageAnimated:animated];
+	
+	if (_game.metascore.integerValue >= 75)
+		[_metascoreButton setBackgroundColor:[UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1]];
+	else if (_game.metascore.integerValue >= 50)
+		[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1]];
+	else
+		[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:0 blue:0 alpha:1]];
+	
+	[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
+	[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
+	[_titleLabel setText:_game.title];
+	
+	[_releaseDateLabel setText:_game.releaseDateText];
+	
+	[_wishlistButton setHidden:NO];
+	[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+	[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
+	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+	
+	// Just for testing
+	[_descriptionTextView setText:_game.overview];
+	[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
+	[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
+	[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
+	[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
+}
+
+//- (void)updateCalendarEvent{
+//	
+//}
 
 - (NSInteger)quarterForMonth:(NSInteger)month{
 	switch (month) {
@@ -947,7 +1004,7 @@
 		[_game setWishlistPlatform:nil];
 		[_game setLibraryPlatform:nil];
 		
-		[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
+//		[[SessionManager eventStore] removeEvent:[[SessionManager eventStore] eventWithIdentifier:_game.releaseDate.eventIdentifier] span:EKSpanThisEvent commit:YES error:nil];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
@@ -1009,22 +1066,26 @@
 				if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 				
-				// Add game release to calendar
-				if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)]){
-					EKEventStore *eventStore = [SessionManager eventStore];
-					EKEvent *event = [EKEvent eventWithEventStore:eventStore];
-					[event setTitle:[NSString stringWithFormat:@"%@ release", _game.title]];
-					[event setStartDate:_game.releaseDate.date];
-					[event setEndDate:event.startDate];
-					[event setAllDay:YES];
-					[event setAvailability:EKEventAvailabilityFree];
-					[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
-					[eventStore saveEvent:event span:EKSpanThisEvent error:nil];
-					
-					[_game.releaseDate setEventIdentifier:event.eventIdentifier];
-					
-					[_context saveToPersistentStoreAndWait];
-				}
+//				// Add game release to calendar
+//				if ([SessionManager calendarEnabled] && [_game.releaseDate.defined isEqualToNumber:@(YES)] && [_game.wanted isEqualToNumber:@(YES)]){
+//					EKEventStore *eventStore = [SessionManager eventStore];
+//					EKEvent *event = [eventStore eventWithIdentifier:_game.releaseDate.eventIdentifier];
+//					if (!event) [EKEvent eventWithEventStore:eventStore];
+//					[event setTitle:[NSString stringWithFormat:@"%@ Release", _game.title]];
+//					[event setStartDate:_game.releaseDate.date];
+//					[event setEndDate:event.startDate];
+//					[event setAllDay:YES];
+//					[event setAvailability:EKEventAvailabilityFree];
+//					[event setCalendar:[eventStore calendarWithIdentifier:[SessionManager gamer].calendarIdentifier]];
+//					NSError *calendarError;
+//					[eventStore saveEvent:event span:EKSpanThisEvent commit:YES error:&calendarError];
+//					NSLog(@"ERROR: %@", calendarError);
+//					NSLog(@"EVENT: %@", event.eventIdentifier);
+//					
+//					[_game.releaseDate setEventIdentifier:event.eventIdentifier];
+//					
+//					[_context saveToPersistentStoreAndWait];
+//				}
 			}];
 		}
 	}
@@ -1035,6 +1096,7 @@
 }
 
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
+	[sender setEnabled:NO];
 	[self requestGameWithIdentifier:_game.identifier];
 }
 

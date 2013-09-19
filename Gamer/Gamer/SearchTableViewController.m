@@ -43,6 +43,7 @@
 - (void)viewWillAppear:(BOOL)animated{
 	[_searchBar setText:@""];
 	
+	// Show guide view if no platform is selected
 	if ((_localResults.count + _results.count == 0) && [SessionManager gamer].platforms.count == 0){
 		UIView *view = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][2];
 		[self.tableView setBackgroundView:view];
@@ -75,22 +76,23 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[_previousOperation cancel];
+	
 	if (searchText.length > 0){
 		NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 		[self requestGamesWithTitlesContainingQuery:query];
 		_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, searchText]];
 		[self.tableView reloadData];
-		
-//		NSString *name = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-//		[self performSelector:@selector(requestGamesWithName:) withObject:name afterDelay:(searchText.length == 1) ? 0 : 1];
 	}
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 	[searchBar resignFirstResponder];
+	
 	[_previousOperation cancel];
+	
 	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 	[self requestGamesWithTitlesContainingQuery:query];
+	
 	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, searchBar.text]];
 	[self.tableView reloadData];
 }
@@ -150,7 +152,7 @@
 #pragma mark - Networking
 
 - (void)requestGamesWithTitlesContainingQuery:(NSString *)query{
-	NSURLRequest *request = [SessionManager URLRequestForGamesWithFields:@"id,name" platforms:[SessionManager gamer].platforms.allObjects title:query];
+	NSURLRequest *request = [SessionManager requestForGamesWithTitle:query fields:@"id,name" platforms:[SessionManager gamer].platforms.allObjects];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 //		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -184,6 +186,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
+		// Pop other tabs when opening game details
 		for (UIViewController *viewController in self.tabBarController.viewControllers){
 			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
 		}

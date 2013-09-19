@@ -131,6 +131,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
+	// Set platform indexes accordingly
 	Platform *platform = _platforms[sourceIndexPath.row];
 	
 	[_platforms removeObject:platform];

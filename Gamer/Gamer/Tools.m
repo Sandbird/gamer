@@ -114,6 +114,10 @@ static NSDateFormatter *DATEFORMATTER;
 	return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
 }
 
++ (BOOL)deviceIsiPhone{
+	return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone);
+}
+
 #pragma mark - Graphics
 
 + (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset bounds:(CGRect)bounds{

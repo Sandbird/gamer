@@ -172,7 +172,7 @@
                     <navigationItem key="navigationItem" title="Wishlist" id="fwf-Gh-uFq">
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="lRF-HH-LIb">
                             <connections>
-                                <action selector="reloadBarButtonAction:" destination="kbm-s8-zlH" id="9Dd-l6-Jwf"/>
+                                <action selector="refreshBarButtonAction:" destination="kbm-s8-zlH" id="9xy-uC-7g9"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

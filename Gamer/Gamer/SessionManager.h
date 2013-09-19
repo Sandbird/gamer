@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <GoogleAnalytics-iOS-SDK/GAI.h>
-#import <EventKit/EventKit.h>
+//#import <EventKit/EventKit.h>
 #import "Gamer.h"
 
 @interface SessionManager : NSObject
@@ -17,18 +17,18 @@
 
 + (Gamer *)gamer;
 
-+ (void)setEventStore:(EKEventStore *)eventStore;
-
-+ (EKEventStore *)eventStore;
-
-+ (BOOL)calendarEnabled;
-
 + (id<GAITracker>)tracker;
 
-+ (NSMutableURLRequest *)URLRequestForGamesWithFields:(NSString *)fields platforms:(NSArray *)platforms title:(NSString *)title;
+//+ (void)setEventStore:(EKEventStore *)eventStore;
 
-+ (NSMutableURLRequest *)URLRequestForGameWithFields:(NSString *)fields identifier:(NSNumber *)identifier;
+//+ (EKEventStore *)eventStore;
 
-+ (NSMutableURLRequest *)URLRequestForVideoWithFields:(NSString *)fields identifier:(NSNumber *)identifier;
+//+ (BOOL)calendarEnabled;
+
++ (NSMutableURLRequest *)requestForGamesWithTitle:(NSString *)title fields:(NSString *)fields platforms:(NSArray *)platforms;
+
++ (NSMutableURLRequest *)requestForGameWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
+
++ (NSMutableURLRequest *)requestForVideoWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
 
 @end

@@ -27,13 +27,13 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameDownloadedNotification:) name:@"GameDownloaded" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLibraryNotification:) name:@"RefreshLibrary" object:nil];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
 	[_context setUndoManager:nil];
 	
-	_fetchedResultsController = [self fetch];
+	_fetchedResultsController = [self fetchData];
 	
 	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][1];
 	[self.view insertSubview:_guideView aboveSubview:_collectionView];
@@ -53,6 +53,16 @@
 
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - FetchedResultsController
+
+- (NSFetchedResultsController *)fetchData{
+	if (!_fetchedResultsController){
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @(YES)];
+		_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:predicate sortedBy:@"libraryPlatform.index,title" ascending:YES];
+	}
+	return _fetchedResultsController;
 }
 
 #pragma mark - CollectionView
@@ -91,30 +101,21 @@
 	[self performSegueWithIdentifier:@"GameSegue" sender:indexPath];
 }
 
-#pragma mark - FetchedResultsController
-
-- (NSFetchedResultsController *)fetch{
-	if (!_fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @(YES)];
-		_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:predicate sortedBy:@"libraryPlatform.index,title" ascending:YES];
-	}
-	return _fetchedResultsController;
-}
-
 #pragma mark - Actions
 
-- (void)gameDownloadedNotification:(NSNotification *)notification{
+- (void)coverImageDownloadedNotification:(NSNotification *)notification{
 	[_collectionView reloadData];
 }
 
 - (void)refreshLibraryNotification:(NSNotification *)notification{
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [self fetch];
+	_fetchedResultsController = [self fetchData];
 	[_collectionView reloadData];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
+		// Pop other tabs when opening game details
 		for (UIViewController *viewController in self.tabBarController.viewControllers){
 			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
 		}
