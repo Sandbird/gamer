@@ -15,9 +15,10 @@ typedef enum {
 
 @interface ContentStatusView : UIView
 
-@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel *statusLabel;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 
+- (id)initWithUnavailableTitle:(NSString *)title;
 - (void)setStatus:(ContentStatus)contentStatus;
 
 @end

@@ -503,46 +503,12 @@
                                                         <outlet property="delegate" destination="daZ-J4-g3E" id="9BR-Sy-Hgf"/>
                                                     </connections>
                                                 </collectionView>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QNj-Nk-6ta" customClass="ContentStatusView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <subviews>
-                                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="UX1-zc-3It" userLabel="Activity Indicator">
-                                                            <rect key="frame" x="150" y="80" width="20" height="20"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        </activityIndicatorView>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No images available" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bxV-0z-nFn" userLabel="Status Label">
-                                                            <rect key="frame" x="20" y="79" width="280" height="21"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="centerX" secondItem="UX1-zc-3It" secondAttribute="centerX" id="8oY-EL-euC"/>
-                                                        <constraint firstItem="bxV-0z-nFn" firstAttribute="top" secondItem="QNj-Nk-6ta" secondAttribute="top" constant="79" id="NWz-H5-sYN"/>
-                                                        <constraint firstItem="bxV-0z-nFn" firstAttribute="leading" secondItem="QNj-Nk-6ta" secondAttribute="leading" constant="20" symbolic="YES" id="RmJ-5K-1Cc"/>
-                                                        <constraint firstItem="bxV-0z-nFn" firstAttribute="bottom" secondItem="UX1-zc-3It" secondAttribute="bottom" id="VeV-gs-Z7Q"/>
-                                                        <constraint firstAttribute="centerY" secondItem="UX1-zc-3It" secondAttribute="centerY" id="fZ4-q7-8rt"/>
-                                                        <constraint firstItem="bxV-0z-nFn" firstAttribute="centerX" secondItem="UX1-zc-3It" secondAttribute="centerX" id="qQt-Xl-2eS"/>
-                                                    </constraints>
-                                                    <connections>
-                                                        <outlet property="activityIndicator" destination="UX1-zc-3It" id="9If-M7-CCU"/>
-                                                        <outlet property="titleLabel" destination="bxV-0z-nFn" id="xm3-kV-Zck"/>
-                                                    </connections>
-                                                </view>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Kwg-Br-TqV" firstAttribute="leading" secondItem="50l-zz-Med" secondAttribute="leading" id="Fds-0p-YCF"/>
-                                                <constraint firstItem="QNj-Nk-6ta" firstAttribute="leading" secondItem="50l-zz-Med" secondAttribute="leading" id="IjS-HI-JPE"/>
-                                                <constraint firstItem="QNj-Nk-6ta" firstAttribute="top" secondItem="50l-zz-Med" secondAttribute="top" id="OX1-6O-pw4"/>
                                                 <constraint firstAttribute="bottom" secondItem="Kwg-Br-TqV" secondAttribute="bottom" constant="-1" id="QGE-Ef-3kU"/>
                                                 <constraint firstItem="Kwg-Br-TqV" firstAttribute="top" secondItem="50l-zz-Med" secondAttribute="top" id="dm6-OD-loh"/>
                                                 <constraint firstAttribute="trailing" secondItem="Kwg-Br-TqV" secondAttribute="trailing" id="euf-Ha-Hqq"/>
-                                                <constraint firstAttribute="bottom" secondItem="QNj-Nk-6ta" secondAttribute="bottom" constant="-1" id="g2w-XC-0XY"/>
-                                                <constraint firstAttribute="trailing" secondItem="QNj-Nk-6ta" secondAttribute="trailing" id="m4V-VR-3Wy"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
@@ -643,46 +609,12 @@
                                                         <outlet property="delegate" destination="daZ-J4-g3E" id="U7s-Ed-drp"/>
                                                     </connections>
                                                 </collectionView>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gle-kf-L9y" customClass="ContentStatusView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <subviews>
-                                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="vU2-dD-XKW" userLabel="Activity Indicator">
-                                                            <rect key="frame" x="150" y="80" width="20" height="20"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        </activityIndicatorView>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No videos available" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hv0-n6-YqP" userLabel="Status Label">
-                                                            <rect key="frame" x="20" y="79" width="280" height="21"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="centerX" secondItem="vU2-dD-XKW" secondAttribute="centerX" id="2aX-ge-EeU"/>
-                                                        <constraint firstItem="Hv0-n6-YqP" firstAttribute="centerX" secondItem="vU2-dD-XKW" secondAttribute="centerX" id="9kJ-VW-RYq"/>
-                                                        <constraint firstItem="Hv0-n6-YqP" firstAttribute="leading" secondItem="gle-kf-L9y" secondAttribute="leading" constant="20" symbolic="YES" id="FEq-iq-ukW"/>
-                                                        <constraint firstAttribute="centerY" secondItem="vU2-dD-XKW" secondAttribute="centerY" id="NU7-Cv-363"/>
-                                                        <constraint firstItem="Hv0-n6-YqP" firstAttribute="bottom" secondItem="vU2-dD-XKW" secondAttribute="bottom" id="moY-BQ-xRG"/>
-                                                        <constraint firstItem="Hv0-n6-YqP" firstAttribute="top" secondItem="gle-kf-L9y" secondAttribute="top" constant="79" id="yHc-jJ-aUo"/>
-                                                    </constraints>
-                                                    <connections>
-                                                        <outlet property="activityIndicator" destination="vU2-dD-XKW" id="e3h-s6-OOJ"/>
-                                                        <outlet property="titleLabel" destination="Hv0-n6-YqP" id="7p8-hf-kCy"/>
-                                                    </connections>
-                                                </view>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="PtU-8u-YEg" firstAttribute="top" secondItem="dKF-LK-S5u" secondAttribute="top" id="3tj-gR-iNW"/>
                                                 <constraint firstItem="PtU-8u-YEg" firstAttribute="leading" secondItem="dKF-LK-S5u" secondAttribute="leading" id="Jla-Iz-hzr"/>
-                                                <constraint firstItem="gle-kf-L9y" firstAttribute="top" secondItem="dKF-LK-S5u" secondAttribute="top" id="Toz-WI-Wh7"/>
                                                 <constraint firstAttribute="trailing" secondItem="PtU-8u-YEg" secondAttribute="trailing" id="ZQQ-9m-eyr"/>
                                                 <constraint firstAttribute="bottom" secondItem="PtU-8u-YEg" secondAttribute="bottom" constant="-1" id="c9P-M3-Gd5"/>
-                                                <constraint firstAttribute="trailing" secondItem="gle-kf-L9y" secondAttribute="trailing" id="fzd-M8-Gf3"/>
-                                                <constraint firstAttribute="bottom" secondItem="gle-kf-L9y" secondAttribute="bottom" constant="-1" id="n6Z-VH-3Py"/>
-                                                <constraint firstItem="gle-kf-L9y" firstAttribute="leading" secondItem="dKF-LK-S5u" secondAttribute="leading" id="rn9-km-YVr"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.16470588235294117" green="0.16470588235294117" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
@@ -710,7 +642,6 @@
                         <outlet property="genreFirstLabel" destination="QFb-V4-x2A" id="AuM-sx-tfo"/>
                         <outlet property="genreSecondLabel" destination="hdt-f7-HLB" id="2Wv-jd-450"/>
                         <outlet property="imagesCollectionView" destination="Kwg-Br-TqV" id="9Jb-tT-Lhd"/>
-                        <outlet property="imagesStatusView" destination="QNj-Nk-6ta" id="Th3-uE-1nY"/>
                         <outlet property="libraryButton" destination="Szq-Ge-fAn" id="2Sc-lQ-g20"/>
                         <outlet property="metascoreButton" destination="6CX-nX-SUT" id="4d6-ZW-6wd"/>
                         <outlet property="platformsCollectionView" destination="1Q9-oo-3iz" id="gtQ-EC-qRL"/>
@@ -719,7 +650,6 @@
                         <outlet property="releaseDateLabel" destination="SV0-L3-EX0" id="fxL-dE-Rsq"/>
                         <outlet property="titleLabel" destination="5TF-nW-hqd" id="b6Z-ol-EuS"/>
                         <outlet property="videosCollectionView" destination="PtU-8u-YEg" id="dRH-0j-f0X"/>
-                        <outlet property="videosStatusView" destination="gle-kf-L9y" id="Uoh-4f-rKR"/>
                         <outlet property="wishlistButton" destination="aGi-nA-yvy" id="jE1-CR-5Tm"/>
                         <segue destination="d8G-2S-1tf" kind="modal" identifier="ViewerSegue" id="zqi-V3-AY3"/>
                         <segue destination="RIK-5J-QeC" kind="push" identifier="MetacriticSegue" id="6I6-yO-sU5"/>

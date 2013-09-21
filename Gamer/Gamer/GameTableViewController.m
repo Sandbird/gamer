@@ -48,8 +48,8 @@
 @property (nonatomic, strong) IBOutlet UICollectionView *imagesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *videosCollectionView;
 
-@property (nonatomic, strong) IBOutlet ContentStatusView *imagesStatusView;
-@property (nonatomic, strong) IBOutlet ContentStatusView *videosStatusView;
+@property (nonatomic, strong) ContentStatusView *imagesStatusView;
+@property (nonatomic, strong) ContentStatusView *videosStatusView;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
@@ -83,6 +83,11 @@
 	_operationQueue = [[NSOperationQueue alloc] init];
 	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	
+	_imagesStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No images available"];
+	_videosStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No videos available"];
+	[_imagesCollectionView addSubview:_imagesStatusView];
+	[_videosCollectionView addSubview:_videosStatusView];
+	
 	if (!_game)
 		_game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
 	if (_game){
@@ -106,6 +111,11 @@
 	}
 	
 	[_progressIndicator setColor:[UIColor whiteColor]];
+}
+
+- (void)viewDidLayoutSubviews{
+	[_imagesStatusView setFrame:_imagesCollectionView.frame];
+	[_videosStatusView setFrame:_videosCollectionView.frame];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -559,13 +569,7 @@
 			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				if (metascore.length > 0){
-					if (metascore.integerValue >= 75)
-						[_metascoreButton setBackgroundColor:[UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1]];
-					else if (metascore.integerValue >= 50)
-						[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1]];
-					else
-						[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:0 blue:0 alpha:1]];
-					
+					[_metascoreButton setBackgroundColor:[self colorForMetascore:metascore]];
 					[_metascoreButton setHidden:NO];
 					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
 				}
@@ -843,12 +847,7 @@
 - (void)refreshAnimated:(BOOL)animated{
 	[self setCoverImageAnimated:animated];
 	
-	if (_game.metascore.integerValue >= 75)
-		[_metascoreButton setBackgroundColor:[UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1]];
-	else if (_game.metascore.integerValue >= 50)
-		[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1]];
-	else
-		[_metascoreButton setBackgroundColor:[UIColor colorWithRed:1 green:0 blue:0 alpha:1]];
+	[_metascoreButton setBackgroundColor:[self colorForMetascore:_game.metascore]];
 	
 	[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
 	[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
@@ -867,6 +866,15 @@
 	[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
 	[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
 	[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
+}
+
+- (UIColor *)colorForMetascore:(NSString *)metascore{
+	if (metascore.integerValue >= 75)
+		return [UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1];
+	else if (metascore.integerValue >= 50)
+		return [UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1];
+	else
+		return [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
 }
 
 - (NSInteger)quarterForMonth:(NSInteger)month{

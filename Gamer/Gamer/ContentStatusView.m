@@ -10,30 +10,29 @@
 
 @implementation ContentStatusView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (id)initWithUnavailableTitle:(NSString *)title{
+	self = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPhone] ? @"iPhone" : @"iPad" owner:self options:nil][[Tools deviceIsiPhone] ? 5 : 3];
+	if (self) {
+		[_statusLabel setText:title];
+	}
+	return self;
 }
 
 - (void)setStatus:(ContentStatus)contentStatus{
 	switch (contentStatus) {
 		case ContentStatusUnavailable:
-			[_titleLabel setHidden:NO];
+			[_statusLabel setHidden:NO];
 			[_activityIndicator stopAnimating];
 			break;
 		case ContentStatusLoading:
-			[_titleLabel setHidden:YES];
+			[_statusLabel setHidden:YES];
 			[_activityIndicator startAnimating];
 			break;
 		default:
 			break;
 	}
 	
-	[_titleLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+	[_statusLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 }
 
 @end

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="4510" systemVersion="12E55" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="9dT-N8-QKp">
+        <view contentMode="scaleToFill" id="9dT-N8-QKp" userLabel="Wishlist Guide View">
             <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
@@ -49,7 +49,7 @@
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
         </view>
-        <view contentMode="scaleToFill" id="8YP-HG-wZA">
+        <view contentMode="scaleToFill" id="8YP-HG-wZA" userLabel="Library Guide View">
             <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
@@ -92,7 +92,7 @@
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
         </view>
-        <view contentMode="scaleToFill" id="0Vd-sC-L4d">
+        <view contentMode="scaleToFill" id="0Vd-sC-L4d" userLabel="Search Guide View">
             <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
@@ -135,10 +135,41 @@
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
         </view>
+        <view contentMode="scaleToFill" id="cXK-yZ-YqH" userLabel="Content Status View" customClass="ContentStatusView">
+            <rect key="frame" x="0.0" y="0.0" width="768" height="180"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="ZkR-fk-Kbo" userLabel="Activity Indicator">
+                    <rect key="frame" x="374" y="80" width="20" height="20"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </activityIndicatorView>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No images available" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zVa-4U-FCc" userLabel="Status Label">
+                    <rect key="frame" x="244" y="79" width="280" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="280" id="da3-Ee-KhY"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="zVa-4U-FCc" firstAttribute="top" secondItem="cXK-yZ-YqH" secondAttribute="top" constant="79" id="6BL-M7-Num"/>
+                <constraint firstItem="ZkR-fk-Kbo" firstAttribute="centerX" secondItem="zVa-4U-FCc" secondAttribute="centerX" id="GcI-nj-mIm"/>
+                <constraint firstItem="ZkR-fk-Kbo" firstAttribute="bottom" secondItem="zVa-4U-FCc" secondAttribute="bottom" id="PYC-kd-dUR"/>
+                <constraint firstItem="zVa-4U-FCc" firstAttribute="centerX" secondItem="cXK-yZ-YqH" secondAttribute="centerX" id="ZWP-Qw-qic"/>
+                <constraint firstItem="ZkR-fk-Kbo" firstAttribute="centerY" secondItem="cXK-yZ-YqH" secondAttribute="centerY" id="zJv-Ul-8Fk"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="activityIndicator" destination="ZkR-fk-Kbo" id="Emt-LK-kYn"/>
+                <outlet property="statusLabel" destination="zVa-4U-FCc" id="uFb-Cv-JzI"/>
+            </connections>
+        </view>
     </objects>
     <resources>
-        <image name="GuideArrow" width="80" height="20"/>
-        <image name="GuideArrow" width="80" height="20"/>
         <image name="GuideArrow" width="80" height="20"/>
     </resources>
 </document>
