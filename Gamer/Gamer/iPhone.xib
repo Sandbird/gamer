@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
@@ -144,8 +144,39 @@
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
+        <view contentMode="scaleToFill" id="cT5-Xf-okg" customClass="WishlistSectionHeaderView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="HideArrow" translatesAutoresizingMaskIntoConstraints="NO" id="6sL-Kw-7G5">
+                    <rect key="frame" x="276" y="10" width="24" height="24"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                </imageView>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IG6-8G-XBs">
+                    <rect key="frame" x="20" y="11" width="248" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.20392156859999999" green="0.20392156859999999" blue="0.20392156859999999" alpha="1" colorSpace="calibratedRGB"/>
+            <gestureRecognizers/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="hideIndicator" destination="6sL-Kw-7G5" id="brs-w8-6qW"/>
+                <outlet property="titleLabel" destination="IG6-8G-XBs" id="fhu-UX-Hoj"/>
+                <outletCollection property="gestureRecognizers" destination="Zjf-mF-LX2" appends="YES" id="0Nv-9o-srK"/>
+            </connections>
+        </view>
+        <tapGestureRecognizer id="Zjf-mF-LX2">
+            <connections>
+                <action selector="tapGestureRecognizerAction:" destination="cT5-Xf-okg" id="XZg-me-5TR"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="GuideArrow" width="80" height="20"/>
+        <image name="HideArrow" width="24" height="24"/>
     </resources>
 </document>
