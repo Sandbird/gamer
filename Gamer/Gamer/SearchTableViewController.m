@@ -10,7 +10,6 @@
 #import "GameTableViewController.h"
 #import "SearchResult.h"
 #import "Platform.h"
-#import "LocalSearchCell.h"
 #import "SearchCell.h"
 #import <AFNetworking/AFNetworking.h>
 
@@ -20,6 +19,7 @@
 @property (nonatomic, strong) NSArray *localResults;
 @property (nonatomic, strong) NSMutableArray *results;
 @property (nonatomic, strong) NSOperation *previousOperation;
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
 
 @end
 
@@ -36,6 +36,9 @@
 	[self.navigationItem setTitleView:_searchBar];
 	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+	
+	_operationQueue = [[NSOperationQueue alloc] init];
+	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	
 	_results = [[NSMutableArray alloc] initWithCapacity:100];
 }
@@ -62,6 +65,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated{
 	[_previousOperation cancel];
+	[_operationQueue cancelAllOperations];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -125,7 +129,7 @@
 	if (indexPath.row < _localResults.count){
 		Game *game = _localResults[indexPath.row];
 		
-		LocalSearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LocalCell"];
+		SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LocalCell"];
 		[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];
 		[cell.titleLabel setText:game.title];
 		[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
@@ -138,8 +142,9 @@
 	
 	SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:result.title];
+	[cell.coverImageView setImage:result.image];
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
-	[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? tableView.frame.size.width : 15), 0, 0)];
+	[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? tableView.frame.size.width * 2 : 58), 0, 0)];
 	
     return cell;
 }
@@ -152,7 +157,7 @@
 #pragma mark - Networking
 
 - (void)requestGamesWithTitlesContainingQuery:(NSString *)query{
-	NSURLRequest *request = [SessionManager requestForGamesWithTitle:query fields:@"id,name" platforms:[SessionManager gamer].platforms.allObjects];
+	NSURLRequest *request = [SessionManager requestForGamesWithTitle:query fields:@"id,name,image" platforms:[SessionManager gamer].platforms.allObjects];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 //		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -167,6 +172,8 @@
 			SearchResult *result = [[SearchResult alloc] init];
 			[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+			if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"icon_url"]]];
+			[self downloadImageForSearchResult:result];
 			if (![localIdentifiers containsObject:result.identifier]) [_results addObject:result];
 		}
 		
@@ -180,6 +187,16 @@
 	}];
 	[operation start];
 	_previousOperation = operation;
+}
+
+- (void)downloadImageForSearchResult:(SearchResult *)result{
+	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:result.imageURL]];
+	
+	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
+		[result setImage:image];
+		[self.tableView reloadData];
+	}];
+	[_operationQueue addOperation:operation];
 }
 
 #pragma mark - Actions

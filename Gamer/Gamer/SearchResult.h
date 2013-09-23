@@ -10,7 +10,10 @@
 
 @interface SearchResult : NSObject
 
+@property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) NSNumber *identifier;
 @property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *imageURL;
+
 
 @end

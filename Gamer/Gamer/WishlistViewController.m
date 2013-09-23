@@ -243,10 +243,11 @@
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];
-			
 			// If refresh is done, update release periods
-			if (_operationQueue.operationCount == 0) [self updateGameReleasePeriods];
+			if (_operationQueue.operationCount == 0){
+				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				[self updateGameReleasePeriods];
+			}
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {

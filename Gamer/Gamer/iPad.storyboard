@@ -817,25 +817,37 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FYc-b3-qRM" userLabel="Title Label">
-                                            <rect key="frame" x="20" y="19" width="728" height="21"/>
+                                            <rect key="frame" x="58" y="19" width="690" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="swd-mA-6Y0">
+                                            <rect key="frame" x="10" y="10" width="40" height="40"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="40" id="98P-Jr-dSn"/>
+                                            </constraints>
+                                        </imageView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="FYc-b3-qRM" secondAttribute="trailing" constant="20" symbolic="YES" id="9GR-lj-itq"/>
-                                        <constraint firstItem="FYc-b3-qRM" firstAttribute="leading" secondItem="mUD-Xn-iB9" secondAttribute="leading" constant="20" symbolic="YES" id="boF-hP-8oP"/>
-                                        <constraint firstItem="FYc-b3-qRM" firstAttribute="centerY" secondItem="mUD-Xn-iB9" secondAttribute="centerY" id="pcv-PT-6Ku"/>
+                                        <constraint firstItem="swd-mA-6Y0" firstAttribute="top" secondItem="mUD-Xn-iB9" secondAttribute="top" constant="10" id="Abd-2w-BmU"/>
+                                        <constraint firstAttribute="trailing" secondItem="FYc-b3-qRM" secondAttribute="trailing" constant="20" symbolic="YES" id="Ah5-5A-zD6"/>
+                                        <constraint firstItem="FYc-b3-qRM" firstAttribute="leading" secondItem="swd-mA-6Y0" secondAttribute="trailing" constant="8" symbolic="YES" id="V8Q-ke-5fc"/>
+                                        <constraint firstItem="swd-mA-6Y0" firstAttribute="leading" secondItem="mUD-Xn-iB9" secondAttribute="leading" constant="10" id="fgY-ek-gfD"/>
+                                        <constraint firstItem="FYc-b3-qRM" firstAttribute="centerY" secondItem="mUD-Xn-iB9" secondAttribute="centerY" id="gwm-qZ-g4G"/>
+                                        <constraint firstAttribute="bottom" secondItem="swd-mA-6Y0" secondAttribute="bottom" constant="9" id="zcN-EL-6tV"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="0.16470588235294117" green="0.16470588235294117" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
+                                    <outlet property="coverImageView" destination="swd-mA-6Y0" id="ZvJ-Lm-AtJ"/>
                                     <outlet property="titleLabel" destination="FYc-b3-qRM" id="M8H-wb-fbc"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LocalCell" rowHeight="70" id="u2n-2c-57k" userLabel="Local Search Cell" customClass="LocalSearchCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LocalCell" rowHeight="70" id="u2n-2c-57k" userLabel="Local Search Cell" customClass="SearchCell">
                                 <rect key="frame" x="0.0" y="146" width="768" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="u2n-2c-57k" id="S6g-N6-GLd">
