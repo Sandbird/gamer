@@ -1,6 +1,6 @@
 PODS:
   - AFNetworking (1.3.2)
-  - GoogleAnalytics-iOS-SDK (3.0)
+  - GoogleAnalytics-iOS-SDK (3.0.1)
   - MACircleProgressIndicator (1.0.0)
   - MagicalRecord (2.2)
 
@@ -12,8 +12,8 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: 7f9bcd7c287a75476cd5c61e82fd3380e93e4c54
-  GoogleAnalytics-iOS-SDK: f8d5faf4862b679667be0c270531a189572275d1
+  GoogleAnalytics-iOS-SDK: ea0118af32b97a92ac98b25ecc2aa2a286c835c7
   MACircleProgressIndicator: dc497a2c68dd930d4aea837b1a732a56ce4bd6d8
   MagicalRecord: b1fc46c99a9749fe7fe7e6f43a89b62ef5201933
 
-COCOAPODS: 0.24.0
+COCOAPODS: 0.25.0
