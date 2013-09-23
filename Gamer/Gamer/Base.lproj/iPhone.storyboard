@@ -837,10 +837,10 @@
             </objects>
             <point key="canvasLocation" x="626" y="1469"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Rotation Locked Tab Bar Controller-->
         <scene sceneID="x9u-fY-p37">
             <objects>
-                <tabBarController definesPresentationContext="YES" id="OaV-q1-8Jh" sceneMemberID="viewController">
+                <tabBarController definesPresentationContext="YES" id="OaV-q1-8Jh" customClass="RotationLockedTabBarController" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" id="Bhw-Cw-u13">
