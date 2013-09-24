@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2506F9A817F13CFD00329CF2 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506F9A717F13CFD00329CF2 /* Game.m */; };
 		250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 250D487717BFFFB1006B4C29 /* ContentStatusView.m */; };
 		25180CA117DFD534002675F1 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25180CA017DFD534002675F1 /* MobileCoreServices.framework */; };
 		25180CA217DFD541002675F1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA76179B55E4009B42BF /* SystemConfiguration.framework */; };
@@ -46,7 +47,6 @@
 		2589F8DF17E5ED57001A4208 /* CoverImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2589F8DE17E5ED57001A4208 /* CoverImage.m */; };
 		2589F8E217E5ED57001A4208 /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 2589F8E117E5ED57001A4208 /* Theme.m */; };
 		2589F8E517E5ED57001A4208 /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = 2589F8E417E5ED57001A4208 /* Video.m */; };
-		2589F8E817E5ED57001A4208 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 2589F8E717E5ED57001A4208 /* Game.m */; };
 		2589F8EB17E5ED57001A4208 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 2589F8EA17E5ED57001A4208 /* Genre.m */; };
 		2589F8EE17E5ED57001A4208 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 2589F8ED17E5ED57001A4208 /* Image.m */; };
 		2589F8F117E5ED57001A4208 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 2589F8F017E5ED57001A4208 /* Platform.m */; };
@@ -97,6 +97,9 @@
 		2506A188176CD5620010E61D /* SettingsTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
 		2506A189176CD5B80010E61D /* FetchedTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FetchedTableViewController.h; sourceTree = "<group>"; };
 		2506A18A176CD5B80010E61D /* FetchedTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FetchedTableViewController.m; sourceTree = "<group>"; };
+		2506F9A217F12CC800329CF2 /* Model 1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model 1.1.xcdatamodel"; sourceTree = "<group>"; };
+		2506F9A617F13CFD00329CF2 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		2506F9A717F13CFD00329CF2 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		250D487617BFFFB1006B4C29 /* ContentStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentStatusView.h; sourceTree = "<group>"; };
 		250D487717BFFFB1006B4C29 /* ContentStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentStatusView.m; sourceTree = "<group>"; };
 		25180CA017DFD534002675F1 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -146,8 +149,6 @@
 		2589F8E117E5ED57001A4208 /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
 		2589F8E317E5ED57001A4208 /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
 		2589F8E417E5ED57001A4208 /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video.m; sourceTree = "<group>"; };
-		2589F8E617E5ED57001A4208 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		2589F8E717E5ED57001A4208 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		2589F8E917E5ED57001A4208 /* Genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
 		2589F8EA17E5ED57001A4208 /* Genre.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Genre.m; sourceTree = "<group>"; };
 		2589F8EC17E5ED57001A4208 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
@@ -405,6 +406,8 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				2506F9A617F13CFD00329CF2 /* Game.h */,
+				2506F9A717F13CFD00329CF2 /* Game.m */,
 				2589F8FE17E5ED58001A4208 /* Gamer.h */,
 				2589F8FF17E5ED58001A4208 /* Gamer.m */,
 				2589F8FB17E5ED58001A4208 /* ReleaseDate.h */,
@@ -421,8 +424,6 @@
 				2589F8ED17E5ED57001A4208 /* Image.m */,
 				2589F8E917E5ED57001A4208 /* Genre.h */,
 				2589F8EA17E5ED57001A4208 /* Genre.m */,
-				2589F8E617E5ED57001A4208 /* Game.h */,
-				2589F8E717E5ED57001A4208 /* Game.m */,
 				2589F8E317E5ED57001A4208 /* Video.h */,
 				2589F8E417E5ED57001A4208 /* Video.m */,
 				2589F8E017E5ED57001A4208 /* Theme.h */,
@@ -625,7 +626,7 @@
 				2589F8DF17E5ED57001A4208 /* CoverImage.m in Sources */,
 				25C9FE4517CD729E00CCDD59 /* HeaderCollectionReusableView.m in Sources */,
 				2589F8DC17E5ED57001A4208 /* Thumbnail.m in Sources */,
-				2589F8E817E5ED57001A4208 /* Game.m in Sources */,
+				2506F9A817F13CFD00329CF2 /* Game.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
 				2589F8F717E5ED58001A4208 /* Developer.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
@@ -894,9 +895,10 @@
 		2570405D176CB55500642430 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2506F9A217F12CC800329CF2 /* Model 1.1.xcdatamodel */,
 				2570405E176CB55500642430 /* Model.xcdatamodel */,
 			);
-			currentVersion = 2570405E176CB55500642430 /* Model.xcdatamodel */;
+			currentVersion = 2506F9A217F12CC800329CF2 /* Model 1.1.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
