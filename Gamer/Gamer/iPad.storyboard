@@ -1231,11 +1231,33 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="140" height="176"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </imageView>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pz1-lX-tsX" userLabel="Overlay View">
+                                                    <rect key="frame" x="0.0" y="146" width="140" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <subviews>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hRe-KZ-W8v" userLabel="First Icon">
+                                                            <rect key="frame" x="118" y="8" width="20" height="20"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </imageView>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cAo-Ze-Ns1" userLabel="Second Icon">
+                                                            <rect key="frame" x="96" y="8" width="20" height="20"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </imageView>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fbd-NN-bCQ" userLabel="Third Icon">
+                                                            <rect key="frame" x="74" y="8" width="20" height="20"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <connections>
-                                            <outlet property="imageView" destination="6wl-jC-hrt" id="s6Q-DH-aEP"/>
+                                            <outlet property="coverImageView" destination="6wl-jC-hrt" id="GTT-vY-ON5"/>
+                                            <outlet property="firstIcon" destination="hRe-KZ-W8v" id="RiL-MD-1jt"/>
+                                            <outlet property="overlayView" destination="pz1-lX-tsX" id="oZf-wJ-Bwo"/>
+                                            <outlet property="secondIcon" destination="cAo-Ze-Ns1" id="FNd-NK-3tE"/>
+                                            <outlet property="thirdIcon" destination="fbd-NN-bCQ" id="HB1-pv-Dhk"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -1352,6 +1374,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="kf3-uk-gec"/>
+        <segue reference="S9N-47-GDG"/>
     </inferredMetricsTieBreakers>
 </document>

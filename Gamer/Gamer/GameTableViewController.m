@@ -863,7 +863,7 @@ enum {
 			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			
-			[self.tableView reloadData];
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 			
 			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
@@ -1005,7 +1005,7 @@ enum {
 			[_loanedSwitch setOn:_game.loaned.boolValue];
 			[_digitalSwitch setOn:_game.digital.boolValue];
 			
-			[self.tableView reloadData];
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 			
 			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
@@ -1058,7 +1058,7 @@ enum {
 				[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 				[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 				
-				[self.tableView reloadData];
+				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 				
 				if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
@@ -1077,7 +1077,9 @@ enum {
 	else if (sender == _digitalSwitch)
 		[_game setDigital:@(sender.isOn)];
 	
-	[_context saveToPersistentStoreAndWait];
+	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+	}];
 }
 
 - (IBAction)metascoreButtonAction:(UIButton *)sender{
