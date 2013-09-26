@@ -92,7 +92,28 @@
 	
 	LibraryCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 	UIImage *image = [UIImage imageWithData:game.thumbnailLarge];
-	[cell.imageView setImage:image];
+	[cell.coverImageView setImage:image];
+	
+	// Set status icons in the correct order: Digital, Completed, Loaned
+	if ([game.digital isEqualToNumber:@(YES)]){
+		[cell.firstIcon setImage:[UIImage imageNamed:@"DigitalIcon"]];
+		[cell.secondIcon setImage:nil];
+		
+		if ([game.completed isEqualToNumber:@(YES)]){
+			[cell.secondIcon setImage:[UIImage imageNamed:@"CompletedIcon"]];
+		}
+	}
+	else if ([game.completed isEqualToNumber:@(YES)]){
+		[cell.firstIcon setImage:[UIImage imageNamed:@"CompletedIcon"]];
+		[cell.secondIcon setImage:nil];
+		if ([game.loaned isEqualToNumber:@(YES)]){
+			[cell.secondIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
+		}
+	}
+	else if ([game.loaned isEqualToNumber:@(YES)]){
+		[cell.firstIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
+		[cell.secondIcon setImage:nil];
+	}
 	
 	return cell;
 }

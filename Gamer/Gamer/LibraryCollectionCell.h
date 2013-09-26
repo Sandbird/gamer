@@ -10,6 +10,9 @@
 
 @interface LibraryCollectionCell : UICollectionViewCell
 
-@property (nonatomic, strong) IBOutlet UIImageView *imageView;
+@property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
+@property (nonatomic, strong) IBOutlet UIView *overlayView;
+@property (nonatomic, strong) IBOutlet UIImageView *firstIcon;
+@property (nonatomic, strong) IBOutlet UIImageView *secondIcon;
 
 @end

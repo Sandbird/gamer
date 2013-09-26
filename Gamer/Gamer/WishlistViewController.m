@@ -112,6 +112,7 @@
 	[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnailLarge]];
 	[cell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[cell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
+	[cell.preorderedIcon setHidden:!game.preordered.boolValue];
 	
 	CGFloat coverImageAspectRatio = cell.coverImageView.image.size.width/cell.coverImageView.image.size.height;
 	CGFloat imageViewAspectRatio = cell.coverImageView.bounds.size.width/cell.coverImageView.bounds.size.height;
@@ -127,6 +128,8 @@
 #pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game{
+	[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	
 	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:game.identifier fields:@"expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,id,name,original_release_date"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -253,7 +256,10 @@
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 		
-		[self.navigationItem.rightBarButtonItem setEnabled:YES];
+		if (_operationQueue.operationCount == 0){
+			[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			[self updateGameReleasePeriods];
+		}
 	}];
 	[_operationQueue addOperation:operation];
 }
@@ -353,8 +359,6 @@
 }
 
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
-	[self.navigationItem.rightBarButtonItem setEnabled:NO];
-	
 	// Request info for all games in the Wishlist
 	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
 		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)

@@ -30,6 +30,14 @@
 #import "TrailerViewController.h"
 #import <AFNetworking/AFNetworking.h>
 
+enum {
+    SectionCover,
+    SectionStatus,
+	SectionDetails,
+	SectionImages,
+	SectionVideos
+};
+
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
@@ -39,6 +47,10 @@
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 @property (nonatomic, strong) IBOutlet UIButton *wishlistButton;
 @property (nonatomic, strong) IBOutlet UIButton *libraryButton;
+@property (nonatomic, strong) IBOutlet UISwitch *preorderedSwitch;
+@property (nonatomic, strong) IBOutlet UISwitch *completedSwitch;
+@property (nonatomic, strong) IBOutlet UISwitch *loanedSwitch;
+@property (nonatomic, strong) IBOutlet UISwitch *digitalSwitch;
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
 @property (nonatomic, strong) IBOutlet UILabel *developerLabel;
 @property (nonatomic, strong) IBOutlet UILabel *publisherLabel;
@@ -140,24 +152,50 @@
 	}
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+	if (section == SectionStatus && ([_game.wanted isEqualToNumber:@(NO)] || ([_game.wanted isEqualToNumber:@(YES)] && [_game.released isEqualToNumber:@(YES)])) && [_game.owned isEqualToNumber:@(NO)])
+		return 0;
+	return [super tableView:tableView heightForHeaderInSection:section];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+	if (section == SectionStatus){
+		if ([_game.wanted isEqualToNumber:@(YES)] && [_game.released isEqualToNumber:@(NO)])
+			return 1;
+		else if ([_game.owned isEqualToNumber:@(YES)])
+			return 3;
+		else
+			return 0;
+	}
+	return [super tableView:tableView numberOfRowsInSection:section];
+}
+
 // REWRITE THIS
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	if (indexPath.section == 1 && indexPath.row == 0){
+	// Description text height
+	if (indexPath.section == SectionDetails && indexPath.row == 0){
 		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(_descriptionTextView.frame.size.width - 10, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
 		return textRect.size.height + 40;
 	}
-	else if (indexPath.section == 1 && indexPath.row == 2)
+	// Platform collection height (iPhone)
+	else if (indexPath.section == SectionDetails && indexPath.row == 2)
 		return (_platforms.count > 4) ? 120 : 100;
-	else if ([Tools deviceIsiPad] && indexPath.section == 2 && _images.count <= 3)
+	// Images collection height (iPad)
+	else if ([Tools deviceIsiPad] && indexPath.section == SectionImages && _images.count <= 3)
 		return 180;
 	else
 		return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+	if (indexPath.section == SectionStatus && [_game.owned isEqualToNumber:@(YES)])
+		return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section]];
+	return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+}
+
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
-	if (indexPath.section == tableView.numberOfSections - 1)
-		[cell setSeparatorInset:UIEdgeInsetsMake(0, self.tableView.frame.size.width * 2, 0, 0)];
+	if (indexPath.section == SectionVideos) [cell setSeparatorInset:UIEdgeInsetsMake(0, self.tableView.frame.size.width * 2, 0, 0)];
 }
 
 #pragma mark - CollectionView
@@ -166,11 +204,11 @@
 	if (collectionView == _platformsCollectionView)
 		return _platforms.count;
 	else if (collectionView == _imagesCollectionView){
-		[collectionView setBounces:(_images.count == 0) ? NO : YES];
+//		[collectionView setBounces:(_images.count == 0) ? NO : YES];
 		return _images.count;
 	}
 	else{
-		[collectionView setBounces:(_videos.count == 0) ? NO : YES];
+//		[collectionView setBounces:(_videos.count == 0) ? NO : YES];
 		return _videos.count;
 	}
 }
@@ -819,11 +857,24 @@
 				[_game setOwned:@(YES)];
 			}
 		}
+		
+		[_game setPreordered:@(NO)];
+		[_game setCompleted:@(NO)];
+		[_game setLoaned:@(NO)];
+		[_game setDigital:@(NO)];
+		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			
+			[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
+			[_completedSwitch setOn:_game.completed.boolValue animated:YES];
+			[_loanedSwitch setOn:_game.loaned.boolValue animated:YES];
+			[_digitalSwitch setOn:_game.digital.boolValue animated:YES];
+			
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 			
 			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
@@ -847,10 +898,6 @@
 - (void)refreshAnimated:(BOOL)animated{
 	[self setCoverImageAnimated:animated];
 	
-	[_metascoreButton setBackgroundColor:[self colorForMetascore:_game.metascore]];
-	
-	[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
-	[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
 	[_titleLabel setText:_game.title];
 	
 	[_releaseDateLabel setText:_game.releaseDateText];
@@ -860,7 +907,15 @@
 	[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
 	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 	
-	// Just for testing
+	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
+	[_completedSwitch setOn:_game.completed.boolValue animated:animated];
+	[_loanedSwitch setOn:_game.loaned.boolValue animated:animated];
+	[_digitalSwitch setOn:_game.digital.boolValue animated:animated];
+	
+	[_metascoreButton setBackgroundColor:[self colorForMetascore:_game.metascore]];
+	[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
+	[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
+	
 	[_descriptionTextView setText:_game.overview];
 	[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
 	[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
@@ -941,14 +996,27 @@
 	if ((sender == _wishlistButton && [_game.wanted isEqualToNumber:@(YES)]) || (sender == _libraryButton && [_game.owned isEqualToNumber:@(YES)])){
 		[_game setWanted:@(NO)];
 		[_game setOwned:@(NO)];
+		
 		[_game setWishlistPlatform:nil];
 		[_game setLibraryPlatform:nil];
+		
+		[_game setPreordered:@(NO)];
+		[_game setCompleted:@(NO)];
+		[_game setLoaned:@(NO)];
+		[_game setDigital:@(NO)];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			
+			[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
+			[_completedSwitch setOn:_game.completed.boolValue animated:YES];
+			[_loanedSwitch setOn:_game.loaned.boolValue animated:YES];
+			[_digitalSwitch setOn:_game.digital.boolValue animated:YES];
+			
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 			
 			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
@@ -995,17 +1063,59 @@
 				[_game setOwned:@(YES)];
 			}
 			
+			[_game setPreordered:@(NO)];
+			[_game setCompleted:@(NO)];
+			[_game setLoaned:@(NO)];
+			[_game setDigital:@(NO)];
+			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 				[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 				[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 				[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 				
+				[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
+				[_completedSwitch setOn:_game.completed.boolValue animated:YES];
+				[_loanedSwitch setOn:_game.loaned.boolValue animated:YES];
+				[_digitalSwitch setOn:_game.digital.boolValue animated:YES];
+				
+				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
+				
 				if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 			}];
 		}
 	}
+}
+
+- (IBAction)statusSwitchAction:(UISwitch *)sender{
+	if (sender == _preorderedSwitch)
+		[_game setPreordered:@(sender.isOn)];
+	else if (sender == _completedSwitch)
+		[_game setCompleted:@(sender.isOn)];
+	else if (sender == _loanedSwitch){
+		[_game setLoaned:@(sender.isOn)];
+		if (sender.isOn){
+			[_digitalSwitch setOn:NO animated:YES];
+			[_game setDigital:@(NO)];
+		}
+	}
+	else if (sender == _digitalSwitch){
+		[_game setDigital:@(sender.isOn)];
+		if (sender.isOn){
+			[_loanedSwitch setOn:NO animated:YES];
+			[_game setLoaned:@(NO)];
+		}
+	}
+	
+	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		if (sender != _preorderedSwitch)
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+		else if ([Tools deviceIsiPhone])
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistTable" object:nil];
+		else
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
+	}];
 }
 
 - (IBAction)metascoreButtonAction:(UIButton *)sender{

@@ -10,22 +10,9 @@
 
 @implementation LibraryCollectionCell
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (void)layoutSubviews{
+	// Position overlay at the bottom of the cover image
+	[_overlayView setFrame:CGRectMake(0, (_overlayView.frame.origin.y - (self.frame.size.height - [Tools frameForImageInImageView:_coverImageView].size.height)/2), _overlayView.frame.size.width, _overlayView.frame.size.height)];
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 @end
