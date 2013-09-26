@@ -857,11 +857,22 @@ enum {
 				[_game setOwned:@(YES)];
 			}
 		}
+		
+		[_game setPreordered:@(NO)];
+		[_game setCompleted:@(NO)];
+		[_game setLoaned:@(NO)];
+		[_game setDigital:@(NO)];
+		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			
+			[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
+			[_completedSwitch setOn:_game.completed.boolValue animated:YES];
+			[_loanedSwitch setOn:_game.loaned.boolValue animated:YES];
+			[_digitalSwitch setOn:_game.digital.boolValue animated:YES];
 			
 			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 			
@@ -896,10 +907,10 @@ enum {
 	[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
 	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 	
-	[_preorderedSwitch setOn:_game.preordered.boolValue];
-	[_completedSwitch setOn:_game.completed.boolValue];
-	[_loanedSwitch setOn:_game.loaned.boolValue];
-	[_digitalSwitch setOn:_game.digital.boolValue];
+	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
+	[_completedSwitch setOn:_game.completed.boolValue animated:animated];
+	[_loanedSwitch setOn:_game.loaned.boolValue animated:animated];
+	[_digitalSwitch setOn:_game.digital.boolValue animated:animated];
 	
 	[_metascoreButton setBackgroundColor:[self colorForMetascore:_game.metascore]];
 	[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
@@ -1000,10 +1011,10 @@ enum {
 			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			
-			[_preorderedSwitch setOn:_game.preordered.boolValue];
-			[_completedSwitch setOn:_game.completed.boolValue];
-			[_loanedSwitch setOn:_game.loaned.boolValue];
-			[_digitalSwitch setOn:_game.digital.boolValue];
+			[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
+			[_completedSwitch setOn:_game.completed.boolValue animated:YES];
+			[_loanedSwitch setOn:_game.loaned.boolValue animated:YES];
+			[_digitalSwitch setOn:_game.digital.boolValue animated:YES];
 			
 			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 			
@@ -1052,11 +1063,21 @@ enum {
 				[_game setOwned:@(YES)];
 			}
 			
+			[_game setPreordered:@(NO)];
+			[_game setCompleted:@(NO)];
+			[_game setLoaned:@(NO)];
+			[_game setDigital:@(NO)];
+			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 				[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 				[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 				[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+				
+				[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
+				[_completedSwitch setOn:_game.completed.boolValue animated:YES];
+				[_loanedSwitch setOn:_game.loaned.boolValue animated:YES];
+				[_digitalSwitch setOn:_game.digital.boolValue animated:YES];
 				
 				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 				
@@ -1072,13 +1093,28 @@ enum {
 		[_game setPreordered:@(sender.isOn)];
 	else if (sender == _completedSwitch)
 		[_game setCompleted:@(sender.isOn)];
-	else if (sender == _loanedSwitch)
+	else if (sender == _loanedSwitch){
 		[_game setLoaned:@(sender.isOn)];
-	else if (sender == _digitalSwitch)
+		if (sender.isOn){
+			[_digitalSwitch setOn:NO animated:YES];
+			[_game setDigital:@(NO)];
+		}
+	}
+	else if (sender == _digitalSwitch){
 		[_game setDigital:@(sender.isOn)];
+		if (sender.isOn){
+			[_loanedSwitch setOn:NO animated:YES];
+			[_game setLoaned:@(NO)];
+		}
+	}
 	
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+		if (sender != _preorderedSwitch)
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+		else if ([Tools deviceIsiPhone])
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistTable" object:nil];
+		else
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
 	}];
 }
 

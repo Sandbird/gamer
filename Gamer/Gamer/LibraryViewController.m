@@ -97,35 +97,22 @@
 	// Set status icons in the correct order: Digital, Completed, Loaned
 	if ([game.digital isEqualToNumber:@(YES)]){
 		[cell.firstIcon setImage:[UIImage imageNamed:@"DigitalIcon"]];
+		[cell.secondIcon setImage:nil];
+		
 		if ([game.completed isEqualToNumber:@(YES)]){
 			[cell.secondIcon setImage:[UIImage imageNamed:@"CompletedIcon"]];
-			if ([game.loaned isEqualToNumber:@(YES)])
-				[cell.thirdIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
-			else
-				[cell.thirdIcon setImage:nil];
-		}
-		else if ([game.loaned isEqualToNumber:@(YES)])
-			[cell.secondIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
-		else{
-			[cell.secondIcon setImage:nil];
-			[cell.thirdIcon setImage:nil];
 		}
 	}
 	else if ([game.completed isEqualToNumber:@(YES)]){
 		[cell.firstIcon setImage:[UIImage imageNamed:@"CompletedIcon"]];
-		if ([game.loaned isEqualToNumber:@(YES)])
+		[cell.secondIcon setImage:nil];
+		if ([game.loaned isEqualToNumber:@(YES)]){
 			[cell.secondIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
-		else{
-			[cell.secondIcon setImage:nil];
-			[cell.thirdIcon setImage:nil];
 		}
 	}
-	else if ([game.loaned isEqualToNumber:@(YES)])
+	else if ([game.loaned isEqualToNumber:@(YES)]){
 		[cell.firstIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
-	else{
-		[cell.firstIcon setImage:nil];
 		[cell.secondIcon setImage:nil];
-		[cell.thirdIcon setImage:nil];
 	}
 	
 	return cell;

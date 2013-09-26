@@ -36,6 +36,7 @@
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlistTable" object:nil];
 	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
@@ -145,6 +146,7 @@
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.dateLabel setText:game.releaseDateText];
 	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];
+	[customCell.preorderedIcon setHidden:!game.preordered.boolValue];
 	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
 }
@@ -165,6 +167,8 @@
 #pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game{
+	[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	
 	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:game.identifier fields:@"expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,id,name,original_release_date"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -291,7 +295,10 @@
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 		
-		[self.navigationItem.rightBarButtonItem setEnabled:YES];
+		if (_operationQueue.operationCount == 0){
+			[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			[self updateGameReleasePeriods];
+		}
 	}];
 	[_operationQueue addOperation:operation];
 }
@@ -380,9 +387,11 @@
 	[self.tableView reloadData];
 }
 
+- (void)refreshWishlistNotification:(NSNotification *)notification{
+	[self.tableView reloadData];
+}
+
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
-	[self.navigationItem.rightBarButtonItem setEnabled:NO];
-	
 	// Request info for all games in the Wishlist
 	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
 		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects] - 1); row++)
