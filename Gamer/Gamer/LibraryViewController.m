@@ -114,6 +114,10 @@
 		[cell.firstIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
 		[cell.secondIcon setImage:nil];
 	}
+	else{
+		[cell.firstIcon setImage:nil];
+		[cell.secondIcon setImage:nil];
+	}
 	
 	return cell;
 }

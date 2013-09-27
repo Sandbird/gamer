@@ -84,7 +84,7 @@
 	if (searchText.length > 0){
 		NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 		[self requestGamesWithTitlesContainingQuery:query];
-		_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, searchText]];
+		_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"title CONTAINS[c] %@", searchText]];
 		[self.tableView reloadData];
 	}
 }
@@ -97,7 +97,7 @@
 	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 	[self requestGamesWithTitlesContainingQuery:query];
 	
-	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"ANY platforms IN %@ AND title CONTAINS[c] %@", [SessionManager gamer].platforms, searchBar.text]];
+	_localResults = [Game findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"title CONTAINS[c] %@", searchBar.text]];
 	[self.tableView reloadData];
 }
 
