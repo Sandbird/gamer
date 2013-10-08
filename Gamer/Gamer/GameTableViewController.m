@@ -15,7 +15,6 @@
 #import "Theme.h"
 #import "Image.h"
 #import "Video.h"
-#import "Thumbnail.h"
 #import "ReleasePeriod.h"
 #import "CoverImage.h"
 #import "ReleaseDate.h"
@@ -66,6 +65,7 @@ enum {
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
+@property (nonatomic, strong) NSOperationQueue *videosOperationQueue;
 
 @property (nonatomic, strong) NSArray *platforms;
 @property (nonatomic, strong) NSArray *images;
@@ -113,7 +113,6 @@ enum {
 		(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
 		(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
 		
-		[_game setDateLastOpened:[NSDate date]];
 		[_context saveToPersistentStoreAndWait];
 	}
 	else{
@@ -170,7 +169,6 @@ enum {
 	return [super tableView:tableView numberOfRowsInSection:section];
 }
 
-// REWRITE THIS
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	// Description text height
 	if (indexPath.section == SectionDetails && indexPath.row == 0){
@@ -204,11 +202,11 @@ enum {
 	if (collectionView == _platformsCollectionView)
 		return _platforms.count;
 	else if (collectionView == _imagesCollectionView){
-//		[collectionView setBounces:(_images.count == 0) ? NO : YES];
+		[collectionView setBounces:(_images.count == 0) ? NO : YES];
 		return _images.count;
 	}
 	else{
-//		[collectionView setBounces:(_videos.count == 0) ? NO : YES];
+		[collectionView setBounces:(_videos.count == 0) ? NO : YES];
 		return _videos.count;
 	}
 }
@@ -225,33 +223,62 @@ enum {
 		// If before last cell, download image for next cell
 		if (_images.count > (indexPath.item + 1)){
 			Image *nextImage = _images[indexPath.item + 1];
-			if (!nextImage.thumbnail && [nextImage.isDownloading isEqualToNumber:@(NO)])
-				[self downloadImageWithImageObject:nextImage];
+			ImageCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
+			
+			[nextCell.activityIndicator startAnimating];
+			__weak ImageCollectionCell *cellReference = nextCell;
+			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextImage.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+				[cellReference.activityIndicator stopAnimating];
+				[cellReference.imageView setImage:image];
+			} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+				[cellReference.activityIndicator stopAnimating];
+			}];
 		}
 		
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = _images[indexPath.item];
-		[cell.imageView setImage:[UIImage imageWithData:image.thumbnail.data]];
-		if (!image.thumbnail && [image.isDownloading isEqualToNumber:@(NO)]) [self downloadImageWithImageObject:image];
-//		[image.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
+		
 		[cell.activityIndicator startAnimating];
+		__weak ImageCollectionCell *cellReference = cell;
+		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:image.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+			[cellReference.activityIndicator stopAnimating];
+			[cellReference.imageView setImage:image];
+		} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+			[cellReference.activityIndicator stopAnimating];
+		}];
+		
 		return cell;
 	}
 	else{
 		// If before last cell, download image for next cell
 		if (_videos.count > (indexPath.item + 1)){
 			Video *nextVideo = _videos[indexPath.item + 1];
-			if (!nextVideo.thumbnail && [nextVideo.isDownloading isEqualToNumber:@(NO)])
-				[self downloadThumbnailForVideo:nextVideo];
+			VideoCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
+			
+			[nextCell.activityIndicator startAnimating];
+			__weak VideoCollectionCell *cellReference = nextCell;
+			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+				[cellReference.activityIndicator stopAnimating];
+				[cellReference.imageView setImage:image];
+			} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+				[cellReference.activityIndicator stopAnimating];
+			}];
 		}
 		
 		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Video *video = _videos[indexPath.item];
-		[cell.imageView setImage:[UIImage imageWithData:video.thumbnail.data]];
 		[cell.titleLabel setText:video.title];
 		[cell.lengthLabel setText:[Tools formattedStringForDuration:video.length.integerValue]];
-		if (!video.thumbnail && [video.isDownloading isEqualToNumber:@(NO)]) [self downloadThumbnailForVideo:video];
-		[video.isDownloading isEqualToNumber:@(YES)] ? [cell.activityIndicator startAnimating] : [cell.activityIndicator stopAnimating];
+		
+		[cell.activityIndicator startAnimating];
+		__weak VideoCollectionCell *cellReference = cell;
+		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:video.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+			[cellReference.activityIndicator stopAnimating];
+			[cellReference.imageView setImage:image];
+		} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+			[cellReference.activityIndicator stopAnimating];
+		}];
+		
 		return cell;
 	}
 }
@@ -299,7 +326,6 @@ enum {
 		[_game setIdentifier:identifier];
 		[_game setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
 		[_game setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
-		[_game setDateLastOpened:[NSDate date]];
 		
 		// Cover image
 		if (results[@"image"] != [NSNull null]){
@@ -422,12 +448,15 @@ enum {
         // Platforms
 		if (results[@"platforms"] != [NSNull null]){
 			for (NSDictionary *dictionary in results[@"platforms"]){
-				Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (platform){
-//					[platform setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-//					[platform setAbbreviation:[Tools stringFromSourceIfNotNull:dictionary[@"abbreviation"]]];
-					[_game addPlatformsObject:platform];
+				NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+				switch (identifier.integerValue) {
+					case 88: identifier = @(35); break;
+					case 143: identifier = @(129); break;
+					case 86: identifier = @(20); break;
+					default: break;
 				}
+				Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
+				if (platform) [_game addPlatformsObject:platform];
 			}
 		}
         
@@ -670,6 +699,9 @@ enum {
 			[_imagesStatusView setHidden:(index == 0) ? NO : YES];
 		}
 		
+		_videosOperationQueue = [[NSOperationQueue alloc] init];
+		[_videosOperationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+		
 		// Videos
 		if (results[@"videos"] != [NSNull null]){
 			NSInteger index = 0;
@@ -694,53 +726,20 @@ enum {
 			if (index == 0){
 				[_videosStatusView setStatus:ContentStatusUnavailable];
 			}
-			[_videosStatusView setHidden:(index == 0) ? NO : YES];
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 			
 			_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
-			[self.tableView reloadData];
+			if ([Tools deviceIsiPad]) [self.tableView reloadData];
 			[_imagesCollectionView reloadData];
-			[_videosCollectionView reloadData];
-			
-			if (_images.count > 0) [self downloadImageWithImageObject:_images[0]];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d", self, response.statusCode);
 		
 		[self.navigationItem.rightBarButtonItem setEnabled:YES];
-	}];
-	[_operationQueue addOperation:operation];
-}
-
-- (void)downloadImageWithImageObject:(Image *)imageObject{
-	[imageObject setIsDownloading:@(YES)];
-	
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageObject.thumbnailURL]];
-	[request setHTTPMethod:@"GET"];
-	
-	if (!imageObject.thumbnail)
-		[imageObject setThumbnail:[Thumbnail createInContext:_context]];
-	
-	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-//		NSLog(@"image downloaded: %.fx%.f", image.size.width, image.size.height);
-//		NSLog(@"%f - %f", _imagesCollectionView.collectionViewLayout.collectionViewContentSize.width, _imagesCollectionView.collectionViewLayout.collectionViewContentSize.height);
-		
-		[imageObject.thumbnail setData:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
-		return nil;
-		
-	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-		[imageObject setIsDownloading:@(NO)];
-		
-		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[_imagesCollectionView reloadData];
-			[_imagesStatusView setHidden:YES];
-		}];
-	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-		[imageObject setIsDownloading:@(NO)];
 	}];
 	[_operationQueue addOperation:operation];
 }
@@ -778,48 +777,24 @@ enum {
 			[video deleteEntity];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
-			[_videosCollectionView reloadData];
-			
-			if (_videos.count > 0) [self downloadThumbnailForVideo:_videos[0]];
-			
-			// No videos available
-			if (_videos.count == 0 && _operationQueue.operationCount == 0){
-				[_videosStatusView setStatus:ContentStatusUnavailable];
-				[_videosStatusView setHidden:NO];
+			if (_videosOperationQueue.operationCount == 0){
+				_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
+				
+				if (_videos.count == 0){
+					[_videosStatusView setStatus:ContentStatusUnavailable];
+					[_videosStatusView setHidden:NO];
+				}
+				else{
+					[_videosCollectionView reloadData];
+					[_videosStatusView setHidden:YES];
+				}
 			}
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		NSLog(@"Failure in %@ - Status code: %d - Video", self, response.statusCode);
 	}];
-	[_operationQueue addOperation:operation];
-}
-
-- (void)downloadThumbnailForVideo:(Video *)video{
-	[video setIsDownloading:@(YES)];
-	
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:video.thumbnailURL]];
-	[request setHTTPMethod:@"GET"];
-	
-	if (!video.thumbnail)
-		[video setThumbnail:[Thumbnail createInContext:_context]];
-	
-	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-		[video.thumbnail setData:UIImagePNGRepresentation((image.size.width > image.size.height) ? [Tools imageWithImage:image scaledToWidth:320] : [Tools imageWithImage:image scaledToHeight:180])];
-		return nil;
-		
-	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-		[video setIsDownloading:@(NO)];
-		
-		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[_videosCollectionView reloadData];
-			[_videosStatusView setHidden:YES];
-		}];
-	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-		[video setIsDownloading:@(NO)];
-	}];
-	[_operationQueue addOperation:operation];
+	[_videosOperationQueue addOperation:operation];
 }
 
 #pragma mark - ActionSheet

@@ -18,7 +18,6 @@
 #import "ReleaseDate.h"
 #import "Video.h"
 #import "Image.h"
-#import "Thumbnail.h"
 #import "CoverImage.h"
 #import "SimilarGame.h"
 #import "PlatformCell.h"
@@ -164,7 +163,6 @@
 		[ReleaseDate truncateAll];
 		[Video truncateAll];
 		[Image truncateAll];
-		[Thumbnail truncateAll];
 		[CoverImage truncateAll];
 		[SimilarGame truncateAll];
 		[Gamer truncateAll];

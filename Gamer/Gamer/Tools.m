@@ -183,6 +183,20 @@ static NSDateFormatter *DATEFORMATTER;
 	return CGRectMake(x, y, width, height);
 }
 
++ (UIImage *)imageWithColor:(UIColor *)color{
+	CGRect rect = CGRectMake(0, 0, 1, 1);
+	UIGraphicsBeginImageContext(rect.size);
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	
+	CGContextSetFillColorWithColor(context, [color CGColor]);
+	CGContextFillRect(context, rect);
+	
+	UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	
+	return image;
+}
+
 #pragma mark - Animation
 
 + (CAAnimation *)fadeTransitionWithDuration:(CGFloat)duration{

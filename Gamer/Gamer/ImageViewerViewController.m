@@ -88,9 +88,7 @@
 - (void)downloadImageWithImageObject:(Image *)imageObject{
 	[_progressIndicator setValue:0];
 	
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageObject.originalURL]];
-	[request setHTTPMethod:@"GET"];
-	
+	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageObject.originalURL]];
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
 		_imageSize = image.size;
 		[self initializeImageViewWithImage:image animated:YES];

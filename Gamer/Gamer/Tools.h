@@ -40,6 +40,7 @@
 + (UIImage *)imageWithImage:(UIImage *)image scaledToWidth:(CGFloat)width;
 + (UIImage *)imageWithImage:(UIImage *)image scaledToHeight:(CGFloat)height;
 + (CGRect)frameForImageInImageView:(UIImageView *)imageView;
++ (UIImage *)imageWithColor:(UIColor *)color;
 
 // Animation
 + (CAAnimation *)fadeTransitionWithDuration:(CGFloat)duration;

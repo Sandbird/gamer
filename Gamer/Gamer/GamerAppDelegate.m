@@ -10,7 +10,6 @@
 #import "Game.h"
 #import "ReleasePeriod.h"
 #import "Platform.h"
-#import "Thumbnail.h"
 #import "ReleaseDate.h"
 #import <AFNetworking/AFNetworking.h>
 
@@ -54,16 +53,7 @@
 	if (gamer){
 		[SessionManager setGamer:gamer];
 		
-		// Delete non-initial thumbnails
-		[Thumbnail deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"image.index > %@ OR video.index > %@", ([Tools deviceIsiPad] ? @(7) : @(1)), ([Tools deviceIsiPad] ? @(3) : @(1))]];
-		
-		// Delete games not opened in the last ten days
-		NSCalendar *calendar = [NSCalendar currentCalendar];
-		NSDateComponents *components = [calendar components:NSDayCalendarUnit fromDate:[NSDate date]];
-		[components setDay:-10];
-		NSDate *tenDaysAgo = [calendar dateByAddingComponents:components toDate:[NSDate date] options:NSCalendarWrapComponents];
-		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@ AND dateLastOpened < %@", @(NO), @(NO), tenDaysAgo]];
-		
+		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
 		[context saveToPersistentStoreAndWait];
 	}
 	else {

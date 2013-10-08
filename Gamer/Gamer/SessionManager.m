@@ -27,8 +27,19 @@ static Gamer *GAMER;
 }
 
 + (NSMutableURLRequest *)requestForGamesWithTitle:(NSString *)title fields:(NSString *)fields platforms:(NSArray *)platforms{
-	NSString *platformIdentifiers = [[platforms valueForKey:@"identifier"] componentsJoinedByString:@"|"];
-	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/games/3030/?api_key=%@&format=json&sort=date_added:desc&field_list=%@&filter=platforms:%@,name:%@", APIKEY, fields, platformIdentifiers, title];
+	NSArray *identifiers = [platforms valueForKey:@"identifier"];
+	NSMutableArray *platformIdentifiers = [[NSMutableArray alloc] initWithArray:identifiers];
+	for (NSNumber *identifier in identifiers){
+		switch (identifier.integerValue) {
+			case 35: [platformIdentifiers addObject:@(88)]; break;
+			case 129: [platformIdentifiers addObject:@(143)]; break;
+			case 20: [platformIdentifiers addObject:@(86)]; break;
+			default: break;
+		}
+	}
+	NSString *platformsString = [platformIdentifiers componentsJoinedByString:@"|"];
+	
+	NSString *stringURL = [NSString stringWithFormat:@"http://api.giantbomb.com/games/3030/?api_key=%@&format=json&sort=date_added:desc&field_list=%@&filter=platforms:%@,name:%@", APIKEY, fields, platformsString, title];
 	
 	if (!SEARCHREQUEST) SEARCHREQUEST = [[NSMutableURLRequest alloc] init];
 	[SEARCHREQUEST setHTTPMethod:@"GET"];
