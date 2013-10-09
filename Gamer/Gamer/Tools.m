@@ -31,6 +31,7 @@ static NSDateFormatter *DATEFORMATTER;
 + (NSDateFormatter *)dateFormatter{
 	if (!DATEFORMATTER) DATEFORMATTER = [[NSDateFormatter alloc] init];
 	[DATEFORMATTER setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	[DATEFORMATTER setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
 	return DATEFORMATTER;
 }
 

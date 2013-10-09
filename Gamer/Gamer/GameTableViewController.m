@@ -230,6 +230,7 @@ enum {
 			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextImage.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 				[cellReference.activityIndicator stopAnimating];
 				[cellReference.imageView setImage:image];
+				[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
 			} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 				[cellReference.activityIndicator stopAnimating];
 			}];
@@ -243,6 +244,7 @@ enum {
 		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:image.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 			[cellReference.activityIndicator stopAnimating];
 			[cellReference.imageView setImage:image];
+			[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
 		} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 			[cellReference.activityIndicator stopAnimating];
 		}];
@@ -260,6 +262,7 @@ enum {
 			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 				[cellReference.activityIndicator stopAnimating];
 				[cellReference.imageView setImage:image];
+				[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
 			} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 				[cellReference.activityIndicator stopAnimating];
 			}];
@@ -275,6 +278,7 @@ enum {
 		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:video.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 			[cellReference.activityIndicator stopAnimating];
 			[cellReference.imageView setImage:image];
+			[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
 		} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 			[cellReference.activityIndicator stopAnimating];
 		}];
@@ -312,7 +316,7 @@ enum {
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-//		NSLog(@"%@", JSON);
+		//		NSLog(@"%@", JSON);
 		
 		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
@@ -585,7 +589,7 @@ enum {
 		[self requestMediaForGame:_game];
 	}];
 	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
+		//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
 		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
 	}];
 	[operation start];
@@ -615,7 +619,7 @@ enum {
 		
 		NSString *html = [NSString stringWithUTF8String:[responseObject bytes]];
 		
-//		NSLog(@"%@", html);
+		//		NSLog(@"%@", html);
 		
 		if (html){
 			// Regex magic
@@ -629,7 +633,7 @@ enum {
 			
 			NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
 			
-//			NSLog(@"Metascore: %@", metascore);
+			//			NSLog(@"Metascore: %@", metascore);
 			
 			[_game setMetascore:metascore];
 			[_game setMetacriticURL:url];
@@ -669,7 +673,7 @@ enum {
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Media - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-//		NSLog(@"%@", JSON);
+		//		NSLog(@"%@", JSON);
 		
 		NSDictionary *results = JSON[@"results"];
 		
@@ -685,7 +689,7 @@ enum {
 					[image setThumbnailURL:stringURL];
 					[image setOriginalURL:[stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"]];
 				}
-					
+				
 				[image setIndex:@(index)];
 				[game addImagesObject:image];
 				
@@ -723,16 +727,18 @@ enum {
 			}
 			
 			// No videos available
-			if (index == 0){
+			if (index == 0)
 				[_videosStatusView setStatus:ContentStatusUnavailable];
-			}
 		}
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 			
 			_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
-			if ([Tools deviceIsiPad]) [self.tableView reloadData];
+			if ([Tools deviceIsiPad]){
+				[self.tableView beginUpdates];
+				[self.tableView endUpdates];
+			}
 			[_imagesCollectionView reloadData];
 		}];
 		
@@ -748,9 +754,9 @@ enum {
 	NSURLRequest *request = [SessionManager requestForVideoWithIdentifier:video.identifier fields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-//		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		//		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-//		NSLog(@"%@", JSON);
+		//		NSLog(@"%@", JSON);
 		
 		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		

@@ -52,6 +52,8 @@
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
 	
+	_image = nil;
+	_imageView = nil;
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
