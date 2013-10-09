@@ -225,6 +225,7 @@ enum {
 			Image *nextImage = _images[indexPath.item + 1];
 			ImageCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
 			
+			// Download image
 			[nextCell.activityIndicator startAnimating];
 			__weak ImageCollectionCell *cellReference = nextCell;
 			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextImage.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -239,6 +240,7 @@ enum {
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = _images[indexPath.item];
 		
+		// Download image
 		[cell.activityIndicator startAnimating];
 		__weak ImageCollectionCell *cellReference = cell;
 		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:image.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -257,6 +259,7 @@ enum {
 			Video *nextVideo = _videos[indexPath.item + 1];
 			VideoCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
 			
+			// Download image
 			[nextCell.activityIndicator startAnimating];
 			__weak VideoCollectionCell *cellReference = nextCell;
 			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -273,6 +276,7 @@ enum {
 		[cell.titleLabel setText:video.title];
 		[cell.lengthLabel setText:[Tools formattedStringForDuration:video.length.integerValue]];
 		
+		// Download image
 		[cell.activityIndicator startAnimating];
 		__weak VideoCollectionCell *cellReference = cell;
 		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:video.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -582,7 +586,7 @@ enum {
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"GameDownloaded" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
 			[self setCoverImageAnimated:YES];
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {

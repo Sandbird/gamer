@@ -3,12 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "CompletedIcon.png"
+      "filename" : "Completed.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "CompletedIcon@2x.png"
+      "filename" : "Completed@2x.png"
     }
   ],
   "info" : {

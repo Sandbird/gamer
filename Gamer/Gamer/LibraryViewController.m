@@ -95,28 +95,30 @@
 	[cell.coverImageView setImage:image];
 	
 	// Set status icons in the correct order: Digital, Completed, Loaned
+	[cell.overlayView setHidden:NO];
 	if ([game.digital isEqualToNumber:@(YES)]){
-		[cell.firstIcon setImage:[UIImage imageNamed:@"DigitalIcon"]];
+		[cell.firstIcon setImage:[UIImage imageNamed:@"Digital"]];
 		[cell.secondIcon setImage:nil];
 		
 		if ([game.completed isEqualToNumber:@(YES)]){
-			[cell.secondIcon setImage:[UIImage imageNamed:@"CompletedIcon"]];
+			[cell.secondIcon setImage:[UIImage imageNamed:@"Completed"]];
 		}
 	}
 	else if ([game.completed isEqualToNumber:@(YES)]){
-		[cell.firstIcon setImage:[UIImage imageNamed:@"CompletedIcon"]];
+		[cell.firstIcon setImage:[UIImage imageNamed:@"Completed"]];
 		[cell.secondIcon setImage:nil];
 		if ([game.loaned isEqualToNumber:@(YES)]){
-			[cell.secondIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
+			[cell.secondIcon setImage:[UIImage imageNamed:@"Loaned"]];
 		}
 	}
 	else if ([game.loaned isEqualToNumber:@(YES)]){
-		[cell.firstIcon setImage:[UIImage imageNamed:@"LoanedIcon"]];
+		[cell.firstIcon setImage:[UIImage imageNamed:@"Loaned"]];
 		[cell.secondIcon setImage:nil];
 	}
 	else{
 		[cell.firstIcon setImage:nil];
 		[cell.secondIcon setImage:nil];
+		[cell.overlayView setHidden:YES];
 	}
 	
 	return cell;
