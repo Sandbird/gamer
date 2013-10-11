@@ -20,7 +20,8 @@
 #import "Image.h"
 #import "CoverImage.h"
 #import "SimilarGame.h"
-#import "PlatformCell.h"
+#import "SettingsPlatformCell.h"
+#import "SettingsSliderCell.h"
 
 @interface SettingsTableViewController ()
 
@@ -42,6 +43,13 @@
 	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:nil].mutableCopy;
 	
 	[self.tableView setEditing:YES animated:NO];
+	
+	if (![SessionManager gamer].librarySize){
+		[[SessionManager gamer] setLibrarySize:@(1)];
+		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+		}];
+	}
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -56,12 +64,13 @@
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 1;
+    return 2;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	switch (section) {
 		case 0: return @"Platforms";
+		case 1: return @"Library game size";
 		default: return @"";
 	}
 }
@@ -86,7 +95,7 @@
 		case 0:{
 			Platform *platform = _platforms[indexPath.row];
 			
-			PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
+			SettingsPlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
 			[cell.titleLabel setText:platform.name];
 			[cell.abbreviationLabel setText:platform.abbreviation];
 			[cell.abbreviationLabel setBackgroundColor:platform.color];
@@ -97,9 +106,9 @@
 			return cell;
 		}
 		case 1:{
-			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
+			SettingsSliderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SliderCell" forIndexPath:indexPath];
+			[cell.slider setValue:[SessionManager gamer].librarySize.floatValue];
 			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
-			[cell.textLabel setText:@"Delete all data"];
 			return cell;
 		}
 		default:
@@ -141,33 +150,12 @@
 		
 		[platform setIndex:@(index)];
 		
-		PlatformCell *cell = (PlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+		SettingsPlatformCell *cell = (SettingsPlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 		[cell.switchControl setTag:index];
 	}
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	if (indexPath.section == 1){
-		[tableView deselectRowAtIndexPath:indexPath animated:YES];
-		[Game truncateAll];
-		[Genre truncateAll];
-		[Platform truncateAll];
-		[Developer truncateAll];
-		[Publisher truncateAll];
-		[Franchise truncateAll];
-		[Theme truncateAll];
-		[ReleasePeriod truncateAll];
-		[ReleaseDate truncateAll];
-		[Video truncateAll];
-		[Image truncateAll];
-		[CoverImage truncateAll];
-		[SimilarGame truncateAll];
-		[Gamer truncateAll];
-		[_context saveToPersistentStoreAndWait];
-	}
 }
 
 #pragma mark - Actions
@@ -178,6 +166,18 @@
 	sender.isOn ? [[SessionManager gamer] addPlatformsObject:platform] : [[SessionManager gamer] removePlatformsObject:platform];
 	
 	[_context saveToPersistentStoreAndWait];
+}
+
+- (IBAction)sliderValueChangedAction:(UISlider *)sender{
+	[sender setValue:lroundf(sender.value)];
+}
+
+- (IBAction)sliderTouchUpAction:(UISlider *)sender{
+	NSLog(@"%f", sender.value);
+	[[SessionManager gamer] setLibrarySize:@(sender.value)];
+	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+	}];
 }
 
 @end

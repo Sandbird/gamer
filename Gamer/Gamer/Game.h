@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 07/10/2013.
+//  Created by Caio Mello on 11/10/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -25,8 +25,8 @@
 @property (nonatomic, retain) NSNumber * preordered;
 @property (nonatomic, retain) NSNumber * released;
 @property (nonatomic, retain) NSString * releaseDateText;
-@property (nonatomic, retain) NSData * thumbnail;
-@property (nonatomic, retain) NSData * thumbnailLarge;
+@property (nonatomic, retain) NSData * thumbnailWishlist;
+@property (nonatomic, retain) NSData * thumbnailLibrary;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * wanted;
 @property (nonatomic, retain) CoverImage *coverImage;

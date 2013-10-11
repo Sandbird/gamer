@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PlatformCell : UITableViewCell
+@interface SettingsPlatformCell : UITableViewCell
 
 @property (nonatomic, strong) IBOutlet UILabel *abbreviationLabel;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;

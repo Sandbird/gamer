@@ -871,7 +871,7 @@
                         <color key="backgroundColor" red="0.12549019607843137" green="0.12549019607843137" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="PlatformCell" id="Nac-XZ-dVL" userLabel="Platform Cell" customClass="PlatformCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="PlatformCell" id="Nac-XZ-dVL" userLabel="Platform Cell" customClass="SettingsPlatformCell">
                                 <rect key="frame" x="0.0" y="55" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Nac-XZ-dVL" id="Xpu-Kf-Kis">
@@ -913,23 +913,28 @@
                                     <outlet property="titleLabel" destination="Yhj-cq-W1x" id="Qk3-Xu-Jzr"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ButtonCell" textLabel="nUM-X1-R5H" style="IBUITableViewCellStyleDefault" id="Y0b-l7-xhR" userLabel="Button Cell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SliderCell" id="BbU-1V-jG0" userLabel="Button Cell" customClass="SettingsSliderCell">
                                 <rect key="frame" x="0.0" y="99" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Y0b-l7-xhR" id="pee-j3-3he">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BbU-1V-jG0" id="DZP-oD-7Bb">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="nUM-X1-R5H" userLabel="Title Label">
-                                            <rect key="frame" x="15" y="0.0" width="290" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="6Rl-qn-b0W">
+                                            <rect key="frame" x="18" y="5" width="284" height="34"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <connections>
+                                                <action selector="sliderTouchUpAction:" destination="hd1-3s-aNN" eventType="touchUpOutside" id="2YJ-zc-R3E"/>
+                                                <action selector="sliderTouchUpAction:" destination="hd1-3s-aNN" eventType="touchUpInside" id="Rsf-pE-385"/>
+                                                <action selector="sliderValueChangedAction:" destination="hd1-3s-aNN" eventType="valueChanged" id="Y2z-xz-fLX"/>
+                                            </connections>
+                                        </slider>
                                     </subviews>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="slider" destination="6Rl-qn-b0W" id="1ua-oB-x0t"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -1038,33 +1043,21 @@
                                             <rect key="frame" x="0.0" y="0.0" width="92" height="116"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Bb-kH-OHg" userLabel="Cover Image">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0Bb-kH-OHg" userLabel="Cover Image">
                                                     <rect key="frame" x="0.0" y="0.0" width="92" height="116"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </imageView>
-                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UHW-TF-2F9" userLabel="Overlay View">
-                                                    <rect key="frame" x="0.0" y="92" width="92" height="24"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h2v-EM-VEL" userLabel="First Icon">
-                                                            <rect key="frame" x="70" y="2" width="20" height="20"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        </imageView>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f3n-aB-YE0" userLabel="Second Icon">
-                                                            <rect key="frame" x="48" y="2" width="20" height="20"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        </imageView>
-                                                    </subviews>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
-                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="0Bb-kH-OHg" secondAttribute="bottom" id="26C-Ol-Z0E"/>
+                                            <constraint firstItem="0Bb-kH-OHg" firstAttribute="top" secondItem="zg7-Wg-tAE" secondAttribute="top" id="DX3-hf-cLh"/>
+                                            <constraint firstAttribute="trailing" secondItem="0Bb-kH-OHg" secondAttribute="trailing" id="K41-SN-94K"/>
+                                            <constraint firstItem="0Bb-kH-OHg" firstAttribute="leading" secondItem="zg7-Wg-tAE" secondAttribute="leading" id="Sg4-us-aHW"/>
+                                        </constraints>
                                         <connections>
                                             <outlet property="coverImageView" destination="0Bb-kH-OHg" id="zE2-Ri-bgs"/>
-                                            <outlet property="firstIcon" destination="h2v-EM-VEL" id="63c-ry-3et"/>
-                                            <outlet property="overlayView" destination="UHW-TF-2F9" id="4kU-7g-bgs"/>
-                                            <outlet property="secondIcon" destination="f3n-aB-YE0" id="OdC-E9-yju"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

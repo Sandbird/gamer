@@ -145,7 +145,7 @@
 	WishlistCell *customCell = (WishlistCell *)cell;
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.dateLabel setText:game.releaseDateText];
-	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnail]];
+	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnailWishlist]];
 	[customCell.preorderedIcon setHidden:!game.preordered.boolValue];
 	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];

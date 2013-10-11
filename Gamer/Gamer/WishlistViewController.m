@@ -109,14 +109,10 @@
 	WishlistCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[cell.dateLabel setText:game.releaseDateText];
-	[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnailLarge]];
+	[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnailWishlist]];
 	[cell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[cell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
 	[cell.preorderedIcon setHidden:!game.preordered.boolValue];
-	
-	CGFloat coverImageAspectRatio = cell.coverImageView.image.size.width/cell.coverImageView.image.size.height;
-	CGFloat imageViewAspectRatio = cell.coverImageView.bounds.size.width/cell.coverImageView.bounds.size.height;
-	[cell.coverImageView setBackgroundColor:(coverImageAspectRatio >= imageViewAspectRatio) ? [UIColor blackColor] : [UIColor clearColor]];
 	
 	return cell;
 }

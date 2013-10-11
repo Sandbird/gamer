@@ -13,7 +13,7 @@
 #import "GameTableViewController.h"
 #import "HeaderCollectionReusableView.h"
 
-@interface LibraryViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface LibraryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
 @property (nonatomic, strong) UIView *guideView;
@@ -87,39 +87,21 @@
 	return [_fetchedResultsController.sections[section] numberOfObjects];
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+	switch ([SessionManager gamer].librarySize.integerValue) {
+		case 0: return [Tools deviceIsiPad] ? CGSizeMake(83, 91) : CGSizeMake(50, 63);
+		case 1: return [Tools deviceIsiPad] ? CGSizeMake(115, 127) : CGSizeMake(66, 83);
+		case 2: return [Tools deviceIsiPad] ? CGSizeMake(140, 176) : CGSizeMake(92, 116);
+		default: return CGSizeZero;
+	}
+}
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
 	
 	LibraryCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
-	UIImage *image = [UIImage imageWithData:game.thumbnailLarge];
+	UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
 	[cell.coverImageView setImage:image];
-	
-	// Set status icons in the correct order: Digital, Completed, Loaned
-	[cell.overlayView setHidden:NO];
-	if ([game.digital isEqualToNumber:@(YES)]){
-		[cell.firstIcon setImage:[UIImage imageNamed:@"Digital"]];
-		[cell.secondIcon setImage:nil];
-		
-		if ([game.completed isEqualToNumber:@(YES)]){
-			[cell.secondIcon setImage:[UIImage imageNamed:@"Completed"]];
-		}
-	}
-	else if ([game.completed isEqualToNumber:@(YES)]){
-		[cell.firstIcon setImage:[UIImage imageNamed:@"Completed"]];
-		[cell.secondIcon setImage:nil];
-		if ([game.loaned isEqualToNumber:@(YES)]){
-			[cell.secondIcon setImage:[UIImage imageNamed:@"Loaned"]];
-		}
-	}
-	else if ([game.loaned isEqualToNumber:@(YES)]){
-		[cell.firstIcon setImage:[UIImage imageNamed:@"Loaned"]];
-		[cell.secondIcon setImage:nil];
-	}
-	else{
-		[cell.firstIcon setImage:nil];
-		[cell.secondIcon setImage:nil];
-		[cell.overlayView setHidden:YES];
-	}
 	
 	return cell;
 }
