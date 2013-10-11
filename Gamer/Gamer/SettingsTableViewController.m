@@ -77,7 +77,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section{
 	switch (section) {
-		case 0: return @"Select your platforms. This affects search results. Reordering affects the Library.";
+		case 0: return @"Select your platforms. This affects search results. Reordering affects the Library and the game screen.";
 		default: return @"";
 	}
 }

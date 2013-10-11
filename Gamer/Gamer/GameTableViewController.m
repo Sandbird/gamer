@@ -105,7 +105,9 @@ enum {
 	if (_game){
 		[self refreshAnimated:NO];
 		
-		_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+		_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+		
+		_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
 		
 		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
 		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
@@ -546,14 +548,16 @@ enum {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[self refreshAnimated:NO];
 			
-			_platforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+			_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
 			[_platformsCollectionView reloadData];
 			
 			[self.tableView reloadData];
 			
+			_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
+			
 			// If game is released and has at least one platform, request metascore
-			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _platforms.count > 0)
-				[self requestMetascoreForGameWithTitle:_game.title platform:_platforms[0]];
+			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _selectablePlatforms.count > 0)
+				[self requestMetascoreForGameWithTitle:_game.title platform:_selectablePlatforms[0]];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -623,7 +627,7 @@ enum {
 		
 		NSString *html = [NSString stringWithUTF8String:[responseObject bytes]];
 		
-		//		NSLog(@"%@", html);
+//		NSLog(@"%@", html);
 		
 		if (html){
 			// Regex magic
@@ -637,7 +641,7 @@ enum {
 			
 			NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
 			
-			//			NSLog(@"Metascore: %@", metascore);
+			NSLog(@"Metascore: %@", metascore);
 			
 			[_game setMetascore:metascore];
 			[_game setMetacriticURL:url];
@@ -649,8 +653,8 @@ enum {
 					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
 				}
 				else{
-					if (_platforms.count > ([_platforms indexOfObject:platform] + 1))
-						[self requestMetascoreForGameWithTitle:title platform:_platforms[[_platforms indexOfObject:platform] + 1]];
+					if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
+						[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
 					else
 						[_metascoreButton setHidden:YES];
 				}
@@ -658,8 +662,8 @@ enum {
 			}];
 		}
 		else{
-			if (_platforms.count > ([_platforms indexOfObject:platform] + 1))
-				[self requestMetascoreForGameWithTitle:title platform:_platforms[[_platforms indexOfObject:platform] + 1]];
+			if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
+				[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
 		}
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -1008,8 +1012,6 @@ enum {
 		}];
 	}
 	else{
-		_selectablePlatforms = [Platform findAllSortedBy:@"name" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
-		
 		if (_selectablePlatforms.count > 1){
 			UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
 			[actionSheet setTag:(sender == _wishlistButton) ? 1 : 2];
