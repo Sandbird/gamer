@@ -96,7 +96,7 @@
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="PreorderedIcon" translatesAutoresizingMaskIntoConstraints="NO" id="7RL-wT-827" userLabel="Pre-ordered Icon">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Pre-ordered" translatesAutoresizingMaskIntoConstraints="NO" id="7RL-wT-827" userLabel="Pre-ordered Icon">
                                                     <rect key="frame" x="54" y="211" width="20" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -339,7 +339,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="PreorderedIcon" translatesAutoresizingMaskIntoConstraints="NO" id="tj3-TM-JDz" userLabel="Pre-ordered Icon">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Pre-ordered" translatesAutoresizingMaskIntoConstraints="NO" id="tj3-TM-JDz" userLabel="Pre-ordered Icon">
                                                     <rect key="frame" x="20" y="7" width="30" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -377,7 +377,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="CompletedIcon" translatesAutoresizingMaskIntoConstraints="NO" id="yWk-SI-wVV" userLabel="Completed Icon">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Completed" translatesAutoresizingMaskIntoConstraints="NO" id="yWk-SI-wVV" userLabel="Completed Icon">
                                                     <rect key="frame" x="20" y="7" width="30" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -415,7 +415,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DigitalIcon" translatesAutoresizingMaskIntoConstraints="NO" id="cVq-yH-XuN" userLabel="Digital Icon">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Digital" translatesAutoresizingMaskIntoConstraints="NO" id="cVq-yH-XuN" userLabel="Digital Icon">
                                                     <rect key="frame" x="20" y="7" width="30" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -453,7 +453,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LoanedIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Loa-bT-KJa" userLabel="Loaned Icon">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Loaned" translatesAutoresizingMaskIntoConstraints="NO" id="Loa-bT-KJa" userLabel="Loaned Icon">
                                                     <rect key="frame" x="20" y="7" width="30" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -1327,11 +1327,11 @@
         </scene>
     </scenes>
     <resources>
-        <image name="CompletedIcon" width="30" height="30"/>
-        <image name="DigitalIcon" width="30" height="30"/>
-        <image name="LoanedIcon" width="30" height="30"/>
+        <image name="Completed" width="20" height="20"/>
+        <image name="Digital" width="20" height="20"/>
+        <image name="Loaned" width="20" height="20"/>
         <image name="PlayButton" width="64" height="64"/>
-        <image name="PreorderedIcon" width="30" height="30"/>
+        <image name="Pre-ordered" width="20" height="20"/>
     </resources>
     <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -1340,6 +1340,6 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="kf3-uk-gec"/>
+        <segue reference="d00-8M-kLX"/>
     </inferredMetricsTieBreakers>
 </document>

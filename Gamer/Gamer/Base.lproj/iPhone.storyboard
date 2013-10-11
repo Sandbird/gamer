@@ -62,7 +62,7 @@
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="PreorderedIcon" translatesAutoresizingMaskIntoConstraints="NO" id="vOA-KY-Pe0" userLabel="Pre-ordered Icon">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Pre-ordered" translatesAutoresizingMaskIntoConstraints="NO" id="vOA-KY-Pe0" userLabel="Pre-ordered Icon">
                                             <rect key="frame" x="234" y="33" width="20" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
@@ -1167,7 +1167,6 @@
         <image name="Loaned" width="20" height="20"/>
         <image name="PlayButton" width="64" height="64"/>
         <image name="Pre-ordered" width="20" height="20"/>
-        <image name="PreorderedIcon" width="30" height="30"/>
     </resources>
     <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
