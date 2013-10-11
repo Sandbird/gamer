@@ -18,6 +18,7 @@
 #import "ReleasePeriod.h"
 #import "CoverImage.h"
 #import "ReleaseDate.h"
+#import "SimilarGame.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "ImageCollectionCell.h"
 #import "VideoCollectionCell.h"
@@ -28,6 +29,7 @@
 #import "MetacriticViewController.h"
 #import "TrailerViewController.h"
 #import <AFNetworking/AFNetworking.h>
+#import "SimilarGameCollectionCell.h"
 
 enum {
     SectionCover,
@@ -51,11 +53,15 @@ enum {
 @property (nonatomic, strong) IBOutlet UISwitch *loanedSwitch;
 @property (nonatomic, strong) IBOutlet UISwitch *digitalSwitch;
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
-@property (nonatomic, strong) IBOutlet UILabel *developerLabel;
-@property (nonatomic, strong) IBOutlet UILabel *publisherLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreFirstLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreSecondLabel;
+@property (nonatomic, strong) IBOutlet UILabel *themeFirstLabel;
+@property (nonatomic, strong) IBOutlet UILabel *themeSecondLabel;
+@property (nonatomic, strong) IBOutlet UILabel *franchiseLabel;
+@property (nonatomic, strong) IBOutlet UILabel *developerLabel;
+@property (nonatomic, strong) IBOutlet UILabel *publisherLabel;
 @property (nonatomic, strong) IBOutlet UICollectionView *platformsCollectionView;
+@property (nonatomic, strong) IBOutlet UICollectionView *similarGamesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *imagesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *videosCollectionView;
 
@@ -178,8 +184,10 @@ enum {
 		return textRect.size.height + 40;
 	}
 	// Platform collection height (iPhone)
-	else if (indexPath.section == SectionDetails && indexPath.row == 2)
-		return (_platforms.count > 4) ? 120 : 100;
+	else if (indexPath.section == SectionDetails && indexPath.row == 2 && [Tools deviceIsiPhone])
+		return (_platforms.count > 4) ? 123 : 100;
+	else if (indexPath.section == SectionDetails && ((indexPath.row == 2 && [Tools deviceIsiPad]) || (indexPath.row == 2 && [Tools deviceIsiPhone])))
+		return (_game.similarGames.count > 0) ? 150 : 0;
 	// Images collection height (iPad)
 	else if ([Tools deviceIsiPad] && indexPath.section == SectionImages && _images.count <= 3)
 		return 180;
@@ -203,6 +211,8 @@ enum {
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
 	if (collectionView == _platformsCollectionView)
 		return _platforms.count;
+	else if (collectionView == _similarGamesCollectionView)
+		return _game.similarGames.count;
 	else if (collectionView == _imagesCollectionView){
 		[collectionView setBounces:(_images.count == 0) ? NO : YES];
 		return _images.count;
@@ -215,10 +225,16 @@ enum {
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _platformsCollectionView){
-		PlatformCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Platform *platform = _platforms[indexPath.item];
+		PlatformCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		[cell.platformLabel setText:platform.abbreviation];
 		[cell.platformLabel setBackgroundColor:platform.color];
+		return cell;
+	}
+	else if (collectionView == _similarGamesCollectionView){
+		SimilarGame *similarGame = _game.similarGames.allObjects[indexPath.row];
+		SimilarGameCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+		[cell.coverImageView setImageWithURL:[NSURL URLWithString:similarGame.thumbnailURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
 		return cell;
 	}
 	else if (collectionView == _imagesCollectionView){
@@ -298,6 +314,9 @@ enum {
 		Image *image = _images[indexPath.item];
 		[self performSegueWithIdentifier:@"ViewerSegue" sender:image];
 	}
+	else if (collectionView == _similarGamesCollectionView){
+		// Push game
+	}
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
 		if (video.highQualityURL){
@@ -317,12 +336,12 @@ enum {
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
-	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers"];
+	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-		//		NSLog(@"%@", JSON);
+//		NSLog(@"%@", JSON);
 		
 		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 		
@@ -530,6 +549,22 @@ enum {
 			}
 		}
 		
+		// Similar games
+		if (results[@"similar_games"] != [NSNull null]){
+			for (NSDictionary *dictionary in results[@"similar_games"]){
+				SimilarGame *similarGame = [SimilarGame findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
+				if (similarGame)
+					[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+				else{
+					similarGame = [SimilarGame createInContext:_context];
+					[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+					[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+				}
+				[_game addSimilarGamesObject:similarGame];
+				[self requestImageForSimilarGame:similarGame];
+			}
+		}
+		
 		// Themes
 		if (results[@"themes"] != [NSNull null]){
 			for (NSDictionary *dictionary in results[@"themes"]){
@@ -668,6 +703,31 @@ enum {
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"Failure in %@ - Metascore", self);
+	}];
+	[operation start];
+}
+
+- (void)requestImageForSimilarGame:(SimilarGame *)similarGame{
+	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:similarGame.identifier fields:@"image"];
+	
+	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		
+//		NSLog(@"%@", JSON);
+		
+		NSDictionary *results = JSON[@"results"];
+		
+		if (results[@"image"] != [NSNull null])
+			[similarGame setThumbnailURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
+		
+		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_similarGamesCollectionView reloadData];
+		}];
+		
+	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
+		
+		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
 	[operation start];
 }
@@ -908,6 +968,9 @@ enum {
 	[_descriptionTextView setText:_game.overview];
 	[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
 	[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
+	[_themeFirstLabel setText:(_game.themes.count > 0) ? [_game.themes.allObjects[0] name] : @"Not available"];
+	[_themeSecondLabel setText:(_game.themes.count > 1) ? [_game.themes.allObjects[1] name] : @""];
+	[_franchiseLabel setText:(_game.franchises.count > 0) ? [_game.franchises.allObjects[0] name] : @"Not available"];
 	[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
 	[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
 }
