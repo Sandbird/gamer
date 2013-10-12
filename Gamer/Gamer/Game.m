@@ -35,8 +35,8 @@
 @dynamic preordered;
 @dynamic released;
 @dynamic releaseDateText;
-@dynamic thumbnailWishlist;
 @dynamic thumbnailLibrary;
+@dynamic thumbnailWishlist;
 @dynamic title;
 @dynamic wanted;
 @dynamic coverImage;

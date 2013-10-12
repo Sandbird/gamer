@@ -25,8 +25,8 @@
 @property (nonatomic, retain) NSNumber * preordered;
 @property (nonatomic, retain) NSNumber * released;
 @property (nonatomic, retain) NSString * releaseDateText;
-@property (nonatomic, retain) NSData * thumbnailWishlist;
 @property (nonatomic, retain) NSData * thumbnailLibrary;
+@property (nonatomic, retain) NSData * thumbnailWishlist;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * wanted;
 @property (nonatomic, retain) CoverImage *coverImage;

@@ -74,6 +74,7 @@ enum {
 @property (nonatomic, strong) NSOperationQueue *videosOperationQueue;
 
 @property (nonatomic, strong) NSArray *platforms;
+@property (nonatomic, strong) NSArray *similarGames;
 @property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSArray *videos;
 
@@ -114,6 +115,9 @@ enum {
 		_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
 		
 		_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
+		
+		_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
+		if (_similarGames.count == 0) [self requestSimilarGamesForGame:_game];
 		
 		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
 		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
@@ -212,7 +216,7 @@ enum {
 	if (collectionView == _platformsCollectionView)
 		return _platforms.count;
 	else if (collectionView == _similarGamesCollectionView)
-		return _game.similarGames.count;
+		return _similarGames.count;
 	else if (collectionView == _imagesCollectionView){
 		[collectionView setBounces:(_images.count == 0) ? NO : YES];
 		return _images.count;
@@ -232,7 +236,7 @@ enum {
 		return cell;
 	}
 	else if (collectionView == _similarGamesCollectionView){
-		SimilarGame *similarGame = _game.similarGames.allObjects[indexPath.row];
+		SimilarGame *similarGame = _similarGames[indexPath.row];
 		SimilarGameCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		[cell.coverImageView setImageWithURL:[NSURL URLWithString:similarGame.thumbnailURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
 		return cell;
@@ -315,7 +319,7 @@ enum {
 		[self performSegueWithIdentifier:@"ViewerSegue" sender:image];
 	}
 	else if (collectionView == _similarGamesCollectionView){
-		// Push game
+		// Push game?
 	}
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
@@ -586,6 +590,9 @@ enum {
 			_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
 			[_platformsCollectionView reloadData];
 			
+			_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
+			[_similarGamesCollectionView reloadData];
+			
 			[self.tableView reloadData];
 			
 			_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
@@ -703,6 +710,45 @@ enum {
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"Failure in %@ - Metascore", self);
+	}];
+	[operation start];
+}
+
+- (void)requestSimilarGamesForGame:(Game *)game{
+	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:game.identifier fields:@"similar_games"];
+	
+	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		
+		//		NSLog(@"%@", JSON);
+		
+		NSDictionary *results = JSON[@"results"];
+		
+		// Similar games
+		if (results[@"similar_games"] != [NSNull null]){
+			for (NSDictionary *dictionary in results[@"similar_games"]){
+				SimilarGame *similarGame = [SimilarGame findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
+				if (similarGame)
+					[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+				else{
+					similarGame = [SimilarGame createInContext:_context];
+					[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+					[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+				}
+				[_game addSimilarGamesObject:similarGame];
+				[self requestImageForSimilarGame:similarGame];
+			}
+		}
+		
+		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
+			[_similarGamesCollectionView reloadData];
+			
+			[self.tableView reloadData];
+		}];
+		
+	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 	}];
 	[operation start];
 }

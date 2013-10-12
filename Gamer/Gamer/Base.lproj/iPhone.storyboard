@@ -604,18 +604,18 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hme-Y8-6oR">
-                                                    <rect key="frame" x="20" y="49" width="280" height="80"/>
+                                                    <rect key="frame" x="0.0" y="49" width="320" height="80"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Pd2-Xt-FD9">
                                                         <size key="itemSize" width="66" height="80"/>
                                                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                         <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                        <inset key="sectionInset" minX="20" minY="0.0" maxX="20" maxY="0.0"/>
                                                     </collectionViewFlowLayout>
                                                     <cells>
                                                         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="b1q-8P-EOr" customClass="SimilarGameCollectionCell">
-                                                            <rect key="frame" x="0.0" y="0.0" width="66" height="80"/>
+                                                            <rect key="frame" x="20" y="0.0" width="66" height="80"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                                 <rect key="frame" x="0.0" y="0.0" width="66" height="80"/>
@@ -1193,7 +1193,13 @@
                             <constraint firstAttribute="trailing" secondItem="YQt-ka-CWZ" secondAttribute="trailing" id="tRo-70-lJg"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u"/>
+                    <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="r2k-lH-fJH">
+                            <connections>
+                                <action selector="refreshBarButtonAction:" destination="njq-Ks-li6" id="gDq-Xg-Zm6"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="YQt-ka-CWZ" id="Q22-J5-Eew"/>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="HYd-CU-5hN"/>
@@ -1260,6 +1266,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="5qi-Mj-SGM"/>
+        <segue reference="HYd-CU-5hN"/>
     </inferredMetricsTieBreakers>
 </document>
