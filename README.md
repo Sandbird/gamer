@@ -3,11 +3,13 @@ Gamer
 
 Gamer is a tool for exploring, organizing and keeping track of all our games.
 <br><br/>
+<br><br/>
 <a href="https://itunes.apple.com/us/app/gamer-manage-your-games/id683636311?mt=8&uo=4">
-<img src="http://development-linkmaker.itunes.awcloud.net//htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.svg">
-
-<img src="Screenshots/iPhoneWishlistDevice.png" width="220" height="465" hspace="20"/>
-<img src="Screenshots/iPadLibraryDevice.png" width="374" height="558" hspace="20"/>
+<img src="http://development-linkmaker.itunes.awcloud.net//htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.svg" hspace="362">
+<br><br/>
+<br><br/>
+<img src="Screenshots/iPhoneWishlist.png" width="220" height="465" hspace="20"/>
+<img src="Screenshots/iPadLibrary.png" width="558" height="374" hspace="20"/>
 
 
 Credits
