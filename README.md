@@ -30,7 +30,7 @@ All data in the GiantBomb Wiki comes from its users, and a great way to improve 
 
 For features, bugs or suggestions, please open a new [issue](https://github.com/caiomello/gamer/issues) with the appropriate labels, or [send an email](mailto:gamer.app@icloud.com).
 
-I've created a public [Trello board](https://trello.com/b/RlCG5Bxi/gamer) so you can check on the ideas I've had and what I'm doing.
+I've also created a public [Trello board](https://trello.com/b/RlCG5Bxi/gamer) so you can check on the ideas I've had and what I'm doing.
 
 
 License
