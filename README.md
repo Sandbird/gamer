@@ -9,8 +9,12 @@ Gamer is a tool for exploring, organizing and keeping track of all our games.
 <a/>
 <br><br/>
 <br><br/>
+<a href="https://raw.github.com/caiomello/gamer/master/Screenshots/iPhoneWishlist.png">
 <img src="Screenshots/iPhoneWishlist.png" width="220" height="465" hspace="20"/>
+<a/>
+<a href="https://raw.github.com/caiomello/gamer/master/Screenshots/iPadLibrary.png">
 <img src="Screenshots/iPadLibrary.png" width="400" height="268" hspace="20"/>
+<a/>
 
 
 Credits
