@@ -117,7 +117,6 @@ enum {
 		_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
 		
 		_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
-		if (_similarGames.count == 0) [self requestSimilarGamesForGame:_game];
 		
 		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
 		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
@@ -247,7 +246,7 @@ enum {
 			Image *nextImage = _images[indexPath.item + 1];
 			ImageCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
 			
-			// Download image
+			// Download thumbnail
 			[nextCell.activityIndicator startAnimating];
 			__weak ImageCollectionCell *cellReference = nextCell;
 			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextImage.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -262,7 +261,7 @@ enum {
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = _images[indexPath.item];
 		
-		// Download image
+		// Download thumbnail
 		[cell.activityIndicator startAnimating];
 		__weak ImageCollectionCell *cellReference = cell;
 		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:image.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -281,7 +280,7 @@ enum {
 			Video *nextVideo = _videos[indexPath.item + 1];
 			VideoCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
 			
-			// Download image
+			// Download thumbnail
 			[nextCell.activityIndicator startAnimating];
 			__weak VideoCollectionCell *cellReference = nextCell;
 			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -298,7 +297,7 @@ enum {
 		[cell.titleLabel setText:video.title];
 		[cell.lengthLabel setText:[Tools formattedStringForDuration:video.length.integerValue]];
 		
-		// Download image
+		// Download thumbnail
 		[cell.activityIndicator startAnimating];
 		__weak VideoCollectionCell *cellReference = cell;
 		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:video.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
@@ -340,251 +339,27 @@ enum {
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
-	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
 //		NSLog(@"%@", JSON);
 		
-		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-		
-		NSDictionary *results = JSON[@"results"];
-		
-		// Set game
 		_game = [Game findFirstByAttribute:@"identifier" withValue:identifier];
 		if (!_game) _game = [Game createInContext:_context];
 		
-		// Main info
-		[_game setIdentifier:identifier];
-		[_game setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
-		[_game setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
-		
-		// Cover image
-		if (results[@"image"] != [NSNull null]){
-			NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-			
-			CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:stringURL];
-			if (!coverImage){
-				coverImage = [CoverImage createInContext:_context];
-				[coverImage setUrl:stringURL];
-			}
-			[_game setCoverImage:coverImage];
-			
-			if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !coverImage.data || ![coverImage.url isEqualToString:stringURL])
-				[self downloadImageForCoverImage:coverImage];
-			else
-				[self requestMediaForGame:_game];
-		}
-		
-		// Release date
-		NSString *originalReleaseDate = [Tools stringFromSourceIfNotNull:results[@"original_release_date"]];
-		NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
-		NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
-		NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
-		NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
-		
-		NSCalendar *calendar = [NSCalendar currentCalendar];
-		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-		
-		// Game is released
-		if (originalReleaseDate){
-			NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Tools dateFormatter] dateFromString:originalReleaseDate]];
-			[originalReleaseDateComponents setHour:10];
-			[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
-			
-			NSDate *releaseDateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
-			
-			ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:releaseDateFromComponents];
-			if (!releaseDate) releaseDate = [ReleaseDate createInContext:_context];
-			[releaseDate setDate:releaseDateFromComponents];
-			[releaseDate setDay:@(originalReleaseDateComponents.day)];
-			[releaseDate setMonth:@(originalReleaseDateComponents.month)];
-			[releaseDate setQuarter:@(originalReleaseDateComponents.quarter)];
-			[releaseDate setYear:@(originalReleaseDateComponents.year)];
-			
-			[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
-			[_game setReleaseDateText:[[Tools dateFormatter] stringFromDate:releaseDateFromComponents]];
-			[_game setReleased:@(YES)];
-			
-			[_game setReleaseDate:releaseDate];
-			[_game.releaseDate setDefined:@(YES)];
-			[_game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
-		}
-		// Game is not yet released
-		else{
-			NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-			[expectedReleaseDateComponents setHour:10];
-			
-			BOOL defined = NO;
-			
-			// Exact release date is known
-			if (expectedReleaseDay){
-				[expectedReleaseDateComponents setDay:expectedReleaseDay];
-				[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
-				[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
-				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
-				defined = YES;
-			}
-			// Release month is known
-			else if (expectedReleaseMonth){
-				[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
-				[expectedReleaseDateComponents setDay:0];
-				[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
-				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[[Tools dateFormatter] setDateFormat:@"MMMM yyyy"];
-			}
-			// Release quarter is known
-			else if (expectedReleaseQuarter){
-				[expectedReleaseDateComponents setQuarter:expectedReleaseQuarter];
-				[expectedReleaseDateComponents setMonth:((expectedReleaseQuarter * 3) + 1)];
-				[expectedReleaseDateComponents setDay:0];
-				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[[Tools dateFormatter] setDateFormat:@"QQQ yyyy"];
-			}
-			// Release year is known
-			else if (expectedReleaseYear){
-				[expectedReleaseDateComponents setYear:expectedReleaseYear];
-				[expectedReleaseDateComponents setQuarter:4];
-				[expectedReleaseDateComponents setMonth:13];
-				[expectedReleaseDateComponents setDay:0];
-				[[Tools dateFormatter] setDateFormat:@"yyyy"];
-			}
-			// Release date is unknown
-			else{
-				[expectedReleaseDateComponents setYear:2050];
-				[expectedReleaseDateComponents setQuarter:4];
-				[expectedReleaseDateComponents setMonth:13];
-				[expectedReleaseDateComponents setDay:0];
-			}
-			
-			NSDate *expectedReleaseDateFromComponents = [calendar dateFromComponents:expectedReleaseDateComponents];
-			
-			ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents];
-			if (!releaseDate) releaseDate = [ReleaseDate createInContext:_context];
-			[releaseDate setDate:expectedReleaseDateFromComponents];
-			[releaseDate setDay:@(expectedReleaseDateComponents.day)];
-			[releaseDate setMonth:@(expectedReleaseDateComponents.month)];
-			[releaseDate setQuarter:@(expectedReleaseDateComponents.quarter)];
-			[releaseDate setYear:@(expectedReleaseDateComponents.year)];
-			
-			[releaseDate setDefined:@(defined)];
-			
-			[_game setReleaseDateText:(expectedReleaseYear) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
-			[_game setReleased:@(NO)];
-			
-			[_game setReleaseDate:releaseDate];
-			[_game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
-		}
-		
-        // Platforms
-		if (results[@"platforms"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"platforms"]){
-				NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
-				switch (identifier.integerValue) {
-					case 88: identifier = @(35); break;
-					case 143: identifier = @(129); break;
-					case 86: identifier = @(20); break;
-					default: break;
-				}
-				Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
-				if (platform) [_game addPlatformsObject:platform];
-			}
-		}
-        
-		// Genres
-		if (results[@"genres"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"genres"]){
-				Genre *genre = [Genre findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (genre)
-					[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					genre = [Genre createInContext:_context];
-					[genre setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[_game addGenresObject:genre];
-			}
-		}
-		
-		// Developers
-		if (results[@"developers"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"developers"]){
-				Developer *developer = [Developer findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (developer)
-					[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					developer = [Developer createInContext:_context];
-					[developer setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[_game addDevelopersObject:developer];
-			}
-		}
-		
-		// Publishers
-		if (results[@"publishers"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"publishers"]){
-				Publisher *publisher = [Publisher findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (publisher)
-					[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					publisher = [Publisher createInContext:_context];
-					[publisher setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[_game addPublishersObject:publisher];
-			}
-		}
-		
-		// Franchises
-		if (results[@"franchises"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"franchises"]){
-				Franchise *franchise = [Franchise findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (franchise)
-					[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					franchise = [Franchise createInContext:_context];
-					[franchise setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[_game addFranchisesObject:franchise];
-			}
-		}
-		
-		// Similar games
-		if (results[@"similar_games"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"similar_games"]){
-				SimilarGame *similarGame = [SimilarGame findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (similarGame)
-					[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					similarGame = [SimilarGame createInContext:_context];
-					[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[_game addSimilarGamesObject:similarGame];
-				[self requestImageForSimilarGame:similarGame];
-			}
-		}
-		
-		// Themes
-		if (results[@"themes"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"themes"]){
-				Theme *theme = [Theme findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (theme)
-					[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					theme = [Theme createInContext:_context];
-					[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[_game addThemesObject:theme];
-			}
-		}
+		[Networking updateGame:_game withDataFromJSON:JSON context:_context];
+		for (SimilarGame *similarGame in _game.similarGames)
+			[self requestImageForSimilarGame:similarGame];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			NSString *coverImageURL = [Tools stringFromSourceIfNotNull:JSON[@"results"][@"image"][@"super_url"]];
+			if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL])
+				[self downloadImageForCoverImage:_game.coverImage];
+			else
+				[self requestMediaForGame:_game];
+			
 			[self refreshAnimated:NO];
 			
 			_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
@@ -607,7 +382,7 @@ enum {
 		
 		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
-	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)downloadImageForCoverImage:(CoverImage *)coverImage{
@@ -642,7 +417,7 @@ enum {
 		//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
 		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
 	}];
-	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
@@ -711,53 +486,14 @@ enum {
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"Failure in %@ - Metascore", self);
 	}];
-	[operation start];
-}
-
-- (void)requestSimilarGamesForGame:(Game *)game{
-	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:game.identifier fields:@"similar_games"];
-	
-	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
-		
-		//		NSLog(@"%@", JSON);
-		
-		NSDictionary *results = JSON[@"results"];
-		
-		// Similar games
-		if (results[@"similar_games"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"similar_games"]){
-				SimilarGame *similarGame = [SimilarGame findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (similarGame)
-					[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					similarGame = [SimilarGame createInContext:_context];
-					[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[_game addSimilarGamesObject:similarGame];
-				[self requestImageForSimilarGame:similarGame];
-			}
-		}
-		
-		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
-			[_similarGamesCollectionView reloadData];
-			
-			[self.tableView reloadData];
-		}];
-		
-	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
-	}];
-	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)requestImageForSimilarGame:(SimilarGame *)similarGame{
-	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:similarGame.identifier fields:@"image"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:similarGame.identifier fields:@"image"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		NSLog(@"Success in %@ - Status code: %d - Similar Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
 //		NSLog(@"%@", JSON);
 		
@@ -775,14 +511,14 @@ enum {
 		
 		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
-	[operation start];
+	[_operationQueue addOperation:operation];
 }
 
 - (void)requestMediaForGame:(Game *)game{
 	[_imagesStatusView setStatus:ContentStatusLoading];
 	[_videosStatusView setStatus:ContentStatusLoading];
 	
-	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:game.identifier fields:@"images,videos"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"images,videos"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Media - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -865,7 +601,7 @@ enum {
 }
 
 - (void)requestInformationForVideo:(Video *)video{
-	NSURLRequest *request = [SessionManager requestForVideoWithIdentifier:video.identifier fields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image"];
+	NSURLRequest *request = [Networking requestForVideoWithIdentifier:video.identifier fields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		//		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
@@ -1028,62 +764,6 @@ enum {
 		return [UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1];
 	else
 		return [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
-}
-
-- (NSInteger)quarterForMonth:(NSInteger)month{
-	switch (month) {
-		case 1: case 2: case 3: return 1;
-		case 4: case 5: case 6: return 2;
-		case 7: case 8: case 9: return 3;
-		case 10: case 11: case 12: return 4;
-		default: return 0;
-	}
-}
-
-- (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate{
-	NSCalendar *calendar = [NSCalendar currentCalendar];
-	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	
-	// Components for today, this month, this quarter, this year
-	NSDateComponents *current = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-	[current setQuarter:[self quarterForMonth:current.month]];
-	
-	// Components for next month, next quarter, next year
-	NSDateComponents *next = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-	next.month++;
-	[next setQuarter:current.quarter + 1];
-	next.year++;
-	
-	NSInteger period = 0;
-	if ([releaseDate.date compare:[calendar dateFromComponents:current]] <= NSOrderedSame) period = 1; // Released
-	else{
-		if (releaseDate.year.integerValue == 2050)
-			period = 9; // TBA
-		else if (releaseDate.year.integerValue > next.year)
-			period = 8; // Later
-		else if (releaseDate.year.integerValue == next.year){
-			if (current.month == 12 && releaseDate.month.integerValue == 1)
-				period = 3; // Next month
-			else if (current.quarter == 4 && releaseDate.quarter.integerValue == 1)
-				period = 5; // Next quarter
-			else
-				period = 7; // Next year
-		}
-		else if (releaseDate.year.integerValue == current.year){
-			if (releaseDate.month.integerValue == current.month)
-				period = 2; // This month
-			else if (releaseDate.month.integerValue == next.month)
-				period = 3; // Next month
-			else if (releaseDate.quarter.integerValue == current.quarter)
-				period = 4; // This quarter
-			else if (releaseDate.quarter.integerValue == next.quarter)
-				period = 5; // Next quarter
-			else
-				period = 6; // This year
-		}
-	}
-	
-	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
 }
 
 #pragma mark - Actions

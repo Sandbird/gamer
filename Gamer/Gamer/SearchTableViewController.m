@@ -130,7 +130,7 @@
 #pragma mark - Networking
 
 - (void)requestGamesWithTitlesContainingQuery:(NSString *)query{
-	NSURLRequest *request = [SessionManager requestForGamesWithTitle:query fields:@"id,name,image" platforms:[SessionManager gamer].platforms.allObjects];
+	NSURLRequest *request = [Networking requestForGamesWithTitle:query fields:@"id,name,image" platforms:[SessionManager gamer].platforms.allObjects];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 //		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);

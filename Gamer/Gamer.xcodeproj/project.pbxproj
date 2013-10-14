@@ -67,6 +67,7 @@
 		25CF6AE01808DD17000E51B2 /* Developer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CF6ADF1808DD17000E51B2 /* Developer.m */; };
 		25CF6AE31808DD17000E51B2 /* ReleaseDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CF6AE21808DD17000E51B2 /* ReleaseDate.m */; };
 		25CF6AE61808DD17000E51B2 /* ReleasePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CF6AE51808DD17000E51B2 /* ReleasePeriod.m */; };
+		25CF6AE9180B697B000E51B2 /* Networking.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CF6AE8180B697B000E51B2 /* Networking.m */; };
 		25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */; };
 		25D2E601178BB22900C7EDDB /* ImageViewerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ImageViewerViewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
@@ -192,6 +193,8 @@
 		25CF6AE21808DD17000E51B2 /* ReleaseDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseDate.m; sourceTree = "<group>"; };
 		25CF6AE41808DD17000E51B2 /* ReleasePeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasePeriod.h; sourceTree = "<group>"; };
 		25CF6AE51808DD17000E51B2 /* ReleasePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasePeriod.m; sourceTree = "<group>"; };
+		25CF6AE7180B697B000E51B2 /* Networking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Networking.h; sourceTree = "<group>"; };
+		25CF6AE8180B697B000E51B2 /* Networking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Networking.m; sourceTree = "<group>"; };
 		25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPad.storyboard; sourceTree = "<group>"; };
 		25D2E5FF178BB22900C7EDDB /* ImageViewerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewerViewController.h; sourceTree = "<group>"; };
 		25D2E600178BB22900C7EDDB /* ImageViewerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewerViewController.m; sourceTree = "<group>"; };
@@ -391,6 +394,8 @@
 				2531E853176CDBB1005881A4 /* Tools.m */,
 				2531E854176CDBBB005881A4 /* SessionManager.h */,
 				2531E855176CDBBB005881A4 /* SessionManager.m */,
+				25CF6AE7180B697B000E51B2 /* Networking.h */,
+				25CF6AE8180B697B000E51B2 /* Networking.m */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -646,6 +651,7 @@
 				2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */,
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ImageViewerViewController.m in Sources */,
+				25CF6AE9180B697B000E51B2 /* Networking.m in Sources */,
 				25CF6ADA1808DD16000E51B2 /* Franchise.m in Sources */,
 				25CF6AE01808DD17000E51B2 /* Developer.m in Sources */,
 				25C9FE3917CC4C4500CCDD59 /* WishlistViewController.m in Sources */,

@@ -70,7 +70,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	switch (section) {
 		case 0: return @"Platforms";
-		case 1: return @"Library game size";
+		case 1: return @"Settings";
 		default: return @"";
 	}
 }
@@ -78,6 +78,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section{
 	switch (section) {
 		case 0: return @"Select your platforms. This affects search results. Reordering affects the Library and the game screen.";
+		case 1: return @"Library game size.";
 		default: return @"";
 	}
 }

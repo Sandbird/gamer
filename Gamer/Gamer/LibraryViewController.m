@@ -16,6 +16,7 @@
 #import "Publisher.h"
 #import "Franchise.h"
 #import "Theme.h"
+#import "SimilarGame.h"
 #import "GameTableViewController.h"
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
@@ -127,119 +128,12 @@
 - (void)requestInformationForGame:(Game *)game{
 	[self.navigationItem.rightBarButtonItem setEnabled:NO];
 	
-	NSURLRequest *request = [SessionManager requestForGameWithIdentifier:game.identifier fields:@"image,developers,franchises,genres,platforms,publishers,themes"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
-		//		NSLog(@"%@", JSON);
-		
-		NSDictionary *results = JSON[@"results"];
-		
-		// Cover image
-		if (results[@"image"] != [NSNull null]){
-			NSString *stringURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-			
-			CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:stringURL];
-			if (!coverImage){
-				coverImage = [CoverImage createInContext:_context];
-				[coverImage setUrl:stringURL];
-			}
-			[game setCoverImage:coverImage];
-			
-			if (!game.thumbnailWishlist || !game.thumbnailLibrary || !coverImage.data || ![coverImage.url isEqualToString:stringURL])
-				[self downloadCoverImageForGame:game];
-		}
-		
-		// Platforms
-		if (results[@"platforms"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"platforms"]){
-				NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
-				switch (identifier.integerValue) {
-					case 88: identifier = @(35); break;
-					case 143: identifier = @(129); break;
-					case 86: identifier = @(20); break;
-					default: break;
-				}
-				Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
-				if (platform) [game addPlatformsObject:platform];
-			}
-		}
-        
-		// Genres
-		if (results[@"genres"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"genres"]){
-				Genre *genre = [Genre findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (genre)
-					[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					genre = [Genre createInContext:_context];
-					[genre setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[game addGenresObject:genre];
-			}
-		}
-		
-		// Developers
-		if (results[@"developers"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"developers"]){
-				Developer *developer = [Developer findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (developer)
-					[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					developer = [Developer createInContext:_context];
-					[developer setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[game addDevelopersObject:developer];
-			}
-		}
-		
-		// Publishers
-		if (results[@"publishers"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"publishers"]){
-				Publisher *publisher = [Publisher findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (publisher)
-					[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					publisher = [Publisher createInContext:_context];
-					[publisher setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[game addPublishersObject:publisher];
-			}
-		}
-		
-		// Franchises
-		if (results[@"franchises"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"franchises"]){
-				Franchise *franchise = [Franchise findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (franchise)
-					[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					franchise = [Franchise createInContext:_context];
-					[franchise setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[game addFranchisesObject:franchise];
-			}
-		}
-		
-		// Themes
-		if (results[@"themes"] != [NSNull null]){
-			for (NSDictionary *dictionary in results[@"themes"]){
-				Theme *theme = [Theme findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:_context];
-				if (theme)
-					[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				else{
-					theme = [Theme createInContext:_context];
-					[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-					[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				}
-				[game addThemesObject:theme];
-			}
-		}
+		[Networking updateGame:game withDataFromJSON:JSON context:_context];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			// If refresh is done, update release periods

@@ -26,13 +26,24 @@
 //	[view.layer addAnimation:animation forKey:@"position"];
 //	view.layer.position = CGPointMake(view.layer.position.x, view.layer.position.y + 20);
 
+#pragma mark - Tools
+
 static NSDateFormatter *DATEFORMATTER;
+static NSOperationQueue *OPERATIONQUEUE;
 
 + (NSDateFormatter *)dateFormatter{
 	if (!DATEFORMATTER) DATEFORMATTER = [[NSDateFormatter alloc] init];
 	[DATEFORMATTER setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	[DATEFORMATTER setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
 	return DATEFORMATTER;
+}
+
++ (NSOperationQueue *)operationQueue{
+	if (!OPERATIONQUEUE){
+		OPERATIONQUEUE = [[NSOperationQueue alloc] init];
+		[OPERATIONQUEUE setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+	}
+	return OPERATIONQUEUE;
 }
 
 #pragma mark - JSON
