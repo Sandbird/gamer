@@ -49,6 +49,8 @@
 	[_operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	
 	self.fetchedResultsController = [self fetchData];
+	
+	[self refreshWishlistGames];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -250,6 +252,13 @@
 	}];
 }
 
+- (void)refreshWishlistGames{
+	// Request info for all games in the Wishlist
+	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
+		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects] - 1); row++)
+			[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+}
+
 #pragma mark - Actions
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
@@ -261,10 +270,7 @@
 }
 
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
-	// Request info for all games in the Wishlist
-	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
-		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects] - 1); row++)
-			[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+	[self refreshWishlistGames];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

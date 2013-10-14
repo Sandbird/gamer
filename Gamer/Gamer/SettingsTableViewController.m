@@ -174,7 +174,6 @@
 }
 
 - (IBAction)sliderTouchUpAction:(UISlider *)sender{
-	NSLog(@"%f", sender.value);
 	[[SessionManager gamer] setLibrarySize:@(sender.value)];
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];

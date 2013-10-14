@@ -41,25 +41,34 @@ enum {
 
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 @property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
-@property (nonatomic, strong) IBOutlet UIButton *metascoreButton;
+@property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
+
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 @property (nonatomic, strong) IBOutlet UIButton *wishlistButton;
 @property (nonatomic, strong) IBOutlet UIButton *libraryButton;
+
 @property (nonatomic, strong) IBOutlet UISwitch *preorderedSwitch;
 @property (nonatomic, strong) IBOutlet UISwitch *completedSwitch;
 @property (nonatomic, strong) IBOutlet UISwitch *loanedSwitch;
 @property (nonatomic, strong) IBOutlet UISwitch *digitalSwitch;
+
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
+
+@property (nonatomic, strong) IBOutlet UIButton *metascoreButton;
 @property (nonatomic, strong) IBOutlet UILabel *genreFirstLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreSecondLabel;
 @property (nonatomic, strong) IBOutlet UILabel *themeFirstLabel;
 @property (nonatomic, strong) IBOutlet UILabel *themeSecondLabel;
+@property (nonatomic, strong) IBOutlet UILabel *developerFirstLabel;
+@property (nonatomic, strong) IBOutlet UILabel *developerSecondLabel;
+@property (nonatomic, strong) IBOutlet UILabel *publisherFirstLabel;
+@property (nonatomic, strong) IBOutlet UILabel *publisherSecondLabel;
 @property (nonatomic, strong) IBOutlet UILabel *franchiseLabel;
-@property (nonatomic, strong) IBOutlet UILabel *developerLabel;
-@property (nonatomic, strong) IBOutlet UILabel *publisherLabel;
+@property (nonatomic, strong) IBOutlet UILabel *franchiseTitleLabel;
+
 @property (nonatomic, strong) IBOutlet UICollectionView *platformsCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *similarGamesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *imagesCollectionView;
@@ -181,21 +190,73 @@ enum {
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	// Description text height
-	if (indexPath.section == SectionDetails && indexPath.row == 0){
-		CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(_descriptionTextView.frame.size.width - 10, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
-		return textRect.size.height + 40;
+	switch (indexPath.section) {
+		case SectionDetails:{
+			switch (indexPath.row) {
+				// Description row
+				case 0:{
+					CGRect textRect = [_game.overview boundingRectWithSize:CGSizeMake(_descriptionTextView.frame.size.width - 10, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
+					return 20 + textRect.size.height + 20; // Top padding + description text height + bottom padding
+				}
+				// Info row
+				case 1:{
+					if ([Tools deviceIsiPhone]){
+						CGFloat contentHeight = 0;
+						contentHeight += _game.genres.count > 1 ? 57 : 37; // Labels' height
+						contentHeight += 13; // Spacing
+						contentHeight += _game.themes.count > 1 ? 57 : 37; // Labels' height
+						contentHeight += 13; // Spacing
+						contentHeight += _game.developers.count > 1 ? 57 : 37; // Labels' height
+						contentHeight += 13; // Spacing
+						contentHeight += _game.publishers.count > 1 ? 57 : 37; // Labels' height
+						contentHeight += 13; // Spacing
+						contentHeight += _game.franchises.count > 0 ? (13 + 37) : 0; // Extra spacing + labels' height
+						return 20 + contentHeight + 20; // Top padding + content height + bottom padding
+					}
+					else{
+						CGFloat leftColumn = 0;
+						CGFloat rightColumn = 0;
+						
+						leftColumn += _game.genres.count > 1 ? 57 : 37; // Labels' height
+						leftColumn += 13; // Spacing
+						leftColumn += _game.themes.count > 1 ? 57 : 37; // Labels' height
+						leftColumn += 13; // Spacing
+						leftColumn += _game.franchises.count > 0 ? 37 : 0; // Labels' height
+						
+						rightColumn += _game.developers.count > 1 ? 57 : 37; // Labels' height
+						rightColumn += 13; // Spacing
+						rightColumn += _game.publishers.count > 1 ? 57 : 37; // Labels' height
+						rightColumn += 13; // Spacing
+						
+						return 20 + fmaxf(leftColumn, rightColumn) + 20; // Top padding + highest column height + bottom padding
+					}
+					break;
+				}
+				// Platforms row (iPhone) - Similar games row (iPad)
+				case 2:
+					if ([Tools deviceIsiPhone])
+						return 20 + 17 + 13 + ((_game.platforms.count/4 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+					else if ([Tools deviceIsiPad] && _game.similarGames.count == 0)
+						return 0;
+					break;
+				// Similar games row (iPhone)
+				case 3:
+					if ([Tools deviceIsiPhone] && _game.similarGames.count == 0)
+						return 0;
+				default:
+					break;
+			}
+			break;
+		}
+		case SectionImages:
+			if ([Tools deviceIsiPad] && _images.count <= 3)
+				return 180; // Display single row of images if less than 4 are available
+			break;
+		default:
+			break;
 	}
-	// Platform collection height (iPhone)
-	else if (indexPath.section == SectionDetails && indexPath.row == 2 && [Tools deviceIsiPhone])
-		return (_platforms.count > 4) ? 123 : 100;
-	else if (indexPath.section == SectionDetails && ((indexPath.row == 2 && [Tools deviceIsiPad]) || (indexPath.row == 2 && [Tools deviceIsiPhone])))
-		return (_game.similarGames.count > 0) ? 150 : 0;
-	// Images collection height (iPad)
-	else if ([Tools deviceIsiPad] && indexPath.section == SectionImages && _images.count <= 3)
-		return 180;
-	else
-		return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+	
+	return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -752,9 +813,20 @@ enum {
 	[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
 	[_themeFirstLabel setText:(_game.themes.count > 0) ? [_game.themes.allObjects[0] name] : @"Not available"];
 	[_themeSecondLabel setText:(_game.themes.count > 1) ? [_game.themes.allObjects[1] name] : @""];
-	[_franchiseLabel setText:(_game.franchises.count > 0) ? [_game.franchises.allObjects[0] name] : @"Not available"];
-	[_developerLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
-	[_publisherLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
+	[_developerFirstLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
+	[_developerSecondLabel setText:(_game.developers.count > 1) ? [_game.developers.allObjects[1] name] : @""];
+	[_publisherFirstLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
+	[_publisherSecondLabel setText:(_game.publishers.count > 1) ? [_game.publishers.allObjects[1] name] : @""];
+	
+	if (_game.franchises.count == 0){
+		[_franchiseLabel setHidden:YES];
+		[_franchiseTitleLabel setHidden:YES];
+	}
+	else{
+		[_franchiseLabel setHidden:NO];
+		[_franchiseTitleLabel setHidden:NO];
+		[_franchiseTitleLabel setText:[_game.franchises.allObjects[0] name]];
+	}
 }
 
 - (UIColor *)colorForMetascore:(NSString *)metascore{

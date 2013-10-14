@@ -51,6 +51,8 @@
 	
 	_fetchedResultsController = [self fetchData];
 	
+	[self refreshWishlistGames];
+	
 	// Add guide view to the view
 	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][0];
 	[self.view insertSubview:_guideView aboveSubview:_collectionView];
@@ -209,6 +211,13 @@
 	}];
 }
 
+- (void)refreshWishlistGames{
+	// Request info for all games in the Wishlist
+	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
+		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
+			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+}
+
 #pragma mark - Actions
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
@@ -222,10 +231,7 @@
 }
 
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
-	// Request info for all games in the Wishlist
-	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
-		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
-			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+	[self refreshWishlistGames];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
