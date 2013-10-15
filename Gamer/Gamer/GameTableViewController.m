@@ -117,13 +117,15 @@ enum {
 	[_videosCollectionView addSubview:_videosStatusView];
 	
 	if (!_game)
-		_game = [Game findFirstByAttribute:@"identifier" withValue:_searchResult.identifier];
+		_game = [Game findFirstByAttribute:@"identifier" withValue:_gameIdentifier];
 	if (_game){
 		[self refreshAnimated:NO];
 		
 		_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
 		
 		_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
+		[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
+		[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
 		
 		_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
 		
@@ -138,7 +140,7 @@ enum {
 	else{
 		[_imagesStatusView setStatus:ContentStatusLoading];
 		[_videosStatusView setStatus:ContentStatusLoading];
-		[self requestGameWithIdentifier:_searchResult.identifier];
+		[self requestGameWithIdentifier:_gameIdentifier];
 	}
 	
 	[_progressIndicator setColor:[UIColor whiteColor]];
@@ -234,8 +236,12 @@ enum {
 				}
 				// Platforms row (iPhone) - Similar games row (iPad)
 				case 2:
-					if ([Tools deviceIsiPhone])
-						return 20 + 17 + 13 + ((_game.platforms.count/4 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+					if ([Tools deviceIsiPhone]){
+						if (_selectablePlatforms.count == 0)
+							return 0;
+						else
+							return 20 + 17 + 13 + ((_game.platforms.count/4 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+					}
 					else if ([Tools deviceIsiPad] && _game.similarGames.count == 0)
 						return 0;
 					break;
@@ -379,7 +385,8 @@ enum {
 		[self performSegueWithIdentifier:@"ViewerSegue" sender:image];
 	}
 	else if (collectionView == _similarGamesCollectionView){
-		// Push game?
+		SimilarGame *similarGame = _similarGames[indexPath.item];
+		[self performSegueWithIdentifier:@"SimilarGameSegue" sender:similarGame.identifier];
 	}
 	else if (collectionView == _videosCollectionView){
 		Video *video = _videos[indexPath.item];
@@ -415,7 +422,8 @@ enum {
 			[self requestImageForSimilarGame:similarGame];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			NSString *coverImageURL = [Tools stringFromSourceIfNotNull:JSON[@"results"][@"image"][@"super_url"]];
+			NSString *coverImageURL = (JSON[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:JSON[@"results"][@"image"][@"super_url"]] : nil;
+			
 			if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL])
 				[self downloadImageForCoverImage:_game.coverImage];
 			else
@@ -432,6 +440,8 @@ enum {
 			[self.tableView reloadData];
 			
 			_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
+			[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
+			[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
 			
 			// If game is released and has at least one platform, request metascore
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _selectablePlatforms.count > 0)
@@ -554,7 +564,7 @@ enum {
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:similarGame.identifier fields:@"image"];
 	
 	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d - Similar Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
+		NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 		
 //		NSLog(@"%@", JSON);
 		
@@ -982,9 +992,13 @@ enum {
 		ImageViewerViewController *destination = segue.destinationViewController;
 		[destination setImage:image];
 	}
-	else{
+	else if ([segue.identifier isEqualToString:@"MetacriticSegue"]){
 		MetacriticViewController *destination = segue.destinationViewController;
 		[destination setURL:[NSURL URLWithString:_game.metacriticURL]];
+	}
+	else if ([segue.identifier isEqualToString:@"SimilarGameSegue"]){
+		GameTableViewController *destination = segue.destinationViewController;
+		[destination setGameIdentifier:sender];
 	}
 }
 

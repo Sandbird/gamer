@@ -114,6 +114,7 @@
 	[cell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[cell.dateLabel setText:game.releaseDateText];
 	[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnailWishlist]];
+	[cell.coverImageView setBackgroundColor:cell.coverImageView.image ? [UIColor clearColor] : [UIColor darkGrayColor]];
 	[cell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[cell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
 	[cell.preorderedIcon setHidden:!game.preordered.boolValue];

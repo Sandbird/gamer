@@ -8,12 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "Game.h"
-#import "SearchResult.h"
 
 @interface GameTableViewController : UITableViewController
 
 @property (nonatomic, strong) Game *game;
-@property (nonatomic, strong) SearchResult *searchResult;
+@property (nonatomic, strong) NSNumber *gameIdentifier;
 
 - (IBAction)addButtonPressAction:(UIButton *)sender;
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender;

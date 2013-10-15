@@ -677,6 +677,7 @@
                                                             </view>
                                                             <connections>
                                                                 <outlet property="platformLabel" destination="21h-f5-oED" id="MKr-X9-gWj"/>
+                                                                <segue destination="3iO-2E-Tja" kind="push" identifier="SimilarGameSegue" id="ff3-J5-Zb0"/>
                                                             </connections>
                                                         </collectionViewCell>
                                                     </cells>

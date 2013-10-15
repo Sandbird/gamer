@@ -150,6 +150,7 @@
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.dateLabel setText:game.releaseDateText];
 	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnailWishlist]];
+	[customCell.coverImageView setBackgroundColor:customCell.coverImageView.image ? [UIColor clearColor] : [UIColor darkGrayColor]];
 	[customCell.preorderedIcon setHidden:!game.preordered.boolValue];
 	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];

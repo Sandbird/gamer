@@ -643,6 +643,7 @@
                                                             </view>
                                                             <connections>
                                                                 <outlet property="platformLabel" destination="mtR-i5-Cdf" id="oAb-Mc-sKD"/>
+                                                                <segue destination="daZ-J4-g3E" kind="push" identifier="SimilarGameSegue" id="stD-vb-tRl"/>
                                                             </connections>
                                                         </collectionViewCell>
                                                     </cells>

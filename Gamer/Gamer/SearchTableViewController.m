@@ -166,7 +166,8 @@
 		}
 		
 		GameTableViewController *destination = segue.destinationViewController;
-		[destination setSearchResult:_results[self.tableView.indexPathForSelectedRow.row]];
+		Game *game = _results[self.tableView.indexPathForSelectedRow.row];
+		[destination setGameIdentifier:game.identifier];
 	}
 }
 
