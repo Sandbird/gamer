@@ -47,8 +47,6 @@
 	
 	_fetchedResultsController = [self fetchData];
 	
-	[self refreshLibraryGames];
-	
 	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][1];
 	[self.view insertSubview:_guideView aboveSubview:_collectionView];
 	[_guideView setFrame:self.view.frame];
