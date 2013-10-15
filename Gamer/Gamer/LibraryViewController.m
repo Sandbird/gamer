@@ -136,7 +136,6 @@
 		[Networking updateGame:game withDataFromJSON:JSON context:_context];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			// If refresh is done, update release periods
 			if (_operationQueue.operationCount == 0)
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}];

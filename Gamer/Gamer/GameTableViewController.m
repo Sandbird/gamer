@@ -180,14 +180,30 @@ enum {
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	if (section == SectionStatus){
-		if ([_game.wanted isEqualToNumber:@(YES)] && [_game.released isEqualToNumber:@(NO)])
-			return 1;
-		else if ([_game.owned isEqualToNumber:@(YES)])
-			return 3;
-		else
-			return 0;
+	switch (section) {
+		case SectionStatus:
+			if ([_game.wanted isEqualToNumber:@(YES)] && [_game.released isEqualToNumber:@(NO)])
+				return 1;
+			else if ([_game.owned isEqualToNumber:@(YES)])
+				return 3;
+			else
+				return 0;
+			break;
+		case SectionDetails:
+			if ([Tools deviceIsiPhone]){
+				if (_game.platforms.count == 0 && _game.similarGames.count == 0)
+					return 2;
+				else if (_game.platforms.count == 0 || _game.similarGames.count == 0)
+					return 3;
+				break;
+			}
+			else if (_game.similarGames.count == 0)
+				return 2;
+			break;
+		default:
+			break;
 	}
+	
 	return [super tableView:tableView numberOfRowsInSection:section];
 }
 
@@ -234,21 +250,10 @@ enum {
 					}
 					break;
 				}
-				// Platforms row (iPhone) - Similar games row (iPad)
+				// Platforms row (iPhone)
 				case 2:
-					if ([Tools deviceIsiPhone]){
-						if (_selectablePlatforms.count == 0)
-							return 0;
-						else
-							return 20 + 17 + 13 + ((_game.platforms.count/4 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
-					}
-					else if ([Tools deviceIsiPad] && _game.similarGames.count == 0)
-						return 0;
-					break;
-				// Similar games row (iPhone)
-				case 3:
-					if ([Tools deviceIsiPhone] && _game.similarGames.count == 0)
-						return 0;
+					if ([Tools deviceIsiPhone])
+							return 20 + 17 + 13 + ((_game.platforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
 				default:
 					break;
 			}
@@ -515,7 +520,7 @@ enum {
 		
 		NSString *html = [NSString stringWithUTF8String:[responseObject bytes]];
 		
-//		NSLog(@"%@", html);
+		NSLog(@"HTML: %@", html);
 		
 		if (html){
 			// Regex magic
