@@ -42,6 +42,7 @@
 		25704051176CB12800642430 /* GamerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704050176CB12800642430 /* GamerTests.m */; };
 		257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 257880571794EF70004C28E3 /* PlatformCollectionCell.m */; };
 		2593051717C90017001DC04B /* MetacriticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051617C90017001DC04B /* MetacriticViewController.m */; };
+		2596B627180E42B000EB3CB2 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2596B626180E42B000EB3CB2 /* Settings.bundle */; };
 		259DD14617ADBE8600FAD645 /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DD14517ADBE8600FAD645 /* SearchCell.m */; };
 		259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259E4A3F1808ACAB00C1AC99 /* SimilarGameCollectionCell.m */; };
 		25B9E9C017A0B70200881089 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryViewController.m */; };
@@ -118,7 +119,6 @@
 		2531E855176CDBBB005881A4 /* SessionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
 		2531E859176CDC3B005881A4 /* SearchResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResult.h; sourceTree = "<group>"; };
 		2531E85A176CDC3B005881A4 /* SearchResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
-		2531E860176CDF09005881A4 /* libFlurry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry.a; path = Pods/FlurrySDK/Flurry/libFlurry.a; sourceTree = "<group>"; };
 		2555469F17DFF9430069F8A5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		255BAA76179B55E4009B42BF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		255BAA78179B566E009B42BF /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -144,6 +144,7 @@
 		257880571794EF70004C28E3 /* PlatformCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCollectionCell.m; sourceTree = "<group>"; };
 		2593051517C90017001DC04B /* MetacriticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetacriticViewController.h; sourceTree = "<group>"; };
 		2593051617C90017001DC04B /* MetacriticViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetacriticViewController.m; sourceTree = "<group>"; };
+		2596B626180E42B000EB3CB2 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
 		259DD14417ADBE8600FAD645 /* SearchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCell.h; sourceTree = "<group>"; };
 		259DD14517ADBE8600FAD645 /* SearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCell.m; sourceTree = "<group>"; };
 		259E4A3E1808ACAB00C1AC99 /* SimilarGameCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarGameCollectionCell.h; sourceTree = "<group>"; };
@@ -320,7 +321,6 @@
 				25F4588D179DFB2C008C15B3 /* EventKit.framework */,
 				255BAA78179B566E009B42BF /* AdSupport.framework */,
 				255BAA76179B55E4009B42BF /* SystemConfiguration.framework */,
-				2531E860176CDF09005881A4 /* libFlurry.a */,
 				2531E821176CDA48005881A4 /* QuartzCore.framework */,
 				2531E81F176CDA35005881A4 /* CoreData.framework */,
 				25704025176CB12800642430 /* Foundation.framework */,
@@ -396,6 +396,7 @@
 				2531E855176CDBBB005881A4 /* SessionManager.m */,
 				25CF6AE7180B697B000E51B2 /* Networking.h */,
 				25CF6AE8180B697B000E51B2 /* Networking.m */,
+				2596B626180E42B000EB3CB2 /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -576,6 +577,7 @@
 				25C9FE7417DA2B0E00CCDD59 /* iPad.xib in Resources */,
 				25704030176CB12800642430 /* InfoPlist.strings in Resources */,
 				25704039176CB12800642430 /* iPhone.storyboard in Resources */,
+				2596B627180E42B000EB3CB2 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
