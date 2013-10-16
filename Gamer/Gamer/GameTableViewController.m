@@ -121,21 +121,11 @@ enum {
 	if (_game){
 		[self refreshAnimated:NO];
 		
-		_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
-		
-		_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
-		[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
-		[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
-		
-		_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
-		
 		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
 		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
 		
 		(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
 		(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
-		
-		[_context saveToPersistentStoreAndWait];
 	}
 	else{
 		[_imagesStatusView setStatus:ContentStatusLoading];
@@ -436,17 +426,10 @@ enum {
 			
 			[self refreshAnimated:NO];
 			
-			_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
-			[_platformsCollectionView reloadData];
-			
-			_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
-			[_similarGamesCollectionView reloadData];
-			
 			[self.tableView reloadData];
 			
-			_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
-			[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
-			[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
+			[_platformsCollectionView reloadData];
+			[_similarGamesCollectionView reloadData];
 			
 			// If game is released and has at least one platform, request metascore
 			if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _selectablePlatforms.count > 0)
@@ -820,10 +803,15 @@ enum {
 	
 	[_releaseDateLabel setText:_game.releaseDateText];
 	
-	[_wishlistButton setHidden:NO];
-	[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-	[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
-	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+	
+	_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
+	[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
+	[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
+	
+	_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
+	
+	[self refreshAddButtons];
 	
 	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
 	[_completedSwitch setOn:_game.completed.boolValue animated:animated];
@@ -871,6 +859,13 @@ enum {
 		return [UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1];
 	else
 		return [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
+}
+
+- (void)refreshAddButtons{
+	[_wishlistButton setHidden:NO];
+	[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+	[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
+	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 }
 
 #pragma mark - Actions

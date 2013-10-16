@@ -68,6 +68,10 @@ static NSMutableURLRequest *SEARCHREQUEST;
 + (void)updateGame:(Game *)game withDataFromJSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context{
 	[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 	
+//	NSLog(@"%@", JSON);
+	
+	if ([JSON[@"status_code"] isEqualToNumber:@(101)]) return;
+	
 	NSDictionary *results = JSON[@"results"];
 	
 	NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:results[@"id"]];
@@ -294,6 +298,8 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			[game addThemesObject:theme];
 		}
 	}
+	
+	[context saveToPersistentStoreAndWait];
 }
 
 + (NSInteger)quarterForMonth:(NSInteger)month{
