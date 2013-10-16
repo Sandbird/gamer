@@ -146,13 +146,7 @@
                             <constraint firstItem="QR2-YP-18v" firstAttribute="leading" secondItem="Rg2-q1-eMB" secondAttribute="leading" id="xkS-Ck-8hI"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Wishlist" id="fwf-Gh-uFq">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="lRF-HH-LIb">
-                            <connections>
-                                <action selector="refreshBarButtonAction:" destination="kbm-s8-zlH" id="9xy-uC-7g9"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Wishlist" id="fwf-Gh-uFq"/>
                     <connections>
                         <outlet property="collectionView" destination="QR2-YP-18v" id="eT2-xc-UJ0"/>
                         <segue destination="3iO-2E-Tja" kind="push" identifier="GameSegue" id="d00-8M-kLX"/>
@@ -1438,13 +1432,7 @@
                             <constraint firstItem="ohY-VJ-kmP" firstAttribute="top" secondItem="6ho-rD-Ol9" secondAttribute="top" id="f1a-Mh-V78"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Library" id="fFZ-0s-FEG">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="KqN-Q4-opk">
-                            <connections>
-                                <action selector="refreshBarButtonAction:" destination="RF6-1I-ctL" id="PBP-U6-9mt"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Library" id="fFZ-0s-FEG"/>
                     <connections>
                         <outlet property="collectionView" destination="ohY-VJ-kmP" id="Feb-7Z-nho"/>
                         <segue destination="3iO-2E-Tja" kind="push" identifier="GameSegue" id="S9N-47-GDG"/>

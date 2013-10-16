@@ -97,13 +97,7 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" title="Wishlist" id="4x8-vH-4ca">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Ptj-iH-xdS">
-                            <connections>
-                                <action selector="refreshBarButtonAction:" destination="jJE-qT-4zt" id="dbV-vd-deD"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Wishlist" id="4x8-vH-4ca"/>
                     <connections>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="5qi-Mj-SGM"/>
                     </connections>
@@ -1263,13 +1257,7 @@
                             <constraint firstAttribute="trailing" secondItem="YQt-ka-CWZ" secondAttribute="trailing" id="tRo-70-lJg"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="r2k-lH-fJH">
-                            <connections>
-                                <action selector="refreshBarButtonAction:" destination="njq-Ks-li6" id="gDq-Xg-Zm6"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u"/>
                     <connections>
                         <outlet property="collectionView" destination="YQt-ka-CWZ" id="Q22-J5-Eew"/>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="HYd-CU-5hN"/>
@@ -1336,6 +1324,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="HYd-CU-5hN"/>
+        <segue reference="5qi-Mj-SGM"/>
     </inferredMetricsTieBreakers>
 </document>

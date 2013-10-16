@@ -25,8 +25,13 @@
 
 @interface WishlistViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
+@property (nonatomic, strong) UIBarButtonItem *refreshButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelButton;
+
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
+
 @property (nonatomic, strong) UIView *guideView;
+
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
@@ -39,6 +44,11 @@
     [super viewDidLoad];
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
+	
+	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshWishlistGames)];
+	_cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelRefresh)];
+	
+	[self.navigationItem setRightBarButtonItem:_refreshButton];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistCollectionNotification:) name:@"RefreshWishlistCollection" object:nil];
@@ -129,7 +139,7 @@
 #pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game{
-	[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	[self.navigationItem setRightBarButtonItem:_cancelButton animated:YES];
 	
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
@@ -141,7 +151,7 @@
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			// If refresh is done, update release periods
 			if (_operationQueue.operationCount == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 				[self updateGameReleasePeriods];
 			}
 		}];
@@ -150,7 +160,7 @@
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 		
 		if (_operationQueue.operationCount == 0){
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 			[self updateGameReleasePeriods];
 		}
 	}];
@@ -177,11 +187,11 @@
 			[_collectionView reloadData];
 			
 			if (_operationQueue.operationCount == 0)
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		if (_operationQueue.operationCount == 0)
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 	}];
 	[_operationQueue addOperation:operation];
 }
@@ -219,6 +229,10 @@
 			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
 }
 
+- (void)cancelRefresh{
+	[_operationQueue cancelAllOperations];
+}
+
 #pragma mark - Actions
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
@@ -229,10 +243,6 @@
 	_fetchedResultsController = nil;
 	_fetchedResultsController = [self fetchData];
 	[_collectionView reloadData];
-}
-
-- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
-	[self refreshWishlistGames];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

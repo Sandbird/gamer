@@ -23,8 +23,13 @@
 
 @interface LibraryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
+@property (nonatomic, strong) UIBarButtonItem *refreshButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelButton;
+
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
+
 @property (nonatomic, strong) UIView *guideView;
+
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
@@ -35,6 +40,11 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+	
+	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLibraryGames)];
+	_cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelRefresh)];
+	
+	[self.navigationItem setRightBarButtonItem:_refreshButton];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLibraryNotification:) name:@"RefreshLibrary" object:nil];
@@ -126,7 +136,7 @@
 #pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game{
-	[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	[self.navigationItem setRightBarButtonItem:_cancelButton animated:YES];
 	
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
@@ -137,14 +147,14 @@
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			if (_operationQueue.operationCount == 0)
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 		}];
 		
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 		
 		if (_operationQueue.operationCount == 0)
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 	}];
 	[_operationQueue addOperation:operation];
 }
@@ -169,11 +179,11 @@
 			[_collectionView reloadData];
 			
 			if (_operationQueue.operationCount == 0)
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		if (_operationQueue.operationCount == 0)
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 	}];
 	[_operationQueue addOperation:operation];
 }
@@ -185,6 +195,10 @@
 	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
 		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
 			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+}
+
+- (void)cancelRefresh{
+	[_operationQueue cancelAllOperations];
 }
 
 #pragma mark - Actions
