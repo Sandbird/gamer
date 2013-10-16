@@ -497,17 +497,17 @@ enum {
 }
 
 - (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
-	NSString *formattedTitle = title.lowercaseString;
-	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""];
-	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""];
-	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@"& " withString:@""];
-	formattedTitle = [formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"];
+	NSMutableString *formattedTitle = title.lowercaseString.mutableCopy;
+	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""]];
+	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""]];
+	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"& " withString:@""]];
+	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
 	
-	NSString *formattedPlatform = platform.name.lowercaseString;
-	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@"nintendo " withString:@""];
-	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""];
-	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""];
-	formattedPlatform = [formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"];
+	NSMutableString *formattedPlatform = platform.name.lowercaseString.mutableCopy;
+	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"nintendo " withString:@""]];
+	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""]];
+	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""]];
+	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
 	
 	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
 	
@@ -518,7 +518,7 @@ enum {
 	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
 		NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 		
-		NSString *html = [NSString stringWithUTF8String:[responseObject bytes]];
+		NSString *html = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
 		
 //		NSLog(@"HTML: %@", html);
 		
@@ -535,7 +535,7 @@ enum {
 			NSUInteger endIndex = secondResult.range.location;
 			
 //			NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
-			NSString *metascore = [html substringWithRange:NSMakeRange(endIndex - 2, 2)];
+			NSString *metascore = (startIndex >= 2 && endIndex >= 2) ? [html substringWithRange:NSMakeRange(endIndex - 2, 2)] : nil;
 			
 			NSLog(@"Metascore: %@", metascore);
 			
@@ -566,8 +566,6 @@ enum {
 		else{
 			if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
 				[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
-			else
-				[_metascoreButton setHidden:YES];
 		}
 		
 		[_context saveToPersistentStoreAndWait];
@@ -838,7 +836,7 @@ enum {
 		[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
 	}
 	else if (_game.metacriticURL.length > 0){
-		[_metascoreButton setBackgroundColor:[UIColor lightGrayColor]];
+		[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
 		[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
 		[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
 	}

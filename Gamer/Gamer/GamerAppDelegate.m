@@ -59,8 +59,10 @@
 		
 		if (!gamer.librarySize) [gamer setLibrarySize:@(1)];
 		
-		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
-		[context saveToPersistentStoreAndWait];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
+			[context saveToPersistentStoreAndWait];
+		});
 	}
 	else {
 		// New user
