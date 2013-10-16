@@ -520,11 +520,13 @@ enum {
 		
 		NSString *html = [NSString stringWithUTF8String:[responseObject bytes]];
 		
-		NSLog(@"HTML: %@", html);
+//		NSLog(@"HTML: %@", html);
+		
+		[_game setMetacriticURL:url];
 		
 		if (html){
 			// Regex magic
-			NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"ratingValue\">" options:NSRegularExpressionCaseInsensitive error:nil];
+			NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"xlarge game" options:NSRegularExpressionCaseInsensitive error:nil];
 			NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(0, html.length)];
 			NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
 			
@@ -532,24 +534,31 @@ enum {
 			NSTextCheckingResult *secondResult = [secondExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(startIndex, html.length - startIndex)];
 			NSUInteger endIndex = secondResult.range.location;
 			
-			NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
+//			NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
+			NSString *metascore = [html substringWithRange:NSMakeRange(endIndex - 2, 2)];
 			
 			NSLog(@"Metascore: %@", metascore);
 			
 			[_game setMetascore:metascore];
-			[_game setMetacriticURL:url];
 			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_metascoreButton setHidden:NO];
+				
 				if (metascore.length > 0){
 					[_metascoreButton setBackgroundColor:[self colorForMetascore:metascore]];
-					[_metascoreButton setHidden:NO];
+					[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
 					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
+					
+					[_game setMetacriticURL:url];
 				}
 				else{
 					if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
 						[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
-					else
-						[_metascoreButton setHidden:YES];
+					else{
+						[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
+						[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
+						[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
+					}
 				}
 				[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			}];
@@ -557,7 +566,11 @@ enum {
 		else{
 			if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
 				[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
+			else
+				[_metascoreButton setHidden:YES];
 		}
+		
+		[_context saveToPersistentStoreAndWait];
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"Failure in %@ - Metascore", self);
@@ -819,9 +832,18 @@ enum {
 	[_loanedSwitch setOn:_game.loaned.boolValue animated:animated];
 	[_digitalSwitch setOn:_game.digital.boolValue animated:animated];
 	
-	[_metascoreButton setBackgroundColor:[self colorForMetascore:_game.metascore]];
-	[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
-	[_metascoreButton setHidden:(_game.metascore.length > 0) ? NO : YES];
+	if (_game.metascore.length > 0){
+		[_metascoreButton setBackgroundColor:[self colorForMetascore:_game.metascore]];
+		[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
+		[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
+	}
+	else if (_game.metacriticURL.length > 0){
+		[_metascoreButton setBackgroundColor:[UIColor lightGrayColor]];
+		[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
+		[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
+	}
+	else
+		[_metascoreButton setHidden:YES];
 	
 	[_descriptionTextView setText:_game.overview];
 	[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];

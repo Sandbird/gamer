@@ -191,6 +191,10 @@
 		
 		[Networking updateGame:game withDataFromJSON:JSON context:_context];
 		
+		NSString *coverImageURL = (JSON[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:JSON[@"results"][@"image"][@"super_url"]] : nil;
+		if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL])
+			[self downloadCoverImageForGame:game];
+		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			// If refresh is done, update release periods
 			if (_operationQueue.operationCount == 0){
