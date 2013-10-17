@@ -19,6 +19,14 @@
 @property (nonatomic, retain) NSNumber * month;
 @property (nonatomic, retain) NSNumber * quarter;
 @property (nonatomic, retain) NSNumber * year;
-@property (nonatomic, retain) Game *games;
+@property (nonatomic, retain) NSSet *games;
+@end
+
+@interface ReleaseDate (CoreDataGeneratedAccessors)
+
+- (void)addGamesObject:(Game *)value;
+- (void)removeGamesObject:(Game *)value;
+- (void)addGames:(NSSet *)values;
+- (void)removeGames:(NSSet *)values;
 
 @end

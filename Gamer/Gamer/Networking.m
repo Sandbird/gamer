@@ -8,6 +8,7 @@
 
 #import "Networking.h"
 #import "Genre.h"
+#import "Game.h"
 #import "Platform.h"
 #import "Developer.h"
 #import "Publisher.h"
