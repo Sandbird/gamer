@@ -86,11 +86,10 @@
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="day" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="defined" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="eventIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="month" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="quarter" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="year" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="releaseDate" inverseEntity="Game" syncable="YES"/>
+        <relationship name="games" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="releaseDate" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="ReleasePeriod" representedClassName="ReleasePeriod" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
@@ -126,14 +125,14 @@
         <element name="CoverImage" positionX="106" positionY="-241" width="128" height="88"/>
         <element name="Developer" positionX="106" positionY="-4" width="128" height="103"/>
         <element name="Franchise" positionX="106" positionY="261" width="128" height="103"/>
-        <element name="Game" positionX="-272" positionY="-243" width="128" height="508"/>
-        <element name="Gamer" positionX="-648" positionY="-243" width="128" height="73"/>
+        <element name="Game" positionX="-110" positionY="-243" width="128" height="508"/>
+        <element name="Gamer" positionX="-486" positionY="-243" width="128" height="73"/>
         <element name="Genre" positionX="106" positionY="-124" width="128" height="88"/>
         <element name="Image" positionX="286" positionY="-241" width="128" height="103"/>
-        <element name="Platform" positionX="-461" positionY="-243" width="128" height="178"/>
+        <element name="Platform" positionX="-299" positionY="-243" width="128" height="178"/>
         <element name="Publisher" positionX="106" positionY="131" width="128" height="103"/>
-        <element name="ReleaseDate" positionX="-83" positionY="-109" width="128" height="163"/>
-        <element name="ReleasePeriod" positionX="-83" positionY="-243" width="128" height="103"/>
+        <element name="ReleaseDate" positionX="-299" positionY="117" width="128" height="148"/>
+        <element name="ReleasePeriod" positionX="-299" positionY="-27" width="128" height="103"/>
         <element name="SimilarGame" positionX="106" positionY="518" width="128" height="103"/>
         <element name="Theme" positionX="106" positionY="398" width="128" height="88"/>
         <element name="Video" positionX="286" positionY="-54" width="128" height="208"/>

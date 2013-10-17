@@ -18,4 +18,6 @@
 
 + (id<GAITracker>)tracker;
 
++ (void)setup;
+
 @end

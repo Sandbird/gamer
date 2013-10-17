@@ -38,6 +38,8 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
+	[SessionManager setup];
+	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
 	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshWishlistGames)];
@@ -263,10 +265,17 @@
 }
 
 - (void)refreshWishlistGames{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
+		[_context saveToPersistentStoreAndWait];
+	});
+	
 	// Request info for all games in the Wishlist
 	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
-		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects] - 1); row++)
-			[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+		for (NSInteger row = 0; row < [self.fetchedResultsController.sections[section] numberOfObjects]; row++){
+			Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+			if (game.identifier) [self requestInformationForGame:game];
+		}
 }
 
 - (void)cancelRefresh{

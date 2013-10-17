@@ -85,7 +85,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (results[@"image"] != [NSNull null]){
 		NSString *imageURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
 		
-		CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:imageURL];
+		CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:imageURL inContext:context];
 		if (!coverImage){
 			coverImage = [CoverImage createInContext:context];
 			[coverImage setUrl:imageURL];
@@ -111,7 +111,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		
 		NSDate *releaseDateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
 		
-		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:releaseDateFromComponents];
+		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:releaseDateFromComponents inContext:context];
 		if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
 		[releaseDate setDate:releaseDateFromComponents];
 		[releaseDate setDay:@(originalReleaseDateComponents.day)];
@@ -177,7 +177,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		
 		NSDate *expectedReleaseDateFromComponents = [calendar dateFromComponents:expectedReleaseDateComponents];
 		
-		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents];
+		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents inContext:context];
 		if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
 		[releaseDate setDate:expectedReleaseDateFromComponents];
 		[releaseDate setDay:@(expectedReleaseDateComponents.day)];
@@ -191,7 +191,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		[game setReleased:@(NO)];
 		
 		[game setReleaseDate:releaseDate];
-		[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
 	}
 	
 	// Platforms
@@ -298,8 +297,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			[game addThemesObject:theme];
 		}
 	}
-	
-	[context saveToPersistentStoreAndWait];
 }
 
 + (NSInteger)quarterForMonth:(NSInteger)month{
