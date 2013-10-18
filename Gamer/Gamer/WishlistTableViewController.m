@@ -30,6 +30,7 @@
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
+@property (nonatomic, strong) NSOperationQueue *coverImageOperationQueue;
 
 @end
 
@@ -57,6 +58,9 @@
 	
 	_operationQueue = [[NSOperationQueue alloc] init];
 	[_operationQueue setMaxConcurrentOperationCount:1];
+	
+	_coverImageOperationQueue = [[NSOperationQueue alloc] init];
+	[_coverImageOperationQueue setMaxConcurrentOperationCount:1];
 	
 	self.fetchedResultsController = [self fetchData];
 }
@@ -239,7 +243,7 @@
 			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 		}
 	}];
-	[_operationQueue addOperation:operation];
+	[_coverImageOperationQueue addOperation:operation];
 }
 
 #pragma mark - Custom

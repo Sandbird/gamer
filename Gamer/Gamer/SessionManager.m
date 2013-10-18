@@ -37,7 +37,9 @@ static Gamer *GAMER;
 	
 	if (gamer){
 		GAMER = gamer;
+		
 		if (!gamer.librarySize) [gamer setLibrarySize:@(1)];
+		[context saveToPersistentStoreAndWait];
 	}
 	else {
 		// New user

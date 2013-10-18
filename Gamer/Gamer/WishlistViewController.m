@@ -35,6 +35,7 @@
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
+@property (nonatomic, strong) NSOperationQueue *coverImageOperationQueue;
 
 @end
 
@@ -42,6 +43,8 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+	
+	[SessionManager setup];
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
@@ -58,6 +61,9 @@
 	
 	_operationQueue = [[NSOperationQueue alloc] init];
 	[_operationQueue setMaxConcurrentOperationCount:1];
+	
+	_coverImageOperationQueue = [[NSOperationQueue alloc] init];
+	[_coverImageOperationQueue setMaxConcurrentOperationCount:1];
 	
 	_fetchedResultsController = [self fetchData];
 	
@@ -194,7 +200,7 @@
 		if (_operationQueue.operationCount == 0)
 			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 	}];
-	[_operationQueue addOperation:operation];
+	[_coverImageOperationQueue addOperation:operation];
 }
 
 #pragma mark - Custom
@@ -241,9 +247,7 @@
 }
 
 - (void)refreshWishlistCollectionNotification:(NSNotification *)notification{
-	_fetchedResultsController = nil;
-	_fetchedResultsController = [self fetchData];
-	[_collectionView reloadData];
+	[self updateGameReleasePeriods];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

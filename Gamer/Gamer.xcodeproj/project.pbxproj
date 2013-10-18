@@ -42,7 +42,6 @@
 		25704051176CB12800642430 /* GamerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704050176CB12800642430 /* GamerTests.m */; };
 		257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 257880571794EF70004C28E3 /* PlatformCollectionCell.m */; };
 		2593051717C90017001DC04B /* MetacriticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051617C90017001DC04B /* MetacriticViewController.m */; };
-		2596B627180E42B000EB3CB2 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2596B626180E42B000EB3CB2 /* Settings.bundle */; };
 		25998C02181093F400F1AA8F /* ReleaseDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C01181093F400F1AA8F /* ReleaseDate.m */; };
 		25998C05181093F500F1AA8F /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C04181093F500F1AA8F /* Franchise.m */; };
 		25998C08181093F500F1AA8F /* CoverImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C07181093F500F1AA8F /* CoverImage.m */; };
@@ -142,7 +141,6 @@
 		257880571794EF70004C28E3 /* PlatformCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCollectionCell.m; sourceTree = "<group>"; };
 		2593051517C90017001DC04B /* MetacriticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetacriticViewController.h; sourceTree = "<group>"; };
 		2593051617C90017001DC04B /* MetacriticViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetacriticViewController.m; sourceTree = "<group>"; };
-		2596B626180E42B000EB3CB2 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
 		25998C00181093F400F1AA8F /* ReleaseDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseDate.h; sourceTree = "<group>"; };
 		25998C01181093F400F1AA8F /* ReleaseDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseDate.m; sourceTree = "<group>"; };
 		25998C03181093F500F1AA8F /* Franchise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Franchise.h; sourceTree = "<group>"; };
@@ -394,7 +392,6 @@
 				2531E855176CDBBB005881A4 /* SessionManager.m */,
 				25CF6AE7180B697B000E51B2 /* Networking.h */,
 				25CF6AE8180B697B000E51B2 /* Networking.m */,
-				2596B626180E42B000EB3CB2 /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -573,7 +570,6 @@
 				25C9FE7417DA2B0E00CCDD59 /* iPad.xib in Resources */,
 				25704030176CB12800642430 /* InfoPlist.strings in Resources */,
 				25704039176CB12800642430 /* iPhone.storyboard in Resources */,
-				2596B627180E42B000EB3CB2 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

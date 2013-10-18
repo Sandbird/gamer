@@ -12,11 +12,6 @@
 @implementation GamerAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
-	// Update version in Settings
-	NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-	[[NSUserDefaults standardUserDefaults] setObject:version forKey:@"Version"];
-	[[NSUserDefaults standardUserDefaults] synchronize];
-	
 	[MagicalRecord setupAutoMigratingCoreDataStack];
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
