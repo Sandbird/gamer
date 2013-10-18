@@ -17,10 +17,16 @@ Gamer is a tool for exploring, organizing and keeping track of all our games.
 </a>
 
 
-Contributing
+Support
 =====
 
-For features requests, bugs or suggestions, please [send an email](mailto:gamer.app@icloud.com), or if you're a developer open a new [issue](https://github.com/caiomello/gamer/issues) with the appropriate labels.
+To report bugs, request features, or make suggestions, please send an email to [gamer.app@icloud.com](mailto:gamer.app@icloud.com).
+
+If you're a developer, open a new [issue](https://github.com/caiomello/gamer/issues) with the appropriate labels.
+
+
+Contributing
+=====
 
 This app is open source from the start so that everyone can help developing it.
 
