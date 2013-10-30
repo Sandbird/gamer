@@ -89,6 +89,8 @@ enum {
 
 @property (nonatomic, strong) NSArray *selectablePlatforms;
 
+@property (nonatomic, strong) UITapGestureRecognizer *dismissTapGesture;
+
 @end
 
 @implementation GameTableViewController
@@ -144,6 +146,17 @@ enum {
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] set:kGAIScreenName value:@"Game"];
 	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	
+	if ([Tools deviceIsiPad]){
+		_dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapGestureAction:)];
+		[_dismissTapGesture setNumberOfTapsRequired:1];
+		[_dismissTapGesture setCancelsTouchesInView:NO];
+		[self.view.window addGestureRecognizer:_dismissTapGesture];
+	}
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+	[self.view.window removeGestureRecognizer:_dismissTapGesture];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -188,7 +201,7 @@ enum {
 				break;
 			}
 			else if (_game.similarGames.count == 0)
-				return 2;
+				return 3;
 			break;
 		default:
 			break;
@@ -240,10 +253,10 @@ enum {
 					}
 					break;
 				}
-				// Platforms row (iPhone)
+				// Platforms row
 				case 2:
 					if ([Tools deviceIsiPhone])
-							return 20 + 17 + 13 + ((_game.platforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+						return 20 + 17 + 13 + ((_game.platforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
 				default:
 					break;
 			}
@@ -419,7 +432,10 @@ enum {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			NSString *coverImageURL = (JSON[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:JSON[@"results"][@"image"][@"super_url"]] : nil;
 			
-			if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL])
+			UIImage *coverImage = [UIImage imageWithData:_game.coverImage.data];
+			CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
+			
+			if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height))
 				[self downloadImageForCoverImage:_game.coverImage];
 			else
 				[self requestMediaForGame:_game];
@@ -453,16 +469,10 @@ enum {
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
 		[self requestMediaForGame:_game];
 		
-		if (image.size.width > image.size.height){
-			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:_coverImageView.frame.size.width])];
-			[_game setThumbnailWishlist:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 135 : 50])];
-			[_game setThumbnailLibrary:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 140 : 92])];
-		}
-		else{
-			[coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:_coverImageView.frame.size.height])];
-			[_game setThumbnailWishlist:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 170 : 50])];
-			[_game setThumbnailLibrary:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 176 : 116])];
-		}
+		[coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeCover])];
+		[_game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeWishlist])];
+		[_game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeLibrary])];
+		
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -513,7 +523,7 @@ enum {
 			NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(0, html.length)];
 			NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
 			
-			NSRegularExpression *secondExpression = [NSRegularExpression regularExpressionWithPattern:@"<" options:NSRegularExpressionCaseInsensitive error:nil];
+			NSRegularExpression *secondExpression = [NSRegularExpression regularExpressionWithPattern:@"</span" options:NSRegularExpressionCaseInsensitive error:nil];
 			NSTextCheckingResult *secondResult = [secondExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(startIndex, html.length - startIndex)];
 			NSUInteger endIndex = secondResult.range.location;
 			
@@ -527,7 +537,7 @@ enum {
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_metascoreButton setHidden:NO];
 				
-				if (metascore.length > 0){
+				if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
 					[_metascoreButton setBackgroundColor:[self colorForMetascore:metascore]];
 					[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
 					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
@@ -924,7 +934,7 @@ enum {
 			[actionSheet addButtonWithTitle:@"Cancel"];
 			[actionSheet setCancelButtonIndex:_selectablePlatforms.count];
 			
-			[actionSheet showInView:self.tabBarController.view];
+			[actionSheet showInView:self.view.window];
 		}
 		else{
 			if (sender == _wishlistButton){
@@ -1021,6 +1031,16 @@ enum {
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	[sender setEnabled:NO];
 	[self requestGameWithIdentifier:_game.identifier];
+}
+
+- (void)dismissTapGestureAction:(UITapGestureRecognizer *)sender{
+	if (sender.state == UIGestureRecognizerStateEnded){
+		CGPoint location = [sender locationInView:nil];
+		if (![self.view pointInside:[self.view convertPoint:location fromView:self.view.window] withEvent:nil]){
+			[self.view.window removeGestureRecognizer:sender];
+			[self dismissViewControllerAnimated:YES completion:nil];
+		}
+	}
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

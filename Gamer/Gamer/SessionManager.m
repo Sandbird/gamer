@@ -28,6 +28,60 @@ static Gamer *GAMER;
 	return [GAI sharedInstance].defaultTracker;
 }
 
++ (CGSize)optimalCoverImageSizeForImage:(UIImage *)image{
+	if ([Tools deviceIsiPhone]){
+		if (image.size.width > image.size.height)
+			return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPhoneCover];
+		else
+			return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPhoneCover];
+	}
+	else{
+		if (image.size.width > image.size.height)
+			return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPadCover];
+		else
+			return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPadCover];
+	}
+}
+
++ (UIImage *)aspectFitImageWithImage:(UIImage *)image type:(GameImageType)type{
+	if ([Tools deviceIsiPhone]){
+		if (image.size.width > image.size.height){
+			switch (type) {
+				case GameImageTypeCover: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPhoneCover];
+				case GameImageTypeWishlist: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPhoneWishlist];
+				case GameImageTypeLibrary: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPhoneLibrary];
+				default: break;
+			}
+		}
+		else{
+			switch (type) {
+				case GameImageTypeCover: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPhoneCover];
+				case GameImageTypeWishlist: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPhoneWishlist];
+				case GameImageTypeLibrary: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPhoneLibrary];
+				default: break;
+			}
+		}
+	}
+	else{
+		if (image.size.width > image.size.height){
+			switch (type) {
+				case GameImageTypeCover: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPadCover];
+				case GameImageTypeWishlist: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPadWishlist];
+				case GameImageTypeLibrary: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPadLibrary];
+				default: break;
+			}
+		}
+		else{
+			switch (type) {
+				case GameImageTypeCover: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPadCover];
+				case GameImageTypeWishlist: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPadWishlist];
+				case GameImageTypeLibrary: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPadLibrary];
+				default: break;
+			}
+		}
+	}
+}
+
 + (void)setup{
 	// Initial data
 	NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];

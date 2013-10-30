@@ -39,6 +39,8 @@
 // Graphics
 + (void)addDropShadowToView:(UIView *)view color:(UIColor *)color opacity:(float)opacity radius:(CGFloat)radius offset:(CGSize)offset bounds:(CGRect)bounds;
 + (void)setMaskToView:(UIView *)view roundCorners:(UIRectCorner)corners radius:(CGFloat)radius;
++ (CGSize)sizeOfImage:(UIImage *)image aspectFitToWidth:(CGFloat)width;
++ (CGSize)sizeOfImage:(UIImage *)image aspectFitToHeight:(CGFloat)height;
 + (UIImage *)imageWithImage:(UIImage *)image scaledToWidth:(CGFloat)width;
 + (UIImage *)imageWithImage:(UIImage *)image scaledToHeight:(CGFloat)height;
 + (CGRect)frameForImageInImageView:(UIImageView *)imageView;

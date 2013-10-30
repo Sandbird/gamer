@@ -151,8 +151,13 @@
 		
 		if (![JSON[@"status_code"] isEqualToNumber:@(101)]){
 			NSString *coverImageURL = (JSON[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:JSON[@"results"][@"image"][@"super_url"]] : nil;
-			if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL])
+			
+			UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
+			CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
+			
+			if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
 				[self downloadCoverImageForGame:game];
+			}
 		}
 		
 		if (_operationQueue.operationCount == 0)
@@ -171,16 +176,9 @@
 	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
 	
 	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-		if (image.size.width > image.size.height){
-			[game.coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 300 : 280])];
-			[game setThumbnailWishlist:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 135 : 50])];
-			[game setThumbnailLibrary:UIImagePNGRepresentation([Tools imageWithImage:image scaledToWidth:[Tools deviceIsiPad] ? 140 : 92])];
-		}
-		else{
-			[game.coverImage setData:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 300 : 200])];
-			[game setThumbnailWishlist:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 170 : 50])];
-			[game setThumbnailLibrary:UIImagePNGRepresentation([Tools imageWithImage:image scaledToHeight:[Tools deviceIsiPad] ? 176 : 116])];
-		}
+		[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeCover])];
+		[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeWishlist])];
+		[game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeLibrary])];
 		return nil;
 	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -227,13 +225,20 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
-		// Pop other tabs when opening game details
-		for (UIViewController *viewController in self.tabBarController.viewControllers){
-			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+		if ([Tools deviceIsiPad]){
+			UINavigationController *navigationController = segue.destinationViewController;
+			GameTableViewController *destination = (GameTableViewController *)navigationController.topViewController;
+			[destination setGame:[_fetchedResultsController objectAtIndexPath:sender]];
 		}
-		
-		GameTableViewController *destination = [segue destinationViewController];
-		[destination setGame:[_fetchedResultsController objectAtIndexPath:sender]];
+		else{
+			// Pop other tabs when opening game details
+			for (UIViewController *viewController in self.tabBarController.viewControllers){
+				[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+			}
+			
+			GameTableViewController *destination = segue.destinationViewController;
+			[destination setGame:[_fetchedResultsController objectAtIndexPath:sender]];
+		}
 	}
 }
 

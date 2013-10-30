@@ -160,14 +160,22 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
-		// Pop other tabs when opening game details
-		for (UIViewController *viewController in self.tabBarController.viewControllers){
-			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+		if ([Tools deviceIsiPad]){
+			UINavigationController *navigationController = segue.destinationViewController;
+			GameTableViewController *destination = (GameTableViewController *)navigationController.topViewController;
+			Game *game = _results[self.tableView.indexPathForSelectedRow.row];
+			[destination setGameIdentifier:game.identifier];
 		}
-		
-		GameTableViewController *destination = segue.destinationViewController;
-		Game *game = _results[self.tableView.indexPathForSelectedRow.row];
-		[destination setGameIdentifier:game.identifier];
+		else{
+			// Pop other tabs when opening game details
+			for (UIViewController *viewController in self.tabBarController.viewControllers){
+				[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+			}
+			
+			GameTableViewController *destination = segue.destinationViewController;
+			Game *game = _results[self.tableView.indexPathForSelectedRow.row];
+			[destination setGameIdentifier:game.identifier];
+		}
 	}
 }
 

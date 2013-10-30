@@ -150,6 +150,16 @@ static NSOperationQueue *OPERATIONQUEUE;
 	view.layer.mask = shapeLayer;
 }
 
++ (CGSize)sizeOfImage:(UIImage *)image aspectFitToWidth:(CGFloat)width{
+	CGFloat scaleFactor = width/image.size.width;
+	return CGSizeMake(((image.size.width * scaleFactor) * [UIScreen mainScreen].scale), ((image.size.height * scaleFactor) * [UIScreen mainScreen].scale));
+}
+
++ (CGSize)sizeOfImage:(UIImage *)image aspectFitToHeight:(CGFloat)height{
+	CGFloat scaleFactor = height/image.size.height;
+	return CGSizeMake(((image.size.width * scaleFactor) * [UIScreen mainScreen].scale), ((image.size.height * scaleFactor) * [UIScreen mainScreen].scale));
+}
+
 + (UIImage *)imageWithImage:(UIImage *)image scaledToWidth:(CGFloat)width{
 	CGFloat scaleFactor = width/image.size.width;
 	

@@ -331,8 +331,6 @@
 		2570402B176CB12800642430 /* Gamer */ = {
 			isa = PBXGroup;
 			children = (
-				25704034176CB12800642430 /* GamerAppDelegate.h */,
-				25704035176CB12800642430 /* GamerAppDelegate.m */,
 				2570405C176CB1F500642430 /* Code */,
 				2570405B176CB1EA00642430 /* Resources */,
 				2570405A176CB1D900642430 /* Interface */,
@@ -399,6 +397,8 @@
 		2570405C176CB1F500642430 /* Code */ = {
 			isa = PBXGroup;
 			children = (
+				25704034176CB12800642430 /* GamerAppDelegate.h */,
+				25704035176CB12800642430 /* GamerAppDelegate.m */,
 				2595539417AEA0CD003A4F59 /* Tabs */,
 				2595539517AEA0D7003A4F59 /* Game */,
 				2506A16C176CD2E60010E61D /* Subclasses */,
