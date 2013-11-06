@@ -41,6 +41,7 @@
 		2570404F176CB12800642430 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2570404D176CB12800642430 /* InfoPlist.strings */; };
 		25704051176CB12800642430 /* GamerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704050176CB12800642430 /* GamerTests.m */; };
 		257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 257880571794EF70004C28E3 /* PlatformCollectionCell.m */; };
+		257E18C3182453460088699B /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 257E18C2182453460088699B /* SearchViewController.m */; };
 		2593051717C90017001DC04B /* MetacriticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051617C90017001DC04B /* MetacriticViewController.m */; };
 		25998C02181093F400F1AA8F /* ReleaseDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C01181093F400F1AA8F /* ReleaseDate.m */; };
 		25998C05181093F500F1AA8F /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C04181093F500F1AA8F /* Franchise.m */; };
@@ -58,6 +59,8 @@
 		25998C2A1810950F00F1AA8F /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C0D181093F500F1AA8F /* Game.m */; };
 		259DD14617ADBE8600FAD645 /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DD14517ADBE8600FAD645 /* SearchCell.m */; };
 		259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259E4A3F1808ACAB00C1AC99 /* SimilarGameCollectionCell.m */; };
+		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
+		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
 		25B9E9C017A0B70200881089 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryViewController.m */; };
 		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
 		25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */; };
@@ -139,6 +142,8 @@
 		2570405E176CB55500642430 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		257880561794EF70004C28E3 /* PlatformCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCollectionCell.h; sourceTree = "<group>"; };
 		257880571794EF70004C28E3 /* PlatformCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCollectionCell.m; sourceTree = "<group>"; };
+		257E18C1182453460088699B /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
+		257E18C2182453460088699B /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		2593051517C90017001DC04B /* MetacriticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetacriticViewController.h; sourceTree = "<group>"; };
 		2593051617C90017001DC04B /* MetacriticViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetacriticViewController.m; sourceTree = "<group>"; };
 		25998C00181093F400F1AA8F /* ReleaseDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseDate.h; sourceTree = "<group>"; };
@@ -174,6 +179,10 @@
 		259E4A3E1808ACAB00C1AC99 /* SimilarGameCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarGameCollectionCell.h; sourceTree = "<group>"; };
 		259E4A3F1808ACAB00C1AC99 /* SimilarGameCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimilarGameCollectionCell.m; sourceTree = "<group>"; };
 		25AA247F1801A25C00106772 /* Model 1.1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 1.1.1.xcdatamodel"; sourceTree = "<group>"; };
+		25B094031824882E003A0365 /* SearchCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCollectionCell.h; sourceTree = "<group>"; };
+		25B094041824882E003A0365 /* SearchCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCollectionCell.m; sourceTree = "<group>"; };
+		25B094061829BFA4003A0365 /* iPadTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadTabBarController.h; sourceTree = "<group>"; };
+		25B094071829BFA4003A0365 /* iPadTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPadTabBarController.m; sourceTree = "<group>"; };
 		25B9E9BE17A0B70200881089 /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
 		25B9E9BF17A0B70200881089 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCollectionCell.h; sourceTree = "<group>"; };
@@ -243,6 +252,8 @@
 				2506A18A176CD5B80010E61D /* FetchedTableViewController.m */,
 				25BE617817EFC4D3008F5AB8 /* RotationLockedTabBarController.h */,
 				25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */,
+				25B094061829BFA4003A0365 /* iPadTabBarController.h */,
+				25B094071829BFA4003A0365 /* iPadTabBarController.m */,
 				2506A16E176CD3190010E61D /* Views */,
 				2506A16D176CD2F10010E61D /* Cells */,
 			);
@@ -268,6 +279,8 @@
 				25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */,
 				259DD14417ADBE8600FAD645 /* SearchCell.h */,
 				259DD14517ADBE8600FAD645 /* SearchCell.m */,
+				25B094031824882E003A0365 /* SearchCollectionCell.h */,
+				25B094041824882E003A0365 /* SearchCollectionCell.m */,
 				251DEA40178CF3EA0094A6CB /* SettingsPlatformCell.h */,
 				251DEA41178CF3EA0094A6CB /* SettingsPlatformCell.m */,
 				250B37DD1808613B009EB170 /* SettingsSliderCell.h */,
@@ -450,9 +463,17 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
+		257E18C4182453680088699B /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
 		2595539417AEA0CD003A4F59 /* Tabs */ = {
 			isa = PBXGroup;
 			children = (
+				257E18C4182453680088699B /* iPad */,
 				2506A17D176CD4EA0010E61D /* WishlistTableViewController.h */,
 				2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */,
 				25C9FE3717CC4C4500CCDD59 /* WishlistViewController.h */,
@@ -461,6 +482,8 @@
 				25B9E9BF17A0B70200881089 /* LibraryViewController.m */,
 				2506A183176CD5480010E61D /* SearchTableViewController.h */,
 				2506A184176CD5480010E61D /* SearchTableViewController.m */,
+				257E18C1182453460088699B /* SearchViewController.h */,
+				257E18C2182453460088699B /* SearchViewController.m */,
 				2506A187176CD5620010E61D /* SettingsTableViewController.h */,
 				2506A188176CD5620010E61D /* SettingsTableViewController.m */,
 			);
@@ -632,6 +655,7 @@
 				25C9FE7717DA7FB400CCDD59 /* TrailerViewController.m in Sources */,
 				25C9FE4517CD729E00CCDD59 /* HeaderCollectionReusableView.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
+				25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
 				250B37DF1808613B009EB170 /* SettingsSliderCell.m in Sources */,
 				25998C08181093F500F1AA8F /* CoverImage.m in Sources */,
@@ -641,6 +665,7 @@
 				25998C29181093F500F1AA8F /* Gamer.m in Sources */,
 				2531E83D176CDB60005881A4 /* GameTableViewController.m in Sources */,
 				25998C14181093F500F1AA8F /* Publisher.m in Sources */,
+				257E18C3182453460088699B /* SearchViewController.m in Sources */,
 				2531E83E176CDB60005881A4 /* SettingsTableViewController.m in Sources */,
 				25998C20181093F500F1AA8F /* SimilarGame.m in Sources */,
 				251DEA42178CF3EA0094A6CB /* SettingsPlatformCell.m in Sources */,
@@ -664,6 +689,7 @@
 				25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */,
 				25704032176CB12800642430 /* main.m in Sources */,
 				25704036176CB12800642430 /* GamerAppDelegate.m in Sources */,
+				25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

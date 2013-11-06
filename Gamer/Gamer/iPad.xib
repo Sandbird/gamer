@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -20,30 +20,11 @@
                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search for games" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="80" translatesAutoresizingMaskIntoConstraints="NO" id="Fti-M5-g10">
-                    <rect key="frame" x="401" y="768" width="80" height="36"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="36" id="e3r-Tv-nde"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GuideArrow" translatesAutoresizingMaskIntoConstraints="NO" id="4K7-Ng-z6o">
-                    <rect key="frame" x="401" y="812" width="80" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
             </subviews>
             <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="Fti-M5-g10" firstAttribute="top" secondItem="k9J-us-gFt" secondAttribute="bottom" constant="246" id="7Uc-T1-Zc7"/>
-                <constraint firstItem="4K7-Ng-z6o" firstAttribute="centerX" secondItem="9dT-N8-QKp" secondAttribute="centerX" constant="57" id="Jmz-jg-jDr"/>
-                <constraint firstItem="4K7-Ng-z6o" firstAttribute="trailing" secondItem="Fti-M5-g10" secondAttribute="trailing" id="Kzi-ce-hsb"/>
                 <constraint firstAttribute="centerX" secondItem="k9J-us-gFt" secondAttribute="centerX" id="MzL-4S-dnD"/>
                 <constraint firstAttribute="centerY" secondItem="k9J-us-gFt" secondAttribute="centerY" id="PFg-tJ-mCY"/>
-                <constraint firstItem="Fti-M5-g10" firstAttribute="leading" secondItem="4K7-Ng-z6o" secondAttribute="leading" id="g7i-J5-RdH"/>
-                <constraint firstItem="4K7-Ng-z6o" firstAttribute="top" secondItem="Fti-M5-g10" secondAttribute="bottom" constant="8" symbolic="YES" id="las-Lm-Wjd"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
@@ -63,30 +44,11 @@
                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search for games" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="80" translatesAutoresizingMaskIntoConstraints="NO" id="AJJ-tx-uea">
-                    <rect key="frame" x="401" y="768" width="80" height="36"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="36" id="LYl-Tt-rus"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GuideArrow" translatesAutoresizingMaskIntoConstraints="NO" id="S3X-Fb-qaT">
-                    <rect key="frame" x="401" y="812" width="80" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
             </subviews>
             <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="AJJ-tx-uea" firstAttribute="top" secondItem="D29-4A-HWU" secondAttribute="bottom" constant="246" id="AA3-uT-coo"/>
-                <constraint firstItem="S3X-Fb-qaT" firstAttribute="top" secondItem="AJJ-tx-uea" secondAttribute="bottom" constant="8" symbolic="YES" id="Faa-cP-BRY"/>
-                <constraint firstItem="S3X-Fb-qaT" firstAttribute="centerX" secondItem="8YP-HG-wZA" secondAttribute="centerX" constant="57" id="X94-qV-zOI"/>
-                <constraint firstItem="S3X-Fb-qaT" firstAttribute="trailing" secondItem="AJJ-tx-uea" secondAttribute="trailing" id="hgM-ju-vf0"/>
                 <constraint firstAttribute="centerY" secondItem="D29-4A-HWU" secondAttribute="centerY" id="lB0-gv-t86"/>
                 <constraint firstAttribute="centerX" secondItem="D29-4A-HWU" secondAttribute="centerX" id="maF-Lo-b0f"/>
-                <constraint firstItem="AJJ-tx-uea" firstAttribute="leading" secondItem="S3X-Fb-qaT" secondAttribute="leading" id="y04-dw-H5q"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
@@ -106,30 +68,11 @@
                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select your platforms" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="80" translatesAutoresizingMaskIntoConstraints="NO" id="edf-Tf-yGb">
-                    <rect key="frame" x="509" y="768" width="80" height="36"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="36" id="e1b-Pf-eaz"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GuideArrow" translatesAutoresizingMaskIntoConstraints="NO" id="jF9-Ue-1vz">
-                    <rect key="frame" x="509" y="812" width="80" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
             </subviews>
             <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="jF9-Ue-1vz" firstAttribute="trailing" secondItem="edf-Tf-yGb" secondAttribute="trailing" id="Cb9-Dv-fpl"/>
                 <constraint firstAttribute="centerY" secondItem="rux-Ah-bMN" secondAttribute="centerY" id="UNB-G2-jxO"/>
-                <constraint firstItem="jF9-Ue-1vz" firstAttribute="top" secondItem="edf-Tf-yGb" secondAttribute="bottom" constant="8" symbolic="YES" id="V59-NV-ggp"/>
-                <constraint firstItem="edf-Tf-yGb" firstAttribute="leading" secondItem="jF9-Ue-1vz" secondAttribute="leading" id="f8R-t6-QYG"/>
-                <constraint firstItem="jF9-Ue-1vz" firstAttribute="centerX" secondItem="0Vd-sC-L4d" secondAttribute="centerX" constant="165" id="gEB-Og-zcm"/>
                 <constraint firstAttribute="centerX" secondItem="rux-Ah-bMN" secondAttribute="centerX" id="h1z-uO-Xyz"/>
-                <constraint firstItem="edf-Tf-yGb" firstAttribute="top" secondItem="rux-Ah-bMN" secondAttribute="bottom" constant="246" id="oYN-VZ-NqM"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
@@ -169,7 +112,4 @@
             </connections>
         </view>
     </objects>
-    <resources>
-        <image name="GuideArrow" width="80" height="20"/>
-    </resources>
 </document>

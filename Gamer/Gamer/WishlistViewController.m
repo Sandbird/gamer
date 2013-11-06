@@ -22,11 +22,13 @@
 #import "WishlistCollectionCell.h"
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
+#import "SearchTableViewController.h"
 
-@interface WishlistViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface WishlistViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *refreshButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelButton;
+@property (nonatomic, strong) UIBarButtonItem *searchBarItem;
 
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
 
@@ -51,7 +53,13 @@
 	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshWishlistGames)];
 	_cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelRefresh)];
 	
-	[self.navigationItem setRightBarButtonItem:_refreshButton];
+	UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
+	[searchBar setSearchBarStyle:UISearchBarStyleMinimal];
+	[searchBar setPlaceholder:@"Find Games"];
+	[searchBar setDelegate:self];
+	_searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
+	
+	[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistCollectionNotification:) name:@"RefreshWishlistCollection" object:nil];
@@ -87,6 +95,14 @@
 
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - SearchBar
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
+	SearchTableViewController *searchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
+	[self.navigationController pushViewController:searchViewController animated:NO];
+	return NO;
 }
 
 #pragma mark - FetchedResultsController
@@ -143,7 +159,7 @@
 #pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game{
-	[self.navigationItem setRightBarButtonItem:_cancelButton animated:YES];
+	[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _cancelButton] animated:NO];
 	
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
@@ -164,7 +180,7 @@
 		}
 		
 		if (_operationQueue.operationCount == 0){
-			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+			[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
 			[self updateGameReleasePeriods];
 		}
 		
@@ -172,7 +188,7 @@
 		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
 		
 		if (_operationQueue.operationCount == 0){
-			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+			[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
 			[self updateGameReleasePeriods];
 		}
 	}];
@@ -192,11 +208,11 @@
 			[_collectionView reloadData];
 			
 			if (_operationQueue.operationCount == 0)
-				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+				[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
 		}];
 	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 		if (_operationQueue.operationCount == 0)
-			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+			[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
 	}];
 	[_coverImageOperationQueue addOperation:operation];
 }
