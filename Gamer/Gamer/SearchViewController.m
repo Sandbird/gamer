@@ -32,26 +32,23 @@
     [super viewDidLoad];
 	
 	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
-	[_searchBar setSearchBarStyle:UISearchBarStyleMinimal];
+//	[_searchBar setSearchBarStyle:UISearchBarStyleMinimal];
+//	[[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor lightGrayColor]];
 	[_searchBar setPlaceholder:@"Find Games"];
 	[_searchBar setDelegate:self];
-	[[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor lightGrayColor]];
 	UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:_searchBar];
 	
 	[self.navigationItem setRightBarButtonItem:searchBarItem];
 	
 	[self.navigationItem setHidesBackButton:YES animated:NO];
 	
-	_results = [[NSMutableArray alloc] initWithCapacity:100];
+	[_searchBar setText:[SessionManager searchQuery]];
 	
-	// Add guide view to the view
-	_guideView = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][2];
-	[self.view insertSubview:_guideView aboveSubview:_collectionView];
-	[_guideView setFrame:self.view.frame];
-	[_guideView setHidden:YES];
-}
-
-- (void)viewWillAppear:(BOOL)animated{
+	if ([SessionManager searchResults])
+		_results = [SessionManager searchResults].mutableCopy;
+	else
+		_results = [[NSMutableArray alloc] initWithCapacity:100];
+	
 	if ([SessionManager gamer].platforms.count == 0){
 		[_guideView setHidden:NO];
 		[_searchBar setUserInteractionEnabled:NO];
@@ -61,6 +58,12 @@
 		[_searchBar setUserInteractionEnabled:YES];
 		[_searchBar becomeFirstResponder];
 	}
+	
+	// Add guide view to the view
+	_guideView = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][2];
+	[self.view insertSubview:_guideView aboveSubview:_collectionView];
+	[_guideView setFrame:self.view.frame];
+	[_guideView setHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -93,6 +96,8 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[_previousOperation cancel];
 	
+	[SessionManager setSearchQuery:searchText];
+	
 	if (searchText.length > 0){
 		NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 		[self requestGamesWithTitlesContainingQuery:query];
@@ -103,6 +108,8 @@
 	[searchBar resignFirstResponder];
 	
 	[_previousOperation cancel];
+	
+	[SessionManager setSearchQuery:searchBar.text];
 	
 	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 	[self requestGamesWithTitlesContainingQuery:query];
@@ -164,6 +171,8 @@
 			if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"thumb_url"]]];
 			[_results addObject:result];
 		}
+		
+		[SessionManager setSearchResults:_results];
 		
 		[_collectionView reloadData];
 		

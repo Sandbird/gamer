@@ -22,7 +22,7 @@
 #import "WishlistCollectionCell.h"
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
-#import "SearchTableViewController.h"
+#import "SearchViewController.h"
 
 @interface WishlistViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate>
 
@@ -54,7 +54,6 @@
 	_cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelRefresh)];
 	
 	UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
-	[searchBar setSearchBarStyle:UISearchBarStyleMinimal];
 	[searchBar setPlaceholder:@"Find Games"];
 	[searchBar setDelegate:self];
 	_searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
@@ -82,6 +81,10 @@
 	[_guideView setHidden:YES];
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+	[(UISearchBar *)_searchBarItem.customView setText:[SessionManager searchQuery]];
+}
+
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] set:kGAIScreenName value:@"Wishlist"];
 	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
@@ -100,7 +103,7 @@
 #pragma mark - SearchBar
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
-	SearchTableViewController *searchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
+	SearchViewController *searchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
 	[self.navigationController pushViewController:searchViewController animated:NO];
 	return NO;
 }

@@ -15,6 +15,8 @@
 
 static NSMutableURLRequest *SEARCHREQUEST;
 static Gamer *GAMER;
+static NSString *SEARCHQUERY;
+static NSArray *SEARCHRESULTS;
 
 + (void)setGamer:(Gamer *)gamer{
 	GAMER = gamer;
@@ -22,6 +24,22 @@ static Gamer *GAMER;
 
 + (Gamer *)gamer{
 	return GAMER;
+}
+
++ (NSString *)searchQuery{
+	return SEARCHQUERY;
+}
+
++ (void)setSearchQuery:(NSString *)query{
+	SEARCHQUERY = query;
+}
+
++ (NSArray *)searchResults{
+	return SEARCHRESULTS;
+}
+
++ (void)setSearchResults:(NSArray *)results{
+	SEARCHRESULTS = results;
 }
 
 + (id<GAITracker>)tracker{

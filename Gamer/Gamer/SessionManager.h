@@ -46,6 +46,12 @@ typedef NS_ENUM(NSInteger, GameImageType){
 
 + (Gamer *)gamer;
 
++ (NSString *)searchQuery;
++ (void)setSearchQuery:(NSString *)query;
+
++ (NSArray *)searchResults;
++ (void)setSearchResults:(NSArray *)results;
+
 + (id<GAITracker>)tracker;
 
 + (CGSize)optimalCoverImageSizeForImage:(UIImage *)image;
