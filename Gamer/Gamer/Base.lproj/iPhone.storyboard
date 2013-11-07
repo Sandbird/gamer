@@ -66,11 +66,25 @@
                                             <rect key="frame" x="234" y="33" width="20" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="95" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NVn-6Q-3lc" userLabel="Platform Label">
+                                            <rect key="frame" x="238" y="35" width="16" height="16"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" red="0.38431372549999998" green="0.80784313730000001" blue="0.12941176469999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="16" id="PC8-KT-wZ8"/>
+                                                <constraint firstAttribute="height" constant="16" id="bDM-6d-eKL"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="8QG-z2-acR" firstAttribute="leading" secondItem="NVn-6Q-3lc" secondAttribute="trailing" constant="8" id="1SL-sE-uVP"/>
                                         <constraint firstAttribute="bottom" secondItem="dQd-a9-NPJ" secondAttribute="bottom" priority="151" constant="19" id="Cii-2j-24v"/>
                                         <constraint firstItem="Qp3-vf-9Vb" firstAttribute="leading" secondItem="L0B-2k-UYk" secondAttribute="leading" constant="10" id="ED8-3x-jch"/>
                                         <constraint firstItem="8QG-z2-acR" firstAttribute="centerY" secondItem="dQd-a9-NPJ" secondAttribute="centerY" id="IHw-FZ-Q9D"/>
+                                        <constraint firstItem="8QG-z2-acR" firstAttribute="bottom" secondItem="NVn-6Q-3lc" secondAttribute="bottom" id="fEI-TR-unT"/>
                                         <constraint firstItem="dQd-a9-NPJ" firstAttribute="top" secondItem="lsG-q7-pdC" secondAttribute="bottom" constant="4" id="hcV-C4-RhN"/>
                                         <constraint firstItem="lsG-q7-pdC" firstAttribute="top" relation="greaterThanOrEqual" secondItem="L0B-2k-UYk" secondAttribute="top" constant="10" id="icF-hS-JVP"/>
                                         <constraint firstAttribute="trailing" secondItem="lsG-q7-pdC" secondAttribute="trailing" constant="20" id="lD5-QC-V2m"/>
@@ -85,6 +99,7 @@
                                 <connections>
                                     <outlet property="coverImageView" destination="Qp3-vf-9Vb" id="H2n-da-uFK"/>
                                     <outlet property="dateLabel" destination="dQd-a9-NPJ" id="4qH-tj-xqg"/>
+                                    <outlet property="metascoreLabel" destination="NVn-6Q-3lc" id="0sD-r3-3vo"/>
                                     <outlet property="platformLabel" destination="8QG-z2-acR" id="GGa-l2-gvu"/>
                                     <outlet property="preorderedIcon" destination="vOA-KY-Pe0" id="tL5-If-V4c"/>
                                     <outlet property="titleLabel" destination="lsG-q7-pdC" id="tDZ-Dv-E0x"/>
@@ -544,6 +559,13 @@
                                                         <action selector="metascoreButtonAction:" destination="daZ-J4-g3E" eventType="touchUpInside" id="4ML-xc-n4h"/>
                                                     </connections>
                                                 </button>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Nintendo 3DS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="GOx-DN-4ey">
+                                                    <rect key="frame" x="223" y="87" width="90" height="16"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="hdt-f7-HLB" firstAttribute="trailing" secondItem="QFb-V4-x2A" secondAttribute="trailing" id="1nC-cd-8Bm"/>
@@ -902,6 +924,7 @@
                         <outlet property="libraryButton" destination="Szq-Ge-fAn" id="2Sc-lQ-g20"/>
                         <outlet property="loanedSwitch" destination="2xG-Ve-8mA" id="1S7-cO-3VI"/>
                         <outlet property="metascoreButton" destination="6CX-nX-SUT" id="4d6-ZW-6wd"/>
+                        <outlet property="metascorePlatformLabel" destination="GOx-DN-4ey" id="8fC-Vu-obR"/>
                         <outlet property="platformsCollectionView" destination="1Q9-oo-3iz" id="gtQ-EC-qRL"/>
                         <outlet property="preorderedSwitch" destination="Mzt-6A-Xm3" id="VNB-c3-U23"/>
                         <outlet property="progressIndicator" destination="oo5-jN-rbJ" id="LaR-0i-tUj"/>
@@ -1324,6 +1347,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="YGP-WK-AF2"/>
+        <segue reference="5qi-Mj-SGM"/>
     </inferredMetricsTieBreakers>
 </document>

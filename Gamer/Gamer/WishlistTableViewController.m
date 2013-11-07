@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSManagedObjectContext *context;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 @property (nonatomic, strong) NSOperationQueue *coverImageOperationQueue;
+@property (nonatomic, strong) NSOperationQueue *metascoreOperationQueue;
 
 @end
 
@@ -61,6 +62,9 @@
 	
 	_coverImageOperationQueue = [[NSOperationQueue alloc] init];
 	[_coverImageOperationQueue setMaxConcurrentOperationCount:1];
+	
+	_metascoreOperationQueue = [[NSOperationQueue alloc] init];
+	[_metascoreOperationQueue setMaxConcurrentOperationCount:1];
 	
 	self.fetchedResultsController = [self fetchData];
 }
@@ -166,6 +170,14 @@
 	[customCell.preorderedIcon setHidden:!game.preordered.boolValue];
 	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
+	
+	if ([game.released isEqualToNumber:@(YES)] && game.wishlistMetascore.length > 0 && game.wishlistMetascorePlatform == game.wishlistPlatform){
+		[customCell.metascoreLabel setHidden:NO];
+		[customCell.metascoreLabel setText:game.wishlistMetascore];
+		[customCell.metascoreLabel setBackgroundColor:[Networking colorForMetascore:game.wishlistMetascore]];
+	}
+	else
+		[customCell.metascoreLabel setHidden:YES];
 }
 
 #pragma mark - HidingSectionView
@@ -206,6 +218,9 @@
 			}
 		}
 		
+		if ([game.released isEqualToNumber:@(YES)])
+			[self requestMetascoreForGame:game];
+		
 		if (_operationQueue.operationCount == 0){
 			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 			[self updateGameReleasePeriods];
@@ -242,6 +257,38 @@
 		}
 	}];
 	[_coverImageOperationQueue addOperation:operation];
+}
+
+- (void)requestMetascoreForGame:(Game *)game{
+	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:[Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform]];
+	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+		NSLog(@"Success in %@ - Metascore - %@", self, operation.request.URL);
+		
+		NSString *HTML = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+		
+		[game setMetacriticURL:operation.request.URL.absoluteString];
+		
+		if (HTML){
+			NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+			if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+				[game setWishlistMetascore:metascore];
+				[game setWishlistMetascorePlatform:game.wishlistPlatform];
+			}
+			else{
+				[game setWishlistMetascore:nil];
+				[game setWishlistMetascorePlatform:nil];
+			}
+		}
+		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			if (_metascoreOperationQueue.operationCount == 0){
+				[self.tableView reloadData];
+			}
+		}];
+		
+	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+		NSLog(@"Failure in %@ - Metascore", self);
+	}];
+	[_metascoreOperationQueue addOperation:operation];
 }
 
 #pragma mark - Custom
@@ -291,6 +338,10 @@
 }
 
 - (void)refreshWishlistNotification:(NSNotification *)notification{
+	[self updateGameReleasePeriods];
+	
+//	self.fetchedResultsController = nil;
+//	self.fetchedResultsController = [self fetchData];
 	[self.tableView reloadData];
 }
 

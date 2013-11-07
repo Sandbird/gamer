@@ -25,6 +25,8 @@
 		2531E857176CDBDD005881A4 /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E855176CDBBB005881A4 /* SessionManager.m */; };
 		2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2570405D176CB55500642430 /* Model.xcdatamodeld */; };
 		2531E85B176CDC68005881A4 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E85A176CDC3B005881A4 /* SearchResult.m */; };
+		253B57EB182B252600617E3B /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 253B57EA182B252600617E3B /* Platform.m */; };
+		253B57EE182B252700617E3B /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 253B57ED182B252700617E3B /* Game.m */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
 		255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA78179B566E009B42BF /* AdSupport.framework */; };
 		25704026176CB12800642430 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704025176CB12800642430 /* Foundation.framework */; };
@@ -53,10 +55,8 @@
 		25998C1A181093F500F1AA8F /* Developer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C19181093F500F1AA8F /* Developer.m */; };
 		25998C1D181093F500F1AA8F /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C1C181093F500F1AA8F /* Image.m */; };
 		25998C20181093F500F1AA8F /* SimilarGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C1F181093F500F1AA8F /* SimilarGame.m */; };
-		25998C23181093F500F1AA8F /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C22181093F500F1AA8F /* Platform.m */; };
 		25998C26181093F500F1AA8F /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C25181093F500F1AA8F /* Theme.m */; };
 		25998C29181093F500F1AA8F /* Gamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C28181093F500F1AA8F /* Gamer.m */; };
-		25998C2A1810950F00F1AA8F /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C0D181093F500F1AA8F /* Game.m */; };
 		259DD14617ADBE8600FAD645 /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DD14517ADBE8600FAD645 /* SearchCell.m */; };
 		259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259E4A3F1808ACAB00C1AC99 /* SimilarGameCollectionCell.m */; };
 		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
@@ -119,6 +119,11 @@
 		2531E855176CDBBB005881A4 /* SessionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
 		2531E859176CDC3B005881A4 /* SearchResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResult.h; sourceTree = "<group>"; };
 		2531E85A176CDC3B005881A4 /* SearchResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
+		253B57DC182B159400617E3B /* Model 1.1.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model 1.1.3.xcdatamodel"; sourceTree = "<group>"; };
+		253B57E9182B252600617E3B /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
+		253B57EA182B252600617E3B /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
+		253B57EC182B252700617E3B /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		253B57ED182B252700617E3B /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		2555469F17DFF9430069F8A5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		255BAA76179B55E4009B42BF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		255BAA78179B566E009B42BF /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -154,8 +159,6 @@
 		25998C07181093F500F1AA8F /* CoverImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverImage.m; sourceTree = "<group>"; };
 		25998C09181093F500F1AA8F /* Genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Genre.h; sourceTree = "<group>"; };
 		25998C0A181093F500F1AA8F /* Genre.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Genre.m; sourceTree = "<group>"; };
-		25998C0C181093F500F1AA8F /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
-		25998C0D181093F500F1AA8F /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		25998C0F181093F500F1AA8F /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
 		25998C10181093F500F1AA8F /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video.m; sourceTree = "<group>"; };
 		25998C12181093F500F1AA8F /* Publisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Publisher.h; sourceTree = "<group>"; };
@@ -168,8 +171,6 @@
 		25998C1C181093F500F1AA8F /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
 		25998C1E181093F500F1AA8F /* SimilarGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarGame.h; sourceTree = "<group>"; };
 		25998C1F181093F500F1AA8F /* SimilarGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimilarGame.m; sourceTree = "<group>"; };
-		25998C21181093F500F1AA8F /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
-		25998C22181093F500F1AA8F /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
 		25998C24181093F500F1AA8F /* Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theme.h; sourceTree = "<group>"; };
 		25998C25181093F500F1AA8F /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
 		25998C27181093F500F1AA8F /* Gamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gamer.h; sourceTree = "<group>"; };
@@ -302,6 +303,17 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		253B57EF182B267900617E3B /* iPhone */ = {
+			isa = PBXGroup;
+			children = (
+				2506A17D176CD4EA0010E61D /* WishlistTableViewController.h */,
+				2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */,
+				2506A183176CD5480010E61D /* SearchTableViewController.h */,
+				2506A184176CD5480010E61D /* SearchTableViewController.m */,
+			);
+			name = iPhone;
+			sourceTree = "<group>";
+		};
 		25704019176CB12800642430 = {
 			isa = PBXGroup;
 			children = (
@@ -431,12 +443,14 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				253B57EC182B252700617E3B /* Game.h */,
+				253B57ED182B252700617E3B /* Game.m */,
+				253B57E9182B252600617E3B /* Platform.h */,
+				253B57EA182B252600617E3B /* Platform.m */,
 				25998C27181093F500F1AA8F /* Gamer.h */,
 				25998C28181093F500F1AA8F /* Gamer.m */,
 				25998C24181093F500F1AA8F /* Theme.h */,
 				25998C25181093F500F1AA8F /* Theme.m */,
-				25998C21181093F500F1AA8F /* Platform.h */,
-				25998C22181093F500F1AA8F /* Platform.m */,
 				25998C1E181093F500F1AA8F /* SimilarGame.h */,
 				25998C1F181093F500F1AA8F /* SimilarGame.m */,
 				25998C1B181093F500F1AA8F /* Image.h */,
@@ -449,8 +463,6 @@
 				25998C13181093F500F1AA8F /* Publisher.m */,
 				25998C0F181093F500F1AA8F /* Video.h */,
 				25998C10181093F500F1AA8F /* Video.m */,
-				25998C0C181093F500F1AA8F /* Game.h */,
-				25998C0D181093F500F1AA8F /* Game.m */,
 				25998C09181093F500F1AA8F /* Genre.h */,
 				25998C0A181093F500F1AA8F /* Genre.m */,
 				25998C06181093F500F1AA8F /* CoverImage.h */,
@@ -466,6 +478,10 @@
 		257E18C4182453680088699B /* iPad */ = {
 			isa = PBXGroup;
 			children = (
+				25C9FE3717CC4C4500CCDD59 /* WishlistViewController.h */,
+				25C9FE3817CC4C4500CCDD59 /* WishlistViewController.m */,
+				257E18C1182453460088699B /* SearchViewController.h */,
+				257E18C2182453460088699B /* SearchViewController.m */,
 			);
 			name = iPad;
 			sourceTree = "<group>";
@@ -473,19 +489,12 @@
 		2595539417AEA0CD003A4F59 /* Tabs */ = {
 			isa = PBXGroup;
 			children = (
-				257E18C4182453680088699B /* iPad */,
-				2506A17D176CD4EA0010E61D /* WishlistTableViewController.h */,
-				2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */,
-				25C9FE3717CC4C4500CCDD59 /* WishlistViewController.h */,
-				25C9FE3817CC4C4500CCDD59 /* WishlistViewController.m */,
 				25B9E9BE17A0B70200881089 /* LibraryViewController.h */,
 				25B9E9BF17A0B70200881089 /* LibraryViewController.m */,
-				2506A183176CD5480010E61D /* SearchTableViewController.h */,
-				2506A184176CD5480010E61D /* SearchTableViewController.m */,
-				257E18C1182453460088699B /* SearchViewController.h */,
-				257E18C2182453460088699B /* SearchViewController.m */,
 				2506A187176CD5620010E61D /* SettingsTableViewController.h */,
 				2506A188176CD5620010E61D /* SettingsTableViewController.m */,
+				253B57EF182B267900617E3B /* iPhone */,
+				257E18C4182453680088699B /* iPad */,
 			);
 			name = Tabs;
 			sourceTree = "<group>";
@@ -642,7 +651,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25998C2A1810950F00F1AA8F /* Game.m in Sources */,
 				2531E85B176CDC68005881A4 /* SearchResult.m in Sources */,
 				2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */,
 				25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */,
@@ -653,6 +661,7 @@
 				2593051717C90017001DC04B /* MetacriticViewController.m in Sources */,
 				25998C02181093F400F1AA8F /* ReleaseDate.m in Sources */,
 				25C9FE7717DA7FB400CCDD59 /* TrailerViewController.m in Sources */,
+				253B57EB182B252600617E3B /* Platform.m in Sources */,
 				25C9FE4517CD729E00CCDD59 /* HeaderCollectionReusableView.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
 				25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */,
@@ -669,6 +678,7 @@
 				2531E83E176CDB60005881A4 /* SettingsTableViewController.m in Sources */,
 				25998C20181093F500F1AA8F /* SimilarGame.m in Sources */,
 				251DEA42178CF3EA0094A6CB /* SettingsPlatformCell.m in Sources */,
+				253B57EE182B252700617E3B /* Game.m in Sources */,
 				25998C05181093F500F1AA8F /* Franchise.m in Sources */,
 				2531E83F176CDB60005881A4 /* FetchedTableViewController.m in Sources */,
 				2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */,
@@ -679,7 +689,6 @@
 				25998C1D181093F500F1AA8F /* Image.m in Sources */,
 				25C9FE3917CC4C4500CCDD59 /* WishlistViewController.m in Sources */,
 				25998C17181093F500F1AA8F /* ReleasePeriod.m in Sources */,
-				25998C23181093F500F1AA8F /* Platform.m in Sources */,
 				250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */,
 				25B9E9C017A0B70200881089 /* LibraryViewController.m in Sources */,
 				25998C26181093F500F1AA8F /* Theme.m in Sources */,
@@ -828,7 +837,7 @@
 					/Users/Caio/Xcode/gamer/Gamer/Gamer,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "27F53865-1E16-4DC0-A6B7-478F675D7BC5";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -841,7 +850,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
@@ -851,7 +860,7 @@
 					/Users/Caio/Xcode/gamer/Gamer/Gamer,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "27F53865-1E16-4DC0-A6B7-478F675D7BC5";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -933,12 +942,13 @@
 		2570405D176CB55500642430 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				253B57DC182B159400617E3B /* Model 1.1.3.xcdatamodel */,
 				250B37E018086795009EB170 /* Model 1.1.2.xcdatamodel */,
 				2506F9A217F12CC800329CF2 /* Model 1.1.xcdatamodel */,
 				25AA247F1801A25C00106772 /* Model 1.1.1.xcdatamodel */,
 				2570405E176CB55500642430 /* Model.xcdatamodel */,
 			);
-			currentVersion = 250B37E018086795009EB170 /* Model 1.1.2.xcdatamodel */;
+			currentVersion = 253B57DC182B159400617E3B /* Model 1.1.3.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

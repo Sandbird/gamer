@@ -2,7 +2,7 @@
 //  Platform.h
 //  Gamer
 //
-//  Created by Caio Mello on 17/10/2013.
+//  Created by Caio Mello on 06/11/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -22,6 +22,8 @@
 @property (nonatomic, retain) NSSet *games;
 @property (nonatomic, retain) NSSet *libraryGames;
 @property (nonatomic, retain) NSSet *wishlistGames;
+@property (nonatomic, retain) NSSet *metascoreGames;
+@property (nonatomic, retain) NSSet *wishlistMetascoreGames;
 @end
 
 @interface Platform (CoreDataGeneratedAccessors)
@@ -40,5 +42,15 @@
 - (void)removeWishlistGamesObject:(Game *)value;
 - (void)addWishlistGames:(NSSet *)values;
 - (void)removeWishlistGames:(NSSet *)values;
+
+- (void)addMetascoreGamesObject:(Game *)value;
+- (void)removeMetascoreGamesObject:(Game *)value;
+- (void)addMetascoreGames:(NSSet *)values;
+- (void)removeMetascoreGames:(NSSet *)values;
+
+- (void)addWishlistMetascoreGamesObject:(Game *)value;
+- (void)removeWishlistMetascoreGamesObject:(Game *)value;
+- (void)addWishlistMetascoreGames:(NSSet *)values;
+- (void)removeWishlistMetascoreGames:(NSSet *)values;
 
 @end

@@ -300,6 +300,24 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	}
 }
 
++ (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
+	NSMutableString *formattedTitle = title.lowercaseString.mutableCopy;
+	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""]];
+	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""]];
+	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"& " withString:@""]];
+	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
+	
+	NSMutableString *formattedPlatform = platform.name.lowercaseString.mutableCopy;
+	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"nintendo " withString:@""]];
+	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""]];
+	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""]];
+	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
+	
+	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
+	
+	return [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+}
+
 + (NSInteger)quarterForMonth:(NSInteger)month{
 	switch (month) {
 		case 1: case 2: case 3: return 1;
@@ -354,6 +372,34 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	}
 	
 	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
+}
+
++ (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML{
+	// Regex magic
+	NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"xlarge game" options:NSRegularExpressionCaseInsensitive error:nil];
+	NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:HTML options:NSMatchingReportProgress range:NSMakeRange(0, HTML.length)];
+	NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
+	
+	NSRegularExpression *secondExpression = [NSRegularExpression regularExpressionWithPattern:@"</span" options:NSRegularExpressionCaseInsensitive error:nil];
+	NSTextCheckingResult *secondResult = [secondExpression firstMatchInString:HTML options:NSMatchingReportProgress range:NSMakeRange(startIndex, HTML.length - startIndex)];
+	NSUInteger endIndex = secondResult.range.location;
+	
+//	NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
+	NSString *metascore = (startIndex >= 2 && endIndex >= 2) ? [HTML substringWithRange:NSMakeRange(endIndex - 2, 2)] : nil;
+	
+//	NSLog(@"HTML: %@", HTML);
+//	NSLog(@"Metascore: %@", metascore);
+	
+	return metascore;
+}
+
++ (UIColor *)colorForMetascore:(NSString *)metascore{
+	if (metascore.integerValue >= 75)
+		return [UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1];
+	else if (metascore.integerValue >= 50)
+		return [UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1];
+	else
+		return [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
 }
 
 @end

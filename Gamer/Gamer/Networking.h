@@ -16,8 +16,12 @@
 + (NSMutableURLRequest *)requestForVideoWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
 
 + (void)updateGame:(Game *)game withDataFromJSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context;
++ (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform;
 
 + (NSInteger)quarterForMonth:(NSInteger)month;
 + (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate;
+
++ (UIColor *)colorForMetascore:(NSString *)metascore;
++ (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML;
 
 @end

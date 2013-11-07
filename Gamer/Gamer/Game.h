@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 17/10/2013.
+//  Created by Caio Mello on 06/11/2013.
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
@@ -29,6 +29,7 @@
 @property (nonatomic, retain) NSData * thumbnailWishlist;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * wanted;
+@property (nonatomic, retain) NSString * wishlistMetascore;
 @property (nonatomic, retain) CoverImage *coverImage;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
@@ -44,6 +45,8 @@
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
 @property (nonatomic, retain) Platform *wishlistPlatform;
+@property (nonatomic, retain) Platform *metascorePlatform;
+@property (nonatomic, retain) Platform *wishlistMetascorePlatform;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)

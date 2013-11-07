@@ -58,6 +58,7 @@ enum {
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
 
 @property (nonatomic, strong) IBOutlet UIButton *metascoreButton;
+@property (nonatomic, strong) IBOutlet UILabel *metascorePlatformLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreFirstLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreSecondLabel;
 @property (nonatomic, strong) IBOutlet UILabel *themeFirstLabel;
@@ -490,59 +491,40 @@ enum {
 }
 
 - (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
-	NSMutableString *formattedTitle = title.lowercaseString.mutableCopy;
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""]];
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""]];
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"& " withString:@""]];
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
-	
-	NSMutableString *formattedPlatform = platform.name.lowercaseString.mutableCopy;
-	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"nintendo " withString:@""]];
-	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""]];
-	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""]];
-	[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
-	
-	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
-	
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-	[request setHTTPMethod:@"GET"];
-	
-	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:[Networking requestForMetascoreForGameWithTitle:title platform:platform]];
 	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-		NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
+		NSLog(@"Success in %@ - Metascore - %@", self, operation.request.URL);
 		
-		NSString *html = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+		NSString *HTML = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
 		
-//		NSLog(@"HTML: %@", html);
+//		NSLog(@"HTML: %@", HTML);
 		
-		[_game setMetacriticURL:url];
+		[_game setMetacriticURL:operation.request.URL.absoluteString];
 		
-		if (html){
-			// Regex magic
-			NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"xlarge game" options:NSRegularExpressionCaseInsensitive error:nil];
-			NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(0, html.length)];
-			NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
-			
-			NSRegularExpression *secondExpression = [NSRegularExpression regularExpressionWithPattern:@"</span" options:NSRegularExpressionCaseInsensitive error:nil];
-			NSTextCheckingResult *secondResult = [secondExpression firstMatchInString:html options:NSMatchingReportProgress range:NSMakeRange(startIndex, html.length - startIndex)];
-			NSUInteger endIndex = secondResult.range.location;
-			
-//			NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
-			NSString *metascore = (startIndex >= 2 && endIndex >= 2) ? [html substringWithRange:NSMakeRange(endIndex - 2, 2)] : nil;
-			
-			NSLog(@"Metascore: %@", metascore);
-			
+		if (HTML){
+			NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
 			[_game setMetascore:metascore];
 			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_metascoreButton setHidden:NO];
 				
 				if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-					[_metascoreButton setBackgroundColor:[self colorForMetascore:metascore]];
+					[_metascoreButton setBackgroundColor:[Networking colorForMetascore:metascore]];
 					[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
 					[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
 					
-					[_game setMetacriticURL:url];
+					[_game setMetacriticURL:operation.request.URL.absoluteString];
+					[_game setMetascorePlatform:platform];
+					
+					[_metascorePlatformLabel setText:platform.name];
+					[_metascorePlatformLabel setHidden:NO];
+					[_metascorePlatformLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+					
+					if (_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform){
+						[_game setWishlistMetascore:metascore];
+						[_game setWishlistMetascorePlatform:platform];
+						[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistTable" object:nil];
+					}
 				}
 				else{
 					if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
@@ -556,12 +538,10 @@ enum {
 				[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			}];
 		}
-		else{
-			if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
-				[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
-		}
-		
-		[_context saveToPersistentStoreAndWait];
+		else if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
+			[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
+		else
+			[_context saveToPersistentStoreAndWait];
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"Failure in %@ - Metascore", self);
@@ -755,6 +735,8 @@ enum {
 				
 				[_game setWanted:@(YES)];
 				[_game setOwned:@(NO)];
+				
+				[_game setWishlistMetascore:(_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform) ? _game.metascore : nil];
 			}
 		}
 		else{
@@ -793,7 +775,7 @@ enum {
 					[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 			});
 			
-			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:[Tools deviceIsiPad] ? @"RefreshWishlistCollection" : @"RefreshWishlistTable" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
@@ -835,17 +817,21 @@ enum {
 	[_digitalSwitch setOn:_game.digital.boolValue animated:animated];
 	
 	if (_game.metascore.length > 0){
-		[_metascoreButton setBackgroundColor:[self colorForMetascore:_game.metascore]];
+		[_metascoreButton setBackgroundColor:[Networking colorForMetascore:_game.metascore]];
 		[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
 		[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
+		[_metascorePlatformLabel setText:_game.metascorePlatform.name];
 	}
 	else if (_game.metacriticURL.length > 0){
 		[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
 		[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
 		[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
+		[_metascorePlatformLabel setHidden:YES];
 	}
-	else
+	else{
 		[_metascoreButton setHidden:YES];
+		[_metascorePlatformLabel setHidden:YES];
+	}
 	
 	[_descriptionTextView setText:_game.overview];
 	[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
@@ -866,15 +852,6 @@ enum {
 		[_franchiseTitleLabel setHidden:NO];
 		[_franchiseTitleLabel setText:[_game.franchises.allObjects[0] name]];
 	}
-}
-
-- (UIColor *)colorForMetascore:(NSString *)metascore{
-	if (metascore.integerValue >= 75)
-		return [UIColor colorWithRed:.384313725 green:.807843137 blue:.129411765 alpha:1];
-	else if (metascore.integerValue >= 50)
-		return [UIColor colorWithRed:1 green:.803921569 blue:.058823529 alpha:1];
-	else
-		return [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
 }
 
 - (void)refreshAddButtons{
@@ -920,7 +897,7 @@ enum {
 					[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 			});
 			
-			if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:[Tools deviceIsiPad] ? @"RefreshWishlistCollection" : @"RefreshWishlistTable" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
@@ -952,6 +929,8 @@ enum {
 				
 				[_game setWanted:@(YES)];
 				[_game setOwned:@(NO)];
+				
+				[_game setWishlistMetascore:(_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform) ? _game.metascore : nil];
 			}
 			else{
 				if (_selectablePlatforms.count > 0){
@@ -987,7 +966,7 @@ enum {
 						[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 				});
 				
-				if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:[Tools deviceIsiPad] ? @"RefreshWishlistCollection" : @"RefreshWishlistTable" object:nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 			}];
 		}

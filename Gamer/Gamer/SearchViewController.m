@@ -49,16 +49,6 @@
 	else
 		_results = [[NSMutableArray alloc] initWithCapacity:100];
 	
-	if ([SessionManager gamer].platforms.count == 0){
-		[_guideView setHidden:NO];
-		[_searchBar setUserInteractionEnabled:NO];
-	}
-	else{
-		[_guideView setHidden:YES];
-		[_searchBar setUserInteractionEnabled:YES];
-		[_searchBar becomeFirstResponder];
-	}
-	
 	// Add guide view to the view
 	_guideView = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][2];
 	[self.view insertSubview:_guideView aboveSubview:_collectionView];
@@ -69,6 +59,18 @@
 - (void)viewDidAppear:(BOOL)animated{
 	[[SessionManager tracker] set:kGAIScreenName value:@"Search"];
 	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	
+	if ([SessionManager gamer].platforms.count == 0){
+		[_guideView setHidden:NO];
+		[_searchBar setUserInteractionEnabled:NO];
+	}
+	else{
+		[_guideView setHidden:YES];
+		[_searchBar setUserInteractionEnabled:YES];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[_searchBar becomeFirstResponder];
+		});
+	}
 }
 
 - (void)viewWillDisappear:(BOOL)animated{

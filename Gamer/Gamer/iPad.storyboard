@@ -84,6 +84,14 @@
                                                     <rect key="frame" x="66" y="255" width="20" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="95" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F4N-iy-NDX" userLabel="Platform Label">
+                                                    <rect key="frame" x="66" y="255" width="20" height="20"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" red="0.38431372549999998" green="0.80784313730000001" blue="0.12941176469999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
@@ -91,6 +99,7 @@
                                         <connections>
                                             <outlet property="coverImageView" destination="Eaf-MT-Pj5" id="9Tg-p7-7cS"/>
                                             <outlet property="dateLabel" destination="Q6N-Wc-Mbg" id="Zyb-zC-MKx"/>
+                                            <outlet property="metascoreLabel" destination="F4N-iy-NDX" id="PbL-l9-Khh"/>
                                             <outlet property="platformLabel" destination="U9K-OY-hlC" id="8GV-in-RFM"/>
                                             <outlet property="preorderedIcon" destination="7RL-wT-827" id="2vL-Jx-fEN"/>
                                             <outlet property="titleLabel" destination="m0b-eK-PmJ" id="Pdi-Ik-5gb"/>
@@ -629,6 +638,13 @@
                                                         <outlet property="delegate" destination="3iO-2E-Tja" id="6at-ZK-Ppx"/>
                                                     </connections>
                                                 </collectionView>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Nintendo 3DS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="IEW-Yk-faT">
+                                                    <rect key="frame" x="455" y="96" width="66" height="12"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
@@ -857,6 +873,7 @@
                         <outlet property="libraryButton" destination="X8X-53-Q2r" id="umR-9Q-Fht"/>
                         <outlet property="loanedSwitch" destination="Gqh-OY-W5k" id="3t1-Cd-YPW"/>
                         <outlet property="metascoreButton" destination="4wY-gS-7Lp" id="QST-8s-9E4"/>
+                        <outlet property="metascorePlatformLabel" destination="IEW-Yk-faT" id="5VY-J1-jcL"/>
                         <outlet property="platformsCollectionView" destination="laf-zo-Npo" id="cjc-q2-8oq"/>
                         <outlet property="preorderedSwitch" destination="BRV-HB-eeN" id="qgt-eD-Kk8"/>
                         <outlet property="progressIndicator" destination="ieo-vM-YR7" id="nIE-cn-9KH"/>
@@ -1368,7 +1385,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="d00-8M-kLX"/>
         <segue reference="Cb3-ZA-M1W"/>
-        <segue reference="YE0-76-1dq"/>
     </inferredMetricsTieBreakers>
 </document>
