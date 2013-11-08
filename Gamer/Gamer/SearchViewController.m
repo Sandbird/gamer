@@ -150,6 +150,8 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+	[_searchBar resignFirstResponder];
+	
 	SearchResult *result = _results[indexPath.row];
 	[self performSegueWithIdentifier:@"GameSegue" sender:result.identifier];
 }

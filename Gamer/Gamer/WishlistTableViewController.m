@@ -167,14 +167,14 @@
 	[customCell.dateLabel setText:game.releaseDateText];
 	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnailWishlist]];
 	[customCell.coverImageView setBackgroundColor:customCell.coverImageView.image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-	[customCell.preorderedIcon setHidden:!game.preordered.boolValue];
+	[customCell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];
 	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
 	
 	if ([game.released isEqualToNumber:@(YES)] && game.wishlistMetascore.length > 0 && game.wishlistMetascorePlatform == game.wishlistPlatform){
 		[customCell.metascoreLabel setHidden:NO];
 		[customCell.metascoreLabel setText:game.wishlistMetascore];
-		[customCell.metascoreLabel setBackgroundColor:[Networking colorForMetascore:game.wishlistMetascore]];
+		[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:game.wishlistMetascore]];
 	}
 	else
 		[customCell.metascoreLabel setHidden:YES];

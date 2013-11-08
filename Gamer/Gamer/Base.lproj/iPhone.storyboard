@@ -69,13 +69,12 @@
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="95" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NVn-6Q-3lc" userLabel="Platform Label">
                                             <rect key="frame" x="238" y="35" width="16" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" red="0.38431372549999998" green="0.80784313730000001" blue="0.12941176469999999" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="16" id="PC8-KT-wZ8"/>
                                                 <constraint firstAttribute="height" constant="16" id="bDM-6d-eKL"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                            <color key="textColor" red="0.38431372549999998" green="0.80784313730000001" blue="0.12941176469999999" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>

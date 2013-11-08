@@ -154,12 +154,12 @@
 	[cell.coverImageView setBackgroundColor:cell.coverImageView.image ? [UIColor clearColor] : [UIColor darkGrayColor]];
 	[cell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[cell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
-	[cell.preorderedIcon setHidden:!game.preordered.boolValue];
+	[cell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];
 	
 	if ([game.released isEqualToNumber:@(YES)] && game.wishlistMetascore.length > 0 && game.wishlistMetascorePlatform == game.wishlistPlatform){
 		[cell.metascoreLabel setHidden:NO];
 		[cell.metascoreLabel setText:game.wishlistMetascore];
-		[cell.metascoreLabel setBackgroundColor:[Networking colorForMetascore:game.wishlistMetascore]];
+		[cell.metascoreLabel setTextColor:[Networking colorForMetascore:game.wishlistMetascore]];
 	}
 	else
 		[cell.metascoreLabel setHidden:YES];
