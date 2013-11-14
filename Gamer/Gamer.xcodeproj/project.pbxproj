@@ -27,6 +27,7 @@
 		2531E85B176CDC68005881A4 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E85A176CDC3B005881A4 /* SearchResult.m */; };
 		253B57EB182B252600617E3B /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 253B57EA182B252600617E3B /* Platform.m */; };
 		253B57EE182B252700617E3B /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 253B57ED182B252700617E3B /* Game.m */; };
+		253B57F21834536B00617E3B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 253B57F11834536B00617E3B /* MessageUI.framework */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
 		255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA78179B566E009B42BF /* AdSupport.framework */; };
 		25704026176CB12800642430 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704025176CB12800642430 /* Foundation.framework */; };
@@ -124,6 +125,7 @@
 		253B57EA182B252600617E3B /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
 		253B57EC182B252700617E3B /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		253B57ED182B252700617E3B /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		253B57F11834536B00617E3B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		2555469F17DFF9430069F8A5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		255BAA76179B55E4009B42BF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		255BAA78179B566E009B42BF /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -219,6 +221,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				253B57F21834536B00617E3B /* MessageUI.framework in Frameworks */,
 				25180CA217DFD541002675F1 /* SystemConfiguration.framework in Frameworks */,
 				25180CA117DFD534002675F1 /* MobileCoreServices.framework in Frameworks */,
 				255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */,
@@ -337,6 +340,7 @@
 		25704024176CB12800642430 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				253B57F11834536B00617E3B /* MessageUI.framework */,
 				2555469F17DFF9430069F8A5 /* libz.dylib */,
 				25180CA017DFD534002675F1 /* MobileCoreServices.framework */,
 				25F4588D179DFB2C008C15B3 /* EventKit.framework */,

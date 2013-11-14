@@ -22,8 +22,9 @@
 #import "SimilarGame.h"
 #import "SettingsPlatformCell.h"
 #import "SettingsSliderCell.h"
+#import <MessageUI/MFMailComposeViewController.h>
 
-@interface SettingsTableViewController ()
+@interface SettingsTableViewController () <MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) NSMutableArray *platforms;
 @property (nonatomic, strong) NSManagedObjectContext *context;
@@ -64,7 +65,7 @@
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 2;
+    return 3;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
@@ -87,6 +88,7 @@
 	switch (section) {
 		case 0: return _platforms.count;
 		case 1: return 1;
+		case 2: return 1;
 		default: return 0;
 	}
 }
@@ -112,8 +114,25 @@
 			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
+		case 2:{
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
+			[cell.textLabel setText:@"Feedback"];
+			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+			return cell;
+		}
 		default:
 			return nil;
+	}
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+	if (indexPath.section == 2){
+		MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
+		[mailComposeViewController setMailComposeDelegate:self];
+		[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
+		[self presentViewController:mailComposeViewController animated:YES completion:^{
+			[tableView deselectRowAtIndexPath:indexPath animated:YES];
+		}];
 	}
 }
 
@@ -157,6 +176,12 @@
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];
+}
+
+#pragma mark - MailComposeViewController
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Actions
