@@ -28,8 +28,6 @@
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 	
-	[[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:self.window.tintColor}];
-	
 	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
 	UITabBarItem *wishlistTab = tabBarController.tabBar.items[0];
 	[wishlistTab setImage:[UIImage imageNamed:@"WishlistTab"]];

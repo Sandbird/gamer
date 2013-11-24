@@ -23,6 +23,7 @@
 #import "SettingsPlatformCell.h"
 #import "SettingsSliderCell.h"
 #import <MessageUI/MFMailComposeViewController.h>
+#include <sys/sysctl.h>
 
 @interface SettingsTableViewController () <MFMailComposeViewControllerDelegate>
 
@@ -72,7 +73,7 @@
 	switch (section) {
 		case 0: return @"Platforms";
 		case 1: return @"Settings";
-		default: return @"";
+		default: return nil;
 	}
 }
 
@@ -80,15 +81,15 @@
 	switch (section) {
 		case 0: return @"Select your platforms. This affects search results. Reordering affects the Library and the game screen.";
 		case 1: return @"Library game size.";
-		default: return @"";
+		case 2: return @"Tell me about bugs, ask for a feature you would like, or give me some suggestions!";
+		default: return nil;
 	}
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
 		case 0: return _platforms.count;
-		case 1: return 1;
-		case 2: return 1;
+		case 1: case 2: return 1;
 		default: return 0;
 	}
 }
@@ -116,7 +117,6 @@
 		}
 		case 2:{
 			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
-			[cell.textLabel setText:@"Feedback"];
 			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
@@ -130,6 +130,9 @@
 		MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
 		[mailComposeViewController setMailComposeDelegate:self];
 		[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
+		[mailComposeViewController setSubject:@"Feedback"];
+		[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
+		
 		[self presentViewController:mailComposeViewController animated:YES completion:^{
 			[tableView deselectRowAtIndexPath:indexPath animated:YES];
 		}];
@@ -182,6 +185,18 @@
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
 	[self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Custom
+
+- (NSString *)device{
+	size_t size;
+	sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+	char *machine = malloc(size);
+	sysctlbyname("hw.machine", machine, &size, NULL, 0);
+	NSString *platform = [NSString stringWithUTF8String:machine];
+	free(machine);
+	return platform;
 }
 
 #pragma mark - Actions
