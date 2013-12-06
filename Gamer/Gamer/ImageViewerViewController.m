@@ -22,7 +22,7 @@
 
 @property (nonatomic, assign) CGSize imageSize;
 
-@property (nonatomic, strong) NSOperation *currentOperation;
+@property (nonatomic, strong) NSURLSessionDownloadTask *runningTask;
 
 @end
 
@@ -46,7 +46,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
-	[_currentOperation cancel];
+	[_runningTask cancel];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -91,16 +91,29 @@
 	[_progressIndicator setValue:0];
 	
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageObject.originalURL]];
-	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
-		_imageSize = image.size;
-		[self initializeImageViewWithImage:image animated:YES];
+	
+	NSProgress *progress;
+	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@-large", request.URL.lastPathComponent]];
+	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+		UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+		
+		_imageSize = downloadedImage.size;
+		[self initializeImageViewWithImage:downloadedImage animated:YES];
+		
+		[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
 	}];
-	[operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-//		NSLog(@"Received %lld of %lld bytes", totalBytesRead, totalBytesExpectedToRead);
-		[_progressIndicator setValue:(float)totalBytesRead/(float)totalBytesExpectedToRead];
-	}];
-	[operation start];
-	_currentOperation = operation;
+	[downloadTask resume];
+	_runningTask = downloadTask;
+	
+	[progress addObserver:self forKeyPath:@"fractionCompleted" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		NSProgress *progress = (NSProgress *)object;
+		[_progressIndicator setValue:progress.fractionCompleted];
+	});
 }
 
 #pragma mark - Custom

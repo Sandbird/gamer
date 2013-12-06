@@ -29,9 +29,6 @@
 @property (nonatomic, strong) UIBarButtonItem *cancelButton;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
-@property (nonatomic, strong) NSOperationQueue *operationQueue;
-@property (nonatomic, strong) NSOperationQueue *coverImageOperationQueue;
-@property (nonatomic, strong) NSOperationQueue *metascoreOperationQueue;
 
 @end
 
@@ -55,16 +52,6 @@
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
-	[_context setUndoManager:nil];
-	
-	_operationQueue = [[NSOperationQueue alloc] init];
-	[_operationQueue setMaxConcurrentOperationCount:1];
-	
-	_coverImageOperationQueue = [[NSOperationQueue alloc] init];
-	[_coverImageOperationQueue setMaxConcurrentOperationCount:1];
-	
-	_metascoreOperationQueue = [[NSOperationQueue alloc] init];
-	[_metascoreOperationQueue setMaxConcurrentOperationCount:1];
 	
 	self.fetchedResultsController = [self fetchData];
 }
@@ -200,95 +187,115 @@
 	
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
-	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
-		
-//		NSLog(@"%@", JSON);
-		
-		[Networking updateGame:game withDataFromJSON:JSON context:_context];
-		
-		if (![JSON[@"status_code"] isEqualToNumber:@(101)]){
-			NSString *coverImageURL = (JSON[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:JSON[@"results"][@"image"][@"super_url"]] : nil;
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, ((NSHTTPURLResponse *)response).statusCode);
 			
-			UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
-			CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
-			
-			if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
-				[self downloadCoverImageForGame:game];
+			if ([Networking manager].dataTasks.count == 0){
+				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+				[self updateGameReleasePeriods];
 			}
 		}
-		
-		if ([game.released isEqualToNumber:@(YES)])
-			[self requestMetascoreForGame:game];
-		
-		if (_operationQueue.operationCount == 0){
-			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
-			[self updateGameReleasePeriods];
-		}
-		
-	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, response.statusCode);
-		
-		if (_operationQueue.operationCount == 0){
-			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
-			[self updateGameReleasePeriods];
+		else{
+			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			
+			//		NSLog(@"%@", JSON);
+			
+			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+			
+			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
+				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+				
+				UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
+				CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
+				
+				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
+					[self downloadCoverImageForGame:game];
+				}
+			}
+			
+			if ([game.released isEqualToNumber:@(YES)])
+				[self requestMetascoreForGame:game];
+			
+			if ([Networking manager].dataTasks.count == 0){
+				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+				[self updateGameReleasePeriods];
+			}
 		}
 	}];
-	[_operationQueue addOperation:operation];
+	[dataTask resume];
 }
 
 - (void)downloadCoverImageForGame:(Game *)game{
 	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
 	
-	AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:^UIImage *(UIImage *image) {
-		[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeCover])];
-		[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeWishlist])];
-		[game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:image type:GameImageTypeLibrary])];
-		return nil;
-	} success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			if (_operationQueue.operationCount == 0){
+	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
+	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+		if (error){
+			if ([Networking manager].downloadTasks.count == 0){
 				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 			}
-		}];
-	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-		if (_operationQueue.operationCount == 0){
-			[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+		}
+		else{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+				[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+				[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+				[game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+				
+				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					dispatch_async(dispatch_get_main_queue(), ^{
+						if ([Networking manager].downloadTasks.count == 0){
+							[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+						}
+					});
+				}];
+			});
 		}
 	}];
-	[_coverImageOperationQueue addOperation:operation];
+	[downloadTask resume];
 }
 
 - (void)requestMetascoreForGame:(Game *)game{
-	AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:[Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform]];
-	[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-		NSLog(@"Success in %@ - Metascore - %@", self, operation.request.URL);
-		
-		NSString *HTML = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-		
-		[game setMetacriticURL:operation.request.URL.absoluteString];
-		
-		if (HTML){
-			NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-			if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-				[game setWishlistMetascore:metascore];
-				[game setWishlistMetascorePlatform:game.wishlistPlatform];
-			}
-			else{
-				[game setWishlistMetascore:nil];
-				[game setWishlistMetascorePlatform:nil];
-			}
+	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform];
+	
+	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
+	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+		if (error){
+			NSLog(@"Failure in %@ - Metascore", self);
 		}
-		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			if (_metascoreOperationQueue.operationCount == 0){
-				[self.tableView reloadData];
-			}
-		}];
-		
-	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		NSLog(@"Failure in %@ - Metascore", self);
+		else{
+			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
+			
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
+				
+				[game setMetacriticURL:request.URL.absoluteString];
+				
+				if (HTML){
+					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+						[game setWishlistMetascore:metascore];
+						[game setWishlistMetascorePlatform:game.wishlistPlatform];
+					}
+					else{
+						[game setWishlistMetascore:nil];
+						[game setWishlistMetascorePlatform:nil];
+					}
+				}
+				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					dispatch_async(dispatch_get_main_queue(), ^{
+						if ([Networking manager].downloadTasks.count == 0){
+							[self.tableView reloadData];
+						}
+					});
+				}];
+			});
+		}
 	}];
-	[_metascoreOperationQueue addOperation:operation];
+	[downloadTask resume];
 }
 
 #pragma mark - Custom
@@ -328,7 +335,7 @@
 }
 
 - (void)cancelRefresh{
-	[_operationQueue cancelAllOperations];
+	[[Networking manager].operationQueue cancelAllOperations];
 }
 
 #pragma mark - Actions

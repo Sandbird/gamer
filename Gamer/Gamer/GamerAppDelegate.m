@@ -7,7 +7,7 @@
 //
 
 #import "GamerAppDelegate.h"
-#import <AFNetworking/AFNetworking.h>
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 
 @implementation GamerAppDelegate
 

@@ -40,7 +40,6 @@
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
 	_context = [NSManagedObjectContext contextForCurrentThread];
-	[_context setUndoManager:nil];
 	
 	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:nil].mutableCopy;
 	

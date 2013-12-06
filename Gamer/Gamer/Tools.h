@@ -12,7 +12,6 @@
 
 // Tools
 + (NSDateFormatter *)dateFormatter;
-+ (NSOperationQueue *)operationQueue;
 
 // JSON
 + (NSString *)stringFromSourceIfNotNull:(id)source;

@@ -11,7 +11,7 @@
 #import "SearchResult.h"
 #import "Platform.h"
 #import "SearchCollectionCell.h"
-#import <AFNetworking/AFNetworking.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 @interface SearchViewController () <UISearchBarDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
@@ -22,7 +22,7 @@
 @property (nonatomic, strong) UIView *guideView;
 
 @property (nonatomic, strong) NSMutableArray *results;
-@property (nonatomic, strong) NSOperation *previousOperation;
+@property (nonatomic, strong) NSURLSessionDataTask *runningTask;
 
 @end
 
@@ -74,7 +74,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
-	[_previousOperation cancel];
+	[_runningTask cancel];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -96,7 +96,7 @@
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-	[_previousOperation cancel];
+	[_runningTask cancel];
 	
 	[SessionManager setSearchQuery:searchText];
 	
@@ -109,7 +109,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 	[searchBar resignFirstResponder];
 	
-	[_previousOperation cancel];
+	[_runningTask cancel];
 	
 	[SessionManager setSearchQuery:searchBar.text];
 	
@@ -118,7 +118,7 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-	[_previousOperation cancel];
+	[_runningTask cancel];
 }
 
 - (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar{
@@ -161,30 +161,31 @@
 - (void)requestGamesWithTitlesContainingQuery:(NSString *)query{
 	NSURLRequest *request = [Networking requestForGamesWithTitle:query fields:@"id,name,image" platforms:[SessionManager gamer].platforms.allObjects];
 	
-	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		//		NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
-		
-		[_results removeAllObjects];
-		
-//		NSLog(@"%@", JSON);
-		
-		for (NSDictionary *dictionary in JSON[@"results"]){
-			SearchResult *result = [[SearchResult alloc] init];
-			[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-			[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"thumb_url"]]];
-			[_results addObject:result];
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, ((NSHTTPURLResponse *)response).statusCode, error.description);
 		}
-		
-		[SessionManager setSearchResults:_results];
-		
-		[_collectionView reloadData];
-		
-	} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-		if (response.statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, response.statusCode, error.description);
+		else{
+//			NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			NSLog(@"%@", responseObject);
+			
+			[_results removeAllObjects];
+			
+			for (NSDictionary *dictionary in responseObject[@"results"]){
+				SearchResult *result = [[SearchResult alloc] init];
+				[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+				[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+				if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"thumb_url"]]];
+				[_results addObject:result];
+			}
+			
+			[SessionManager setSearchResults:_results];
+			
+			[_collectionView reloadData];
+		}
 	}];
-	[operation start];
-	_previousOperation = operation;
+	[dataTask resume];
+	_runningTask = dataTask;
 }
 
 #pragma mark - Actions
