@@ -57,7 +57,7 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLibraryNotification:) name:@"RefreshLibrary" object:nil];
 	
-	_context = [NSManagedObjectContext contextForCurrentThread];
+	_context = [NSManagedObjectContext defaultContext];
 	
 	_fetchedResultsController = [self fetchData];
 	
@@ -114,7 +114,7 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
 	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
-	Platform *platform = [Platform findFirstByAttribute:@"index" withValue:sectionName];
+	Platform *platform = [Platform findFirstByAttribute:@"index" withValue:sectionName inContext:_context];
 	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 	[headerView.titleLabel setText:platform.name];
@@ -198,7 +198,7 @@
 				[Tools deviceIsiPad] ? [self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO] : [self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
 		}
 		else{
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];

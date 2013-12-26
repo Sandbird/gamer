@@ -22,7 +22,7 @@
 + (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform;
 
 + (NSInteger)quarterForMonth:(NSInteger)month;
-+ (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate;
++ (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate context:(NSManagedObjectContext *)context;
 
 + (UIColor *)colorForMetascore:(NSString *)metascore;
 + (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML;

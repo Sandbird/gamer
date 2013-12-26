@@ -130,7 +130,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		
 		[game setReleaseDate:releaseDate];
 		[game.releaseDate setDefined:@(YES)];
-		[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate]];
+		[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate context:context]];
 	}
 	// Game is not yet released
 	else{
@@ -332,7 +332,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	}
 }
 
-+ (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate{
++ (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate context:(NSManagedObjectContext *)context{
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
@@ -375,7 +375,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		}
 	}
 	
-	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period)];
+	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period) inContext:context];
 }
 
 + (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML{

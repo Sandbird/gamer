@@ -105,7 +105,7 @@ enum {
 	
 	[Tools setMaskToView:_metascoreButton roundCorners:UIRectCornerAllCorners radius:32];
 	
-	_context = [NSManagedObjectContext contextForCurrentThread];
+	_context = [NSManagedObjectContext contextWithParent:[NSManagedObjectContext defaultContext]];
 	
 	_imagesStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No images available"];
 	_videosStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No videos available"];
@@ -113,12 +113,14 @@ enum {
 	[_videosCollectionView addSubview:_videosStatusView];
 	
 	if (!_game)
-		_game = [Game findFirstByAttribute:@"identifier" withValue:_gameIdentifier];
+		_game = [Game findFirstByAttribute:@"identifier" withValue:_gameIdentifier inContext:_context];
 	if (_game){
 		[self refreshAnimated:NO];
 		
-		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
-		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"]];
+		
+		
+		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier] inContext:_context].mutableCopy;
+		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"] inContext:_context].mutableCopy;
 		
 		(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
 		(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
@@ -419,10 +421,9 @@ enum {
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
 			//		NSLog(@"%@", JSON);
 			
-			_game = [Game findFirstByAttribute:@"identifier" withValue:identifier];
+			_game = [Game findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
 			if (!_game) _game = [Game createInContext:_context];
 			
 			[Networking updateGame:_game withDataFromJSON:responseObject context:_context];
@@ -437,7 +438,7 @@ enum {
 				
 				if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height))
 					[self downloadImageForCoverImage:_game.coverImage];
-//				else
+				else
 					[self requestMediaForGame:_game];
 				
 				[self refreshAnimated:NO];
@@ -457,6 +458,8 @@ enum {
 }
 
 - (void)downloadImageForCoverImage:(CoverImage *)coverImage{
+	if (!coverImage.url) return;
+	
 	[_progressIndicator setValue:0];
 	
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:coverImage.url]];
@@ -473,7 +476,7 @@ enum {
 		else{
 			[self requestMediaForGame:_game];
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				
 				[coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
@@ -481,12 +484,12 @@ enum {
 				[_game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
 				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					dispatch_async(dispatch_get_main_queue(), ^{
+//					dispatch_async(dispatch_get_main_queue(), ^{
 						[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
 						[self setCoverImageAnimated:YES];
-					});
+//					});
 				}];
-			});
+//			});
 			
 			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
 		}
@@ -515,7 +518,7 @@ enum {
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
 				
 //				NSLog(@"HTML: %@", HTML);
@@ -587,7 +590,6 @@ enum {
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
 			//		NSLog(@"%@", JSON);
 			
 			NSDictionary *results = responseObject[@"results"];
@@ -617,7 +619,6 @@ enum {
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Media - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
 			//		NSLog(@"%@", JSON);
 			
 			NSDictionary *results = responseObject[@"results"];
@@ -640,6 +641,8 @@ enum {
 					
 					index++;
 				}
+				
+				_images = [self orderedImagesFromGame:game];
 				
 				// No images available
 				if (index == 0){
@@ -668,6 +671,8 @@ enum {
 					index++;
 				}
 				
+				_videos = [self orderedVideosFromGame:game];
+				
 				// No videos available
 				if (index == 0)
 					[_videosStatusView setStatus:ContentStatusUnavailable];
@@ -676,7 +681,7 @@ enum {
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				
-				_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier]];
+//				_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier] inContext:_context];
 				if ([Tools deviceIsiPad]){
 					[self.tableView beginUpdates];
 					[self.tableView endUpdates];
@@ -697,7 +702,6 @@ enum {
 		}
 		else{
 			//		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
 			//		NSLog(@"%@", JSON);
 			
 			[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
@@ -725,9 +729,11 @@ enum {
 				[video deleteEntity];
 			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				if ([Networking manager].dataTasks.count == 0){
-					_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
-					
+//				_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
+				
+				_videos = [self orderedVideosFromGame:_game];
+				
+//				dispatch_async(dispatch_get_main_queue(), ^{
 					if (_videos.count == 0){
 						[_videosStatusView setStatus:ContentStatusUnavailable];
 						[_videosStatusView setHidden:NO];
@@ -736,7 +742,7 @@ enum {
 						[_videosCollectionView reloadData];
 						[_videosStatusView setHidden:YES];
 					}
-				}
+//				});
 			}];
 		}
 	}];
@@ -831,13 +837,13 @@ enum {
 	
 	[_releaseDateLabel setText:_game.releaseDateText];
 	
-	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms]];
+	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms] inContext:_context];
 	
-	_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms]];
+	_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms] inContext:_context];
 	[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
 	[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
 	
-	_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames]];
+	_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames] inContext:_context];
 	
 	[self refreshAddButtons];
 	
@@ -889,6 +895,22 @@ enum {
 	[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 	[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
 	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+}
+
+- (NSArray *)orderedImagesFromGame:(Game *)game{
+	return [game.images.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		Image *image1 = (Image *)obj1;
+		Image *image2 = (Image *)obj2;
+		return [image1.index compare:image2.index] == NSOrderedAscending;
+	}];
+}
+
+- (NSArray *)orderedVideosFromGame:(Game *)game{
+	return [game.videos.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		Video *video1 = (Video *)obj1;
+		Video *video2 = (Video *)obj2;
+		return [video1.index compare:video2.index] == NSOrderedAscending;
+	}];
 }
 
 #pragma mark - Actions

@@ -105,7 +105,7 @@ static NSArray *SEARCHRESULTS;
 	NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
 	
 	// (AKA the user)
-	Gamer *gamer = [Gamer findFirst];
+	Gamer *gamer = [Gamer findFirstInContext:context];
 	
 	if (gamer){
 		GAMER = gamer;

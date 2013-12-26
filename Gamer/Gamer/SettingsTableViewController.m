@@ -39,9 +39,9 @@
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
-	_context = [NSManagedObjectContext contextForCurrentThread];
+	_context = [NSManagedObjectContext defaultContext];
 	
-	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:nil].mutableCopy;
+	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:nil inContext:_context].mutableCopy;
 	
 	[self.tableView setEditing:YES animated:NO];
 	

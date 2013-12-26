@@ -61,7 +61,7 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistCollectionNotification:) name:@"RefreshWishlistCollection" object:nil];
 	
-	_context = [NSManagedObjectContext contextForCurrentThread];
+	_context = [NSManagedObjectContext defaultContext];
 	
 	_fetchedResultsController = [self fetchData];
 	
@@ -119,7 +119,7 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
 	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
-	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue)];
+	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue) inContext:_context];
 	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 	[headerView.titleLabel setText:releasePeriod.name];
@@ -213,7 +213,7 @@
 				[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
 		}
 		else{
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
@@ -245,7 +245,7 @@
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
 				
 				[game setMetacriticURL:request.URL.absoluteString];
@@ -278,13 +278,13 @@
 
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist
-	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)]];
+	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)] inContext:_context];
 	for (Game *game in games)
-		[game setReleasePeriod:[Networking releasePeriodForReleaseDate:game.releaseDate]];
+		[game setReleasePeriod:[Networking releasePeriodForReleaseDate:game.releaseDate context:_context]];
 	
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		// Show section if it has any games
-		NSArray *releasePeriods = [ReleasePeriod findAll];
+		NSArray *releasePeriods = [ReleasePeriod findAllInContext:_context];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", releasePeriod.identifier, @(YES)];
