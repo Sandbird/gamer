@@ -25,8 +25,7 @@
 
 @interface WishlistTableViewController () <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
 
-@property (nonatomic, strong) UIBarButtonItem *refreshButton;
-@property (nonatomic, strong) UIBarButtonItem *cancelButton;
+@property (nonatomic, assign) NSInteger numberOfRunningTasks;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
@@ -40,11 +39,6 @@
 	[SessionManager setup];
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
-	
-	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshWishlistGames)];
-	_cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelRefresh)];
-	
-	[self.navigationItem setRightBarButtonItem:_refreshButton];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlistTable" object:nil];
@@ -183,75 +177,77 @@
 #pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game{
-	[self.navigationItem setRightBarButtonItem:_cancelButton animated:YES];
-	
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, ((NSHTTPURLResponse *)response).statusCode);
 			
-			if ([Networking manager].dataTasks.count == 0){
-				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+			_numberOfRunningTasks--;
+			
+			if (_numberOfRunningTasks == 0){
+				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				[self updateGameReleasePeriods];
 			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
 			//		NSLog(@"%@", JSON);
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+			_numberOfRunningTasks--;
 			
-			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
-				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+				[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 				
-				UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
-				CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
-				
-				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
-					[self downloadCoverImageForGame:game];
+				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
+					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+					
+					UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
+					CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
+					
+//					dispatch_async(dispatch_get_main_queue(), ^{
+						if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
+							[self downloadCoverImageForGame:game];
+						}
+//					});
 				}
-			}
-			
-			if ([game.released isEqualToNumber:@(YES)])
-				[self requestMetascoreForGame:game];
-			
-			if ([Networking manager].dataTasks.count == 0){
-				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
-				[self updateGameReleasePeriods];
-			}
+				
+//				dispatch_async(dispatch_get_main_queue(), ^{
+					if ([game.released isEqualToNumber:@(YES)])
+						[self requestMetascoreForGame:game];
+					
+					if (_numberOfRunningTasks == 0){
+						[self.navigationItem.rightBarButtonItem setEnabled:YES];
+						[self updateGameReleasePeriods];
+					}
+//				});
+//			});
 		}
 	}];
 	[dataTask resume];
+	_numberOfRunningTasks++;
 }
 
 - (void)downloadCoverImageForGame:(Game *)game{
+	if (!game.coverImage.url) return;
+	
 	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
 		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
-			if ([Networking manager].downloadTasks.count == 0){
-				[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
-			}
+			
 		}
 		else{
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
 				[game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
-				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					dispatch_async(dispatch_get_main_queue(), ^{
-						if ([Networking manager].downloadTasks.count == 0){
-							[self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
-						}
-					});
-				}];
-			});
+				[_context saveToPersistentStoreAndWait];
+//			});
 		}
 	}];
 	[downloadTask resume];
@@ -269,7 +265,7 @@
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
 				
 				[game setMetacriticURL:request.URL.absoluteString];
@@ -286,13 +282,11 @@
 					}
 				}
 				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					dispatch_async(dispatch_get_main_queue(), ^{
-						if ([Networking manager].downloadTasks.count == 0){
-							[self.tableView reloadData];
-						}
-					});
+//					dispatch_async(dispatch_get_main_queue(), ^{
+						[self.tableView reloadData];
+//					});
 				}];
-			});
+//			});
 		}
 	}];
 	[downloadTask resume];
@@ -320,11 +314,15 @@
 	}];
 }
 
-- (void)refreshWishlistGames{
+- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
 		[_context saveToPersistentStoreAndWait];
 	});
+	
+	[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	
+	_numberOfRunningTasks = 0;
 	
 	// Request info for all games in the Wishlist
 	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
@@ -332,10 +330,6 @@
 			Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
 			if (game.identifier) [self requestInformationForGame:game];
 		}
-}
-
-- (void)cancelRefresh{
-	[[Networking manager].operationQueue cancelAllOperations];
 }
 
 #pragma mark - Actions

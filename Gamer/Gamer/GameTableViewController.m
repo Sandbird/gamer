@@ -119,8 +119,11 @@ enum {
 		
 		
 		
-		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier] inContext:_context].mutableCopy;
-		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"] inContext:_context].mutableCopy;
+//		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier] inContext:_context].mutableCopy;
+//		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"] inContext:_context].mutableCopy;
+		
+		_images = [self orderedImagesFromGame:_game];
+		_videos = [self orderedVideosFromGame:_game];
 		
 		(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
 		(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
@@ -438,8 +441,8 @@ enum {
 				
 				if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height))
 					[self downloadImageForCoverImage:_game.coverImage];
-				else
-					[self requestMediaForGame:_game];
+				
+				[self requestMediaForGame:_game];
 				
 				[self refreshAnimated:NO];
 				
@@ -470,12 +473,9 @@ enum {
 		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
-			[self requestMediaForGame:_game];
 			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
 		}
 		else{
-			[self requestMediaForGame:_game];
-			
 //			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				
@@ -518,7 +518,7 @@ enum {
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
 				
 //				NSLog(@"HTML: %@", HTML);
@@ -530,13 +530,13 @@ enum {
 					[_game setMetascore:metascore];
 					
 					[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						dispatch_async(dispatch_get_main_queue(), ^{
+//						dispatch_async(dispatch_get_main_queue(), ^{
 							[_metascoreButton setHidden:NO];
 							[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-						});
+//						});
 						
 						if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-							dispatch_async(dispatch_get_main_queue(), ^{
+//							dispatch_async(dispatch_get_main_queue(), ^{
 								[_metascoreButton setBackgroundColor:[Networking colorForMetascore:metascore]];
 								[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
 								[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
@@ -544,7 +544,7 @@ enum {
 								[_metascorePlatformLabel setText:platform.name];
 								[_metascorePlatformLabel setHidden:NO];
 								[_metascorePlatformLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-							});
+//							});
 							
 							[_game setMetacriticURL:request.URL.absoluteString];
 							[_game setMetascorePlatform:platform];
@@ -559,12 +559,12 @@ enum {
 							if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
 								[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
 							else{
-								dispatch_async(dispatch_get_main_queue(), ^{
+//								dispatch_async(dispatch_get_main_queue(), ^{
 									[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
 									[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
 									[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
 									[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-								});
+//								});
 							}
 						}
 					}];
@@ -573,7 +573,7 @@ enum {
 					[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
 				else
 					[_context saveToPersistentStoreAndWait];
-			});
+//			});
 		}
 	}];
 	[downloadTask resume];
@@ -589,7 +589,7 @@ enum {
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
 			NSDictionary *results = responseObject[@"results"];
@@ -901,7 +901,7 @@ enum {
 	return [game.images.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		Image *image1 = (Image *)obj1;
 		Image *image2 = (Image *)obj2;
-		return [image1.index compare:image2.index] == NSOrderedAscending;
+		return [image1.index compare:image2.index] == NSOrderedDescending;
 	}];
 }
 
@@ -909,7 +909,7 @@ enum {
 	return [game.videos.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		Video *video1 = (Video *)obj1;
 		Video *video2 = (Video *)obj2;
-		return [video1.index compare:video2.index] == NSOrderedAscending;
+		return [video1.index compare:video2.index] == NSOrderedDescending;
 	}];
 }
 

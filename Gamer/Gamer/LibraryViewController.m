@@ -25,12 +25,13 @@
 @interface LibraryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *refreshButton;
-@property (nonatomic, strong) UIBarButtonItem *cancelButton;
 @property (nonatomic, strong) UIBarButtonItem *searchBarItem;
 
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
 
 @property (nonatomic, strong) UIView *guideView;
+
+@property (nonatomic, assign) NSInteger numberOfRunningTasks;
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSManagedObjectContext *context;
@@ -43,7 +44,6 @@
     [super viewDidLoad];
 	
 	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLibraryGames)];
-	_cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancelRefresh)];
 	
 	if ([Tools deviceIsiPad]){
 		UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
@@ -153,66 +153,72 @@
 #pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game{
-	[Tools deviceIsiPad] ? [self.navigationItem setRightBarButtonItems:@[_searchBarItem, _cancelButton] animated:NO] : [self.navigationItem setRightBarButtonItem:_cancelButton animated:YES];
-	
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, ((NSHTTPURLResponse *)response).statusCode);
 			
-			if ([Networking manager].dataTasks.count == 0)
-				[Tools deviceIsiPad] ? [self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO] : [self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+			_numberOfRunningTasks--;
+			
+			if (_numberOfRunningTasks == 0)
+				[_refreshButton setEnabled:YES];
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+			_numberOfRunningTasks--;
 			
-			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
-				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+				[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 				
-				UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
-				CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
-				
-				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
-					[self downloadCoverImageForGame:game];
+				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
+					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+					
+					UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
+					CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
+					
+					if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
+						[self downloadCoverImageForGame:game];
+					}
 				}
-			}
-			
-			if ([Networking manager].dataTasks.count == 0)
-				[Tools deviceIsiPad] ? [self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO] : [self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+				
+				if (_numberOfRunningTasks == 0){
+//					dispatch_async(dispatch_get_main_queue(), ^{
+						[_refreshButton setEnabled:YES];
+//					});
+				}
+//			});
 		}
 	}];
 	[dataTask resume];
+	_numberOfRunningTasks++;
 }
 
 - (void)downloadCoverImageForGame:(Game *)game{
+	if (!game.coverImage.url) return;
+	
 	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
 		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
-			if ([Networking manager].downloadTasks.count == 0)
-				[Tools deviceIsiPad] ? [self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO] : [self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
+			
 		}
 		else{
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
 				[game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
 				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					dispatch_async(dispatch_get_main_queue(), ^{
+//					dispatch_async(dispatch_get_main_queue(), ^{
 						[_collectionView reloadData];
-						
-						if ([Networking manager].downloadTasks.count == 0)
-							[Tools deviceIsiPad] ? [self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO] : [self.navigationItem setRightBarButtonItem:_refreshButton animated:YES];
-					});
+//					});
 				}];
-			});
+//			});
 		}
 	}];
 	[downloadTask resume];
@@ -221,14 +227,14 @@
 #pragma mark - Custom
 
 - (void)refreshLibraryGames{
+	[_refreshButton setEnabled:NO];
+	
+	_numberOfRunningTasks = 0;
+	
 	// Request info for all games in the Wishlist
 	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
 		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
 			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
-}
-
-- (void)cancelRefresh{
-	[[Networking manager].operationQueue cancelAllOperations];
 }
 
 #pragma mark - Actions

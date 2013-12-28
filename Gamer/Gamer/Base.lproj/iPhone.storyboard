@@ -111,7 +111,13 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" title="Wishlist" id="4x8-vH-4ca"/>
+                    <navigationItem key="navigationItem" title="Wishlist" id="4x8-vH-4ca">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="dWp-O6-6Lv">
+                            <connections>
+                                <action selector="refreshBarButtonAction:" destination="jJE-qT-4zt" id="Woo-Bf-qEL"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="5qi-Mj-SGM"/>
                     </connections>
@@ -1315,7 +1321,9 @@
                             <constraint firstAttribute="trailing" secondItem="YQt-ka-CWZ" secondAttribute="trailing" id="tRo-70-lJg"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u"/>
+                    <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="BpN-IA-A2Q"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="YQt-ka-CWZ" id="Q22-J5-Eew"/>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="HYd-CU-5hN"/>
