@@ -44,7 +44,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			case 35: [platformIdentifiers addObject:@(88)]; break;
 			case 129: [platformIdentifiers addObject:@(143)]; break;
 			case 20: [platformIdentifiers addObject:@(86)]; break;
-			case 117: [platformIdentifiers addObject:@(138)];
+			case 117: [platformIdentifiers addObject:@(138)]; break;
 			default: break;
 		}
 	}
@@ -207,6 +207,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 				case 88: identifier = @(35); break;
 				case 143: identifier = @(129); break;
 				case 86: identifier = @(20); break;
+				case 138: identifier = @(117); break;
 				default: break;
 			}
 			Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:identifier inContext:context];
