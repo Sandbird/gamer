@@ -45,7 +45,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[SessionManager setup];
+	[Session setup];
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
@@ -73,12 +73,12 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	[(UISearchBar *)_searchBarItem.customView setText:[SessionManager searchQuery]];
+	[(UISearchBar *)_searchBarItem.customView setText:[Session searchQuery]];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] set:kGAIScreenName value:@"Wishlist"];
-	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[Session tracker] set:kGAIScreenName value:@"Wishlist"];
+	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
 	[self updateGameReleasePeriods];
 }
@@ -185,7 +185,7 @@
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 				
 				UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
-				CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
+				CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage];
 				
 				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
 					[self downloadCoverImageForGame:game];
@@ -219,9 +219,9 @@
 		else{
 //			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-				[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-				[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-				[game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+				[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
 				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 //					dispatch_async(dispatch_get_main_queue(), ^{

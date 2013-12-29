@@ -27,8 +27,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] set:kGAIScreenName value:@"Metacritic"];
-	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[Session tracker] set:kGAIScreenName value:@"Metacritic"];
+	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
 	if ([Tools deviceIsiPad]){
 		_dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapGestureAction:)];

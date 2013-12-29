@@ -15,5 +15,5 @@
 #import <GoogleAnalytics-iOS-SDK/GAIDictionaryBuilder.h>
 #import <GoogleAnalytics-iOS-SDK/GAIFields.h>
 #import "Tools.h"
-#import "SessionManager.h"
+#import "Session.h"
 #import "Networking.h"

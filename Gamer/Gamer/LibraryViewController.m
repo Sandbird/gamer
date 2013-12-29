@@ -69,12 +69,12 @@
 
 - (void)viewWillAppear:(BOOL)animated{
 	if ([Tools deviceIsiPad])
-		[(UISearchBar *)_searchBarItem.customView setText:[SessionManager searchQuery]];
+		[(UISearchBar *)_searchBarItem.customView setText:[Session searchQuery]];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] set:kGAIScreenName value:@"Library"];
-	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[Session tracker] set:kGAIScreenName value:@"Library"];
+	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -127,7 +127,7 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-	switch ([SessionManager gamer].librarySize.integerValue) {
+	switch ([Session gamer].librarySize.integerValue) {
 		case 0: return [Tools deviceIsiPad] ? CGSizeMake(83, 91) : CGSizeMake(50, 63);
 		case 1: return [Tools deviceIsiPad] ? CGSizeMake(115, 127) : CGSizeMake(66, 83);
 		case 2: return [Tools deviceIsiPad] ? CGSizeMake(140, 176) : CGSizeMake(92, 116);
@@ -176,7 +176,7 @@
 					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 					
 					UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
-					CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
+					CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage];
 					
 					if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
 						[self downloadCoverImageForGame:game];
@@ -209,9 +209,9 @@
 		else{
 //			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-				[game.coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-				[game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-				[game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+				[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
 				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 //					dispatch_async(dispatch_get_main_queue(), ^{

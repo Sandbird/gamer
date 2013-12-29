@@ -40,7 +40,7 @@ typedef NS_ENUM(NSInteger, GameImageType){
 	GameImageTypeLibrary
 };
 
-@interface SessionManager : NSObject
+@interface Session : NSObject
 
 + (void)setGamer:(Gamer *)gamer;
 

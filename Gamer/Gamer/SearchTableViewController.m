@@ -42,7 +42,7 @@
 	[_searchBar setText:@""];
 	
 	// Show guide view if no platform is selected
-	if (_results.count == 0 && [SessionManager gamer].platforms.count == 0){
+	if (_results.count == 0 && [Session gamer].platforms.count == 0){
 		UIView *view = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][2];
 		[self.tableView setBackgroundView:view];
 		[_searchBar setUserInteractionEnabled:NO];
@@ -54,8 +54,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] set:kGAIScreenName value:@"Search"];
-	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[Session tracker] set:kGAIScreenName value:@"Search"];
+	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -130,7 +130,7 @@
 #pragma mark - Networking
 
 - (void)requestGamesWithTitlesContainingQuery:(NSString *)query{
-	NSURLRequest *request = [Networking requestForGamesWithTitle:query fields:@"id,name,image" platforms:[SessionManager gamer].platforms.allObjects];
+	NSURLRequest *request = [Networking requestForGamesWithTitle:query fields:@"id,name,image" platforms:[Session gamer].platforms.allObjects];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){

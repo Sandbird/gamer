@@ -45,8 +45,8 @@
 	
 	[self.tableView setEditing:YES animated:NO];
 	
-	if (![SessionManager gamer].librarySize){
-		[[SessionManager gamer] setLibrarySize:@(1)];
+	if (![Session gamer].librarySize){
+		[[Session gamer] setLibrarySize:@(1)];
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
@@ -54,8 +54,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] set:kGAIScreenName value:@"More"];
-	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[Session tracker] set:kGAIScreenName value:@"More"];
+	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -102,7 +102,7 @@
 			[cell.titleLabel setText:platform.name];
 			[cell.abbreviationLabel setText:platform.abbreviation];
 			[cell.abbreviationLabel setBackgroundColor:platform.color];
-			[cell.switchControl setOn:([[SessionManager gamer].platforms containsObject:platform]) ? YES : NO];
+			[cell.switchControl setOn:([[Session gamer].platforms containsObject:platform]) ? YES : NO];
 			[cell.switchControl setTag:indexPath.row];
 			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			
@@ -110,7 +110,7 @@
 		}
 		case 1:{
 			SettingsSliderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SliderCell" forIndexPath:indexPath];
-			[cell.slider setValue:[SessionManager gamer].librarySize.floatValue];
+			[cell.slider setValue:[Session gamer].librarySize.floatValue];
 			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
@@ -203,7 +203,7 @@
 - (IBAction)switchAction:(UISwitch *)sender{
 	Platform *platform = _platforms[sender.tag];
 	
-	sender.isOn ? [[SessionManager gamer] addPlatformsObject:platform] : [[SessionManager gamer] removePlatformsObject:platform];
+	sender.isOn ? [[Session gamer] addPlatformsObject:platform] : [[Session gamer] removePlatformsObject:platform];
 	
 	[_context saveToPersistentStoreAndWait];
 }
@@ -213,7 +213,7 @@
 }
 
 - (IBAction)sliderTouchUpAction:(UISlider *)sender{
-	[[SessionManager gamer] setLibrarySize:@(sender.value)];
+	[[Session gamer] setLibrarySize:@(sender.value)];
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];

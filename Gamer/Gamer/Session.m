@@ -6,12 +6,12 @@
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "SessionManager.h"
+#import "Session.h"
 #import "ReleaseDate.h"
 #import "Platform.h"
 #import "ReleasePeriod.h"
 
-@implementation SessionManager
+@implementation Session
 
 static NSMutableURLRequest *SEARCHREQUEST;
 static Gamer *GAMER;

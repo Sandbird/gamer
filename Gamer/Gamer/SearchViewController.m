@@ -42,10 +42,10 @@
 	
 	[self.navigationItem setHidesBackButton:YES animated:NO];
 	
-	[_searchBar setText:[SessionManager searchQuery]];
+	[_searchBar setText:[Session searchQuery]];
 	
-	if ([SessionManager searchResults])
-		_results = [SessionManager searchResults].mutableCopy;
+	if ([Session searchResults])
+		_results = [Session searchResults].mutableCopy;
 	else
 		_results = [[NSMutableArray alloc] initWithCapacity:100];
 	
@@ -57,10 +57,10 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] set:kGAIScreenName value:@"Search"];
-	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[Session tracker] set:kGAIScreenName value:@"Search"];
+	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
-	if ([SessionManager gamer].platforms.count == 0){
+	if ([Session gamer].platforms.count == 0){
 		[_guideView setHidden:NO];
 		[_searchBar setUserInteractionEnabled:NO];
 	}
@@ -98,7 +98,7 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[_runningTask cancel];
 	
-	[SessionManager setSearchQuery:searchText];
+	[Session setSearchQuery:searchText];
 	
 	if (searchText.length > 0){
 		NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
@@ -111,7 +111,7 @@
 	
 	[_runningTask cancel];
 	
-	[SessionManager setSearchQuery:searchBar.text];
+	[Session setSearchQuery:searchBar.text];
 	
 	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 	[self requestGamesWithTitlesContainingQuery:query];
@@ -159,7 +159,7 @@
 #pragma mark - Networking
 
 - (void)requestGamesWithTitlesContainingQuery:(NSString *)query{
-	NSURLRequest *request = [Networking requestForGamesWithTitle:query fields:@"id,name,image" platforms:[SessionManager gamer].platforms.allObjects];
+	NSURLRequest *request = [Networking requestForGamesWithTitle:query fields:@"id,name,image" platforms:[Session gamer].platforms.allObjects];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -179,7 +179,7 @@
 				[_results addObject:result];
 			}
 			
-			[SessionManager setSearchResults:_results];
+			[Session setSearchResults:_results];
 			
 			[_collectionView reloadData];
 		}

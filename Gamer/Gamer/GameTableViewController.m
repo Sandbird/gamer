@@ -143,8 +143,8 @@ enum {
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[SessionManager tracker] set:kGAIScreenName value:@"Game"];
-	[[SessionManager tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	[[Session tracker] set:kGAIScreenName value:@"Game"];
+	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
 	if ([Tools deviceIsiPad]){
 		_dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapGestureAction:)];
@@ -254,8 +254,12 @@ enum {
 				}
 				// Platforms row
 				case 2:
-					if ([Tools deviceIsiPhone])
-						return 20 + 17 + 13 + ((_game.platforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+					if ([Tools deviceIsiPhone]){
+						if (_game.platforms.count > 0)
+							return 20 + 17 + 13 + ((_game.platforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+						else
+							return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
+					}
 				default:
 					break;
 			}
@@ -275,6 +279,10 @@ enum {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	if (indexPath.section == SectionStatus && [_game.owned isEqualToNumber:@(YES)])
 		return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section]];
+	else if (indexPath.section == SectionDetails && indexPath.row == 2){
+		if (_game.platforms.count == 0)
+			return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:indexPath.section]];
+	}
 	return [super tableView:tableView cellForRowAtIndexPath:indexPath];
 }
 
@@ -437,7 +445,7 @@ enum {
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 				
 				UIImage *coverImage = [UIImage imageWithData:_game.coverImage.data];
-				CGSize optimalSize = [SessionManager optimalCoverImageSizeForImage:coverImage];
+				CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage];
 				
 				if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height))
 					[self downloadImageForCoverImage:_game.coverImage];
@@ -479,9 +487,9 @@ enum {
 //			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				
-				[coverImage setData:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-				[_game setThumbnailWishlist:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-				[_game setThumbnailLibrary:UIImagePNGRepresentation([SessionManager aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+				[coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+				[_game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+				[_game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
 				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 //					dispatch_async(dispatch_get_main_queue(), ^{
@@ -837,15 +845,22 @@ enum {
 	
 	[_releaseDateLabel setText:_game.releaseDateText];
 	
-	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms] inContext:_context];
+//	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms] inContext:_context];
 	
-	_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@ AND self in %@", [SessionManager gamer].platforms, _game.platforms] inContext:_context];
+	[self refreshAddButtons];
+	
+	_platforms = [self orderedPlatformsFromGame:_game];
+	
+//	_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@ AND SELF IN %@", [Session gamer].platforms, _game.platforms] inContext:_context];
+	
+	_selectablePlatforms = [self selectablePlatformsFromGame:_game];
+	
 	[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
 	[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
 	
-	_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames] inContext:_context];
+//	_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames] inContext:_context];
 	
-	[self refreshAddButtons];
+	_similarGames = [self orderedSimilarGamesFromGame:_game];
 	
 	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
 	[_completedSwitch setOn:_game.completed.boolValue animated:animated];
@@ -895,6 +910,39 @@ enum {
 	[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 	[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
 	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+}
+
+- (NSArray *)orderedPlatformsFromGame:(Game *)game{
+	return [game.platforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		Platform *platform1 = (Platform *)obj1;
+		Platform *platform2 = (Platform *)obj2;
+		return [platform1.index compare:platform2.index] == NSOrderedDescending;
+	}];
+}
+
+- (NSArray *)selectablePlatformsFromGame:(Game *)game{
+	NSMutableArray *selectablePlatforms = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
+	NSArray *platformIdentifiers = [[Session gamer].platforms valueForKey:@"identifier"];
+	
+	for (Platform *platform in _game.platforms){
+		if ([platformIdentifiers containsObject:platform.identifier]){
+			[selectablePlatforms addObject:platform];
+		}
+	}
+	
+	return [selectablePlatforms sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		Platform *platform1 = (Platform *)obj1;
+		Platform *platform2 = (Platform *)obj2;
+		return [platform1.index compare:platform2.index] == NSOrderedAscending;
+	}];
+}
+
+- (NSArray *)orderedSimilarGamesFromGame:(Game *)game{
+	return [game.similarGames.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		SimilarGame *similarGame1 = (SimilarGame *)obj1;
+		SimilarGame *similarGame2 = (SimilarGame *)obj2;
+		return [similarGame1.title compare:similarGame2.title] == NSOrderedAscending;
+	}];
 }
 
 - (NSArray *)orderedImagesFromGame:(Game *)game{
