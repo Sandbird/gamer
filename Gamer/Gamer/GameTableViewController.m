@@ -117,11 +117,6 @@ enum {
 	if (_game){
 		[self refreshAnimated:NO];
 		
-		
-		
-//		_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier] inContext:_context].mutableCopy;
-//		_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@ AND type = %@", _game.identifier, @"Trailers"] inContext:_context].mutableCopy;
-		
 		_images = [self orderedImagesFromGame:_game];
 		_videos = [self orderedVideosFromGame:_game];
 		
@@ -597,7 +592,7 @@ enum {
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}
 		else{
-//			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
 			NSDictionary *results = responseObject[@"results"];
@@ -689,7 +684,6 @@ enum {
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				
-//				_images = [Image findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", game.identifier] inContext:_context];
 				if ([Tools deviceIsiPad]){
 					[self.tableView beginUpdates];
 					[self.tableView endUpdates];
@@ -845,20 +839,14 @@ enum {
 	
 	[_releaseDateLabel setText:_game.releaseDateText];
 	
-//	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", _game.platforms] inContext:_context];
-	
 	[self refreshAddButtons];
 	
 	_platforms = [self orderedPlatformsFromGame:_game];
-	
-//	_selectablePlatforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@ AND SELF IN %@", [Session gamer].platforms, _game.platforms] inContext:_context];
 	
 	_selectablePlatforms = [self selectablePlatformsFromGame:_game];
 	
 	[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
 	[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
-	
-//	_similarGames = [SimilarGame findAllSortedBy:@"title" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self in %@", _game.similarGames] inContext:_context];
 	
 	_similarGames = [self orderedSimilarGamesFromGame:_game];
 	

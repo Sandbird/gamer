@@ -32,6 +32,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (!MANAGER){
 		NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 		MANAGER = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+		[MANAGER.operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	}
 	return MANAGER;
 }

@@ -10,9 +10,6 @@
 
 @implementation Tools
 
-//	dispatch_async(dispatch_get_main_queue(), ^{
-//	});
-
 //	CATransition *transition = [CATransition animation];
 //	transition.type = kCATransitionFade;
 //	transition.duration = 0.2;
