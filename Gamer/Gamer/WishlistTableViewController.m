@@ -169,7 +169,7 @@
 	
 	// Switch hidden property of all games in section
 	for (Game *game in games)
-		[game setHidden:@(!game.hidden.boolValue)];
+		[game setHidden:@(!headerView.hidden)];
 	
 	[_context saveToPersistentStoreAndWait];
 }

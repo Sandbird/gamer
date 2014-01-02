@@ -23,7 +23,6 @@
 
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *hideIndicator;
-//@property (nonatomic, strong) UITapGestureRecognizer *gestureRecognizer;
 @property (nonatomic, assign) BOOL hidden;
 
 @property (nonatomic, strong) ReleasePeriod *releasePeriod;
