@@ -196,32 +196,28 @@
 			
 			_numberOfRunningTasks--;
 			
-//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-				[Networking updateGame:game withDataFromJSON:responseObject context:_context];
-				
+			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+			
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
 					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 					
 					UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
 					CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage];
 					
-//					dispatch_async(dispatch_get_main_queue(), ^{
-						if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
-							[self downloadCoverImageForGame:game];
-						}
-//					});
-				}
-				
-//				dispatch_async(dispatch_get_main_queue(), ^{
-					if ([game.released isEqualToNumber:@(YES)])
-						[self requestMetascoreForGame:game];
-					
-					if (_numberOfRunningTasks == 0){
-						[self.navigationItem.rightBarButtonItem setEnabled:YES];
-						[self updateGameReleasePeriods];
+					if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
+						[self downloadCoverImageForGame:game];
 					}
-//				});
-//			});
+				}
+			});
+			
+			if ([game.released isEqualToNumber:@(YES)])
+				[self requestMetascoreForGame:game];
+			
+			if (_numberOfRunningTasks == 0){
+				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				[self updateGameReleasePeriods];
+			}
 		}
 	}];
 	[dataTask resume];
@@ -240,14 +236,16 @@
 			
 		}
 		else{
-//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
 				[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
-				[_context saveToPersistentStoreAndWait];
-//			});
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[_context saveToPersistentStoreAndWait];
+				});
+			});
 		}
 	}];
 	[downloadTask resume];
@@ -265,7 +263,7 @@
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
 				
 				[game setMetacriticURL:request.URL.absoluteString];
@@ -281,12 +279,12 @@
 						[game setWishlistMetascorePlatform:nil];
 					}
 				}
-				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//					dispatch_async(dispatch_get_main_queue(), ^{
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 						[self.tableView reloadData];
-//					});
-				}];
-//			});
+					}];
+				});
+			});
 		}
 	}];
 	[downloadTask resume];
@@ -340,9 +338,6 @@
 
 - (void)refreshWishlistNotification:(NSNotification *)notification{
 	[self updateGameReleasePeriods];
-	
-//	self.fetchedResultsController = nil;
-//	self.fetchedResultsController = [self fetchData];
 	[self.tableView reloadData];
 }
 

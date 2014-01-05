@@ -479,20 +479,20 @@ enum {
 			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
 		}
 		else{
-//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				
 				[coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[_game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
 				[_game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
-				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//					dispatch_async(dispatch_get_main_queue(), ^{
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 						[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
 						[self setCoverImageAnimated:YES];
-//					});
-				}];
-//			});
+					}];
+				});
+			});
 			
 			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
 		}
@@ -521,7 +521,7 @@ enum {
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
 				
 //				NSLog(@"HTML: %@", HTML);
@@ -532,14 +532,12 @@ enum {
 					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
 					[_game setMetascore:metascore];
 					
-					[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//						dispatch_async(dispatch_get_main_queue(), ^{
+					dispatch_async(dispatch_get_main_queue(), ^{
+						[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 							[_metascoreButton setHidden:NO];
 							[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-//						});
-						
-						if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-//							dispatch_async(dispatch_get_main_queue(), ^{
+							
+							if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
 								[_metascoreButton setBackgroundColor:[Networking colorForMetascore:metascore]];
 								[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
 								[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
@@ -547,36 +545,34 @@ enum {
 								[_metascorePlatformLabel setText:platform.name];
 								[_metascorePlatformLabel setHidden:NO];
 								[_metascorePlatformLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-//							});
-							
-							[_game setMetacriticURL:request.URL.absoluteString];
-							[_game setMetascorePlatform:platform];
-							
-							if (_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform){
-								[_game setWishlistMetascore:metascore];
-								[_game setWishlistMetascorePlatform:platform];
-								[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistTable" object:nil];
+								
+								[_game setMetacriticURL:request.URL.absoluteString];
+								[_game setMetascorePlatform:platform];
+								
+								if (_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform){
+									[_game setWishlistMetascore:metascore];
+									[_game setWishlistMetascorePlatform:platform];
+									[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistTable" object:nil];
+								}
 							}
-						}
-						else{
-							if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
-								[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
 							else{
-//								dispatch_async(dispatch_get_main_queue(), ^{
+								if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
+									[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
+								else{
 									[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
 									[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
 									[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
 									[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-//								});
+								}
 							}
-						}
-					}];
+						}];
+					});
 				}
 				else if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
 					[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
 				else
 					[_context saveToPersistentStoreAndWait];
-//			});
+			});
 		}
 	}];
 	[downloadTask resume];
@@ -703,8 +699,8 @@ enum {
 			NSLog(@"Failure in %@ - Status code: %d - Video", self, ((NSHTTPURLResponse *)response).statusCode);
 		}
 		else{
-			//		NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//		NSLog(@"%@", JSON);
+//			NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			NSLog(@"%@", JSON);
 			
 			[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 			
@@ -731,20 +727,16 @@ enum {
 				[video deleteEntity];
 			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//				_videos = [Video findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"game.identifier = %@", _game.identifier]];
-				
 				_videos = [self orderedVideosFromGame:_game];
 				
-//				dispatch_async(dispatch_get_main_queue(), ^{
-					if (_videos.count == 0){
-						[_videosStatusView setStatus:ContentStatusUnavailable];
-						[_videosStatusView setHidden:NO];
-					}
-					else{
-						[_videosCollectionView reloadData];
-						[_videosStatusView setHidden:YES];
-					}
-//				});
+				if (_videos.count == 0){
+					[_videosStatusView setStatus:ContentStatusUnavailable];
+					[_videosStatusView setHidden:NO];
+				}
+				else{
+					[_videosCollectionView reloadData];
+					[_videosStatusView setHidden:YES];
+				}
 			}];
 		}
 	}];

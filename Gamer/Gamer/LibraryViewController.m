@@ -169,9 +169,9 @@
 			
 			_numberOfRunningTasks--;
 			
-//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				[Networking updateGame:game withDataFromJSON:responseObject context:_context];
-				
+			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+			
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
 					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 					
@@ -182,13 +182,13 @@
 						[self downloadCoverImageForGame:game];
 					}
 				}
-				
-				if (_numberOfRunningTasks == 0){
-//					dispatch_async(dispatch_get_main_queue(), ^{
-						[_refreshButton setEnabled:YES];
-//					});
-				}
-//			});
+			});
+			
+			if (_numberOfRunningTasks == 0){
+				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					[_refreshButton setEnabled:YES];
+				}];
+			}
 		}
 	}];
 	[dataTask resume];
@@ -207,18 +207,18 @@
 			
 		}
 		else{
-//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
 				[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 				
 				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//					dispatch_async(dispatch_get_main_queue(), ^{
+					dispatch_async(dispatch_get_main_queue(), ^{
 						[_collectionView reloadData];
-//					});
+					});
 				}];
-//			});
+			});
 		}
 	}];
 	[downloadTask resume];

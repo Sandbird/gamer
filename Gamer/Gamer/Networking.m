@@ -100,106 +100,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		[game setCoverImage:coverImage];
 	}
 	
-	// Release date
-	NSString *originalReleaseDate = [Tools stringFromSourceIfNotNull:results[@"original_release_date"]];
-	NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
-	NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
-	NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
-	NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
-	
-	NSCalendar *calendar = [NSCalendar currentCalendar];
-	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	
-	// Game is released
-	if (originalReleaseDate){
-		NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Tools dateFormatter] dateFromString:originalReleaseDate]];
-		[originalReleaseDateComponents setHour:10];
-		[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
-		
-		NSDate *releaseDateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
-		
-		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:releaseDateFromComponents inContext:context];
-		if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
-		[releaseDate setDate:releaseDateFromComponents];
-		[releaseDate setDay:@(originalReleaseDateComponents.day)];
-		[releaseDate setMonth:@(originalReleaseDateComponents.month)];
-		[releaseDate setQuarter:@(originalReleaseDateComponents.quarter)];
-		[releaseDate setYear:@(originalReleaseDateComponents.year)];
-		
-		[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
-		[game setReleaseDateText:[[Tools dateFormatter] stringFromDate:releaseDateFromComponents]];
-		[game setReleased:@(YES)];
-		
-		[game setReleaseDate:releaseDate];
-		[game.releaseDate setDefined:@(YES)];
-		[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate context:context]];
-	}
-	// Game is not yet released
-	else{
-		NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
-		[expectedReleaseDateComponents setHour:10];
-		
-		BOOL defined = NO;
-		
-		// Exact release date is known
-		if (expectedReleaseDay){
-			[expectedReleaseDateComponents setDay:expectedReleaseDay];
-			[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
-			[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
-			[expectedReleaseDateComponents setYear:expectedReleaseYear];
-			[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
-			defined = YES;
-		}
-		// Release month is known
-		else if (expectedReleaseMonth){
-			[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
-			[expectedReleaseDateComponents setDay:0];
-			[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
-			[expectedReleaseDateComponents setYear:expectedReleaseYear];
-			[[Tools dateFormatter] setDateFormat:@"MMMM yyyy"];
-		}
-		// Release quarter is known
-		else if (expectedReleaseQuarter){
-			[expectedReleaseDateComponents setQuarter:expectedReleaseQuarter];
-			[expectedReleaseDateComponents setMonth:((expectedReleaseQuarter * 3) + 1)];
-			[expectedReleaseDateComponents setDay:0];
-			[expectedReleaseDateComponents setYear:expectedReleaseYear];
-			[[Tools dateFormatter] setDateFormat:@"QQQ yyyy"];
-		}
-		// Release year is known
-		else if (expectedReleaseYear){
-			[expectedReleaseDateComponents setYear:expectedReleaseYear];
-			[expectedReleaseDateComponents setQuarter:4];
-			[expectedReleaseDateComponents setMonth:13];
-			[expectedReleaseDateComponents setDay:0];
-			[[Tools dateFormatter] setDateFormat:@"yyyy"];
-		}
-		// Release date is unknown
-		else{
-			[expectedReleaseDateComponents setYear:2050];
-			[expectedReleaseDateComponents setQuarter:4];
-			[expectedReleaseDateComponents setMonth:13];
-			[expectedReleaseDateComponents setDay:0];
-		}
-		
-		NSDate *expectedReleaseDateFromComponents = [calendar dateFromComponents:expectedReleaseDateComponents];
-		
-		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents inContext:context];
-		if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
-		[releaseDate setDate:expectedReleaseDateFromComponents];
-		[releaseDate setDay:@(expectedReleaseDateComponents.day)];
-		[releaseDate setMonth:@(expectedReleaseDateComponents.month)];
-		[releaseDate setQuarter:@(expectedReleaseDateComponents.quarter)];
-		[releaseDate setYear:@(expectedReleaseDateComponents.year)];
-		
-		[releaseDate setDefined:@(defined)];
-		
-		[game setReleaseDateText:(expectedReleaseYear) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
-		[game setReleased:@(NO)];
-		
-		[game setReleaseDate:releaseDate];
-	}
-	
 	// Platforms
 	if (results[@"platforms"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"platforms"]){
@@ -304,6 +204,106 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			}
 			[game addThemesObject:theme];
 		}
+	}
+	
+	// Release date
+	NSString *originalReleaseDate = [Tools stringFromSourceIfNotNull:results[@"original_release_date"]];
+	NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
+	NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
+	NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
+	NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
+	
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+	
+	// Game is released
+	if (originalReleaseDate){
+		NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Tools dateFormatter] dateFromString:originalReleaseDate]];
+		[originalReleaseDateComponents setHour:10];
+		[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
+		
+		NSDate *releaseDateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
+		
+		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:releaseDateFromComponents inContext:context];
+		if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
+		[releaseDate setDate:releaseDateFromComponents];
+		[releaseDate setDay:@(originalReleaseDateComponents.day)];
+		[releaseDate setMonth:@(originalReleaseDateComponents.month)];
+		[releaseDate setQuarter:@(originalReleaseDateComponents.quarter)];
+		[releaseDate setYear:@(originalReleaseDateComponents.year)];
+		
+		[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
+		[game setReleaseDateText:[[Tools dateFormatter] stringFromDate:releaseDateFromComponents]];
+		[game setReleased:@(YES)];
+		
+		[game setReleaseDate:releaseDate];
+		[game.releaseDate setDefined:@(YES)];
+		[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate context:context]];
+	}
+	// Game is not yet released
+	else{
+		NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+		[expectedReleaseDateComponents setHour:10];
+		
+		BOOL defined = NO;
+		
+		// Exact release date is known
+		if (expectedReleaseDay){
+			[expectedReleaseDateComponents setDay:expectedReleaseDay];
+			[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
+			[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
+			[expectedReleaseDateComponents setYear:expectedReleaseYear];
+			[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
+			defined = YES;
+		}
+		// Release month is known
+		else if (expectedReleaseMonth){
+			[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
+			[expectedReleaseDateComponents setDay:0];
+			[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
+			[expectedReleaseDateComponents setYear:expectedReleaseYear];
+			[[Tools dateFormatter] setDateFormat:@"MMMM yyyy"];
+		}
+		// Release quarter is known
+		else if (expectedReleaseQuarter){
+			[expectedReleaseDateComponents setQuarter:expectedReleaseQuarter];
+			[expectedReleaseDateComponents setMonth:((expectedReleaseQuarter * 3) + 1)];
+			[expectedReleaseDateComponents setDay:0];
+			[expectedReleaseDateComponents setYear:expectedReleaseYear];
+			[[Tools dateFormatter] setDateFormat:@"QQQ yyyy"];
+		}
+		// Release year is known
+		else if (expectedReleaseYear){
+			[expectedReleaseDateComponents setYear:expectedReleaseYear];
+			[expectedReleaseDateComponents setQuarter:4];
+			[expectedReleaseDateComponents setMonth:13];
+			[expectedReleaseDateComponents setDay:0];
+			[[Tools dateFormatter] setDateFormat:@"yyyy"];
+		}
+		// Release date is unknown
+		else{
+			[expectedReleaseDateComponents setYear:2050];
+			[expectedReleaseDateComponents setQuarter:4];
+			[expectedReleaseDateComponents setMonth:13];
+			[expectedReleaseDateComponents setDay:0];
+		}
+		
+		NSDate *expectedReleaseDateFromComponents = [calendar dateFromComponents:expectedReleaseDateComponents];
+		
+		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents inContext:context];
+		if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
+		[releaseDate setDate:expectedReleaseDateFromComponents];
+		[releaseDate setDay:@(expectedReleaseDateComponents.day)];
+		[releaseDate setMonth:@(expectedReleaseDateComponents.month)];
+		[releaseDate setQuarter:@(expectedReleaseDateComponents.quarter)];
+		[releaseDate setYear:@(expectedReleaseDateComponents.year)];
+		
+		[releaseDate setDefined:@(defined)];
+		
+		[game setReleaseDateText:(expectedReleaseYear) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
+		[game setReleased:@(NO)];
+		
+		[game setReleaseDate:releaseDate];
 	}
 }
 

@@ -25,13 +25,16 @@
 
 #pragma mark - Tools
 
-static NSDateFormatter *DATEFORMATTER;
-
 + (NSDateFormatter *)dateFormatter{
-	if (!DATEFORMATTER) DATEFORMATTER = [[NSDateFormatter alloc] init];
-	[DATEFORMATTER setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	[DATEFORMATTER setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
-	return DATEFORMATTER;
+	NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
+	NSDateFormatter *dateFormatter = threadDictionary[@"dateFormatter"];
+	if (!dateFormatter){
+		dateFormatter = [NSDateFormatter new];
+		[dateFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
+		[dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+		[threadDictionary setObject:dateFormatter forKey:@"dateFormatter"];
+	}
+	return dateFormatter;
 }
 
 #pragma mark - JSON
@@ -227,13 +230,7 @@ static NSDateFormatter *DATEFORMATTER;
 #pragma mark - Layout
 
 + (void)addEdgeConstraint:(NSLayoutAttribute)edge superview:(UIView *)superview subview:(UIView *)subview{
-	[superview addConstraint:[NSLayoutConstraint constraintWithItem:subview
-														  attribute:edge
-														  relatedBy:NSLayoutRelationEqual
-															 toItem:superview
-														  attribute:edge
-														 multiplier:1
-														   constant:0]];
+	[superview addConstraint:[NSLayoutConstraint constraintWithItem:subview attribute:edge relatedBy:NSLayoutRelationEqual toItem:superview attribute:edge multiplier:1 constant:0]];
 }
 
 @end
