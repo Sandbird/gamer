@@ -31,9 +31,9 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import "SimilarGameCollectionCell.h"
 
-enum {
-    SectionCover,
-    SectionStatus,
+typedef NS_ENUM(NSInteger, Section){
+	SectionCover,
+	SectionStatus,
 	SectionDetails,
 	SectionImages,
 	SectionVideos
@@ -98,10 +98,15 @@ enum {
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
-	[_wishlistButton setBackgroundImage:[[UIImage imageNamed:@"AddButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateNormal];
-	[_wishlistButton setBackgroundImage:[[UIImage imageNamed:@"AddButtonHighlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateHighlighted];
-	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateNormal];
-	[_libraryButton setBackgroundImage:[[UIImage imageNamed:@"AddButtonHighlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)] forState:UIControlStateHighlighted];
+	[_wishlistButton.layer setBorderWidth:1];
+	[_wishlistButton.layer setBorderColor:_wishlistButton.tintColor.CGColor];
+	[_wishlistButton.layer setCornerRadius:4];
+	[_wishlistButton setBackgroundImage:[Tools imageWithColor:_wishlistButton.tintColor] forState:UIControlStateHighlighted];
+	
+	[_libraryButton.layer setBorderWidth:1];
+	[_libraryButton.layer setBorderColor:_libraryButton.tintColor.CGColor];
+	[_libraryButton.layer setCornerRadius:4];
+	[_libraryButton setBackgroundImage:[Tools imageWithColor:_libraryButton.tintColor] forState:UIControlStateHighlighted];
 	
 	[Tools setMaskToView:_metascoreButton roundCorners:UIRectCornerAllCorners radius:32];
 	
@@ -260,10 +265,6 @@ enum {
 			}
 			break;
 		}
-		case SectionImages:
-			if ([Tools deviceIsiPad] && _images.count <= 3)
-				return 180; // Display single row of images if less than 4 are available
-			break;
 		default:
 			break;
 	}
@@ -831,16 +832,13 @@ enum {
 	
 	[_releaseDateLabel setText:_game.releaseDateText];
 	
-	[self refreshAddButtons];
-	
 	_platforms = [self orderedPlatformsFromGame:_game];
 	
 	_selectablePlatforms = [self selectablePlatformsFromGame:_game];
 	
-	[_wishlistButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
-	[_libraryButton setHidden:_selectablePlatforms.count == 0 ? YES : NO];
-	
 	_similarGames = [self orderedSimilarGamesFromGame:_game];
+	
+	[self refreshAddButtons];
 	
 	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
 	[_completedSwitch setOn:_game.completed.boolValue animated:animated];
@@ -886,9 +884,16 @@ enum {
 }
 
 - (void)refreshAddButtons{
-	[_wishlistButton setHidden:NO];
+	if (_selectablePlatforms.count > 0){
+		[_wishlistButton setHidden:NO];
+		[_libraryButton setHidden:([_game.released isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? NO : YES];
+	}
+	else{
+		[_wishlistButton setHidden:[_game.wanted isEqualToNumber:@(YES)] ? NO : YES];
+		[_libraryButton setHidden:[_game.owned isEqualToNumber:@(YES)] ? NO : YES];
+	}
+	
 	[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-	[_libraryButton setHidden:([_game.owned isEqualToNumber:@(NO)] && [_game.released isEqualToNumber:@(NO)]) ? YES : NO];
 	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 }
 

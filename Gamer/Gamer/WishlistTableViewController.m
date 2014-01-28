@@ -318,16 +318,19 @@
 		[_context saveToPersistentStoreAndWait];
 	});
 	
-	[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	if (self.fetchedResultsController.fetchedObjects.count > 0){
+		[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	}
 	
 	_numberOfRunningTasks = 0;
 	
 	// Request info for all games in the Wishlist
-	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
+	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++){
 		for (NSInteger row = 0; row < [self.fetchedResultsController.sections[section] numberOfObjects]; row++){
 			Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
 			if (game.identifier) [self requestInformationForGame:game];
 		}
+	}
 }
 
 #pragma mark - Actions

@@ -21,7 +21,7 @@
 #import "CoverImage.h"
 #import "SimilarGame.h"
 #import "SettingsPlatformCell.h"
-#import "SettingsSliderCell.h"
+#import "SettingsSegmentedControlCell.h"
 #import <MessageUI/MFMailComposeViewController.h>
 #include <sys/sysctl.h>
 
@@ -109,8 +109,8 @@
 			return cell;
 		}
 		case 1:{
-			SettingsSliderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SliderCell" forIndexPath:indexPath];
-			[cell.slider setValue:[Session gamer].librarySize.floatValue];
+			SettingsSegmentedControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SliderCell" forIndexPath:indexPath];
+			[cell.segmentedControl setSelectedSegmentIndex:[Session gamer].librarySize.integerValue];
 			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
@@ -208,12 +208,8 @@
 	[_context saveToPersistentStoreAndWait];
 }
 
-- (IBAction)sliderValueChangedAction:(UISlider *)sender{
-	[sender setValue:lroundf(sender.value)];
-}
-
-- (IBAction)sliderTouchUpAction:(UISlider *)sender{
-	[[Session gamer] setLibrarySize:@(sender.value)];
+- (IBAction)segmentedControlValueChangedAction:(UISegmentedControl *)sender{
+	[[Session gamer] setLibrarySize:@(sender.selectedSegmentIndex)];
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];

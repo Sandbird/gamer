@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Caio Mello. All rights reserved.
 //
 
-#import "SettingsSliderCell.h"
+#import "SettingsSegmentedControlCell.h"
 
-@implementation SettingsSliderCell
+@implementation SettingsSegmentedControlCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

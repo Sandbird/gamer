@@ -17,19 +17,35 @@
 #import "Franchise.h"
 #import "Theme.h"
 #import "SimilarGame.h"
+#import "ReleaseDate.h"
 #import "GameTableViewController.h"
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
 #import "SearchViewController.h"
+#import "LibraryFilterView.h"
 
-@interface LibraryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate>
+typedef NS_ENUM(NSInteger, LibraryFilter){
+	LibraryFilterTitle,
+	LibraryFilterPlatform,
+	LibraryFilterReleaseYear,
+	LibraryFilterMetascore
+};
+
+@interface LibraryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, UIActionSheetDelegate, LibraryFilterViewDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *refreshButton;
 @property (nonatomic, strong) UIBarButtonItem *searchBarItem;
 
+@property (nonatomic, strong) IBOutlet UIButton *sortButton;
+@property (nonatomic, strong) IBOutlet UIButton *filterButton;
+
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
 
 @property (nonatomic, strong) UIView *guideView;
+
+@property (nonatomic, strong) LibraryFilterView *filterView;
+
+@property (nonatomic, assign) LibraryFilter filter;
 
 @property (nonatomic, assign) NSInteger numberOfRunningTasks;
 
@@ -45,21 +61,39 @@
 	
 	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLibraryGames)];
 	
+	// UI setup
 	if ([Tools deviceIsiPad]){
 		UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
 		[searchBar setPlaceholder:@"Find Games"];
 		[searchBar setDelegate:self];
 		_searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
+		
+		[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
+		
+		UIBarButtonItem *sortBarButton = [[UIBarButtonItem alloc] initWithTitle:@"  Sort  " style:UIBarButtonItemStylePlain target:self action:@selector(showSortOptions)];
+		UIBarButtonItem *filterBarButton = [[UIBarButtonItem alloc] initWithTitle:@"      Filter     " style:UIBarButtonItemStylePlain target:self action:@selector(showFilterOptions)];
+		
+		[self.navigationItem setLeftBarButtonItems:@[sortBarButton, filterBarButton] animated:NO];
+	}
+	else{
+		[self.navigationItem setRightBarButtonItem:_refreshButton animated:NO];
+		
+		_filterView = [[LibraryFilterView alloc] initWithFrame:CGRectMake(0, -50, 320, 50)];
+		[_filterView setDelegate:self];
+		[_collectionView addSubview:_filterView];
+		
+		[_collectionView setContentInset:UIEdgeInsetsMake(50, 0, 0, 0)];
 	}
 	
-	[Tools deviceIsiPad] ? [self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO] : [self.navigationItem setRightBarButtonItem:_refreshButton animated:NO];
-	
+	// Other stuff
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLibraryNotification:) name:@"RefreshLibrary" object:nil];
 	
 	_context = [NSManagedObjectContext defaultContext];
 	
-	_fetchedResultsController = [self fetchData];
+	_filter = LibraryFilterPlatform;
+	
+	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
 	
 	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][1];
 	[self.view insertSubview:_guideView aboveSubview:_collectionView];
@@ -94,30 +128,34 @@
 	return NO;
 }
 
-#pragma mark - FetchedResultsController
-
-- (NSFetchedResultsController *)fetchData{
-	if (!_fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @(YES)];
-		_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:predicate sortedBy:@"libraryPlatform.index,title" ascending:YES];
-	}
-	return _fetchedResultsController;
-}
-
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-	[_guideView setHidden:(_fetchedResultsController.sections.count == 0) ? NO : YES];
+	[_guideView setHidden:([Game countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)]] == 0) ? NO : YES];
 	
 	return _fetchedResultsController.sections.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
 	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
-	Platform *platform = [Platform findFirstByAttribute:@"index" withValue:sectionName inContext:_context];
+	
+	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
+	
+	NSString *headerTitle;
+	
+	switch (_filter) {
+		case LibraryFilterTitle: headerTitle = sectionName; break;
+		case LibraryFilterPlatform: headerTitle = game.libraryPlatform.name; break;
+		case LibraryFilterReleaseYear: headerTitle = game.releaseDate.year.stringValue; break;
+		case LibraryFilterMetascore: headerTitle = game.metascore.length > 0 ? game.metascore : @"Unavailable"; break;
+		default: break;
+	}
+	
+	if ([headerTitle isEqualToString:@"2050"])
+		headerTitle = @"Unknown";
 	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
-	[headerView.titleLabel setText:platform.name];
+	[headerView.titleLabel setText:headerTitle];
 	[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
 	return headerView;
 }
@@ -224,10 +262,108 @@
 	[downloadTask resume];
 }
 
+#pragma mark - LibraryFilterView
+
+- (void)libraryFilterView:(LibraryFilterView *)filterView didPressSortButton:(UIButton *)button{
+	[self showSortOptions];
+}
+
+- (void)libraryFilterView:(LibraryFilterView *)filterView didPressFilterButton:(UIButton *)button{
+	[self showFilterOptions];
+}
+
+- (void)libraryFilterView:(LibraryFilterView *)filterView didPressCancelButton:(UIButton *)button{
+	[_filterView resetAnimated:YES];
+	
+	_filter = LibraryFilterPlatform;
+	
+	_fetchedResultsController = nil;
+	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	[_collectionView reloadData];
+}
+
+#pragma mark - ActionSheet
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+	if (buttonIndex != actionSheet.cancelButtonIndex){
+		if (actionSheet.tag == 1){
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @(YES)];
+			
+			// Sort
+			switch (buttonIndex) {
+				case 0:
+					// Title
+					[self fetchGamesWithFilter:LibraryFilterTitle group:@"title.stringGroupByFirstInitial" predicate:predicate sort:@"title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Sorted by title" animated:YES];
+					break;
+				case 1:
+					// Release year
+					[self fetchGamesWithFilter:LibraryFilterReleaseYear group:@"releaseDate.year" predicate:predicate sort:@"releaseDate.year,title" ascending:NO];
+					[_filterView showStatusWithTitle:@"Sorted by release year" animated:YES];
+					break;
+				case 2:
+					// Metascore
+					[self fetchGamesWithFilter:LibraryFilterMetascore group:@"metascore" predicate:predicate sort:@"metascore,title" ascending:NO];
+					[_filterView showStatusWithTitle:@"Sorted by Metascore" animated:YES];
+					break;
+				case 3:
+					// Platform (iPad)
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:predicate sort:@"libraryPlatform.index,title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Sorted by platform" animated:YES];
+					break;
+				default: break;
+			}
+		}
+		else{
+			// Filter
+			switch (buttonIndex) {
+				case 0:
+					// Completed
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND completed = %@", @(YES), @(YES)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Showing completed games" animated:YES];
+					break;
+				case 1:
+					// Incomplete
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND completed = %@", @(YES), @(NO)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Showing incomplete games" animated:YES];
+					break;
+				case 2:
+					// Digital
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND digital = %@", @(YES), @(YES)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Showing digital games" animated:YES];
+					break;
+				case 3:
+					// Physical
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND digital = %@", @(YES), @(NO)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Showing physical games" animated:YES];
+					break;
+				case 4:
+					// Loaned
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND loaned = %@", @(YES), @(YES)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Showing loaned games" animated:YES];
+					break;
+				default: break;
+			}
+		}
+	}
+	
+	[self.navigationController.navigationBar setUserInteractionEnabled:YES];
+}
+
 #pragma mark - Custom
 
+- (void)fetchGamesWithFilter:(LibraryFilter)filter group:(NSString *)group predicate:(NSPredicate *)predicate sort:(NSString *)sort ascending:(BOOL)ascending{
+	_filter = filter;
+	
+	_fetchedResultsController = nil;
+	_fetchedResultsController = [Game fetchAllGroupedBy:group withPredicate:predicate sortedBy:sort ascending:ascending inContext:_context];
+	[_collectionView reloadData];
+}
+
 - (void)refreshLibraryGames{
-	[_refreshButton setEnabled:NO];
+	if (_fetchedResultsController.fetchedObjects.count > 0){
+		[_refreshButton setEnabled:NO];
+	}
 	
 	_numberOfRunningTasks = 0;
 	
@@ -237,20 +373,53 @@
 			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
 }
 
+- (void)showSortOptions{
+	UIActionSheet *actionSheet;
+	
+	if ([Tools deviceIsiPhone]){
+		actionSheet = [[UIActionSheet alloc] initWithTitle:@"Sort by" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Title", @"Release year", @"Metascore", nil];
+		[actionSheet setTag:1];
+		[actionSheet showInView:self.view.window];
+	}
+	else{
+		actionSheet = [[UIActionSheet alloc] initWithTitle:@"Sort by" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Title", @"Release year", @"Metascore", @"Platform", nil];
+		[actionSheet setTag:1];
+		[actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItems[0] animated:YES];
+	}
+	
+	[self.navigationController.navigationBar setUserInteractionEnabled:NO];
+}
+
+- (void)showFilterOptions{
+	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Show only" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Completed", @"Incomplete", @"Digital", @"Physical", @"Loaned", nil];
+	[actionSheet setTag:2];
+	
+	if ([Tools deviceIsiPhone])
+		[actionSheet showInView:self.view.window];
+	else
+		[actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItems[1] animated:YES];
+	
+	[self.navigationController.navigationBar setUserInteractionEnabled:NO];
+}
+
 #pragma mark - Actions
+
+- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
+	[self refreshLibraryGames];
+}
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
 	[_collectionView reloadData];
 }
 
 - (void)refreshLibraryNotification:(NSNotification *)notification{
+	[_filterView resetAnimated:YES];
+	
+	_filter = LibraryFilterPlatform;
+	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [self fetchData];
+	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
 	[_collectionView reloadData];
-}
-
-- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
-	[self refreshLibraryGames];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

@@ -241,10 +241,11 @@
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aGi-nA-yvy" userLabel="Wishlist Button">
+                                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aGi-nA-yvy" userLabel="Wishlist Button">
                                                     <rect key="frame" x="162" y="11" width="140" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
+                                                    <color key="tintColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <state key="normal" title="ADD TO WISHLIST">
                                                         <color key="titleColor" red="1" green="0.50196078431372548" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -256,10 +257,11 @@
                                                         <action selector="addButtonPressAction:" destination="daZ-J4-g3E" eventType="touchUpInside" id="kCI-ki-PF0"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Szq-Ge-fAn" userLabel="Library Button">
+                                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Szq-Ge-fAn" userLabel="Library Button">
                                                     <rect key="frame" x="162" y="49" width="140" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
+                                                    <color key="tintColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <state key="normal" title="ADD TO LIBRARY">
                                                         <color key="titleColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1097,27 +1099,35 @@
                                     <outlet property="titleLabel" destination="Yhj-cq-W1x" id="Qk3-Xu-Jzr"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SliderCell" id="BbU-1V-jG0" userLabel="Slider Cell" customClass="SettingsSliderCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SliderCell" id="BbU-1V-jG0" userLabel="Slider Cell" customClass="SettingsSegmentedControlCell">
                                 <rect key="frame" x="0.0" y="99" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BbU-1V-jG0" id="DZP-oD-7Bb">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="6Rl-qn-b0W">
-                                            <rect key="frame" x="18" y="5" width="284" height="34"/>
+                                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="LWc-XE-cwC">
+                                            <rect key="frame" x="20" y="8" width="280" height="29"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="Small"/>
+                                                <segment title="Medium"/>
+                                                <segment title="Large"/>
+                                            </segments>
                                             <connections>
-                                                <action selector="sliderTouchUpAction:" destination="hd1-3s-aNN" eventType="touchUpOutside" id="2YJ-zc-R3E"/>
-                                                <action selector="sliderTouchUpAction:" destination="hd1-3s-aNN" eventType="touchUpInside" id="Rsf-pE-385"/>
-                                                <action selector="sliderValueChangedAction:" destination="hd1-3s-aNN" eventType="valueChanged" id="Y2z-xz-fLX"/>
+                                                <action selector="segmentedControlValueChangedAction:" destination="hd1-3s-aNN" eventType="valueChanged" id="cle-Si-4u1"/>
                                             </connections>
-                                        </slider>
+                                        </segmentedControl>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="LWc-XE-cwC" firstAttribute="top" secondItem="DZP-oD-7Bb" secondAttribute="top" constant="8" id="4Rd-Ti-mbs"/>
+                                        <constraint firstItem="LWc-XE-cwC" firstAttribute="leading" secondItem="DZP-oD-7Bb" secondAttribute="leading" constant="20" symbolic="YES" id="CHF-fl-DLP"/>
+                                        <constraint firstAttribute="trailing" secondItem="LWc-XE-cwC" secondAttribute="trailing" constant="20" symbolic="YES" id="qRi-aH-hLc"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
-                                    <outlet property="slider" destination="6Rl-qn-b0W" id="1ua-oB-x0t"/>
+                                    <outlet property="segmentedControl" destination="LWc-XE-cwC" id="CNN-Qo-4LI"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NavigationCell" editingAccessoryType="disclosureIndicator" textLabel="8bc-SZ-vdK" style="IBUITableViewCellStyleDefault" id="1Pa-2S-CGY" userLabel="Button Cell">
@@ -1311,19 +1321,13 @@
                         </subviews>
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="leading" secondItem="Sdw-iW-wrB" secondAttribute="leading" id="5Th-ZO-TBa"/>
-                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="top" secondItem="Sdw-iW-wrB" secondAttribute="top" id="D13-kk-ahI"/>
-                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="top" secondItem="Sdw-iW-wrB" secondAttribute="top" id="DZJ-3o-s9l"/>
-                            <constraint firstAttribute="bottom" secondItem="YQt-ka-CWZ" secondAttribute="bottom" id="FPH-cX-M3R"/>
-                            <constraint firstAttribute="bottom" secondItem="YQt-ka-CWZ" secondAttribute="bottom" id="Uep-jB-oOy"/>
-                            <constraint firstAttribute="trailing" secondItem="YQt-ka-CWZ" secondAttribute="trailing" id="jjy-SP-XMI"/>
-                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="leading" secondItem="Sdw-iW-wrB" secondAttribute="leading" id="nNX-R4-jCq"/>
-                            <constraint firstAttribute="trailing" secondItem="YQt-ka-CWZ" secondAttribute="trailing" id="tRo-70-lJg"/>
+                            <constraint firstAttribute="trailing" secondItem="YQt-ka-CWZ" secondAttribute="trailing" id="26B-qU-Uwt"/>
+                            <constraint firstAttribute="bottom" secondItem="YQt-ka-CWZ" secondAttribute="bottom" id="IF5-br-ktq"/>
+                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="top" secondItem="Sdw-iW-wrB" secondAttribute="top" id="xdi-cy-IFa"/>
+                            <constraint firstItem="YQt-ka-CWZ" firstAttribute="leading" secondItem="Sdw-iW-wrB" secondAttribute="leading" id="xwN-xG-MSf"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="BpN-IA-A2Q"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Library" id="5Oe-Mp-f0u"/>
                     <connections>
                         <outlet property="collectionView" destination="YQt-ka-CWZ" id="Q22-J5-Eew"/>
                         <segue destination="daZ-J4-g3E" kind="push" identifier="GameSegue" id="HYd-CU-5hN"/>
@@ -1390,6 +1394,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="5qi-Mj-SGM"/>
+        <segue reference="HYd-CU-5hN"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -213,6 +213,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
 	NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
 	
+	// Workaround for API bug
+	if ([originalReleaseDate isEqualToString:@"2014-01-01 00:00:00"] && !expectedReleaseDay && !expectedReleaseMonth && !expectedReleaseQuarter && !expectedReleaseYear) originalReleaseDate = nil;
+	
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
