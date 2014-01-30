@@ -202,10 +202,10 @@
 				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
 					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 					
-					UIImage *coverImage = [UIImage imageWithData:game.coverImage.data];
-					CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage];
+					UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
+					CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
 					
-					if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
+					if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
 						[self downloadCoverImageForGame:game];
 					}
 				}
@@ -230,12 +230,16 @@
 	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
+		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
+		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
-			
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Thumbnail", self, ((NSHTTPURLResponse *)response).statusCode);
 		}
 		else{
+			NSLog(@"Success in %@ - Status code: %d - Thumbnail - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
@@ -255,7 +259,9 @@
 	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
+		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
+		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
 			NSLog(@"Failure in %@ - Metascore", self);

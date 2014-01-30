@@ -441,10 +441,11 @@ typedef NS_ENUM(NSInteger, Section){
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 				
 				UIImage *coverImage = [UIImage imageWithData:_game.coverImage.data];
-				CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage];
+				CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage type:GameImageTypeCover];
 				
-				if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height))
+				if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
 					[self downloadImageForCoverImage:_game.coverImage];
+				}
 				
 				[self requestMediaForGame:_game];
 				
@@ -474,14 +475,20 @@ typedef NS_ENUM(NSInteger, Section){
 	NSProgress *progress;
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
+		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
+		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Cover Image", self, ((NSHTTPURLResponse *)response).statusCode);
 			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
 		}
 		else{
+			NSLog(@"Success in %@ - Status code: %d - Cover Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+				NSData *downloadedData = [NSData dataWithContentsOfURL:filePath];
+				UIImage *downloadedImage = [UIImage imageWithData:downloadedData];
 				
 				[coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[_game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
@@ -514,7 +521,9 @@ typedef NS_ENUM(NSInteger, Section){
 	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:title platform:platform];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"/tmp/%@", request.URL.lastPathComponent]];
+		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
+		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
 			NSLog(@"Failure in %@ - Metascore", self);
@@ -589,7 +598,7 @@ typedef NS_ENUM(NSInteger, Section){
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
 			NSDictionary *results = responseObject[@"results"];
@@ -810,6 +819,11 @@ typedef NS_ENUM(NSInteger, Section){
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[_wishlistButton setHighlighted:NO];
+		[_libraryButton setHighlighted:NO];
+	});
 }
 
 #pragma mark - Custom
@@ -951,6 +965,10 @@ typedef NS_ENUM(NSInteger, Section){
 // REWRITE
 
 - (IBAction)addButtonPressAction:(UIButton *)sender{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[sender setHighlighted:YES];
+	});
+	
 	if ((sender == _wishlistButton && [_game.wanted isEqualToNumber:@(YES)]) || (sender == _libraryButton && [_game.owned isEqualToNumber:@(YES)])){
 		[_game setWanted:@(NO)];
 		[_game setOwned:@(NO)];
@@ -977,6 +995,9 @@ typedef NS_ENUM(NSInteger, Section){
 			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 			
 			dispatch_async(dispatch_get_main_queue(), ^{
+				[_wishlistButton setHighlighted:NO];
+				[_libraryButton setHighlighted:NO];
+				
 				NSIndexPath *lastStatusIndexPath = [NSIndexPath indexPathForRow:([self.tableView numberOfRowsInSection:SectionStatus] - 1) inSection:SectionStatus];
 				if ((([_game.wanted isEqualToNumber:@(YES)] && [_game.released isEqualToNumber:@(NO)]) || [_game.owned isEqualToNumber:@(YES)]) && ![self.tableView.indexPathsForVisibleRows containsObject:lastStatusIndexPath])
 					[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -1046,6 +1067,9 @@ typedef NS_ENUM(NSInteger, Section){
 				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 				
 				dispatch_async(dispatch_get_main_queue(), ^{
+					[_wishlistButton setHighlighted:NO];
+					[_libraryButton setHighlighted:NO];
+					
 					NSIndexPath *lastStatusIndexPath = [NSIndexPath indexPathForRow:([self.tableView numberOfRowsInSection:SectionStatus] - 1) inSection:SectionStatus];
 					if ((([_game.wanted isEqualToNumber:@(YES)] && [_game.released isEqualToNumber:@(NO)]) || [_game.owned isEqualToNumber:@(YES)]) && ![self.tableView.indexPathsForVisibleRows containsObject:lastStatusIndexPath])
 						[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];

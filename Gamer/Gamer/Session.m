@@ -46,18 +46,42 @@ static NSArray *SEARCHRESULTS;
 	return [GAI sharedInstance].defaultTracker;
 }
 
-+ (CGSize)optimalCoverImageSizeForImage:(UIImage *)image{
++ (CGSize)optimalCoverImageSizeForImage:(UIImage *)image type:(GameImageType)type{
 	if ([Tools deviceIsiPhone]){
-		if (image.size.width > image.size.height)
-			return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPhoneCover];
-		else
-			return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPhoneCover];
+		if (image.size.width > image.size.height){
+			switch (type) {
+				case GameImageTypeCover: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPhoneCover];
+				case GameImageTypeWishlist: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPhoneWishlist];
+				case GameImageTypeLibrary: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPhoneLibrary];
+				default: break;
+			}
+		}
+		else{
+			switch (type) {
+				case GameImageTypeCover: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPhoneCover];
+				case GameImageTypeWishlist: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPhoneWishlist];
+				case GameImageTypeLibrary: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPhoneLibrary];
+				default: break;
+			}
+		}
 	}
 	else{
-		if (image.size.width > image.size.height)
-			return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPadCover];
-		else
-			return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPadCover];
+		if (image.size.width > image.size.height){
+			switch (type) {
+				case GameImageTypeCover: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPadCover];
+				case GameImageTypeWishlist: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPadWishlist];
+				case GameImageTypeLibrary: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPadLibrary];
+				default: break;
+			}
+		}
+		else{
+			switch (type) {
+				case GameImageTypeCover: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPadCover];
+				case GameImageTypeWishlist: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPadWishlist];
+				case GameImageTypeLibrary: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPadLibrary];
+				default: break;
+			}
+		}
 	}
 }
 

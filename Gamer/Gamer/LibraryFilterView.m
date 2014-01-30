@@ -54,14 +54,27 @@
 #pragma mark - Actions
 
 - (IBAction)sortButtonAction:(UIButton *)sender{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[sender setHighlighted:YES];
+	});
+	
 	[self.delegate libraryFilterView:self didPressSortButton:sender];
 }
 
 - (IBAction)filterButtonAction:(UIButton *)sender{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[sender setHighlighted:YES];
+	});
+	
 	[self.delegate libraryFilterView:self didPressFilterButton:sender];
 }
 
 - (IBAction)cancelButtonAction:(UIButton *)sender{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[_sortButton setHighlighted:NO];
+		[_filterButton setHighlighted:NO];
+	});
+	
 	[self.delegate libraryFilterView:self didPressCancelButton:sender];
 }
 

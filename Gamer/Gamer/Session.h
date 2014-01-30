@@ -13,13 +13,13 @@
 typedef NS_ENUM(NSInteger, OptimalImageWidthiPhone){
 	OptimalImageWidthiPhoneCover = 280,
 	OptimalImageWidthiPhoneWishlist = 50,
-	OptimalImageWidthiPhoneLibrary = 92
+	OptimalImageWidthiPhoneLibrary = 66
 };
 
 typedef NS_ENUM(NSInteger, OptimalImageHeightiPhone){
 	OptimalImageHeightiPhoneCover = 200,
 	OptimalImageHeightiPhoneWishlist = 50,
-	OptimalImageHeightiPhoneLibrary = 116
+	OptimalImageHeightiPhoneLibrary = 83
 };
 
 typedef NS_ENUM(NSInteger, OptimalImageWidthiPad){
@@ -54,7 +54,7 @@ typedef NS_ENUM(NSInteger, GameImageType){
 
 + (id<GAITracker>)tracker;
 
-+ (CGSize)optimalCoverImageSizeForImage:(UIImage *)image;
++ (CGSize)optimalCoverImageSizeForImage:(UIImage *)image type:(GameImageType)type;
 
 + (UIImage *)aspectFitImageWithImage:(UIImage *)image type:(GameImageType)type;
 
