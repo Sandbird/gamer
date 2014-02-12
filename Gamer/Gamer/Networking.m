@@ -54,7 +54,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	NSString *path = [NSString stringWithFormat:@"/games/3030/?api_key=%@&format=json&sort=date_added:desc&field_list=%@&filter=platforms:%@,name:%@", APIKEY, fields, platformsString, title];
 	NSString *stringURL = [BASEURL stringByAppendingString:path];
 	
-	if (!SEARCHREQUEST) SEARCHREQUEST = [[NSMutableURLRequest alloc] init];
+	if (!SEARCHREQUEST) SEARCHREQUEST = [NSMutableURLRequest new];
 	[SEARCHREQUEST setURL:[NSURL URLWithString:[stringURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 	
 	return  SEARCHREQUEST;
@@ -98,6 +98,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			[coverImage setUrl:imageURL];
 		}
 		[game setCoverImage:coverImage];
+		[game setThumbnailName:[imageURL lastPathComponent]];
 	}
 	
 	// Platforms
@@ -214,7 +215,10 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
 	
 	// Workaround for API bug
-	if ([originalReleaseDate isEqualToString:@"2014-01-01 00:00:00"] && !expectedReleaseDay && !expectedReleaseMonth && !expectedReleaseQuarter && !expectedReleaseYear) originalReleaseDate = nil;
+	if ([originalReleaseDate isEqualToString:@"2014-01-01 00:00:00"] && !expectedReleaseDay && !expectedReleaseMonth && !expectedReleaseQuarter && !expectedReleaseYear){
+		originalReleaseDate = nil;
+		expectedReleaseYear = 2014;
+	}
 	
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];

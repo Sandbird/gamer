@@ -25,6 +25,8 @@
 
 @interface WishlistTableViewController () <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
 
+@property (nonatomic, strong) NSCache *imageCache;
+
 @property (nonatomic, assign) NSInteger numberOfRunningTasks;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
@@ -48,6 +50,8 @@
 	_context = [NSManagedObjectContext defaultContext];
 	
 	self.fetchedResultsController = [self fetchData];
+	
+	_imageCache = [NSCache new];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -144,10 +148,33 @@
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	
 	WishlistCell *customCell = (WishlistCell *)cell;
+	
+	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
+	
+	if (image){
+		[customCell.coverImageView setImage:image];
+		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[customCell.coverImageView setImage:nil];
+		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
+			UIGraphicsBeginImageContext(image.size);
+			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+			image = UIGraphicsGetImageFromCurrentImageContext();
+			UIGraphicsEndImageContext();
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[customCell.coverImageView setImage:image];
+				[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+			});
+			[_imageCache setObject:image forKey:game.thumbnailName];
+		});
+	}
+	
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.dateLabel setText:game.releaseDateText];
-	[customCell.coverImageView setImage:[UIImage imageWithData:game.thumbnailWishlist]];
-	[customCell.coverImageView setBackgroundColor:customCell.coverImageView.image ? [UIColor clearColor] : [UIColor darkGrayColor]];
 	[customCell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];
 	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];

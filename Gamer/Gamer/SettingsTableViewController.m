@@ -126,7 +126,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	if (indexPath.section == 2){
-		MFMailComposeViewController *mailComposeViewController = [[MFMailComposeViewController alloc] init];
+		MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
 		[mailComposeViewController setMailComposeDelegate:self];
 		[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
 		[mailComposeViewController setSubject:@"Feedback"];

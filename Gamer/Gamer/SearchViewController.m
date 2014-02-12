@@ -172,7 +172,7 @@
 			[_results removeAllObjects];
 			
 			for (NSDictionary *dictionary in responseObject[@"results"]){
-				SearchResult *result = [[SearchResult alloc] init];
+				SearchResult *result = [SearchResult new];
 				[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"thumb_url"]]];

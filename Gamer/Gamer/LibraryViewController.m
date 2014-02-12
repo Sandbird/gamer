@@ -44,6 +44,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 @property (nonatomic, assign) LibraryFilter filter;
 
+@property (nonatomic, strong) NSCache *imageCache;
+
 @property (nonatomic, assign) NSInteger numberOfRunningTasks;
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
@@ -91,6 +93,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = LibraryFilterPlatform;
 	
 	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	
+	_imageCache = [NSCache new];
 	
 	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][1];
 	[self.view insertSubview:_guideView aboveSubview:_collectionView];
@@ -172,11 +176,32 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
-	UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
 	
 	LibraryCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
-	[cell.coverImageView setImage:image];
-	[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+	
+	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
+	
+	if (image){
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[cell.coverImageView setImage:nil];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
+			UIGraphicsBeginImageContext(image.size);
+			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+			image = UIGraphicsGetImageFromCurrentImageContext();
+			UIGraphicsEndImageContext();
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[cell.coverImageView setImage:image];
+				[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+			});
+			[_imageCache setObject:image forKey:game.thumbnailName];
+		});
+	}
 	
 	return cell;
 }

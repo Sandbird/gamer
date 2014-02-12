@@ -58,7 +58,7 @@
 #pragma mark - Strings
 
 + (NSString *)dateStringFromString:(NSString *)string withFormat:(NSString *)sourceFormat toFormat:(NSString *)resultFormat{
-	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	NSDateFormatter *dateFormatter = [NSDateFormatter new];
 	[dateFormatter setFormatterBehavior:NSDateFormatterBehavior10_4];
 	[dateFormatter setDateFormat:sourceFormat];
 	NSDate *date = [dateFormatter dateFromString:string];
@@ -135,7 +135,7 @@
 + (void)setMaskToView:(UIView *)view roundCorners:(UIRectCorner)corners radius:(CGFloat)radius{
 	UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:corners cornerRadii:CGSizeMake(radius, radius)];
 	
-	CAShapeLayer *shapeLayer = [[CAShapeLayer alloc] init];
+	CAShapeLayer *shapeLayer = [CAShapeLayer new];
 	[shapeLayer setPath:bezierPath.CGPath];
 	
 	view.layer.mask = shapeLayer;

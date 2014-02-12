@@ -33,6 +33,8 @@
 
 @property (nonatomic, strong) UIView *guideView;
 
+@property (nonatomic, strong) NSCache *imageCache;
+
 @property (nonatomic, assign) NSInteger numberOfRunningTasks;
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
@@ -64,6 +66,8 @@
 	_context = [NSManagedObjectContext defaultContext];
 	
 	_fetchedResultsController = [self fetchData];
+	
+	_imageCache = [NSCache new];
 	
 	// Add guide view to the view
 	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][0];
@@ -135,10 +139,33 @@
 	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
 	
 	WishlistCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+	
+	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
+	
+	if (image){
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[cell.coverImageView setImage:nil];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
+			UIGraphicsBeginImageContext(image.size);
+			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+			image = UIGraphicsGetImageFromCurrentImageContext();
+			UIGraphicsEndImageContext();
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[cell.coverImageView setImage:image];
+				[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+			});
+			[_imageCache setObject:image forKey:game.thumbnailName];
+		});
+	}
+	
 	[cell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[cell.dateLabel setText:game.releaseDateText];
-	[cell.coverImageView setImage:[UIImage imageWithData:game.thumbnailWishlist]];
-	[cell.coverImageView setBackgroundColor:cell.coverImageView.image ? [UIColor clearColor] : [UIColor darkGrayColor]];
 	[cell.platformLabel setText:game.wishlistPlatform.abbreviation];
 	[cell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
 	[cell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];

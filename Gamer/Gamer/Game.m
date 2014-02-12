@@ -2,8 +2,8 @@
 //  Game.m
 //  Gamer
 //
-//  Created by Caio Mello on 06/11/2013.
-//  Copyright (c) 2013 Caio Mello. All rights reserved.
+//  Created by Caio Mello on 11/02/2014.
+//  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
 #import "Game.h"
@@ -40,12 +40,14 @@
 @dynamic title;
 @dynamic wanted;
 @dynamic wishlistMetascore;
+@dynamic thumbnailName;
 @dynamic coverImage;
 @dynamic developers;
 @dynamic franchises;
 @dynamic genres;
 @dynamic images;
 @dynamic libraryPlatform;
+@dynamic metascorePlatform;
 @dynamic placeholderPeriod;
 @dynamic platforms;
 @dynamic publishers;
@@ -54,8 +56,7 @@
 @dynamic similarGames;
 @dynamic themes;
 @dynamic videos;
-@dynamic wishlistPlatform;
-@dynamic metascorePlatform;
 @dynamic wishlistMetascorePlatform;
+@dynamic wishlistPlatform;
 
 @end

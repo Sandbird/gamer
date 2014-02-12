@@ -2,8 +2,8 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 06/11/2013.
-//  Copyright (c) 2013 Caio Mello. All rights reserved.
+//  Created by Caio Mello on 11/02/2014.
+//  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -30,12 +30,14 @@
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * wanted;
 @property (nonatomic, retain) NSString * wishlistMetascore;
+@property (nonatomic, retain) NSString * thumbnailName;
 @property (nonatomic, retain) CoverImage *coverImage;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
 @property (nonatomic, retain) NSSet *images;
 @property (nonatomic, retain) Platform *libraryPlatform;
+@property (nonatomic, retain) Platform *metascorePlatform;
 @property (nonatomic, retain) ReleasePeriod *placeholderPeriod;
 @property (nonatomic, retain) NSSet *platforms;
 @property (nonatomic, retain) NSSet *publishers;
@@ -44,9 +46,8 @@
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
-@property (nonatomic, retain) Platform *wishlistPlatform;
-@property (nonatomic, retain) Platform *metascorePlatform;
 @property (nonatomic, retain) Platform *wishlistMetascorePlatform;
+@property (nonatomic, retain) Platform *wishlistPlatform;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)
