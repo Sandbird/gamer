@@ -345,6 +345,8 @@
 	}];
 }
 
+#pragma mark - Actions
+
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
@@ -365,8 +367,6 @@
 		}
 	}
 }
-
-#pragma mark - Actions
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
 	[self.tableView reloadData];

@@ -8,6 +8,7 @@
 
 #import "GamerAppDelegate.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import <Crashlytics/Crashlytics.h>
 
 @implementation GamerAppDelegate
 
@@ -16,11 +17,14 @@
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
 #if !(TARGET_IPHONE_SIMULATOR)
-	// Google Analytics setup
+	// Google Analytics
 	[[GAI sharedInstance] setTrackUncaughtExceptions:YES];
 	[[GAI sharedInstance] setDispatchInterval:20];
 //	[[GAI sharedInstance] setDebug:YES];
 	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
+	
+	// Crashlytics
+	[Crashlytics startWithAPIKey:@"a807ed553e7fcb9b4a4202e44f5b25d260153417"];
 #endif
 	
 	// UI

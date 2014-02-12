@@ -44,6 +44,7 @@
 		25704051176CB12800642430 /* GamerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 25704050176CB12800642430 /* GamerTests.m */; };
 		257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 257880571794EF70004C28E3 /* PlatformCollectionCell.m */; };
 		257E18C3182453460088699B /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 257E18C2182453460088699B /* SearchViewController.m */; };
+		258A8C6718AAF81E00B38515 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 258A8C6618AAF81E00B38515 /* Crashlytics.framework */; };
 		2593051717C90017001DC04B /* MetacriticViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051617C90017001DC04B /* MetacriticViewController.m */; };
 		25998C02181093F400F1AA8F /* ReleaseDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C01181093F400F1AA8F /* ReleaseDate.m */; };
 		25998C05181093F500F1AA8F /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C04181093F500F1AA8F /* Franchise.m */; };
@@ -151,6 +152,7 @@
 		257880571794EF70004C28E3 /* PlatformCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCollectionCell.m; sourceTree = "<group>"; };
 		257E18C1182453460088699B /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		257E18C2182453460088699B /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
+		258A8C6618AAF81E00B38515 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		2593051517C90017001DC04B /* MetacriticViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetacriticViewController.h; sourceTree = "<group>"; };
 		2593051617C90017001DC04B /* MetacriticViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetacriticViewController.m; sourceTree = "<group>"; };
 		25998C00181093F400F1AA8F /* ReleaseDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseDate.h; sourceTree = "<group>"; };
@@ -215,7 +217,7 @@
 		25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionCell.m; sourceTree = "<group>"; };
 		25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCollectionCell.h; sourceTree = "<group>"; };
 		25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCollectionCell.m; sourceTree = "<group>"; };
-		25EE8CD218AAE828003E979E /* 1.1.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = 1.1.6.xcdatamodel; sourceTree = "<group>"; };
+		25EE8CD218AAE828003E979E /* 1.1.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.6.xcdatamodel; sourceTree = "<group>"; };
 		25EE8CD618AAE938003E979E /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		25EE8CD718AAE938003E979E /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		25F4588D179DFB2C008C15B3 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
@@ -238,6 +240,7 @@
 				2570402A176CB12800642430 /* UIKit.framework in Frameworks */,
 				25704026176CB12800642430 /* Foundation.framework in Frameworks */,
 				255593223FA84C439B281EF6 /* libPods.a in Frameworks */,
+				258A8C6718AAF81E00B38515 /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,6 +353,7 @@
 		25704024176CB12800642430 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				258A8C6618AAF81E00B38515 /* Crashlytics.framework */,
 				253B57F11834536B00617E3B /* MessageUI.framework */,
 				2555469F17DFF9430069F8A5 /* libz.dylib */,
 				25180CA017DFD534002675F1 /* MobileCoreServices.framework */,
@@ -549,6 +553,7 @@
 				2570401F176CB12800642430 /* Frameworks */,
 				25704020176CB12800642430 /* Resources */,
 				391CDBF954534A2683A25AA4 /* Copy Pods Resources */,
+				258A8C6518AAF7CD00B38515 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -652,6 +657,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+		};
+		258A8C6518AAF7CD00B38515 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run a807ed553e7fcb9b4a4202e44f5b25d260153417 5feb95a0435530125de4736554dadecab680409b50c185ec12ca6472649d45e6";
 		};
 		391CDBF954534A2683A25AA4 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -853,6 +871,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/Caio/Xcode/gamer/Gamer,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
@@ -876,6 +898,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/Caio/Xcode/gamer/Gamer,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gamer/Gamer-Prefix.pch";
 				INFOPLIST_FILE = "Gamer/Gamer-Info.plist";
