@@ -135,6 +135,32 @@ static NSArray *SEARCHRESULTS;
 		GAMER = gamer;
 		
 		if (!gamer.librarySize) [gamer setLibrarySize:@(1)];
+		
+		if ([Platform countOfEntities] < 11){
+			NSArray *identifiers = @[@(52), @(18), @(36)];
+			
+			NSArray *names = @[@"Nintendo DS",
+							   @"PlayStation Portable",
+							   @"Wii"];
+			
+			NSArray *abbreviations = @[@"DS",
+									   @"PSP",
+									   @"WII"];
+			
+			NSArray *colors = @[[UIColor colorWithRed:.666666667 green:.31372549 blue:.31372549 alpha:1],
+								[UIColor colorWithRed:.235294118 green:.235294118 blue:.549019608 alpha:1],
+								[UIColor colorWithRed:.352941176 green:.784313725 blue:.941176471 alpha:1]];
+			
+			for (NSInteger index = 0; index < identifiers.count; index++){
+				Platform *platform = [Platform createInContext:context];
+				[platform setIdentifier:identifiers[index]];
+				[platform setName:names[index]];
+				[platform setAbbreviation:abbreviations[index]];
+				[platform setColor:colors[index]];
+				[platform setIndex:@(8 + index)];
+			}
+		}
+		
 		[context saveToPersistentStoreAndWait];
 	}
 	else {
@@ -168,28 +194,50 @@ static NSArray *SEARCHRESULTS;
 		
 		[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			// Platforms
-			NSArray *identifiers = @[@(117), @(94), @(35), @(146), @(129), @(139), @(20), @(145)];
+			NSArray *identifiers = @[@(117),
+									 @(52),
+									 @(94),
+									 @(35),
+									 @(146),
+									 @(18),
+									 @(129),
+									 @(36),
+									 @(139),
+									 @(20),
+									 @(145)];
+			
 			NSArray *names = @[@"Nintendo 3DS",
+							   @"Nintendo DS",
 							   @"PC",
 							   @"PlayStation 3",
 							   @"PlayStation 4",
+							   @"PlayStation Portable",
 							   @"PlayStation Vita",
+							   @"Wii",
 							   @"Wii U",
 							   @"Xbox 360",
 							   @"Xbox One"];
+			
 			NSArray *abbreviations = @[@"3DS",
+									   @"DS",
 									   @"PC",
 									   @"PS3",
 									   @"PS4",
+									   @"PSP",
 									   @"VITA",
+									   @"WII",
 									   @"WIIU",
 									   @"X360",
 									   @"XONE"];
+			
 			NSArray *colors = @[[UIColor colorWithRed:.764705882 green:0 blue:.058823529 alpha:1],
+								[UIColor colorWithRed:.666666667 green:.31372549 blue:.31372549 alpha:1],
 								[UIColor colorWithRed:0 green:0 blue:0 alpha:1],
 								[UIColor colorWithRed:0 green:.039215686 blue:.525490196 alpha:1],
 								[UIColor colorWithRed:.039215686 green:.254901961 blue:.588235294 alpha:1],
+								[UIColor colorWithRed:.235294118 green:.235294118 blue:.549019608 alpha:1],
 								[UIColor colorWithRed:0 green:.235294118 blue:.592156863 alpha:1],
+								[UIColor colorWithRed:.352941176 green:.784313725 blue:.941176471 alpha:1],
 								[UIColor colorWithRed:0 green:.521568627 blue:.749019608 alpha:1],
 								[UIColor colorWithRed:.501960784 green:.760784314 blue:.145098039 alpha:1],
 								[UIColor colorWithRed:.058823529 green:.42745098 blue:0 alpha:1]];

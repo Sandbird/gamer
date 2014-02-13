@@ -46,6 +46,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			case 129: [platformIdentifiers addObject:@(143)]; break;
 			case 20: [platformIdentifiers addObject:@(86)]; break;
 			case 117: [platformIdentifiers addObject:@(138)]; break;
+			case 52: [platformIdentifiers addObject:@(106)]; break;
+			case 18: [platformIdentifiers addObject:@(116)]; break;
+			case 36: [platformIdentifiers addObject:@(87)]; break;
 			default: break;
 		}
 	}
