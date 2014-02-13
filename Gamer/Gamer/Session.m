@@ -161,6 +161,34 @@ static NSArray *SEARCHRESULTS;
 			}
 		}
 		
+		if ([ReleasePeriod countOfEntities] < 10){
+			NSArray *releasePeriods = [ReleasePeriod findAllSortedBy:@"identifier" ascending:YES inContext:context];
+			for (ReleasePeriod *releasePeriod in releasePeriods){
+				if (releasePeriod.identifier.integerValue > 1){
+					[releasePeriod setIdentifier:@(releasePeriod.identifier.integerValue + 1)];
+				}
+			}
+			
+			NSCalendar *calendar = [NSCalendar currentCalendar];
+			[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+			NSDateComponents *components = [calendar components:NSYearCalendarUnit fromDate:[NSDate date]];
+			[components setYear:2060];
+			
+			ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:[calendar dateFromComponents:components] inContext:context];
+			
+			ReleasePeriod *releasePeriod = [ReleasePeriod createInContext:context];
+			[releasePeriod setIdentifier:@(2)];
+			[releasePeriod setName:@"Recently Released"];
+			
+			Game *placeholderGame = [Game createInContext:context];
+			[placeholderGame setTitle:@"ZZZ"];
+			[placeholderGame setReleasePeriod:releasePeriod];
+			[placeholderGame setReleaseDate:releaseDate];
+			[placeholderGame setHidden:@(YES)];
+			
+			[releasePeriod setPlaceholderGame:placeholderGame];
+		}
+		
 		[context saveToPersistentStoreAndWait];
 	}
 	else {
@@ -177,7 +205,7 @@ static NSArray *SEARCHRESULTS;
 		ReleaseDate *releaseDate = [ReleaseDate createInContext:context];
 		[releaseDate setDate:[calendar dateFromComponents:components]];
 		
-		NSArray *periods = @[@"Released", @"This Month", @"Next Month", @"This Quarter", @"Next Quarter", @"This Year", @"Next Year", @"Later", @"To Be Announced"];
+		NSArray *periods = @[@"Released", @"Recently Released", @"This Month", @"Next Month", @"This Quarter", @"Next Quarter", @"This Year", @"Next Year", @"Later", @"To Be Announced"];
 		for (NSInteger period = 1; period <= periods.count; period++){
 			ReleasePeriod *releasePeriod = [ReleasePeriod createInContext:context];
 			[releasePeriod setIdentifier:@(period)];

@@ -191,15 +191,20 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 			UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
+			
 			UIGraphicsBeginImageContext(image.size);
 			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
 			image = UIGraphicsGetImageFromCurrentImageContext();
 			UIGraphicsEndImageContext();
+			
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[cell.coverImageView setImage:image];
 				[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
 			});
-			[_imageCache setObject:image forKey:game.thumbnailName];
+			
+			if (image){
+				[_imageCache setObject:image forKey:game.thumbnailName];
+			}
 		});
 	}
 	

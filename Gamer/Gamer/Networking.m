@@ -349,6 +349,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
+	NSDateComponents *threeMonthsAgo = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+	[threeMonthsAgo setMonth:threeMonthsAgo.month - 3];
+	
 	// Components for today, this month, this quarter, this year
 	NSDateComponents *current = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	[current setQuarter:[self quarterForMonth:current.month]];
@@ -360,31 +363,34 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	next.year++;
 	
 	NSInteger period = 0;
-	if ([releaseDate.date compare:[calendar dateFromComponents:current]] <= NSOrderedSame) period = 1; // Released
+	if ([releaseDate.date compare:[calendar dateFromComponents:threeMonthsAgo]] <= NSOrderedSame)
+		period = 1; // Released
+	else if ([releaseDate.date compare:[calendar dateFromComponents:current]] <= NSOrderedSame)
+		period = 2; // Recently released
 	else{
 		if (releaseDate.year.integerValue == 2050)
-			period = 9; // TBA
+			period = 10; // TBA
 		else if (releaseDate.year.integerValue > next.year)
-			period = 8; // Later
+			period = 9; // Later
 		else if (releaseDate.year.integerValue == next.year){
 			if (current.month == 12 && releaseDate.month.integerValue == 1)
-				period = 3; // Next month
+				period = 4; // Next month
 			else if (current.quarter == 4 && releaseDate.quarter.integerValue == 1)
-				period = 5; // Next quarter
+				period = 6; // Next quarter
 			else
-				period = 7; // Next year
+				period = 8; // Next year
 		}
 		else if (releaseDate.year.integerValue == current.year){
 			if (releaseDate.month.integerValue == current.month)
-				period = 2; // This month
+				period = 3; // This month
 			else if (releaseDate.month.integerValue == next.month)
-				period = 3; // Next month
+				period = 4; // Next month
 			else if (releaseDate.quarter.integerValue == current.quarter)
-				period = 4; // This quarter
+				period = 5; // This quarter
 			else if (releaseDate.quarter.integerValue == next.quarter)
-				period = 5; // Next quarter
+				period = 6; // Next quarter
 			else
-				period = 6; // This year
+				period = 7; // This year
 		}
 	}
 	
