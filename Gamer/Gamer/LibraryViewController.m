@@ -33,8 +33,12 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 @interface LibraryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, UIActionSheetDelegate, LibraryFilterViewDelegate>
 
-@property (nonatomic, strong) UIBarButtonItem *refreshButton;
+@property (nonatomic, strong) UIBarButtonItem *refreshBarButton;
 @property (nonatomic, strong) UIBarButtonItem *searchBarItem;
+
+@property (nonatomic, strong) UIBarButtonItem *sortBarButton;
+@property (nonatomic, strong) UIBarButtonItem *filterBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
 
@@ -58,7 +62,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLibraryGames)];
+	_refreshBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLibraryGames)];
 	
 	// UI setup
 	if ([Tools deviceIsiPad]){
@@ -67,15 +71,16 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[searchBar setDelegate:self];
 		_searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
 		
-		[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
+		[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshBarButton] animated:NO];
 		
-		UIBarButtonItem *sortBarButton = [[UIBarButtonItem alloc] initWithTitle:@"   Sort  " style:UIBarButtonItemStylePlain target:self action:@selector(showSortOptions)];
-		UIBarButtonItem *filterBarButton = [[UIBarButtonItem alloc] initWithTitle:@"      Filter     " style:UIBarButtonItemStylePlain target:self action:@selector(showFilterOptions)];
+		_sortBarButton = [[UIBarButtonItem alloc] initWithTitle:@"   Sort  " style:UIBarButtonItemStylePlain target:self action:@selector(showSortOptions)];
+		_filterBarButton = [[UIBarButtonItem alloc] initWithTitle:@"      Filter     " style:UIBarButtonItemStylePlain target:self action:@selector(showFilterOptions)];
+		_cancelBarButton = [[UIBarButtonItem alloc] initWithTitle:@"    Cancel   " style:UIBarButtonItemStylePlain target:self action:@selector(cancelBarButtonAction)];
 		
-		[self.navigationItem setLeftBarButtonItems:@[sortBarButton, filterBarButton] animated:NO];
+		[self.navigationItem setLeftBarButtonItems:@[_sortBarButton, _filterBarButton] animated:NO];
 	}
 	else{
-		[self.navigationItem setRightBarButtonItem:_refreshButton animated:NO];
+		[self.navigationItem setRightBarButtonItem:_refreshBarButton animated:NO];
 		
 		_filterView = [[LibraryFilterView alloc] initWithFrame:CGRectMake(0, -50, 320, 50)];
 		[_filterView setDelegate:self];
@@ -227,7 +232,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			_numberOfRunningTasks--;
 			
 			if (_numberOfRunningTasks == 0)
-				[_refreshButton setEnabled:YES];
+				[_refreshBarButton setEnabled:YES];
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
@@ -255,7 +260,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 							}
 							
 							if (section == _fetchedResultsController.sections.count - 1 && row == [_fetchedResultsController.sections[section] numberOfObjects] - 1 && imagesDownloaded == NO){
-								[_refreshButton setEnabled:YES];
+								[_refreshBarButton setEnabled:YES];
 							}
 						}
 					}
@@ -296,7 +301,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 						NSLog(@"RELOAD");
 						dispatch_async(dispatch_get_main_queue(), ^{
 							[_collectionView reloadData];
-							[_refreshButton setEnabled:YES];
+							[_refreshBarButton setEnabled:YES];
 						});
 					}];
 				}
@@ -351,11 +356,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 					[self fetchGamesWithFilter:LibraryFilterMetascore group:@"metascore" predicate:predicate sort:@"metascore,title" ascending:NO];
 					[_filterView showStatusWithTitle:@"Sorted by Metascore" animated:YES];
 					break;
-				case 3:
-					// Platform (iPad)
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:predicate sort:@"libraryPlatform.index,title" ascending:YES];
-					[_filterView showStatusWithTitle:@"Sorted by platform" animated:YES];
-					break;
 				default: break;
 			}
 		}
@@ -390,6 +390,10 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 				default: break;
 			}
 		}
+		
+		if ([Tools deviceIsiPad]){
+			[self.navigationItem setLeftBarButtonItems:@[_sortBarButton, _filterBarButton, _cancelBarButton] animated:YES];
+		}
 	}
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
@@ -412,7 +416,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 - (void)refreshLibraryGames{
 	if (_fetchedResultsController.fetchedObjects.count > 0){
-		[_refreshButton setEnabled:NO];
+		[_refreshBarButton setEnabled:NO];
 	}
 	
 	_numberOfRunningTasks = 0;
@@ -426,16 +430,13 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)showSortOptions{
 	UIActionSheet *actionSheet;
 	
-	if ([Tools deviceIsiPhone]){
-		actionSheet = [[UIActionSheet alloc] initWithTitle:@"Sort by" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Title", @"Year of release", @"Metascore", nil];
-		[actionSheet setTag:1];
+	actionSheet = [[UIActionSheet alloc] initWithTitle:@"Sort by" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Title", @"Year of Release", @"Metascore", nil];
+	[actionSheet setTag:1];
+	
+	if ([Tools deviceIsiPhone])
 		[actionSheet showInView:self.view.window];
-	}
-	else{
-		actionSheet = [[UIActionSheet alloc] initWithTitle:@"Sort by" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Title", @"Year of release", @"Metascore", @"Platform", nil];
-		[actionSheet setTag:1];
+	else
 		[actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItems[0] animated:YES];
-	}
 	
 	[self.navigationController.navigationBar setUserInteractionEnabled:NO];
 }
@@ -458,11 +459,25 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	[self refreshLibraryGames];
 }
 
+- (void)cancelBarButtonAction{
+	[self.navigationItem setLeftBarButtonItems:@[_sortBarButton, _filterBarButton] animated:YES];
+	
+	_filter = LibraryFilterPlatform;
+	
+	_fetchedResultsController = nil;
+	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	[_collectionView reloadData];
+}
+
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
 	[_collectionView reloadData];
 }
 
 - (void)refreshLibraryNotification:(NSNotification *)notification{
+	if ([Tools deviceIsiPad]){
+		[self.navigationItem setLeftBarButtonItems:@[_sortBarButton, _filterBarButton] animated:NO];
+	}
+	
 	[_filterView resetAnimated:YES];
 	
 	_filter = LibraryFilterPlatform;
