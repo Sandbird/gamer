@@ -45,6 +45,8 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlistTable" object:nil];
 	
+	[self.refreshControl setTintColor:[UIColor lightGrayColor]];
+	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
 	_context = [NSManagedObjectContext defaultContext];
@@ -59,6 +61,8 @@
 	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 	
 	[self updateGameReleasePeriods];
+	
+	[self.refreshControl endRefreshing];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -159,7 +163,7 @@
 		[customCell.coverImageView setImage:nil];
 		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
 			
 			UIGraphicsBeginImageContext(image.size);
@@ -218,7 +222,7 @@
 			_numberOfRunningTasks--;
 			
 			if (_numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				[self.refreshControl endRefreshing];
 				[self updateGameReleasePeriods];
 			}
 		}
@@ -230,7 +234,7 @@
 			
 			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
 					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 					
@@ -247,7 +251,7 @@
 				[self requestMetascoreForGame:game];
 			
 			if (_numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				[self.refreshControl endRefreshing];
 				[self updateGameReleasePeriods];
 			}
 		}
@@ -272,7 +276,7 @@
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Thumbnail - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
@@ -301,7 +305,7 @@
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
 				
 				[game setMetacriticURL:request.URL.absoluteString];
@@ -350,17 +354,16 @@
 	}];
 }
 
-#pragma mark - Actions
-
-- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
+- (void)refreshWishlist{
 	dispatch_async(dispatch_get_main_queue(), ^{
+		// Pop all tabs (in case an opened game is deleted)
+		for (UIViewController *viewController in self.tabBarController.viewControllers){
+			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+		}
+		
 		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
 		[_context saveToPersistentStoreAndWait];
 	});
-	
-	if (self.fetchedResultsController.fetchedObjects.count > 0){
-		[self.navigationItem.rightBarButtonItem setEnabled:NO];
-	}
 	
 	_numberOfRunningTasks = 0;
 	
@@ -371,6 +374,12 @@
 			if (game.identifier) [self requestInformationForGame:game];
 		}
 	}
+}
+
+#pragma mark - Actions
+
+- (IBAction)refreshControlValueChangedAction:(UIRefreshControl *)sender{
+	[self refreshWishlist];
 }
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{

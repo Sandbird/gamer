@@ -486,7 +486,7 @@ typedef NS_ENUM(NSInteger, Section){
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Cover Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				NSData *downloadedData = [NSData dataWithContentsOfURL:filePath];
 				UIImage *downloadedImage = [UIImage imageWithData:downloadedData];
 				
@@ -531,7 +531,7 @@ typedef NS_ENUM(NSInteger, Section){
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
 				
 //				NSLog(@"HTML: %@", HTML);
@@ -797,10 +797,7 @@ typedef NS_ENUM(NSInteger, Section){
 		[_game setDigital:@(NO)];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
-			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			[self refreshAddButtonsAnimated:YES];
 			
 			[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
 			[_completedSwitch setOn:_game.completed.boolValue animated:YES];
@@ -852,7 +849,7 @@ typedef NS_ENUM(NSInteger, Section){
 	
 	_similarGames = [self orderedSimilarGamesFromGame:_game];
 	
-	[self refreshAddButtons];
+	[self refreshAddButtonsAnimated:animated];
 	
 	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
 	[_completedSwitch setOn:_game.completed.boolValue animated:animated];
@@ -897,7 +894,7 @@ typedef NS_ENUM(NSInteger, Section){
 	}
 }
 
-- (void)refreshAddButtons{
+- (void)refreshAddButtonsAnimated:(BOOL)animated{
 	if (_selectablePlatforms.count > 0){
 		[_wishlistButton setHidden:NO];
 		[_libraryButton setHidden:([_game.released isEqualToNumber:@(YES)] || [_game.owned isEqualToNumber:@(YES)]) ? NO : YES];
@@ -909,6 +906,11 @@ typedef NS_ENUM(NSInteger, Section){
 	
 	[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
 	[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+	
+	if (animated){
+		[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+		[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+	}
 }
 
 - (NSArray *)orderedPlatformsFromGame:(Game *)game{
@@ -982,10 +984,7 @@ typedef NS_ENUM(NSInteger, Section){
 		[_game setDigital:@(NO)];
 		
 		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-			[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-			[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
-			[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			[self refreshAddButtonsAnimated:YES];
 			
 			[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
 			[_completedSwitch setOn:_game.completed.boolValue animated:YES];
@@ -1054,10 +1053,7 @@ typedef NS_ENUM(NSInteger, Section){
 			[_game setDigital:@(NO)];
 			
 			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[_wishlistButton setTitle:[_game.wanted isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-				[_wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-				[_libraryButton setTitle:[_game.owned isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
-				[_libraryButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+				[self refreshAddButtonsAnimated:YES];
 				
 				[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
 				[_completedSwitch setOn:_game.completed.boolValue animated:YES];

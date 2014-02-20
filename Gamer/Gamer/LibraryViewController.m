@@ -44,6 +44,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 @property (nonatomic, strong) UIView *guideView;
 
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
+
 @property (nonatomic, strong) LibraryFilterView *filterView;
 
 @property (nonatomic, assign) LibraryFilter filter;
@@ -62,10 +64,10 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	_refreshBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLibraryGames)];
-	
 	// UI setup
 	if ([Tools deviceIsiPad]){
+		_refreshBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLibraryGames)];
+		
 		UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
 		[searchBar setPlaceholder:@"Find Games"];
 		[searchBar setDelegate:self];
@@ -80,7 +82,13 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[self.navigationItem setLeftBarButtonItems:@[_sortBarButton, _filterBarButton] animated:NO];
 	}
 	else{
-		[self.navigationItem setRightBarButtonItem:_refreshBarButton animated:NO];
+		UIView *refreshView = [[UIView alloc] initWithFrame:CGRectMake(0, -50, 0, 0)];
+		[_collectionView addSubview:refreshView];
+		
+		_refreshControl = [UIRefreshControl new];
+		[_refreshControl setTintColor:[UIColor lightGrayColor]];
+		[_refreshControl addTarget:self action:@selector(refreshLibraryGames) forControlEvents:UIControlEventValueChanged];
+		[refreshView addSubview:_refreshControl];
 		
 		_filterView = [[LibraryFilterView alloc] initWithFrame:CGRectMake(0, -50, 320, 50)];
 		[_filterView setDelegate:self];
@@ -115,6 +123,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)viewDidAppear:(BOOL)animated{
 	[[Session tracker] set:kGAIScreenName value:@"Library"];
 	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
+	
+	[_refreshControl endRefreshing];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -194,7 +204,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[cell.coverImageView setImage:nil];
 		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
 			
 			UIGraphicsBeginImageContext(image.size);
@@ -231,8 +241,10 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			_numberOfRunningTasks--;
 			
-			if (_numberOfRunningTasks == 0)
+			if (_numberOfRunningTasks == 0){
 				[_refreshBarButton setEnabled:YES];
+				[_refreshControl endRefreshing];
+			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
@@ -261,6 +273,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 							
 							if (section == _fetchedResultsController.sections.count - 1 && row == [_fetchedResultsController.sections[section] numberOfObjects] - 1 && imagesDownloaded == NO){
 								[_refreshBarButton setEnabled:YES];
+								[_refreshControl endRefreshing];
 							}
 						}
 					}
@@ -290,7 +303,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			NSLog(@"Success in %@ - Status code: %d - Thumbnail - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			_numberOfRunningTasks--;
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
@@ -302,6 +315,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 						dispatch_async(dispatch_get_main_queue(), ^{
 							[_collectionView reloadData];
 							[_refreshBarButton setEnabled:YES];
+							[_refreshControl endRefreshing];
 						});
 					}];
 				}

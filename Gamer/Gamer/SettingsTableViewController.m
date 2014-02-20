@@ -203,13 +203,9 @@
 - (IBAction)switchAction:(UISwitch *)sender{
 	Platform *platform = _platforms[sender.tag];
 	
-	NSLog(@"SENDER IS ON: %d", sender.isOn);
-	
 	sender.isOn ? [[Session gamer] addPlatformsObject:platform] : [[Session gamer] removePlatformsObject:platform];
 	
-	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		NSLog(@"SAVE ERROR: %@", error);
-	}];
+	[_context saveToPersistentStoreAndWait];
 }
 
 - (IBAction)segmentedControlValueChangedAction:(UISegmentedControl *)sender{
