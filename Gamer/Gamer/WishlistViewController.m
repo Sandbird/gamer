@@ -61,7 +61,7 @@
 	[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistCollectionNotification:) name:@"RefreshWishlistCollection" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlist" object:nil];
 	
 	_context = [NSManagedObjectContext defaultContext];
 	
@@ -364,7 +364,7 @@
 	[_collectionView reloadData];
 }
 
-- (void)refreshWishlistCollectionNotification:(NSNotification *)notification{
+- (void)refreshWishlistNotification:(NSNotification *)notification{
 	[self updateGameReleasePeriods];
 }
 

@@ -43,7 +43,7 @@
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlistTable" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlist" object:nil];
 	
 	[self.refreshControl setTintColor:[UIColor lightGrayColor]];
 	

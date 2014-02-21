@@ -562,7 +562,7 @@ typedef NS_ENUM(NSInteger, Section){
 								if (_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform){
 									[_game setWishlistMetascore:metascore];
 									[_game setWishlistMetascorePlatform:platform];
-									[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistTable" object:nil];
+									[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 								}
 							}
 							else{
@@ -812,7 +812,7 @@ typedef NS_ENUM(NSInteger, Section){
 					[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 			});
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName:[Tools deviceIsiPad] ? @"RefreshWishlistCollection" : @"RefreshWishlistTable" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
@@ -1002,7 +1002,7 @@ typedef NS_ENUM(NSInteger, Section){
 					[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 			});
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName:[Tools deviceIsiPad] ? @"RefreshWishlistCollection" : @"RefreshWishlistTable" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
@@ -1071,7 +1071,7 @@ typedef NS_ENUM(NSInteger, Section){
 						[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 				});
 				
-				[[NSNotificationCenter defaultCenter] postNotificationName:[Tools deviceIsiPad] ? @"RefreshWishlistCollection" : @"RefreshWishlistTable" object:nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 			}];
 		}
@@ -1101,10 +1101,8 @@ typedef NS_ENUM(NSInteger, Section){
 	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		if (sender != _preorderedSwitch)
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
-		else if ([Tools deviceIsiPhone])
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistTable" object:nil];
 		else
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlistCollection" object:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 	}];
 }
 
