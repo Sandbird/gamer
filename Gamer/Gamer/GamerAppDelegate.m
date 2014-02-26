@@ -80,7 +80,7 @@
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-	NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"wanted = %@ AND identifier != nil", @(YES)];
 	NSArray *games = [Game findAllWithPredicate:predicate inContext:context];
@@ -154,32 +154,28 @@
 		else{
 			NSLog(@"Success in %@ - Background (Metascore) - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-				
-				[game setMetacriticURL:request.URL.absoluteString];
-				
-				if (HTML){
-					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-						[game setWishlistMetascore:metascore];
-						[game setWishlistMetascorePlatform:game.wishlistPlatform];
-					}
-					else{
-						[game setWishlistMetascore:nil];
-						[game setWishlistMetascorePlatform:nil];
-					}
+			NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
+			
+			[game setMetacriticURL:request.URL.absoluteString];
+			
+			if (HTML){
+				NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+				if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+					[game setWishlistMetascore:metascore];
+					[game setWishlistMetascorePlatform:game.wishlistPlatform];
 				}
-				
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						if (_numberOfReleasedGamesToRefreshMetascore == 0){
-							completionHandler(UIBackgroundFetchResultNewData);
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-						}
-					}];
-				});
-			});
+				else{
+					[game setWishlistMetascore:nil];
+					[game setWishlistMetascorePlatform:nil];
+				}
+			}
+			
+			[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				if (_numberOfReleasedGamesToRefreshMetascore == 0){
+					completionHandler(UIBackgroundFetchResultNewData);
+					[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+				}
+			}];
 		}
 	}];
 	[downloadTask resume];

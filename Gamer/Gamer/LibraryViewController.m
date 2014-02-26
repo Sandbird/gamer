@@ -101,7 +101,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLibraryNotification:) name:@"RefreshLibrary" object:nil];
 	
-	_context = [NSManagedObjectContext defaultContext];
+	_context = [NSManagedObjectContext contextForCurrentThread];
 	
 	_filter = LibraryFilterPlatform;
 	
@@ -204,23 +204,19 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[cell.coverImageView setImage:nil];
 		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
-			
-			UIGraphicsBeginImageContext(image.size);
-			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-			image = UIGraphicsGetImageFromCurrentImageContext();
-			UIGraphicsEndImageContext();
-			
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[cell.coverImageView setImage:image];
-				[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-			});
-			
-			if (image){
-				[_imageCache setObject:image forKey:game.thumbnailName];
-			}
-		});
+		UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
+		
+		UIGraphicsBeginImageContext(image.size);
+		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+		image = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+		
+		if (image){
+			[_imageCache setObject:image forKey:game.thumbnailName];
+		}
 	}
 	
 	return cell;
@@ -303,23 +299,18 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			NSLog(@"Success in %@ - Status code: %d - Thumbnail - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			_numberOfRunningTasks--;
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-				[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
-				
-				if (_numberOfRunningTasks == 0){
-					[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						NSLog(@"RELOAD");
-						dispatch_async(dispatch_get_main_queue(), ^{
-							[_collectionView reloadData];
-							[_refreshBarButton setEnabled:YES];
-							[_refreshControl endRefreshing];
-						});
-					}];
-				}
-			});
+			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+			
+			if (_numberOfRunningTasks == 0){
+				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					[_collectionView reloadData];
+					[_refreshBarButton setEnabled:YES];
+					[_refreshControl endRefreshing];
+				}];
+			}
 		}
 	}];
 	[downloadTask resume];
@@ -414,7 +405,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[_filterView.sortButton setHighlighted:NO];
 		[_filterView.filterButton setHighlighted:NO];
 	});
-	
+
 	[self.navigationController.navigationBar setUserInteractionEnabled:YES];
 }
 

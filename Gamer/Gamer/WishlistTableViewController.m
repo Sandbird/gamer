@@ -49,7 +49,7 @@
 	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
-	_context = [NSManagedObjectContext defaultContext];
+	_context = [NSManagedObjectContext contextForCurrentThread];
 	
 	self.fetchedResultsController = [self fetchData];
 	
@@ -163,23 +163,19 @@
 		[customCell.coverImageView setImage:nil];
 		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
-			
-			UIGraphicsBeginImageContext(image.size);
-			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-			image = UIGraphicsGetImageFromCurrentImageContext();
-			UIGraphicsEndImageContext();
-			
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[customCell.coverImageView setImage:image];
-				[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-			});
-			
-			if (image){
-				[_imageCache setObject:image forKey:game.thumbnailName];
-			}
-		});
+		UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
+		
+		UIGraphicsBeginImageContext(image.size);
+		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+		image = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		
+		[customCell.coverImageView setImage:image];
+		[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+		
+		if (image){
+			[_imageCache setObject:image forKey:game.thumbnailName];
+		}
 	}
 	
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
@@ -220,40 +216,33 @@
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, ((NSHTTPURLResponse *)response).statusCode);
 			
 			_numberOfRunningTasks--;
-			
-			if (_numberOfRunningTasks == 0){
-				[self.refreshControl endRefreshing];
-				[self updateGameReleasePeriods];
-			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//		NSLog(@"%@", JSON);
+//			NSLog(@"%@", responseObject);
 			
 			_numberOfRunningTasks--;
 			
 			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
-					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-					
-					UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
-					CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
-					
-					if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
-						[self downloadCoverImageForGame:game];
-					}
+			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
+				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+				
+				UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
+				CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
+				
+				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
+					[self downloadCoverImageForGame:game];
 				}
-			});
+			}
 			
 			if ([game.released isEqualToNumber:@(YES)])
 				[self requestMetascoreForGame:game];
-			
-			if (_numberOfRunningTasks == 0){
-				[self.refreshControl endRefreshing];
-				[self updateGameReleasePeriods];
-			}
+		}
+		
+		if (_numberOfRunningTasks == 0){
+			[self.refreshControl endRefreshing];
+			[self updateGameReleasePeriods];
 		}
 	}];
 	[dataTask resume];
@@ -276,16 +265,12 @@
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Thumbnail - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-				[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
-				
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[_context saveToPersistentStoreAndWait];
-				});
-			});
+			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+			
+			[_context saveToPersistentStoreAndWait];
 		}
 	}];
 	[downloadTask resume];
@@ -305,28 +290,24 @@
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-				
-				[game setMetacriticURL:request.URL.absoluteString];
-				
-				if (HTML){
-					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-						[game setWishlistMetascore:metascore];
-						[game setWishlistMetascorePlatform:game.wishlistPlatform];
-					}
-					else{
-						[game setWishlistMetascore:nil];
-						[game setWishlistMetascorePlatform:nil];
-					}
+			NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
+			
+			[game setMetacriticURL:request.URL.absoluteString];
+			
+			if (HTML){
+				NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+				if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+					[game setWishlistMetascore:metascore];
+					[game setWishlistMetascorePlatform:game.wishlistPlatform];
 				}
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						[self.tableView reloadData];
-					}];
-				});
-			});
+				else{
+					[game setWishlistMetascore:nil];
+					[game setWishlistMetascorePlatform:nil];
+				}
+			}
+			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[self.tableView reloadData];
+			}];
 		}
 	}];
 	[downloadTask resume];
@@ -355,15 +336,13 @@
 }
 
 - (void)refreshWishlist{
-	dispatch_async(dispatch_get_main_queue(), ^{
-		// Pop all tabs (in case an opened game is deleted)
-		for (UIViewController *viewController in self.tabBarController.viewControllers){
-			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
-		}
-		
-		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
-		[_context saveToPersistentStoreAndWait];
-	});
+	// Pop all tabs (in case an opened game is deleted)
+	for (UIViewController *viewController in self.tabBarController.viewControllers){
+		[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+	}
+	
+	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
+	[_context saveToPersistentStoreAndWait];
 	
 	_numberOfRunningTasks = 0;
 	

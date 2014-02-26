@@ -63,7 +63,7 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlist" object:nil];
 	
-	_context = [NSManagedObjectContext defaultContext];
+	_context = [NSManagedObjectContext contextForCurrentThread];
 	
 	_fetchedResultsController = [self fetchData];
 	
@@ -150,23 +150,19 @@
 		[cell.coverImageView setImage:nil];
 		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
-			
-			UIGraphicsBeginImageContext(image.size);
-			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-			image = UIGraphicsGetImageFromCurrentImageContext();
-			UIGraphicsEndImageContext();
-			
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[cell.coverImageView setImage:image];
-				[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-			});
-			
-			if (image){
-				[_imageCache setObject:image forKey:game.thumbnailName];
-			}
-		});
+		UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
+		
+		UIGraphicsBeginImageContext(image.size);
+		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+		image = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+		
+		if (image){
+			[_imageCache setObject:image forKey:game.thumbnailName];
+		}
 	}
 	
 	[cell.titleLabel setText:(game.identifier) ? game.title : nil];
@@ -213,18 +209,16 @@
 			
 			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
-					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-					
-					UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
-					CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
-					
-					if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
-						[self downloadCoverImageForGame:game];
-					}
+			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
+				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+				
+				UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
+				CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
+				
+				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
+					[self downloadCoverImageForGame:game];
 				}
-			});
+			}
 			
 			if ([game.released isEqualToNumber:@(YES)])
 				[self requestMetascoreForGame:game];
@@ -255,18 +249,14 @@
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Thumbnail - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-				[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-				[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-				[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
-				
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						[_collectionView reloadData];
-					}];
-				});
-			});
+			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+			
+			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_collectionView reloadData];
+			}];
 		}
 	}];
 	[downloadTask resume];
@@ -286,29 +276,25 @@
 		else{
 			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
 			
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-				
-				[game setMetacriticURL:request.URL.absoluteString];
-				
-				if (HTML){
-					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-						[game setWishlistMetascore:metascore];
-						[game setWishlistMetascorePlatform:game.wishlistPlatform];
-					}
-					else{
-						[game setWishlistMetascore:nil];
-						[game setWishlistMetascorePlatform:nil];
-					}
+			NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
+			
+			[game setMetacriticURL:request.URL.absoluteString];
+			
+			if (HTML){
+				NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+				if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+					[game setWishlistMetascore:metascore];
+					[game setWishlistMetascorePlatform:game.wishlistPlatform];
 				}
-				
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						[_collectionView reloadData];
-					}];
-				});
-			});
+				else{
+					[game setWishlistMetascore:nil];
+					[game setWishlistMetascorePlatform:nil];
+				}
+			}
+			
+			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_collectionView reloadData];
+			}];
 		}
 	}];
 	[downloadTask resume];
@@ -341,10 +327,8 @@
 }
 
 - (void)refreshWishlistGames{
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
-		[_context saveToPersistentStoreAndWait];
-	});
+	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
+	[_context saveToPersistentStoreAndWait];
 	
 	if (_fetchedResultsController.fetchedObjects.count > 0){
 		[_refreshButton setEnabled:NO];

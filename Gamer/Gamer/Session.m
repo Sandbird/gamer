@@ -126,7 +126,7 @@ static NSArray *SEARCHRESULTS;
 
 + (void)setup{
 	// Initial data
-	NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
+	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
 	
 	// (AKA the user)
 	Gamer *gamer = [Gamer findFirstInContext:context];

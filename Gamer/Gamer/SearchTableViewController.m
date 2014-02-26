@@ -76,7 +76,8 @@
 	[_runningTask cancel];
 	
 	if (searchText.length > 0){
-		NSString *query = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+		NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
+		NSString *query = [[searchText componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
 		[self requestGamesWithTitlesContainingQuery:query];
 	}
 }
@@ -86,7 +87,8 @@
 	
 	[_runningTask cancel];
 	
-	NSString *query = [searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
+	NSString *query = [[searchBar.text componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
 	[self requestGamesWithTitlesContainingQuery:query];
 }
 

@@ -362,6 +362,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	// Components for today, this month, this quarter, this year
 	NSDateComponents *current = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	[current setQuarter:[self quarterForMonth:current.month]];
+	[current setHour:10];
 	
 	// Components for next month, next quarter, next year
 	NSDateComponents *next = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
