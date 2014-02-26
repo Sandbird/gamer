@@ -26,12 +26,6 @@
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
 #if !(TARGET_IPHONE_SIMULATOR)
-	// Google Analytics
-	[[GAI sharedInstance] setTrackUncaughtExceptions:YES];
-	[[GAI sharedInstance] setDispatchInterval:20];
-//	[[GAI sharedInstance] setDebug:YES];
-	[[GAI sharedInstance] setDefaultTracker:[[GAI sharedInstance] trackerWithTrackingId:@"UA-42707514-1"]];
-	
 	// Crashlytics
 	[Crashlytics startWithAPIKey:@"a807ed553e7fcb9b4a4202e44f5b25d260153417"];
 #endif
@@ -80,13 +74,12 @@
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-	NSManagedObjectContext *context = [NSManagedObjectContext contextForCurrentThread];
+	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"wanted = %@ AND identifier != nil", @(YES)];
-	NSArray *games = [Game findAllWithPredicate:predicate inContext:context];
+	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:context];
 	
 	_numberOfReleasedGamesToRefreshMetascore = [games filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"released = %@", @(YES)]].count;
-	NSLog(@"%d", _numberOfReleasedGamesToRefreshMetascore);
 	
 	_numberOfRunningTasks = 0;
 	
@@ -102,8 +95,7 @@
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-//			if (((NSHTTPURLResponse *)response).statusCode != 0)
-				NSLog(@"Failure in %@ - Status code: %d - Background (Game)", self, ((NSHTTPURLResponse *)response).statusCode);
+			NSLog(@"Failure in %@ - Status code: %d - Background (Game)", self, ((NSHTTPURLResponse *)response).statusCode);
 			
 			_numberOfRunningTasks--;
 			
@@ -114,7 +106,7 @@
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Background (Game) - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//		NSLog(@"%@", JSON);
+			NSLog(@"%@", responseObject);
 			
 			_numberOfRunningTasks--;
 			
@@ -170,7 +162,7 @@
 				}
 			}
 			
-			[context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				if (_numberOfReleasedGamesToRefreshMetascore == 0){
 					completionHandler(UIBackgroundFetchResultNewData);
 					[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];

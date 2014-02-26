@@ -57,9 +57,6 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[Session tracker] set:kGAIScreenName value:@"Search"];
-	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
-	
 	if ([Session gamer].platforms.count == 0){
 		[_guideView setHidden:NO];
 		[_searchBar setUserInteractionEnabled:NO];

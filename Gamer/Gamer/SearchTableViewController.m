@@ -53,11 +53,6 @@
 	}
 }
 
-- (void)viewDidAppear:(BOOL)animated{
-	[[Session tracker] set:kGAIScreenName value:@"Search"];
-	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
-}
-
 - (void)viewWillDisappear:(BOOL)animated{
 	[_runningTask cancel];
 }

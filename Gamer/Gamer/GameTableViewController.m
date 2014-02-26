@@ -117,7 +117,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[self.refreshControl setTintColor:[UIColor lightGrayColor]];
 	
-	_context = [NSManagedObjectContext contextForCurrentThread];
+	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	_imagesStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No images available"];
 	_videosStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No videos available"];
@@ -125,7 +125,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_videosCollectionView addSubview:_videosStatusView];
 	
 	if (!_game)
-		_game = [Game findFirstByAttribute:@"identifier" withValue:_gameIdentifier inContext:_context];
+		_game = [Game MR_findFirstByAttribute:@"identifier" withValue:_gameIdentifier inContext:_context];
 	if (_game){
 		[self refreshAnimated:NO];
 		
@@ -150,9 +150,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[Session tracker] set:kGAIScreenName value:@"Game"];
-	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
-	
 	if ([Tools deviceIsiPad]){
 		_dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapGestureAction:)];
 		[_dismissTapGesture setNumberOfTapsRequired:1];
@@ -441,14 +438,14 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
-			_game = [Game findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
-			if (!_game) _game = [Game createInContext:_context];
+			_game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
+			if (!_game) _game = [Game MR_createInContext:_context];
 			
 			[Networking updateGame:_game withDataFromJSON:responseObject context:_context];
 			for (SimilarGame *similarGame in _game.similarGames)
 				[self requestImageForSimilarGame:similarGame];
 			
-			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 				
 				UIImage *coverImage = [UIImage imageWithData:_game.coverImage.data];
@@ -495,12 +492,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Cover Image", self, ((NSHTTPURLResponse *)response).statusCode);
 			
-			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
+			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:(__bridge void *)(self)];
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Cover Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
+			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:(__bridge void *)(self)];
 			
 			NSData *downloadedData = [NSData dataWithContentsOfURL:filePath];
 			UIImage *downloadedImage = [UIImage imageWithData:downloadedData];
@@ -509,7 +506,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[_game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
 			[_game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 			
-			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
 				[self setCoverImageAnimated:YES];
 			}];
@@ -517,13 +514,18 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	}];
 	[downloadTask resume];
 	
-	[progress addObserver:self forKeyPath:@"fractionCompleted" options:NSKeyValueObservingOptionNew context:nil];
+	[progress addObserver:self forKeyPath:@"fractionCompleted" options:NSKeyValueObservingOptionNew context:(__bridge void *)(self)];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
 	dispatch_async(dispatch_get_main_queue(), ^{
-		NSProgress *progress = (NSProgress *)object;
-		[_progressIndicator setValue:progress.fractionCompleted];
+		if (context == (__bridge void *)(self)){
+			NSProgress *progress = (NSProgress *)object;
+			[_progressIndicator setValue:progress.fractionCompleted];
+		}
+		else{
+			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+		}
 	});
 }
 
@@ -550,7 +552,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
 				[_game setMetascore:metascore];
 				
-				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 					[_metascoreButton setHidden:NO];
 					[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 					
@@ -587,7 +589,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			else if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
 				[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
 			else
-				[_context saveToPersistentStoreAndWait];
+				[_context MR_saveToPersistentStoreAndWait];
 		}
 	}];
 	[downloadTask resume];
@@ -611,7 +613,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			if (results[@"image"] != [NSNull null])
 				[similarGame setThumbnailURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
 			
-			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_similarGamesCollectionView reloadData];
 			}];
 		}
@@ -642,9 +644,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				NSInteger index = 0;
 				for (NSDictionary *dictionary in results[@"images"]){
 					NSString *stringURL = [Tools stringFromSourceIfNotNull:dictionary[@"super_url"]];
-					Image *image = [Image findFirstByAttribute:@"thumbnailURL" withValue:stringURL inContext:_context];
+					Image *image = [Image MR_findFirstByAttribute:@"thumbnailURL" withValue:stringURL inContext:_context];
 					if (!image){
-						image = [Image createInContext:_context];
+						image = [Image MR_createInContext:_context];
 						
 						[image setThumbnailURL:stringURL];
 						[image setOriginalURL:[stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"]];
@@ -670,9 +672,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				NSInteger index = 0;
 				for (NSDictionary *dictionary in results[@"videos"]){
 					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
-					Video *video = [Video findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
+					Video *video = [Video MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
 					if (!video){
-						video = [Video createInContext:_context];
+						video = [Video MR_createInContext:_context];
 						[video setIdentifier:identifier];
 					}
 					
@@ -692,7 +694,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					[_videosStatusView setStatus:ContentStatusUnavailable];
 			}
 			
-			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				
 				[_imagesCollectionView reloadData];
@@ -716,8 +718,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(101)]){
-				[video deleteEntity];
-				[_context saveToPersistentStoreAndWait];
+				[video MR_deleteEntity];
+				[_context MR_saveToPersistentStoreAndWait];
 				return;
 			}
 			
@@ -735,9 +737,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				[video setThumbnailURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]]];
 			}
 			else
-				[video deleteEntity];
+				[video MR_deleteEntity];
 			
-			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				_videos = [self orderedVideosFromGame:_game];
 				
 				if (_videos.count == 0){
@@ -919,7 +921,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	// If release period is collapsed, set game to hidden
 	if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", _game.releasePeriod.identifier, @(NO), @(YES)];
-		NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+		NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
 		[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
 	}
 	
@@ -967,7 +969,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (void)saveAndRefreshAfterStateChange{
-	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[self refreshAddButtonsAnimated:YES];
 		
 		[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
@@ -1045,7 +1047,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 	}
 	
-	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		if (sender != _preorderedSwitch)
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		else

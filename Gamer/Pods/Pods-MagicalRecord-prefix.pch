@@ -3,9 +3,6 @@
 #endif
 
 #import "Pods-environment.h"
-#ifdef __OBJC__
-#define MR_SHORTHAND
-#define MR_ENABLE_ACTIVE_RECORD_LOGGING 0
-#import "CoreData+MagicalRecord.h"
-#endif
 
+#import <CoreData/CoreData.h>
+#import "CoreData+MagicalRecord.h"

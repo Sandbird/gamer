@@ -40,11 +40,6 @@
 	[self downloadImageWithImageObject:_image];
 }
 
-- (void)viewDidAppear:(BOOL)animated{
-	[[Session tracker] set:kGAIScreenName value:@"ImageViewer"];
-	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
-}
-
 - (void)viewWillDisappear:(BOOL)animated{
 	[_runningTask cancel];
 }
@@ -93,6 +88,7 @@
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageObject.originalURL]];
 	
 	NSProgress *progress;
+	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
 		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@original_%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
 		return fileURL;
@@ -102,18 +98,23 @@
 		_imageSize = downloadedImage.size;
 		[self initializeImageViewWithImage:downloadedImage animated:YES];
 		
-		[progress removeObserver:self forKeyPath:@"fractionCompleted" context:nil];
+		[progress removeObserver:self forKeyPath:@"fractionCompleted" context:(__bridge void *)(self)];
 	}];
 	[downloadTask resume];
 	_runningTask = downloadTask;
 	
-	[progress addObserver:self forKeyPath:@"fractionCompleted" options:NSKeyValueObservingOptionNew context:nil];
+	[progress addObserver:self forKeyPath:@"fractionCompleted" options:NSKeyValueObservingOptionNew context:(__bridge void *)(self)];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
 	dispatch_async(dispatch_get_main_queue(), ^{
-		NSProgress *progress = (NSProgress *)object;
-		[_progressIndicator setValue:progress.fractionCompleted];
+		if (context == (__bridge void *)(self)){
+			NSProgress *progress = (NSProgress *)object;
+			[_progressIndicator setValue:progress.fractionCompleted];
+		}
+		else{
+			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+		}
 	});
 }
 

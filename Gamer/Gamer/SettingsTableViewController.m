@@ -39,23 +39,18 @@
 	
 	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
-	_context = [NSManagedObjectContext contextForCurrentThread];
+	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_platforms = [Platform findAllSortedBy:@"index" ascending:YES withPredicate:nil inContext:_context].mutableCopy;
+	_platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:nil inContext:_context].mutableCopy;
 	
 	[self.tableView setEditing:YES animated:NO];
 	
 	if (![Session gamer].librarySize){
 		[[Session gamer] setLibrarySize:@(1)];
-		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-	[[Session tracker] set:kGAIScreenName value:@"More"];
-	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -175,7 +170,7 @@
 		SettingsPlatformCell *cell = (SettingsPlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 		[cell.switchControl setTag:index];
 	}
-	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];
 }
@@ -205,12 +200,12 @@
 	
 	sender.isOn ? [[Session gamer] addPlatformsObject:platform] : [[Session gamer] removePlatformsObject:platform];
 	
-	[_context saveToPersistentStoreAndWait];
+	[_context MR_saveToPersistentStoreAndWait];
 }
 
 - (IBAction)segmentedControlValueChangedAction:(UISegmentedControl *)sender{
 	[[Session gamer] setLibrarySize:@(sender.selectedSegmentIndex)];
-	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];
 }

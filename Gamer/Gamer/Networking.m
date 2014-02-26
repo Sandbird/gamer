@@ -95,9 +95,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (results[@"image"] != [NSNull null]){
 		NSString *imageURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
 		
-		CoverImage *coverImage = [CoverImage findFirstByAttribute:@"url" withValue:imageURL inContext:context];
+		CoverImage *coverImage = [CoverImage MR_findFirstByAttribute:@"url" withValue:imageURL inContext:context];
 		if (!coverImage){
-			coverImage = [CoverImage createInContext:context];
+			coverImage = [CoverImage MR_createInContext:context];
 			[coverImage setUrl:imageURL];
 		}
 		[game setCoverImage:coverImage];
@@ -115,7 +115,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 				case 138: identifier = @(117); break;
 				default: break;
 			}
-			Platform *platform = [Platform findFirstByAttribute:@"identifier" withValue:identifier inContext:context];
+			Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:context];
 			if (platform) [game addPlatformsObject:platform];
 		}
 	}
@@ -123,11 +123,11 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	// Genres
 	if (results[@"genres"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"genres"]){
-			Genre *genre = [Genre findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+			Genre *genre = [Genre MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (genre)
 				[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			else{
-				genre = [Genre createInContext:context];
+				genre = [Genre MR_createInContext:context];
 				[genre setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			}
@@ -138,11 +138,11 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	// Developers
 	if (results[@"developers"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"developers"]){
-			Developer *developer = [Developer findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+			Developer *developer = [Developer MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (developer)
 				[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			else{
-				developer = [Developer createInContext:context];
+				developer = [Developer MR_createInContext:context];
 				[developer setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			}
@@ -153,11 +153,11 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	// Publishers
 	if (results[@"publishers"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"publishers"]){
-			Publisher *publisher = [Publisher findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+			Publisher *publisher = [Publisher MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (publisher)
 				[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			else{
-				publisher = [Publisher createInContext:context];
+				publisher = [Publisher MR_createInContext:context];
 				[publisher setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			}
@@ -168,11 +168,11 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	// Franchises
 	if (results[@"franchises"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"franchises"]){
-			Franchise *franchise = [Franchise findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+			Franchise *franchise = [Franchise MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (franchise)
 				[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			else{
-				franchise = [Franchise createInContext:context];
+				franchise = [Franchise MR_createInContext:context];
 				[franchise setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			}
@@ -183,11 +183,11 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	// Similar games
 	if (results[@"similar_games"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"similar_games"]){
-			SimilarGame *similarGame = [SimilarGame findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+			SimilarGame *similarGame = [SimilarGame MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (similarGame)
 				[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			else{
-				similarGame = [SimilarGame createInContext:context];
+				similarGame = [SimilarGame MR_createInContext:context];
 				[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			}
@@ -198,11 +198,11 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	// Themes
 	if (results[@"themes"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"themes"]){
-			Theme *theme = [Theme findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+			Theme *theme = [Theme MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (theme)
 				[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			else{
-				theme = [Theme createInContext:context];
+				theme = [Theme MR_createInContext:context];
 				[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			}
@@ -234,8 +234,8 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		
 		NSDate *releaseDateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
 		
-		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:releaseDateFromComponents inContext:context];
-		if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
+		ReleaseDate *releaseDate = [ReleaseDate MR_findFirstByAttribute:@"date" withValue:releaseDateFromComponents inContext:context];
+		if (!releaseDate) releaseDate = [ReleaseDate MR_createInContext:context];
 		[releaseDate setDate:releaseDateFromComponents];
 		[releaseDate setDay:@(originalReleaseDateComponents.day)];
 		[releaseDate setMonth:@(originalReleaseDateComponents.month)];
@@ -300,8 +300,8 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		
 		NSDate *expectedReleaseDateFromComponents = [calendar dateFromComponents:expectedReleaseDateComponents];
 		
-		ReleaseDate *releaseDate = [ReleaseDate findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents inContext:context];
-		if (!releaseDate) releaseDate = [ReleaseDate createInContext:context];
+		ReleaseDate *releaseDate = [ReleaseDate MR_findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents inContext:context];
+		if (!releaseDate) releaseDate = [ReleaseDate MR_createInContext:context];
 		[releaseDate setDate:expectedReleaseDateFromComponents];
 		[releaseDate setDay:@(expectedReleaseDateComponents.day)];
 		[releaseDate setMonth:@(expectedReleaseDateComponents.month)];
@@ -402,7 +402,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		}
 	}
 	
-	return [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(period) inContext:context];
+	return [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(period) inContext:context];
 }
 
 + (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML{

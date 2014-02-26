@@ -101,11 +101,11 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLibraryNotification:) name:@"RefreshLibrary" object:nil];
 	
-	_context = [NSManagedObjectContext contextForCurrentThread];
+	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	_filter = LibraryFilterPlatform;
 	
-	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
 	
 	_imageCache = [NSCache new];
 	
@@ -121,9 +121,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[Session tracker] set:kGAIScreenName value:@"Library"];
-	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
-	
 	[_refreshControl endRefreshing];
 }
 
@@ -147,7 +144,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-	[_guideView setHidden:([Game countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)]] == 0) ? NO : YES];
+	[_guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)]] == 0) ? NO : YES];
 	
 	return _fetchedResultsController.sections.count;
 }
@@ -250,7 +247,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 			
 			if (_numberOfRunningTasks == 0){
-				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 					[_collectionView reloadData];
 					
 					BOOL imagesDownloaded = NO;
@@ -305,7 +302,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 			
 			if (_numberOfRunningTasks == 0){
-				[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 					[_collectionView reloadData];
 					[_refreshBarButton setEnabled:YES];
 					[_refreshControl endRefreshing];
@@ -333,7 +330,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = LibraryFilterPlatform;
 	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
 	[_collectionView reloadData];
 }
 
@@ -415,7 +412,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = filter;
 	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game fetchAllGroupedBy:group withPredicate:predicate sortedBy:sort ascending:ascending inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:group withPredicate:predicate sortedBy:sort ascending:ascending inContext:_context];
 	[_collectionView reloadData];
 }
 
@@ -470,7 +467,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = LibraryFilterPlatform;
 	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
 	[_collectionView reloadData];
 }
 
@@ -488,7 +485,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = LibraryFilterPlatform;
 	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
 	[_collectionView reloadData];
 }
 

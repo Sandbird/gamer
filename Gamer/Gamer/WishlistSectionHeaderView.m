@@ -17,7 +17,7 @@
 		_releasePeriod = releasePeriod;
 		
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", releasePeriod.identifier, @(NO), @(YES)];
-		NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+		NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
 		_hidden = (gamesCount > 0) ? NO : YES;
 		
 		[_titleLabel setText:releasePeriod.name];

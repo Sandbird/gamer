@@ -63,7 +63,7 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlist" object:nil];
 	
-	_context = [NSManagedObjectContext contextForCurrentThread];
+	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	_fetchedResultsController = [self fetchData];
 	
@@ -81,9 +81,6 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	[[Session tracker] set:kGAIScreenName value:@"Wishlist"];
-	[[Session tracker] send:[[GAIDictionaryBuilder createAppView] build]];
-	
 	[self updateGameReleasePeriods];
 }
 
@@ -108,7 +105,7 @@
 - (NSFetchedResultsController *)fetchData{
 	if (!_fetchedResultsController){
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"wanted = %@", @(YES)];
-		_fetchedResultsController = [Game fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES];
+		_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES];
 	}
 	return _fetchedResultsController;
 }
@@ -123,7 +120,7 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
 	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
-	ReleasePeriod *releasePeriod = [ReleasePeriod findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue) inContext:_context];
+	ReleasePeriod *releasePeriod = [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue) inContext:_context];
 	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 	[headerView.titleLabel setText:releasePeriod.name];
@@ -254,7 +251,7 @@
 			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
 			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 			
-			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_collectionView reloadData];
 			}];
 		}
@@ -292,7 +289,7 @@
 				}
 			}
 			
-			[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_collectionView reloadData];
 			}];
 		}
@@ -304,21 +301,21 @@
 
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist
-	NSArray *games = [Game findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)] inContext:_context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)] inContext:_context];
 	for (Game *game in games)
 		[game setReleasePeriod:[Networking releasePeriodForReleaseDate:game.releaseDate context:_context]];
 	
-	[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		// Show section if it has any games
-		NSArray *releasePeriods = [ReleasePeriod findAllInContext:_context];
+		NSArray *releasePeriods = [ReleasePeriod MR_findAllInContext:_context];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", releasePeriod.identifier, @(YES)];
-			NSInteger gamesCount = [Game countOfEntitiesWithPredicate:predicate];
+			NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}
 		
-		[_context saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			_fetchedResultsController = nil;
 			_fetchedResultsController = [self fetchData];
 			[_collectionView reloadData];
@@ -327,8 +324,8 @@
 }
 
 - (void)refreshWishlistGames{
-	[Game deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
-	[_context saveToPersistentStoreAndWait];
+	[Game MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
+	[_context MR_saveToPersistentStoreAndWait];
 	
 	if (_fetchedResultsController.fetchedObjects.count > 0){
 		[_refreshButton setEnabled:NO];

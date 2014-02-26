@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <GoogleAnalytics-iOS-SDK/GAI.h>
 #import "Gamer.h"
 
 typedef NS_ENUM(NSInteger, OptimalImageWidthiPhone){
@@ -51,8 +50,6 @@ typedef NS_ENUM(NSInteger, GameImageType){
 
 + (NSArray *)searchResults;
 + (void)setSearchResults:(NSArray *)results;
-
-+ (id<GAITracker>)tracker;
 
 + (CGSize)optimalCoverImageSizeForImage:(UIImage *)image type:(GameImageType)type;
 

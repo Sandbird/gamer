@@ -24,11 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
-## GoogleAnalytics-iOS-SDK
-
-Copyright 2009 - 2013 Google, Inc. All rights reserved.
-
-
 ## MACircleProgressIndicator
 
 Copyright (c) 2013 Manuel Alabor <msites@msites.net>
