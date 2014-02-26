@@ -70,7 +70,7 @@
 	_imageCache = [NSCache new];
 	
 	// Add guide view to the view
-	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][0];
+	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil].firstObject;
 	[self.view insertSubview:_guideView aboveSubview:_collectionView];
 	[_guideView setFrame:self.view.frame];
 	[_guideView setHidden:YES];

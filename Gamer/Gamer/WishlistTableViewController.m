@@ -82,7 +82,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
 	// Show guide view if table empty
 	if (self.fetchedResultsController.sections.count == 0){
-		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil][0];
+		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil].firstObject;
 		[tableView setBackgroundView:view];
 	}
 	else
@@ -276,38 +276,40 @@
 - (void)requestMetascoreForGame:(Game *)game{
 	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform];
 	
-	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
-		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
-		return fileURL;
-	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-		if (error){
-			NSLog(@"Failure in %@ - Metascore", self);
-		}
-		else{
-			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
-			
-			NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-			
-			[game setMetacriticURL:request.URL.absoluteString];
-			
-			if (HTML){
-				NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-				if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-					[game setWishlistMetascore:metascore];
-					[game setWishlistMetascorePlatform:game.wishlistPlatform];
-				}
-				else{
-					[game setWishlistMetascore:nil];
-					[game setWishlistMetascorePlatform:nil];
-				}
+	if (request.URL){
+		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
+			[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+			return fileURL;
+		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+			if (error){
+				NSLog(@"Failure in %@ - Metascore", self);
 			}
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.tableView reloadData];
-			}];
-		}
-	}];
-	[downloadTask resume];
+			else{
+				NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
+				
+				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
+				
+				[game setMetacriticURL:request.URL.absoluteString];
+				
+				if (HTML){
+					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+						[game setWishlistMetascore:metascore];
+						[game setWishlistMetascorePlatform:game.wishlistPlatform];
+					}
+					else{
+						[game setWishlistMetascore:nil];
+						[game setWishlistMetascorePlatform:nil];
+					}
+				}
+				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					[self.tableView reloadData];
+				}];
+			}
+		}];
+		[downloadTask resume];
+	}
 }
 
 #pragma mark - Custom

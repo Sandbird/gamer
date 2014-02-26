@@ -67,13 +67,13 @@
 }
 
 + (NSString *)dateStringFromDateAndTimeString:(NSString *)string{
-	NSString *date = ([string componentsSeparatedByString:@" "])[0];
+	NSString *date = ([string componentsSeparatedByString:@" "]).firstObject;
 	return [self dateStringFromString:date withFormat:@"yyyy-MM-dd" toFormat:@"dd/MM/yyyy"];
 }
 
 + (NSString *)timeStringFromDateAndTimeString:(NSString *)string{
 	NSString *time = ([string componentsSeparatedByString:@" "])[1];
-	return [NSString stringWithFormat:@"%@:%@", ([time componentsSeparatedByString:@":"])[0], ([time componentsSeparatedByString:@":"])[1]];
+	return [NSString stringWithFormat:@"%@:%@", ([time componentsSeparatedByString:@":"]).firstObject, ([time componentsSeparatedByString:@":"])[1]];
 }
 
 + (NSString *)formattedStringForDuration:(NSTimeInterval)duration{

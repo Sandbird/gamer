@@ -438,7 +438,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	if ([Tools deviceIsiPhone])
 		[actionSheet showInView:self.view.window];
 	else
-		[actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItems[0] animated:YES];
+		[actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItems.firstObject animated:YES];
 	
 	[self.navigationController.navigationBar setUserInteractionEnabled:NO];
 }

@@ -36,7 +36,7 @@
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 	
 	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-	UITabBarItem *wishlistTab = tabBarController.tabBar.items[0];
+	UITabBarItem *wishlistTab = tabBarController.tabBar.items.firstObject;
 	[wishlistTab setImage:[UIImage imageNamed:@"WishlistTab"]];
 	[wishlistTab setSelectedImage:[UIImage imageNamed:@"WishlistTabSelected"]];
 	UITabBarItem *libraryTab = tabBarController.tabBar.items[1];
@@ -128,49 +128,51 @@
 - (void)requestMetascoreForGame:(Game *)game context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform];
 	
-	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
-		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
-		return fileURL;
-	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-		_numberOfReleasedGamesToRefreshMetascore--;
-		
-		if (error){
-			NSLog(@"Failure in %@ - Background (Metascore)", self);
+	if (request.URL){
+		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
+			[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+			return fileURL;
+		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+			_numberOfReleasedGamesToRefreshMetascore--;
 			
-			if (_numberOfReleasedGamesToRefreshMetascore == 0){
-				completionHandler(UIBackgroundFetchResultNewData);
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-			}
-		}
-		else{
-			NSLog(@"Success in %@ - Background (Metascore) - %@", self, request.URL);
-			
-			NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-			
-			[game setMetacriticURL:request.URL.absoluteString];
-			
-			if (HTML){
-				NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-				if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-					[game setWishlistMetascore:metascore];
-					[game setWishlistMetascorePlatform:game.wishlistPlatform];
-				}
-				else{
-					[game setWishlistMetascore:nil];
-					[game setWishlistMetascorePlatform:nil];
-				}
-			}
-			
-			[context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			if (error){
+				NSLog(@"Failure in %@ - Background (Metascore)", self);
+				
 				if (_numberOfReleasedGamesToRefreshMetascore == 0){
 					completionHandler(UIBackgroundFetchResultNewData);
 					[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 				}
-			}];
-		}
-	}];
-	[downloadTask resume];
+			}
+			else{
+				NSLog(@"Success in %@ - Background (Metascore) - %@", self, request.URL);
+				
+				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
+				
+				[game setMetacriticURL:request.URL.absoluteString];
+				
+				if (HTML){
+					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+						[game setWishlistMetascore:metascore];
+						[game setWishlistMetascorePlatform:game.wishlistPlatform];
+					}
+					else{
+						[game setWishlistMetascore:nil];
+						[game setWishlistMetascorePlatform:nil];
+					}
+				}
+				
+				[context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					if (_numberOfReleasedGamesToRefreshMetascore == 0){
+						completionHandler(UIBackgroundFetchResultNewData);
+						[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+					}
+				}];
+			}
+		}];
+		[downloadTask resume];
+	}
 }
 
 @end

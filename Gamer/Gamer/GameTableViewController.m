@@ -465,8 +465,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				[_similarGamesCollectionView reloadData];
 				
 				// If game is released and has at least one platform, request metascore
-				if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _selectablePlatforms.count > 0)
-					[self requestMetascoreForGameWithTitle:_game.title platform:_selectablePlatforms[0]];
+				if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _selectablePlatforms.count > 0){
+					[self requestMetascoreForGameWithTitle:_game.title platform:_selectablePlatforms.firstObject];
+				}
 			}];
 		}
 		
@@ -532,67 +533,69 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
 	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:title platform:platform];
 	
-	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
-		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
-		return fileURL;
-	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-		if (error){
-			NSLog(@"Failure in %@ - Metascore", self);
-		}
-		else{
-			NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
-			
-			NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-//			NSLog(@"HTML: %@", HTML);
-			
-			[_game setMetacriticURL:request.URL.absoluteString];
-			
-			if (HTML){
-				NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-				[_game setMetascore:metascore];
-				
-				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[_metascoreButton setHidden:NO];
-					[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-					
-					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-						[_metascoreButton setBackgroundColor:[Networking colorForMetascore:metascore]];
-						[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
-						[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
-						
-						[_metascorePlatformLabel setText:platform.name];
-						[_metascorePlatformLabel setHidden:NO];
-						[_metascorePlatformLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-						
-						[_game setMetacriticURL:request.URL.absoluteString];
-						[_game setMetascorePlatform:platform];
-						
-						if (_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform){
-							[_game setWishlistMetascore:metascore];
-							[_game setWishlistMetascorePlatform:platform];
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-						}
-					}
-					else{
-						if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
-							[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
-						else{
-							[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
-							[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
-							[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
-							[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-						}
-					}
-				}];
+	if (request.URL){
+		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
+			[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+			return fileURL;
+		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+			if (error){
+				NSLog(@"Failure in %@ - Metascore", self);
 			}
-			else if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
-				[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
-			else
-				[_context MR_saveToPersistentStoreAndWait];
-		}
-	}];
-	[downloadTask resume];
+			else{
+				NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
+				
+				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
+				//			NSLog(@"HTML: %@", HTML);
+				
+				[_game setMetacriticURL:request.URL.absoluteString];
+				
+				if (HTML){
+					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+					[_game setMetascore:metascore];
+					
+					[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+						[_metascoreButton setHidden:NO];
+						[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+						
+						if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+							[_metascoreButton setBackgroundColor:[Networking colorForMetascore:metascore]];
+							[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
+							[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
+							
+							[_metascorePlatformLabel setText:platform.name];
+							[_metascorePlatformLabel setHidden:NO];
+							[_metascorePlatformLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+							
+							[_game setMetacriticURL:request.URL.absoluteString];
+							[_game setMetascorePlatform:platform];
+							
+							if (_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform){
+								[_game setWishlistMetascore:metascore];
+								[_game setWishlistMetascorePlatform:platform];
+								[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+							}
+						}
+						else{
+							if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
+								[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
+							else{
+								[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
+								[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
+								[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
+								[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+							}
+						}
+					}];
+				}
+				else if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
+					[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
+				else
+					[_context MR_saveToPersistentStoreAndWait];
+			}
+		}];
+		[downloadTask resume];
+	}
 }
 
 - (void)requestImageForSimilarGame:(SimilarGame *)similarGame{
@@ -826,13 +829,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	}
 	
 	[_descriptionTextView setText:_game.overview];
-	[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects[0] name] : @"Not available"];
+	[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects.firstObject name] : @"Not available"];
 	[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
-	[_themeFirstLabel setText:(_game.themes.count > 0) ? [_game.themes.allObjects[0] name] : @"Not available"];
+	[_themeFirstLabel setText:(_game.themes.count > 0) ? [_game.themes.allObjects.firstObject name] : @"Not available"];
 	[_themeSecondLabel setText:(_game.themes.count > 1) ? [_game.themes.allObjects[1] name] : @""];
-	[_developerFirstLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects[0] name] : @"Not available"];
+	[_developerFirstLabel setText:(_game.developers.count > 0) ? [_game.developers.allObjects.firstObject name] : @"Not available"];
 	[_developerSecondLabel setText:(_game.developers.count > 1) ? [_game.developers.allObjects[1] name] : @""];
-	[_publisherFirstLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects[0] name] : @"Not available"];
+	[_publisherFirstLabel setText:(_game.publishers.count > 0) ? [_game.publishers.allObjects.firstObject name] : @"Not available"];
 	[_publisherSecondLabel setText:(_game.publishers.count > 1) ? [_game.publishers.allObjects[1] name] : @""];
 	
 	if (_game.franchises.count == 0){
@@ -842,7 +845,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	else{
 		[_franchiseLabel setHidden:NO];
 		[_franchiseTitleLabel setHidden:NO];
-		[_franchiseTitleLabel setText:[_game.franchises.allObjects[0] name]];
+		[_franchiseTitleLabel setText:[_game.franchises.allObjects.firstObject name]];
 	}
 }
 
