@@ -39,6 +39,11 @@ typedef NS_ENUM(NSInteger, GameImageType){
 	GameImageTypeLibrary
 };
 
+typedef NS_ENUM(NSInteger, GameLocation){
+	GameLocationWishlist = 1,
+	GameLocationLibrary = 2
+};
+
 @interface Session : NSObject
 
 + (void)setGamer:(Gamer *)gamer;

@@ -1334,6 +1334,83 @@
             <point key="canvasLocation" x="144" y="1469"/>
         </scene>
         <!--Navigation Controller-->
+        <scene sceneID="VI2-44-Sz4">
+            <objects>
+                <navigationController storyboardIdentifier="ImportController" definesPresentationContext="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="P37-9M-hQJ" sceneMemberID="viewController">
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Ui0-aV-I0O">
+                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="mKI-Yk-Znd" kind="relationship" relationship="rootViewController" id="Trr-UQ-hyR"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y18-Qe-r8d" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="144" y="2167"/>
+        </scene>
+        <!--Import Controller - Import-->
+        <scene sceneID="Cpm-c9-0Sr">
+            <objects>
+                <tableViewController id="mKI-Yk-Znd" customClass="ImportController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="70" sectionHeaderHeight="22" sectionFooterHeight="22" id="aPU-hQ-XEp">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="CUt-x1-1Om" userLabel="Wishlist Cell" customClass="ImportCell">
+                                <rect key="frame" x="0.0" y="119" width="320" height="70"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CUt-x1-1Om" id="6iz-bt-BJo">
+                                    <rect key="frame" x="0.0" y="0.0" width="281" height="69"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jq9-gG-Obz" userLabel="Cover Image View">
+                                            <rect key="frame" x="10" y="10" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="193" translatesAutoresizingMaskIntoConstraints="NO" id="4VA-sq-jRL" userLabel="Title Label">
+                                            <rect key="frame" x="68" y="14" width="193" height="42"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                                <inset key="separatorInset" minX="68" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <connections>
+                                    <outlet property="coverImageView" destination="Jq9-gG-Obz" id="jjz-Ve-Jko"/>
+                                    <outlet property="titleLabel" destination="4VA-sq-jRL" id="NRx-DN-hfx"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="mKI-Yk-Znd" id="9Bi-Mi-43c"/>
+                            <outlet property="delegate" destination="mKI-Yk-Znd" id="F7q-1N-I8Q"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Import" id="y2a-CH-UQv">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="vt0-Ym-Yjp">
+                            <connections>
+                                <action selector="cancelBarButtonAction:" destination="mKI-Yk-Znd" id="a3W-Bo-zgp"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Save" id="DSt-6y-qAz">
+                            <connections>
+                                <action selector="saveBarButtonAction:" destination="mKI-Yk-Znd" id="mya-wT-2Fv"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FYk-GR-vT7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="626" y="2167"/>
+        </scene>
+        <!--Navigation Controller-->
         <scene sceneID="yod-gW-aGR">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yr8-Di-rCM" sceneMemberID="viewController">

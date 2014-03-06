@@ -60,13 +60,14 @@
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    return 4;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	switch (section) {
 		case 0: return @"Platforms";
 		case 1: return @"Settings";
+		case 2: return @"Even More";
 		default: return nil;
 	}
 }
@@ -75,7 +76,8 @@
 	switch (section) {
 		case 0: return @"Select your platforms. This affects search results. Reordering affects the Library and the game screen.";
 		case 1: return @"Library game size.";
-		case 2: return @"Tell me about bugs, ask for a feature you would like, or give me some suggestions!";
+		case 2: return @"Save all your games to a backup file. Importing is as easy as opening the file in your iOS device.";
+		case 3: return @"Tell me about bugs, ask for a feature you would like, give me some suggestions!";
 		default: return nil;
 	}
 }
@@ -83,7 +85,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
 		case 0: return _platforms.count;
-		case 1: case 2: return 1;
+		case 1: case 2: case 3: return 1;
 		default: return 0;
 	}
 }
@@ -111,6 +113,13 @@
 		}
 		case 2:{
 			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
+			[cell.textLabel setText:@"Export Games"];
+			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+			return cell;
+		}
+		case 3:{
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
+			[cell.textLabel setText:@"Feedback"];
 			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
@@ -120,16 +129,25 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	if (indexPath.section == 2){
-		MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
-		[mailComposeViewController setMailComposeDelegate:self];
-		[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
-		[mailComposeViewController setSubject:@"Feedback"];
-		[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
-		
-		[self presentViewController:mailComposeViewController animated:YES completion:^{
-			[tableView deselectRowAtIndexPath:indexPath animated:YES];
-		}];
+	switch (indexPath.section) {
+		case 2:
+			[self exportGames];
+			break;
+		case 3:{
+			MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
+			[mailComposeViewController setMailComposeDelegate:self];
+			[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
+			[mailComposeViewController setSubject:@"Feedback"];
+			[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
+			
+			[self presentViewController:mailComposeViewController animated:YES completion:^{
+				[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			}];
+			
+			break;
+		}
+		default:
+			break;
 	}
 }
 
@@ -172,6 +190,46 @@
 	}
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+	}];
+}
+
+#pragma mark - Export
+
+- (void)exportGames{
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND (wanted = %@ OR owned = %@)", @(YES), @(YES)] inContext:_context];
+	
+	NSMutableArray *gameDictionaries = [[NSMutableArray alloc] initWithCapacity:games.count];
+	
+	for (Game *game in games){
+		NSMutableArray *platformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.platforms.count];
+		[platformDictionaries addObject:@{@"id":game.wishlistPlatform ? game.wishlistPlatform.identifier : game.libraryPlatform.identifier}];
+		
+		NSDictionary *gameDictionary = @{@"id":game.identifier,
+										 @"title":game.title,
+										 @"location":[game.wanted isEqualToNumber:@(YES)] ? @(GameLocationWishlist) : @(GameLocationLibrary),
+										 @"selectedPlatforms":platformDictionaries,
+										 @"finished":game.completed,
+										 @"digital":game.digital,
+										 @"lent":game.loaned,
+										 @"preordered":game.preordered};
+		
+		[gameDictionaries addObject:gameDictionary];
+	}
+	
+	NSDictionary *backupDictionary = @{@"version":[NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], @"games":gameDictionaries};
+	
+	NSLog(@"%@", backupDictionary);
+	
+	NSData *backupData = [NSJSONSerialization dataWithJSONObject:backupDictionary options:0 error:nil];
+	
+	MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
+	[mailComposeViewController setMailComposeDelegate:self];
+	[mailComposeViewController setSubject:@"Gamer Backup"];
+	[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
+	[mailComposeViewController addAttachmentData:backupData mimeType:@"application/gamer" fileName:@"Backup.gamer"];
+	
+	[self presentViewController:mailComposeViewController animated:YES completion:^{
+		[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	}];
 }
 

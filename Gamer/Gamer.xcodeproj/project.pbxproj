@@ -66,6 +66,8 @@
 		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
 		25B9E9C017A0B70200881089 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryViewController.m */; };
 		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
+		25BE541F18BED3FA00BCBAFB /* ImportCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE541E18BED3FA00BCBAFB /* ImportCell.m */; };
+		25BE542218BED50200BCBAFB /* ImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE542118BED50200BCBAFB /* ImportController.m */; };
 		25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */; };
 		25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */; };
 		25C9FE3917CC4C4500CCDD59 /* WishlistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3817CC4C4500CCDD59 /* WishlistViewController.m */; };
@@ -196,6 +198,10 @@
 		25B9E9BF17A0B70200881089 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCollectionCell.h; sourceTree = "<group>"; };
 		25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryCollectionCell.m; sourceTree = "<group>"; };
+		25BE541D18BED3FA00BCBAFB /* ImportCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImportCell.h; sourceTree = "<group>"; };
+		25BE541E18BED3FA00BCBAFB /* ImportCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImportCell.m; sourceTree = "<group>"; };
+		25BE542018BED50200BCBAFB /* ImportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImportController.h; sourceTree = "<group>"; };
+		25BE542118BED50200BCBAFB /* ImportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImportController.m; sourceTree = "<group>"; };
 		25BE617817EFC4D3008F5AB8 /* RotationLockedTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotationLockedTabBarController.h; sourceTree = "<group>"; };
 		25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotationLockedTabBarController.m; sourceTree = "<group>"; };
 		25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionCell.h; sourceTree = "<group>"; };
@@ -300,6 +306,8 @@
 				251DEA41178CF3EA0094A6CB /* SettingsPlatformCell.m */,
 				250B37DD1808613B009EB170 /* SettingsSegmentedControlCell.h */,
 				250B37DE1808613B009EB170 /* SettingsSegmentedControlCell.m */,
+				25BE541D18BED3FA00BCBAFB /* ImportCell.h */,
+				25BE541E18BED3FA00BCBAFB /* ImportCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -442,6 +450,8 @@
 			children = (
 				25704034176CB12800642430 /* GamerAppDelegate.h */,
 				25704035176CB12800642430 /* GamerAppDelegate.m */,
+				25BE542018BED50200BCBAFB /* ImportController.h */,
+				25BE542118BED50200BCBAFB /* ImportController.m */,
 				2595539417AEA0CD003A4F59 /* Tabs */,
 				2595539517AEA0D7003A4F59 /* Game */,
 				2506A16C176CD2E60010E61D /* Subclasses */,
@@ -697,6 +707,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25BE541F18BED3FA00BCBAFB /* ImportCell.m in Sources */,
 				2531E85B176CDC68005881A4 /* SearchResult.m in Sources */,
 				2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */,
 				25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */,
@@ -716,6 +727,7 @@
 				250B37DF1808613B009EB170 /* SettingsSegmentedControlCell.m in Sources */,
 				25998C08181093F500F1AA8F /* CoverImage.m in Sources */,
 				2531E839176CDB60005881A4 /* WishlistTableViewController.m in Sources */,
+				25BE542218BED50200BCBAFB /* ImportController.m in Sources */,
 				25998C11181093F500F1AA8F /* Video.m in Sources */,
 				2531E83C176CDB60005881A4 /* SearchTableViewController.m in Sources */,
 				25998C29181093F500F1AA8F /* Gamer.m in Sources */,
