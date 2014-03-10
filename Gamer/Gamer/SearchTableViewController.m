@@ -39,6 +39,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+	
 	[_searchBar setText:@""];
 	
 	// Show guide view if no platform is selected
@@ -51,6 +53,10 @@
 		[self.tableView setBackgroundView:nil];
 		[_searchBar setUserInteractionEnabled:YES];
 	}
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -121,7 +127,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Networking

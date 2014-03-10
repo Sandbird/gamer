@@ -56,7 +56,13 @@
 	_imageCache = [NSCache new];
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+}
+
 - (void)viewDidAppear:(BOOL)animated{
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+	
 	[self updateGameReleasePeriods];
 	
 	[self.refreshControl endRefreshing];
@@ -122,7 +128,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{

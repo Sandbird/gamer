@@ -76,7 +76,7 @@
 	switch (section) {
 		case 0: return @"Select your platforms. This affects search results. Reordering affects the Library and the game screen.";
 		case 1: return @"Library game size.";
-		case 2: return @"Save all your games to a backup file. Importing is as easy as opening the file in your iOS device.";
+		case 2: return @"Save all your games to a backup file. To import just open the file in your iOS device.";
 		case 3: return @"Tell me about bugs, ask for a feature you would like, give me some suggestions!";
 		default: return nil;
 	}
@@ -216,7 +216,8 @@
 		[gameDictionaries addObject:gameDictionary];
 	}
 	
-	NSDictionary *backupDictionary = @{@"version":[NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], @"games":gameDictionaries};
+	NSDictionary *backupDictionary = @{@"version":[NSBundle mainBundle].infoDictionary[@"CFBundleVersion"],
+									   @"games":gameDictionaries};
 	
 	NSLog(@"%@", backupDictionary);
 	
@@ -224,8 +225,8 @@
 	
 	MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
 	[mailComposeViewController setMailComposeDelegate:self];
-	[mailComposeViewController setSubject:@"Gamer Backup"];
-	[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
+	[mailComposeViewController setSubject:@"Gamer App Backup"];
+	[mailComposeViewController setMessageBody:@"You can send this file to yourself and keep it in a safe place in case you ever lose your data." isHTML:NO];
 	[mailComposeViewController addAttachmentData:backupData mimeType:@"application/gamer" fileName:@"Backup.gamer"];
 	
 	[self presentViewController:mailComposeViewController animated:YES completion:^{
