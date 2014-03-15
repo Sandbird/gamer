@@ -10,7 +10,9 @@
 #import "Platform.h"
 #import "SettingsPlatformCell.h"
 
-@interface PlatformsController ()
+@interface PlatformsController () <UISplitViewControllerDelegate>
+
+@property (nonatomic, strong) UIPopoverController *menuPopoverController;
 
 @property (nonatomic, strong) NSMutableArray *platforms;
 @property (nonatomic, strong) NSManagedObjectContext *context;
@@ -27,10 +29,22 @@
 	_platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:nil inContext:_context].mutableCopy;
 	
 	[self.tableView setEditing:YES animated:NO];
+	
+	[self.splitViewController setDelegate:self];
 }
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
+}
+
+#pragma mark - SplitViewController
+
+- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc{
+	_menuPopoverController = pc;
+}
+
+- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem{
+	_menuPopoverController = nil;
 }
 
 #pragma mark - TableView
@@ -40,17 +54,13 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-	switch (section) {
-//		case 0: return @"Current";
-//		case 1: return @"Legacy";
-		default: return nil;
-	}
+	if ([Tools deviceIsiPad])
+		return @"Platforms";
+	return nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
-//		case 0: return 8;
-//		case 1: return 3;
 		case 0: return _platforms.count;
 		default: return 0;
 	}
@@ -65,7 +75,7 @@
 	[cell.abbreviationLabel setBackgroundColor:platform.color];
 	[cell.switchControl setOn:([[Session gamer].platforms containsObject:platform]) ? YES : NO];
 	[cell.switchControl setTag:indexPath.row];
-//	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	return cell;
 }
 

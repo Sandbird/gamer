@@ -25,6 +25,8 @@
 		2531E857176CDBDD005881A4 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E855176CDBBB005881A4 /* Session.m */; };
 		2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2570405D176CB55500642430 /* Model.xcdatamodeld */; };
 		2531E85B176CDC68005881A4 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E85A176CDC3B005881A4 /* SearchResult.m */; };
+		25348F9218D4A37400F5A76D /* FAQController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9118D4A37400F5A76D /* FAQController.m */; };
+		25348F9518D4A40200F5A76D /* FAQCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9418D4A40100F5A76D /* FAQCell.m */; };
 		253B57EB182B252600617E3B /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 253B57EA182B252600617E3B /* Platform.m */; };
 		253B57F21834536B00617E3B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 253B57F11834536B00617E3B /* MessageUI.framework */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
@@ -126,6 +128,10 @@
 		2531E855176CDBBB005881A4 /* Session.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
 		2531E859176CDC3B005881A4 /* SearchResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchResult.h; sourceTree = "<group>"; };
 		2531E85A176CDC3B005881A4 /* SearchResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
+		25348F9018D4A37400F5A76D /* FAQController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAQController.h; sourceTree = "<group>"; };
+		25348F9118D4A37400F5A76D /* FAQController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAQController.m; sourceTree = "<group>"; };
+		25348F9318D4A40100F5A76D /* FAQCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAQCell.h; sourceTree = "<group>"; };
+		25348F9418D4A40100F5A76D /* FAQCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAQCell.m; sourceTree = "<group>"; };
 		253B57DC182B159400617E3B /* Model 1.1.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 1.1.3.xcdatamodel"; sourceTree = "<group>"; };
 		253B57E9182B252600617E3B /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
 		253B57EA182B252600617E3B /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
@@ -311,6 +317,8 @@
 				250B37DE1808613B009EB170 /* SettingsSegmentedControlCell.m */,
 				25BE541D18BED3FA00BCBAFB /* ImportCell.h */,
 				25BE541E18BED3FA00BCBAFB /* ImportCell.m */,
+				25348F9318D4A40100F5A76D /* FAQCell.h */,
+				25348F9418D4A40100F5A76D /* FAQCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -337,10 +345,6 @@
 				2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */,
 				2506A183176CD5480010E61D /* SearchTableViewController.h */,
 				2506A184176CD5480010E61D /* SearchTableViewController.m */,
-				2506A187176CD5620010E61D /* SettingsTableViewController.h */,
-				2506A188176CD5620010E61D /* SettingsTableViewController.m */,
-				25B7997118CD5AEA00B9B7C9 /* PlatformsController.h */,
-				25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */,
 			);
 			name = iPhone;
 			sourceTree = "<group>";
@@ -526,6 +530,12 @@
 			children = (
 				25B9E9BE17A0B70200881089 /* LibraryViewController.h */,
 				25B9E9BF17A0B70200881089 /* LibraryViewController.m */,
+				2506A187176CD5620010E61D /* SettingsTableViewController.h */,
+				2506A188176CD5620010E61D /* SettingsTableViewController.m */,
+				25B7997118CD5AEA00B9B7C9 /* PlatformsController.h */,
+				25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */,
+				25348F9018D4A37400F5A76D /* FAQController.h */,
+				25348F9118D4A37400F5A76D /* FAQController.m */,
 				253B57EF182B267900617E3B /* iPhone */,
 				257E18C4182453680088699B /* iPad */,
 			);
@@ -750,6 +760,7 @@
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ImageViewerViewController.m in Sources */,
 				25CF6AE9180B697B000E51B2 /* Networking.m in Sources */,
+				25348F9218D4A37400F5A76D /* FAQController.m in Sources */,
 				25998C1D181093F500F1AA8F /* Image.m in Sources */,
 				25C9FE3917CC4C4500CCDD59 /* WishlistViewController.m in Sources */,
 				25998C17181093F500F1AA8F /* ReleasePeriod.m in Sources */,
@@ -762,6 +773,7 @@
 				25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */,
 				25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */,
 				259DBBB21895A79700B274F4 /* LibraryFilterView.m in Sources */,
+				25348F9518D4A40200F5A76D /* FAQCell.m in Sources */,
 				25704032176CB12800642430 /* main.m in Sources */,
 				25704036176CB12800642430 /* GamerAppDelegate.m in Sources */,
 				25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */,
