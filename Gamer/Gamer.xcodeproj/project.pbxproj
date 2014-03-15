@@ -64,6 +64,7 @@
 		259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259E4A3F1808ACAB00C1AC99 /* SimilarGameCollectionCell.m */; };
 		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
 		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
+		25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */; };
 		25B9E9C017A0B70200881089 /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryViewController.m */; };
 		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
 		25BE541F18BED3FA00BCBAFB /* ImportCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE541E18BED3FA00BCBAFB /* ImportCell.m */; };
@@ -194,6 +195,8 @@
 		25B094041824882E003A0365 /* SearchCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCollectionCell.m; sourceTree = "<group>"; };
 		25B094061829BFA4003A0365 /* iPadTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadTabBarController.h; sourceTree = "<group>"; };
 		25B094071829BFA4003A0365 /* iPadTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPadTabBarController.m; sourceTree = "<group>"; };
+		25B7997118CD5AEA00B9B7C9 /* PlatformsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformsController.h; sourceTree = "<group>"; };
+		25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformsController.m; sourceTree = "<group>"; };
 		25B9E9BE17A0B70200881089 /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
 		25B9E9BF17A0B70200881089 /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
 		25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryCollectionCell.h; sourceTree = "<group>"; };
@@ -334,6 +337,10 @@
 				2506A17E176CD4EA0010E61D /* WishlistTableViewController.m */,
 				2506A183176CD5480010E61D /* SearchTableViewController.h */,
 				2506A184176CD5480010E61D /* SearchTableViewController.m */,
+				2506A187176CD5620010E61D /* SettingsTableViewController.h */,
+				2506A188176CD5620010E61D /* SettingsTableViewController.m */,
+				25B7997118CD5AEA00B9B7C9 /* PlatformsController.h */,
+				25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */,
 			);
 			name = iPhone;
 			sourceTree = "<group>";
@@ -519,8 +526,6 @@
 			children = (
 				25B9E9BE17A0B70200881089 /* LibraryViewController.h */,
 				25B9E9BF17A0B70200881089 /* LibraryViewController.m */,
-				2506A187176CD5620010E61D /* SettingsTableViewController.h */,
-				2506A188176CD5620010E61D /* SettingsTableViewController.m */,
 				253B57EF182B267900617E3B /* iPhone */,
 				257E18C4182453680088699B /* iPad */,
 			);
@@ -753,6 +758,7 @@
 				25998C26181093F500F1AA8F /* Theme.m in Sources */,
 				259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */,
 				25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */,
+				25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */,
 				25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */,
 				25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */,
 				259DBBB21895A79700B274F4 /* LibraryFilterView.m in Sources */,

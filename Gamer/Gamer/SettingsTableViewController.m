@@ -27,7 +27,7 @@
 
 @interface SettingsTableViewController () <MFMailComposeViewControllerDelegate>
 
-@property (nonatomic, strong) NSMutableArray *platforms;
+//@property (nonatomic, strong) NSMutableArray *platforms;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
 @end
@@ -37,13 +37,13 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[self setEdgesForExtendedLayout:UIRectEdgeAll];
+//	[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	
 	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+//
+//	_platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:nil inContext:_context].mutableCopy;
 	
-	_platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:nil inContext:_context].mutableCopy;
-	
-	[self.tableView setEditing:YES animated:NO];
+//	[self.tableView setEditing:YES animated:NO];
 	
 	if (![Session gamer].librarySize){
 		[[Session gamer] setLibrarySize:@(1)];
@@ -53,6 +53,14 @@
 	}
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+}
+
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
 }
@@ -60,13 +68,13 @@
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 4;
+    return 5;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	switch (section) {
-		case 0: return @"Platforms";
-		case 1: return @"Settings";
+		case 0: return @"Settings";
+//		case 1: return @"Settings";
 		case 2: return @"Even More";
 		default: return nil;
 	}
@@ -77,15 +85,17 @@
 		case 0: return @"Select your platforms. This affects search results. Reordering affects the Library and the game screen.";
 		case 1: return @"Library game size.";
 		case 2: return @"Save all your games to a backup file. To import just open the file in your iOS device.";
-		case 3: return @"Tell me about bugs, ask for a feature you would like, give me some suggestions!";
+		case 3: return @"Explanations of how various parts of this app work.";
+		case 4: return @"Tell me about bugs, ask for a feature you would like, give me some suggestions!";
 		default: return nil;
 	}
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
-		case 0: return _platforms.count;
-		case 1: case 2: case 3: return 1;
+//		case 0: return _platforms.count;
+//		case 1: case 2: case 3: return 1;
+		case 0: case 1: case 2: case 3: case 4: return 1;
 		default: return 0;
 	}
 }
@@ -93,34 +103,46 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
 		case 0:{
-			Platform *platform = _platforms[indexPath.row];
-			
-			SettingsPlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
-			[cell.titleLabel setText:platform.name];
-			[cell.abbreviationLabel setText:platform.abbreviation];
-			[cell.abbreviationLabel setBackgroundColor:platform.color];
-			[cell.switchControl setOn:([[Session gamer].platforms containsObject:platform]) ? YES : NO];
-			[cell.switchControl setTag:indexPath.row];
-			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
-			
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NavigationCell" forIndexPath:indexPath];
+			[cell.textLabel setText:@"Platforms"];
+//			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
+//		case 0:{
+//			Platform *platform = _platforms[indexPath.row];
+//			
+//			SettingsPlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlatformCell" forIndexPath:indexPath];
+//			[cell.titleLabel setText:platform.name];
+//			[cell.abbreviationLabel setText:platform.abbreviation];
+//			[cell.abbreviationLabel setBackgroundColor:platform.color];
+//			[cell.switchControl setOn:([[Session gamer].platforms containsObject:platform]) ? YES : NO];
+//			[cell.switchControl setTag:indexPath.row];
+//			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+//			
+//			return cell;
+//		}
 		case 1:{
 			SettingsSegmentedControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SliderCell" forIndexPath:indexPath];
 			[cell.segmentedControl setSelectedSegmentIndex:[Session gamer].librarySize.integerValue];
-			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+//			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
 		case 2:{
 			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
 			[cell.textLabel setText:@"Export Games"];
-			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+//			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
 		case 3:{
+			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NavigationCell" forIndexPath:indexPath];
+			[cell.textLabel setText:@"FAQ"];
+//			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+			return cell;
+		}
+		case 4:{
 			UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ButtonCell" forIndexPath:indexPath];
 			[cell.textLabel setText:@"Feedback"];
-			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+//			[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 			return cell;
 		}
 		default:
@@ -130,10 +152,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
+		case 0:
+			[self performSegueWithIdentifier:@"PlatformsSegue" sender:nil];
+			break;
 		case 2:
 			[self exportGames];
 			break;
-		case 3:{
+		case 3:
+			[self performSegueWithIdentifier:@"FAQSegue" sender:nil];
+			break;
+		case 4:{
 			MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
 			[mailComposeViewController setMailComposeDelegate:self];
 			[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
@@ -151,47 +179,47 @@
 	}
 }
 
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
-	return UITableViewCellEditingStyleNone;
-}
+//- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+//	return UITableViewCellEditingStyleNone;
+//}
 
-- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath{
-	return NO;
-}
+//- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath{
+//	return NO;
+//}
 
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath{
-	return indexPath.section == 0 ? YES : NO;
-}
+//- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath{
+//	return indexPath.section == 0 ? YES : NO;
+//}
 
-- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath{
-	// Prevent moving to other sections
-	if (sourceIndexPath.section != proposedDestinationIndexPath.section){
-		NSInteger row = 0;
-		if (sourceIndexPath.section < proposedDestinationIndexPath.section) row = [tableView numberOfRowsInSection:sourceIndexPath.section] - 1;
-		return [NSIndexPath indexPathForRow:row inSection:sourceIndexPath.section];
-	}
-	return proposedDestinationIndexPath;
-}
+//- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath{
+//	// Prevent moving to other sections
+//	if (sourceIndexPath.section != proposedDestinationIndexPath.section){
+//		NSInteger row = 0;
+//		if (sourceIndexPath.section < proposedDestinationIndexPath.section) row = [tableView numberOfRowsInSection:sourceIndexPath.section] - 1;
+//		return [NSIndexPath indexPathForRow:row inSection:sourceIndexPath.section];
+//	}
+//	return proposedDestinationIndexPath;
+//}
 
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
-	// Set platform indexes accordingly
-	Platform *platform = _platforms[sourceIndexPath.row];
-	
-	[_platforms removeObject:platform];
-	[_platforms insertObject:platform atIndex:destinationIndexPath.row];
-	
-	for (Platform *platform in _platforms){
-		NSInteger index = [_platforms indexOfObject:platform];
-		
-		[platform setIndex:@(index)];
-		
-		SettingsPlatformCell *cell = (SettingsPlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-		[cell.switchControl setTag:index];
-	}
-	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
-	}];
-}
+//- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
+//	// Set platform indexes accordingly
+//	Platform *platform = _platforms[sourceIndexPath.row];
+//	
+//	[_platforms removeObject:platform];
+//	[_platforms insertObject:platform atIndex:destinationIndexPath.row];
+//	
+//	for (Platform *platform in _platforms){
+//		NSInteger index = [_platforms indexOfObject:platform];
+//		
+//		[platform setIndex:@(index)];
+//		
+//		SettingsPlatformCell *cell = (SettingsPlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+//		[cell.switchControl setTag:index];
+//	}
+//	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+//		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+//	}];
+//}
 
 #pragma mark - Export
 
@@ -254,13 +282,13 @@
 
 #pragma mark - Actions
 
-- (IBAction)switchAction:(UISwitch *)sender{
-	Platform *platform = _platforms[sender.tag];
-	
-	sender.isOn ? [[Session gamer] addPlatformsObject:platform] : [[Session gamer] removePlatformsObject:platform];
-	
-	[_context MR_saveToPersistentStoreAndWait];
-}
+//- (IBAction)switchAction:(UISwitch *)sender{
+//	Platform *platform = _platforms[sender.tag];
+//	
+//	sender.isOn ? [[Session gamer] addPlatformsObject:platform] : [[Session gamer] removePlatformsObject:platform];
+//	
+//	[_context MR_saveToPersistentStoreAndWait];
+//}
 
 - (IBAction)segmentedControlValueChangedAction:(UISegmentedControl *)sender{
 	[[Session gamer] setLibrarySize:@(sender.selectedSegmentIndex)];
