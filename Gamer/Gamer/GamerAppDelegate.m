@@ -34,7 +34,7 @@
 	// UI
 	[self.window setTintColor:[UIColor orangeColor]];
 	
-	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+	[application setStatusBarStyle:UIStatusBarStyleLightContent];
 	
 	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
 	UITabBarItem *wishlistTab = tabBarController.tabBar.items.firstObject;
@@ -50,38 +50,6 @@
 	[application setMinimumBackgroundFetchInterval:86400];
 	
     return YES;
-}
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
-	// If import controller isn't being displayed
-	if ([((UINavigationController *)self.window.rootViewController.presentedViewController).viewControllers.firstObject class] != [ImportController class]){
-		
-		// Dismiss any game that might be opened
-		[self.window.rootViewController dismissViewControllerAnimated:NO completion:nil];
-		
-		UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
-		UINavigationController *importNavigationController = [storyboard instantiateViewControllerWithIdentifier:@"ImportController"];
-		ImportController *importController = importNavigationController.viewControllers.firstObject;
-		[importController setBackupData:[NSData dataWithContentsOfURL:url]];
-		
-		// Show import controller
-		[self.window.rootViewController presentViewController:importNavigationController animated:YES completion:^{
-			// Delete used backup files in inbox directory
-			NSError *error;
-			NSString *inboxDirectoryPath = [NSString stringWithFormat:@"%@/Inbox", NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject];
-			NSArray *inboxContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:inboxDirectoryPath error:&error];
-			NSLog(@"URL: %@", url);
-			NSLog(@"ERROR: %@", error);
-			if (!error){
-				for (NSString *path in inboxContents){
-					NSLog(@"PATH: %@", path);
-					[[NSFileManager defaultManager] removeItemAtPath:[inboxDirectoryPath stringByAppendingPathComponent:path] error:&error];
-				}
-			}
-		}];
-	}
-	
-	return YES;
 }
 							
 - (void)applicationWillResignActive:(UIApplication *)application{
@@ -119,6 +87,38 @@
 	for (Game *game in games){
 		[self requestInformationForGame:game context:context completionHandler:completionHandler];
 	}
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
+	// If import controller isn't being displayed
+	if ([((UINavigationController *)self.window.rootViewController.presentedViewController).viewControllers.firstObject class] != [ImportController class]){
+		
+		// Dismiss any game that might be opened
+		[self.window.rootViewController dismissViewControllerAnimated:NO completion:nil];
+		
+		UIStoryboard *storyboard = application.delegate.window.rootViewController.storyboard;
+		UINavigationController *importNavigationController = [storyboard instantiateViewControllerWithIdentifier:@"ImportController"];
+		ImportController *importController = importNavigationController.viewControllers.firstObject;
+		[importController setBackupData:[NSData dataWithContentsOfURL:url]];
+		
+		// Show import controller
+		[self.window.rootViewController presentViewController:importNavigationController animated:YES completion:^{
+			// Delete used backup files in inbox directory
+			NSError *error;
+			NSString *inboxDirectoryPath = [NSString stringWithFormat:@"%@/Inbox", NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject];
+			NSArray *inboxContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:inboxDirectoryPath error:&error];
+			NSLog(@"URL: %@", url);
+			NSLog(@"ERROR: %@", error);
+			if (!error){
+				for (NSString *path in inboxContents){
+					NSLog(@"PATH: %@", path);
+					[[NSFileManager defaultManager] removeItemAtPath:[inboxDirectoryPath stringByAppendingPathComponent:path] error:&error];
+				}
+			}
+		}];
+	}
+	
+	return YES;
 }
 
 #pragma mark - Custom

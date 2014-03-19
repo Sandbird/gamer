@@ -176,6 +176,9 @@
 			
 			if (_numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
 			}
 		}
 		else{
@@ -213,6 +216,9 @@
 			
 			if (_numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
 			}
 		}
 		else{

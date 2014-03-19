@@ -1109,7 +1109,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="Explanations of how various parts of the app work." id="B2W-h2-jr6">
+                            <tableViewSection footerTitle="Some details about how various parts of this app work." id="B2W-h2-jr6">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="oIO-5O-nvz" style="IBUITableViewCellStyleDefault" id="Op7-hm-Fyl" userLabel="Button Cell">
                                         <rect key="frame" x="0.0" y="496" width="320" height="44"/>
@@ -1118,7 +1118,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="FAQ" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oIO-5O-nvz">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="About" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oIO-5O-nvz">
                                                     <rect key="frame" x="15" y="0.0" width="270" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -1189,14 +1189,14 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="How does it work?" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="DqE-Bu-pXL">
-                                            <rect key="frame" x="20" y="10" width="280" height="21"/>
+                                            <rect key="frame" x="20" y="20" width="280" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" editable="NO" text="blabla" translatesAutoresizingMaskIntoConstraints="NO" id="bV0-kI-QV0">
-                                            <rect key="frame" x="15" y="39" width="290" height="250"/>
+                                            <rect key="frame" x="15" y="41" width="290" height="238"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -1205,13 +1205,13 @@
                                         </textView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="DqE-Bu-pXL" firstAttribute="leading" secondItem="ZIs-dk-tAx" secondAttribute="leading" constant="20" symbolic="YES" id="A3R-iR-wnv"/>
-                                        <constraint firstItem="DqE-Bu-pXL" firstAttribute="top" secondItem="ZIs-dk-tAx" secondAttribute="top" constant="10" id="Pyx-0H-fvR"/>
-                                        <constraint firstItem="bV0-kI-QV0" firstAttribute="centerX" secondItem="DqE-Bu-pXL" secondAttribute="centerX" id="XCg-9U-WPu"/>
-                                        <constraint firstAttribute="bottom" secondItem="bV0-kI-QV0" secondAttribute="bottom" constant="10" id="b0Z-zF-lMo"/>
-                                        <constraint firstItem="bV0-kI-QV0" firstAttribute="leading" secondItem="ZIs-dk-tAx" secondAttribute="leading" constant="15" id="lWZ-ap-Y22"/>
-                                        <constraint firstItem="bV0-kI-QV0" firstAttribute="top" secondItem="DqE-Bu-pXL" secondAttribute="bottom" constant="8" symbolic="YES" id="sxy-ph-IHc"/>
-                                        <constraint firstAttribute="trailing" secondItem="DqE-Bu-pXL" secondAttribute="trailing" constant="20" symbolic="YES" id="vH5-Es-JDl"/>
+                                        <constraint firstItem="bV0-kI-QV0" firstAttribute="top" secondItem="DqE-Bu-pXL" secondAttribute="bottom" id="95o-cH-ZNK"/>
+                                        <constraint firstItem="bV0-kI-QV0" firstAttribute="leading" secondItem="ZIs-dk-tAx" secondAttribute="leading" constant="15" id="AbQ-ZS-gKb"/>
+                                        <constraint firstAttribute="bottom" secondItem="bV0-kI-QV0" secondAttribute="bottom" constant="20" symbolic="YES" id="TiA-mI-Wgz"/>
+                                        <constraint firstAttribute="trailing" secondItem="DqE-Bu-pXL" secondAttribute="trailing" constant="20" symbolic="YES" id="azd-hO-WBZ"/>
+                                        <constraint firstItem="DqE-Bu-pXL" firstAttribute="leading" secondItem="ZIs-dk-tAx" secondAttribute="leading" constant="20" symbolic="YES" id="bUD-H3-6TL"/>
+                                        <constraint firstItem="DqE-Bu-pXL" firstAttribute="centerX" secondItem="bV0-kI-QV0" secondAttribute="centerX" id="i1N-c5-0oA"/>
+                                        <constraint firstItem="DqE-Bu-pXL" firstAttribute="top" secondItem="ZIs-dk-tAx" secondAttribute="top" constant="20" symbolic="YES" id="jgL-o9-lCu"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>

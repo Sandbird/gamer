@@ -68,7 +68,7 @@
 				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
 				PlatformsController *platformsController = [storyboard instantiateViewControllerWithIdentifier:@"PlatformsController"];
 				[self.splitViewController setViewControllers:@[self.navigationController, platformsController]];
-				[tableView deselectRowAtIndexPath:indexPath animated:YES];
+				[tableView deselectRowAtIndexPath:indexPath animated:NO];
 			}
 			break;
 		}
@@ -83,7 +83,7 @@
 				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
 				FAQController *FAQController = [storyboard instantiateViewControllerWithIdentifier:@"FAQController"];
 				[self.splitViewController setViewControllers:@[self.navigationController, FAQController]];
-				[tableView deselectRowAtIndexPath:indexPath animated:YES];
+				[tableView deselectRowAtIndexPath:indexPath animated:NO];
 			}
 			break;
 		case 4:{
