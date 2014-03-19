@@ -428,12 +428,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, ((NSHTTPURLResponse *)response).statusCode);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
 			
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %d - Game - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
 			_game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
@@ -489,10 +489,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[_activityIndicator stopAnimating];
 		
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Cover Image", self, ((NSHTTPURLResponse *)response).statusCode);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Cover Image", self, (long)((NSHTTPURLResponse *)response).statusCode);
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %d - Cover Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
 			NSData *downloadedData = [NSData dataWithContentsOfURL:filePath];
 			UIImage *downloadedImage = [UIImage imageWithData:downloadedData];
@@ -583,7 +583,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Game", self, ((NSHTTPURLResponse *)response).statusCode);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
 			
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}
@@ -612,12 +612,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d", self, ((NSHTTPURLResponse *)response).statusCode);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld", self, (long)((NSHTTPURLResponse *)response).statusCode);
 			
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %d - Media - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Media - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
 			NSDictionary *results = responseObject[@"results"];
@@ -692,7 +692,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			NSLog(@"Failure in %@ - Status code: %d - Video", self, ((NSHTTPURLResponse *)response).statusCode);
+			NSLog(@"Failure in %@ - Status code: %ld - Video", self, (long)((NSHTTPURLResponse *)response).statusCode);
 		}
 		else{
 //			NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);

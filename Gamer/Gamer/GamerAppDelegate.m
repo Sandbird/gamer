@@ -128,7 +128,7 @@
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			NSLog(@"Failure in %@ - Status code: %d - Background (Game)", self, ((NSHTTPURLResponse *)response).statusCode);
+			NSLog(@"Failure in %@ - Status code: %ld - Background (Game)", self, (long)((NSHTTPURLResponse *)response).statusCode);
 			
 			_numberOfRunningTasks--;
 			
@@ -138,7 +138,7 @@
 			}
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %d - Background (Game) - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Background (Game) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			NSLog(@"%@", responseObject);
 			
 			_numberOfRunningTasks--;

@@ -162,7 +162,7 @@
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Error: %@", self, ((NSHTTPURLResponse *)response).statusCode, error.description);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Error: %@", self, (long)((NSHTTPURLResponse *)response).statusCode, error.description);
 		}
 		else{
 //			NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);

@@ -79,7 +79,7 @@
 + (NSString *)formattedStringForDuration:(NSTimeInterval)duration{
 	NSInteger minutes = floor(duration/60);
 	NSInteger seconds = round(duration - minutes * 60);
-	return [NSString stringWithFormat:@"%d:%02d", minutes, seconds];
+	return [NSString stringWithFormat:@"%ld:%02ld", (long)minutes, (long)seconds];
 }
 
 #pragma mark - Numbers
