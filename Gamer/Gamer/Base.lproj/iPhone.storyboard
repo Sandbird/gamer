@@ -194,11 +194,10 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="279"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oo5-jN-rbJ" userLabel="Progress Indicator" customClass="MACircleProgressIndicator">
-                                                    <rect key="frame" x="144" y="104" width="32" height="32"/>
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Aub-c2-LhF">
+                                                    <rect key="frame" x="150" y="110" width="20" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                                </view>
+                                                </activityIndicatorView>
                                                 <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ivh-Tr-p21" userLabel="Cover Image View">
                                                     <rect key="frame" x="20" y="20" width="280" height="200"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -891,6 +890,7 @@
                         </connections>
                     </refreshControl>
                     <connections>
+                        <outlet property="activityIndicator" destination="Aub-c2-LhF" id="PSF-2P-MH8"/>
                         <outlet property="completedSwitch" destination="QXs-Ml-tNH" id="JRC-XQ-m3k"/>
                         <outlet property="coverImageView" destination="ivh-Tr-p21" id="THA-ol-Mkp"/>
                         <outlet property="descriptionTextView" destination="LmU-26-hGZ" id="njo-lM-UYA"/>
@@ -908,7 +908,6 @@
                         <outlet property="metascorePlatformLabel" destination="GOx-DN-4ey" id="8fC-Vu-obR"/>
                         <outlet property="platformsCollectionView" destination="1Q9-oo-3iz" id="gtQ-EC-qRL"/>
                         <outlet property="preorderedSwitch" destination="Mzt-6A-Xm3" id="VNB-c3-U23"/>
-                        <outlet property="progressIndicator" destination="oo5-jN-rbJ" id="LaR-0i-tUj"/>
                         <outlet property="publisherFirstLabel" destination="Gva-cv-pHu" id="jvm-C7-7xc"/>
                         <outlet property="publisherSecondLabel" destination="RdQ-fe-psz" id="4gV-vo-9kl"/>
                         <outlet property="releaseDateLabel" destination="SV0-L3-EX0" id="fxL-dE-Rsq"/>

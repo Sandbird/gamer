@@ -46,7 +46,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 @interface GameTableViewController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
@@ -140,8 +140,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[_videosStatusView setStatus:ContentStatusLoading];
 		[self requestGameWithIdentifier:_gameIdentifier];
 	}
-	
-	[_progressIndicator setColor:[UIColor whiteColor]];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -479,26 +477,22 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (void)downloadImageForCoverImage:(CoverImage *)coverImage{
 	if (!coverImage.url) return;
 	
-	[_progressIndicator setValue:0];
+	[_activityIndicator startAnimating];
 	
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:coverImage.url]];
 	
-	NSProgress *progress;
-	
-	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
 		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
 		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
 		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+		[_activityIndicator stopAnimating];
+		
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %d - Cover Image", self, ((NSHTTPURLResponse *)response).statusCode);
-			
-			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:(__bridge void *)(self)];
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Cover Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
-			[progress removeObserver:self forKeyPath:@"fractionCompleted" context:(__bridge void *)(self)];
 			
 			NSData *downloadedData = [NSData dataWithContentsOfURL:filePath];
 			UIImage *downloadedImage = [UIImage imageWithData:downloadedData];
@@ -514,20 +508,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 	}];
 	[downloadTask resume];
-	
-	[progress addObserver:self forKeyPath:@"fractionCompleted" options:NSKeyValueObservingOptionNew context:(__bridge void *)(self)];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-	dispatch_async(dispatch_get_main_queue(), ^{
-		if (context == (__bridge void *)(self)){
-			NSProgress *progress = (NSProgress *)object;
-			[_progressIndicator setValue:progress.fractionCompleted];
-		}
-		else{
-			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-		}
-	});
 }
 
 - (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{

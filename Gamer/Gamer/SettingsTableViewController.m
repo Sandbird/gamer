@@ -88,14 +88,21 @@
 			break;
 		case 4:{
 			MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
-			[mailComposeViewController setMailComposeDelegate:self];
-			[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
-			[mailComposeViewController setSubject:@"Feedback"];
-			[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
-			
-			[self presentViewController:mailComposeViewController animated:YES completion:^{
-				[tableView deselectRowAtIndexPath:indexPath animated:YES];
-			}];
+			if (mailComposeViewController){
+				[mailComposeViewController setMailComposeDelegate:self];
+				[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
+				[mailComposeViewController setSubject:@"Feedback"];
+				[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
+				
+				[self presentViewController:mailComposeViewController animated:YES completion:^{
+					[tableView deselectRowAtIndexPath:indexPath animated:YES];
+				}];
+			}
+			else{
+				[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"This device cannot send email" message:@"You need to register an email account on this device to be able to send feedback"  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
+			}
 			
 			break;
 		}
@@ -135,14 +142,21 @@
 	NSData *backupData = [NSJSONSerialization dataWithJSONObject:backupDictionary options:0 error:nil];
 	
 	MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
-	[mailComposeViewController setMailComposeDelegate:self];
-	[mailComposeViewController setSubject:@"Gamer App Backup"];
-	[mailComposeViewController setMessageBody:@"You can send this file to yourself and keep it in a safe place in case you ever lose your data." isHTML:NO];
-	[mailComposeViewController addAttachmentData:backupData mimeType:@"application/gamer" fileName:@"Backup.gamer"];
-	
-	[self presentViewController:mailComposeViewController animated:YES completion:^{
+	if (mailComposeViewController){
+		[mailComposeViewController setMailComposeDelegate:self];
+		[mailComposeViewController setSubject:@"Gamer App Backup"];
+		[mailComposeViewController setMessageBody:@"You can send this file to yourself and keep it in case you ever lose your data." isHTML:NO];
+		[mailComposeViewController addAttachmentData:backupData mimeType:@"application/gamer" fileName:@"Backup.gamer"];
+		
+		[self presentViewController:mailComposeViewController animated:YES completion:^{
+			[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+		}];
+	}
+	else{
 		[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-	}];
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"This device cannot send email" message:@"You need to register an email account on this device to be able to send the backup file"  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+	}
 }
 
 #pragma mark - MailComposeViewController

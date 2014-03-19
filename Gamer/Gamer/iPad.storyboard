@@ -178,11 +178,10 @@
                                             <rect key="frame" x="0.0" y="0.0" width="540" height="496"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ieo-vM-YR7" customClass="MACircleProgressIndicator">
-                                                    <rect key="frame" x="254" y="194" width="32" height="32"/>
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="WS5-P2-fCq">
+                                                    <rect key="frame" x="260" y="200" width="20" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                                </view>
+                                                </activityIndicatorView>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DwU-TC-GxR">
                                                     <rect key="frame" x="60" y="60" width="420" height="300"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -835,6 +834,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="activityIndicator" destination="WS5-P2-fCq" id="dhQ-wy-ayx"/>
                         <outlet property="completedSwitch" destination="bDP-UQ-0NH" id="4ow-Lv-EE7"/>
                         <outlet property="coverImageView" destination="DwU-TC-GxR" id="0S2-yY-uWc"/>
                         <outlet property="descriptionTextView" destination="Yld-uO-4o7" id="eIS-PE-tZF"/>
@@ -852,7 +852,6 @@
                         <outlet property="metascorePlatformLabel" destination="IEW-Yk-faT" id="5VY-J1-jcL"/>
                         <outlet property="platformsCollectionView" destination="laf-zo-Npo" id="cjc-q2-8oq"/>
                         <outlet property="preorderedSwitch" destination="BRV-HB-eeN" id="qgt-eD-Kk8"/>
-                        <outlet property="progressIndicator" destination="ieo-vM-YR7" id="nIE-cn-9KH"/>
                         <outlet property="publisherFirstLabel" destination="wSv-Fm-Bs0" id="95P-ak-kJS"/>
                         <outlet property="publisherSecondLabel" destination="4Dy-za-yMA" id="C9u-cn-IOA"/>
                         <outlet property="releaseDateLabel" destination="MBO-XY-qsP" id="kRM-bu-jFG"/>
