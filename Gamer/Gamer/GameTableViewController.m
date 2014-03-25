@@ -463,8 +463,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				[_similarGamesCollectionView reloadData];
 				
 				// If game is released and has at least one platform, request metascore
-				if ([_game.releasePeriod.identifier isEqualToNumber:@(1)] && _selectablePlatforms.count > 0){
-					[self requestMetascoreForGameWithTitle:_game.title platform:_selectablePlatforms.firstObject];
+				if (([_game.releasePeriod.identifier isEqualToNumber:@(1)] || [_game.releasePeriod.identifier isEqualToNumber:@(2)]) && _selectablePlatforms.count > 0){
+					[self requestMetascoreForGameWithTitle:_game.title platform:_platforms.firstObject];
 				}
 			}];
 		}

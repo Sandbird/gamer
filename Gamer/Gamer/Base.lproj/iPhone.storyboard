@@ -1170,7 +1170,7 @@
             </objects>
             <point key="canvasLocation" x="626" y="1469"/>
         </scene>
-        <!--Controller - FAQ-->
+        <!--Controller - About-->
         <scene sceneID="shR-Y7-COB">
             <objects>
                 <tableViewController id="GHJ-hd-3sL" customClass="FAQController" sceneMemberID="viewController">
@@ -1227,7 +1227,7 @@
                             <outlet property="delegate" destination="GHJ-hd-3sL" id="J4s-d2-nxg"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="FAQ" id="4XI-LR-h4b"/>
+                    <navigationItem key="navigationItem" title="About" id="4XI-LR-h4b"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D3q-Z0-7SS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

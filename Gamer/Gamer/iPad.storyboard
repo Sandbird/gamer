@@ -1390,6 +1390,9 @@
                                             <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="onTintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="thumbTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <connections>
+                                                <action selector="switchAction:" destination="bXx-4d-Ql1" eventType="valueChanged" id="xAm-7W-Hfg"/>
+                                            </connections>
                                         </switch>
                                     </subviews>
                                     <constraints>
