@@ -24,10 +24,10 @@
             </objects>
             <point key="canvasLocation" x="-901" y="1875"/>
         </scene>
-        <!--Wishlist View Controller - Wishlist-->
+        <!--Wishlist Controller i Pad - Wishlist-->
         <scene sceneID="d53-fV-utl">
             <objects>
-                <viewController id="kbm-s8-zlH" customClass="WishlistViewController" sceneMemberID="viewController">
+                <viewController id="kbm-s8-zlH" customClass="WishlistController_iPad" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="soa-Dm-VuO"/>
                         <viewControllerLayoutGuide type="bottom" id="vZN-TQ-AYR"/>
@@ -158,10 +158,10 @@
             </objects>
             <point key="canvasLocation" x="1184" y="141"/>
         </scene>
-        <!--Game Table View Controller - Info-->
+        <!--Game Controller - Info-->
         <scene sceneID="tYB-HM-3bf">
             <objects>
-                <tableViewController id="3iO-2E-Tja" customClass="GameTableViewController" sceneMemberID="viewController">
+                <tableViewController id="3iO-2E-Tja" customClass="GameController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="dSa-5B-YEa">
                         <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -869,10 +869,10 @@
             </objects>
             <point key="canvasLocation" x="2984" y="1511"/>
         </scene>
-        <!--Metacritic View Controller - Metacritic-->
+        <!--Metacritic Controller - Metacritic-->
         <scene sceneID="345-lJ-55F">
             <objects>
-                <viewController id="AyH-Gm-sra" customClass="MetacriticViewController" sceneMemberID="viewController">
+                <viewController id="AyH-Gm-sra" customClass="MetacriticController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jRu-Az-Xdv"/>
                         <viewControllerLayoutGuide type="bottom" id="JA1-7W-qZq"/>
@@ -907,10 +907,10 @@
             </objects>
             <point key="canvasLocation" x="4812" y="912"/>
         </scene>
-        <!--Image Viewer View Controller-->
+        <!--Image Viewer Controller-->
         <scene sceneID="SwR-zV-4NA">
             <objects>
-                <viewController id="i5m-R1-ipb" customClass="ImageViewerViewController" sceneMemberID="viewController">
+                <viewController id="i5m-R1-ipb" customClass="ImageViewerController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="SDQ-NY-4bT"/>
                         <viewControllerLayoutGuide type="bottom" id="zhs-nA-fQq"/>
@@ -1042,10 +1042,10 @@
             </objects>
             <point key="canvasLocation" x="194" y="1309"/>
         </scene>
-        <!--Library View Controller - Library-->
+        <!--Library Controller - Library-->
         <scene sceneID="lxF-Rl-STs">
             <objects>
-                <viewController id="RF6-1I-ctL" customClass="LibraryViewController" sceneMemberID="viewController">
+                <viewController id="RF6-1I-ctL" customClass="LibraryController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="g6m-gy-XVq"/>
                         <viewControllerLayoutGuide type="bottom" id="4Qd-yX-uLV"/>
@@ -1168,10 +1168,10 @@
             </objects>
             <point key="canvasLocation" x="2276" y="1511"/>
         </scene>
-        <!--Search View Controller - Search-->
+        <!--Search Controller i Pad - Search-->
         <scene sceneID="5YI-GO-AOE">
             <objects>
-                <viewController storyboardIdentifier="SearchViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="mij-BE-bPZ" customClass="SearchViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SearchViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="mij-BE-bPZ" customClass="SearchController_iPad" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="VbU-Yy-tyT"/>
                         <viewControllerLayoutGuide type="bottom" id="ddG-Z5-xcQ"/>
@@ -1425,10 +1425,10 @@
             </objects>
             <point key="canvasLocation" x="1184" y="4641"/>
         </scene>
-        <!--Settings Table View Controller - More-->
+        <!--More Controller - More-->
         <scene sceneID="yMd-5e-n4H">
             <objects>
-                <tableViewController id="8lX-dJ-phs" customClass="SettingsTableViewController" sceneMemberID="viewController">
+                <tableViewController id="8lX-dJ-phs" customClass="MoreController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="ZsG-3N-fBT">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1573,10 +1573,10 @@
             </objects>
             <point key="canvasLocation" x="1632" y="3652"/>
         </scene>
-        <!--Controller - FAQ-->
+        <!--About Controller - FAQ-->
         <scene sceneID="9Cp-s0-5hD">
             <objects>
-                <tableViewController storyboardIdentifier="FAQController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="JDI-b1-mHG" customClass="FAQController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="FAQController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="JDI-b1-mHG" customClass="AboutController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="300" sectionHeaderHeight="22" sectionFooterHeight="22" id="3nS-A2-Uo1">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
