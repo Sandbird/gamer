@@ -482,8 +482,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:coverImage.url]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
-		[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
 		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		[_activityIndicator stopAnimating];
@@ -515,8 +514,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	if (request.URL){
 		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), request.URL.lastPathComponent]];
-			[[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
 			return fileURL;
 		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 			if (error){
