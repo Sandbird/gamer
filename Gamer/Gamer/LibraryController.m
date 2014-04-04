@@ -105,7 +105,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_filter = LibraryFilterPlatform;
 	
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
 	
 	_imageCache = [NSCache new];
 	
@@ -144,7 +144,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-	[_guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)]] == 0) ? NO : YES];
+	[_guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)]] == 0) ? NO : YES];
 	
 	return _fetchedResultsController.sections.count;
 }
@@ -152,15 +152,15 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
 	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
 	
-	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
+//	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
 	
 	NSString *headerTitle;
 	
 	switch (_filter) {
-		case LibraryFilterTitle: headerTitle = sectionName; break;
-		case LibraryFilterPlatform: headerTitle = game.libraryPlatform.name; break;
-		case LibraryFilterReleaseYear: headerTitle = game.releaseDate.year.stringValue; break;
-		case LibraryFilterMetascore: headerTitle = game.metascore.length > 0 ? game.metascore : @"Unavailable"; break;
+//		case LibraryFilterTitle: headerTitle = sectionName; break;
+//		case LibraryFilterPlatform: headerTitle = game.libraryPlatform.name; break;
+//		case LibraryFilterReleaseYear: headerTitle = game.releaseDate.year.stringValue; break;
+//		case LibraryFilterMetascore: headerTitle = game.metascore.length > 0 ? game.metascore : @"Unavailable"; break;
 		default: break;
 	}
 	
@@ -191,30 +191,30 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	LibraryCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 	
-	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
-	
-	if (image){
-		[cell.coverImageView setImage:image];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-	}
-	else{
-		[cell.coverImageView setImage:nil];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-		
-		UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
-		
-		UIGraphicsBeginImageContext(image.size);
-		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-		image = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
-		
-		[cell.coverImageView setImage:image];
-		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-		
-		if (image){
-			[_imageCache setObject:image forKey:game.thumbnailName];
-		}
-	}
+//	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
+//	
+//	if (image){
+//		[cell.coverImageView setImage:image];
+//		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+//	}
+//	else{
+//		[cell.coverImageView setImage:nil];
+//		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+//		
+//		UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
+//		
+//		UIGraphicsBeginImageContext(image.size);
+//		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+//		image = UIGraphicsGetImageFromCurrentImageContext();
+//		UIGraphicsEndImageContext();
+//		
+//		[cell.coverImageView setImage:image];
+//		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+//		
+//		if (image){
+//			[_imageCache setObject:image forKey:game.thumbnailName];
+//		}
+//	}
 	
 	return cell;
 }
@@ -252,24 +252,24 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 					
 					BOOL imagesDownloaded = NO;
 					
-					for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++){
-						for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++){
-							Game *fetchedGame = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
-							
-							UIImage *thumbnail = [UIImage imageWithData:fetchedGame.thumbnailLibrary];
-							CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeLibrary];
-							
-							if (!fetchedGame.thumbnailWishlist || !fetchedGame.thumbnailLibrary || !fetchedGame.coverImage.data || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
-								imagesDownloaded = YES;
-								[self downloadCoverImageForGame:fetchedGame];
-							}
-							
-							if (section == _fetchedResultsController.sections.count - 1 && row == [_fetchedResultsController.sections[section] numberOfObjects] - 1 && imagesDownloaded == NO){
-								[_refreshBarButton setEnabled:YES];
-								[_refreshControl endRefreshing];
-							}
-						}
-					}
+//					for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++){
+//						for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++){
+//							Game *fetchedGame = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+//							
+//							UIImage *thumbnail = [UIImage imageWithData:fetchedGame.thumbnailLibrary];
+//							CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeLibrary];
+//							
+//							if (!fetchedGame.thumbnailWishlist || !fetchedGame.thumbnailLibrary || !fetchedGame.coverImage.data || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
+//								imagesDownloaded = YES;
+//								[self downloadCoverImageForGame:fetchedGame];
+//							}
+//							
+//							if (section == _fetchedResultsController.sections.count - 1 && row == [_fetchedResultsController.sections[section] numberOfObjects] - 1 && imagesDownloaded == NO){
+//								[_refreshBarButton setEnabled:YES];
+//								[_refreshControl endRefreshing];
+//							}
+//						}
+//					}
 				}];
 			}
 		}
@@ -278,40 +278,40 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_numberOfRunningTasks++;
 }
 
-- (void)downloadCoverImageForGame:(Game *)game{
-	if (!game.coverImage.url) return;
-	
-	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
-	
-	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
-		return fileURL;
-	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Thumbnail", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			_numberOfRunningTasks--;
-		}
-		else{
-			NSLog(@"Success in %@ - Status code: %ld - Thumbnail - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			_numberOfRunningTasks--;
-			
-			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
-			
-			if (_numberOfRunningTasks == 0){
-				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[_collectionView reloadData];
-					[_refreshBarButton setEnabled:YES];
-					[_refreshControl endRefreshing];
-				}];
-			}
-		}
-	}];
-	[downloadTask resume];
-	_numberOfRunningTasks++;
-}
+//- (void)downloadCoverImageForGame:(Game *)game{
+//	if (!game.coverImage.url) return;
+//	
+//	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
+//	
+//	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+//		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
+//		return fileURL;
+//	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+//		if (error){
+//			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Thumbnail", self, (long)((NSHTTPURLResponse *)response).statusCode);
+//			_numberOfRunningTasks--;
+//		}
+//		else{
+//			NSLog(@"Success in %@ - Status code: %ld - Thumbnail - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			_numberOfRunningTasks--;
+//			
+//			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+//			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+//			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+//			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+//			
+//			if (_numberOfRunningTasks == 0){
+//				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+//					[_collectionView reloadData];
+//					[_refreshBarButton setEnabled:YES];
+//					[_refreshControl endRefreshing];
+//				}];
+//			}
+//		}
+//	}];
+//	[downloadTask resume];
+//	_numberOfRunningTasks++;
+//}
 
 #pragma mark - LibraryFilterView
 
@@ -329,7 +329,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = LibraryFilterPlatform;
 	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
 	[_collectionView reloadData];
 }
 
@@ -338,7 +338,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex != actionSheet.cancelButtonIndex){
 		if (actionSheet.tag == 1){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @(YES)];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)];
 			
 			// Sort
 			switch (buttonIndex) {
@@ -365,27 +365,27 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			switch (buttonIndex) {
 				case 0:
 					// Finished
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND completed = %@", @(YES), @(YES)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing finished games" animated:YES];
 					break;
 				case 1:
 					// Unfinished
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND completed = %@", @(YES), @(NO)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing unfinished games" animated:YES];
 					break;
 				case 2:
 					// Digital
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND digital = %@", @(YES), @(YES)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing digital games" animated:YES];
 					break;
 				case 3:
 					// Retail
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND digital = %@", @(YES), @(NO)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing retail games" animated:YES];
 					break;
 				case 4:
 					// Lent
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:@"libraryPlatform.index" predicate:[NSPredicate predicateWithFormat:@"owned = %@ AND loaned = %@", @(YES), @(YES)] sort:@"libraryPlatform.index,title" ascending:YES];
+					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND lent = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing lent games" animated:YES];
 					break;
 				default: break;
@@ -466,7 +466,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = LibraryFilterPlatform;
 	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
 	[_collectionView reloadData];
 }
 
@@ -484,7 +484,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = LibraryFilterPlatform;
 	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"libraryPlatform.index" withPredicate:[NSPredicate predicateWithFormat:@"owned = %@", @(YES)] sortedBy:@"libraryPlatform.index,title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
 	[_collectionView reloadData];
 }
 

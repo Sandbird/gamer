@@ -32,8 +32,6 @@
     [super viewDidLoad];
 	
 	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
-//	[_searchBar setSearchBarStyle:UISearchBarStyleMinimal];
-//	[[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor lightGrayColor]];
 	[_searchBar setPlaceholder:@"Find Games"];
 	[_searchBar setDelegate:self];
 	UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:_searchBar];

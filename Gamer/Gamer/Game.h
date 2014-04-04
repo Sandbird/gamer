@@ -2,14 +2,14 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 03/04/2014.
+//  Created by Caio Mello on 04/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Developer, Franchise, Genre, Image, Platform, Publisher, Release, ReleaseDate, ReleasePeriod, SimilarGame, Theme, Video;
+@class Developer, Franchise, Genre, Image, Metascore, Platform, Publisher, Release, ReleaseDate, ReleasePeriod, SimilarGame, Theme, Video;
 
 @interface Game : NSManagedObject
 
@@ -26,6 +26,8 @@
 @property (nonatomic, retain) NSString * imageURL;
 @property (nonatomic, retain) NSString * imagePath;
 @property (nonatomic, retain) NSNumber * location;
+@property (nonatomic, retain) NSNumber * borrowed;
+@property (nonatomic, retain) NSString * notes;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
@@ -40,7 +42,7 @@
 @property (nonatomic, retain) NSSet *videos;
 @property (nonatomic, retain) NSSet *metascores;
 @property (nonatomic, retain) NSSet *releases;
-@property (nonatomic, retain) Platform *addedPlatforms;
+@property (nonatomic, retain) NSSet *selectedPlatforms;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)
@@ -90,8 +92,8 @@
 - (void)addVideos:(NSSet *)values;
 - (void)removeVideos:(NSSet *)values;
 
-- (void)addMetascoresObject:(NSManagedObject *)value;
-- (void)removeMetascoresObject:(NSManagedObject *)value;
+- (void)addMetascoresObject:(Metascore *)value;
+- (void)removeMetascoresObject:(Metascore *)value;
 - (void)addMetascores:(NSSet *)values;
 - (void)removeMetascores:(NSSet *)values;
 
@@ -99,5 +101,10 @@
 - (void)removeReleasesObject:(Release *)value;
 - (void)addReleases:(NSSet *)values;
 - (void)removeReleases:(NSSet *)values;
+
+- (void)addSelectedPlatformsObject:(Platform *)value;
+- (void)removeSelectedPlatformsObject:(Platform *)value;
+- (void)addSelectedPlatforms:(NSSet *)values;
+- (void)removeSelectedPlatforms:(NSSet *)values;
 
 @end

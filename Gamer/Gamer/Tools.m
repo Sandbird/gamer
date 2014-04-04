@@ -43,16 +43,16 @@
 	return (source != [NSNull null]) ? [NSString stringWithFormat:@"%@", source] : nil;
 }
 
-+ (NSDecimalNumber *)decimalNumberFromSourceIfNotNull:(id)source{
-	return (source != [NSNull null]) ? [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%@", source]] : [NSDecimalNumber zero];
++ (NSNumber *)booleanNumberFromSourceIfNotNull:(id)source withDefault:(BOOL)defaultValue{
+	return (source != [NSNull null]) ? @([[NSString stringWithFormat:@"%@", source] boolValue]) : @(defaultValue);
 }
 
 + (NSNumber *)integerNumberFromSourceIfNotNull:(id)source{
 	return (source != [NSNull null]) ? @([[NSString stringWithFormat:@"%@", source] integerValue]) : @(0);
 }
 
-+ (NSNumber *)booleanNumberFromSourceIfNotNull:(id)source withDefault:(BOOL)defaultValue{
-	return (source != [NSNull null]) ? @([[NSString stringWithFormat:@"%@", source] boolValue]) : @(defaultValue);
++ (NSDecimalNumber *)decimalNumberFromSourceIfNotNull:(id)source{
+	return (source != [NSNull null]) ? [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%@", source]] : [NSDecimalNumber zero];
 }
 
 #pragma mark - Strings

@@ -10,6 +10,7 @@
 #import "ReleaseDate.h"
 #import "Platform.h"
 #import "ReleasePeriod.h"
+#import "Region.h"
 
 @implementation Session
 
@@ -123,7 +124,38 @@ static NSArray *SEARCHRESULTS;
 + (void)stp{
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
+	Gamer *gamer = [Gamer MR_findFirstInContext:context];
+	if (!gamer) gamer = [Gamer MR_createInContext:context];
+	[self setGamer:gamer];
 	
+	if (!gamer.librarySize) [gamer setLibrarySize:@(LibrarySizeMedium)];
+	
+	NSDictionary *initialDataDictionary = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"InitialData" ofType:@"plist"]];
+	NSLog(@"%@", initialDataDictionary);
+	
+//	NSArray *platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES inContext:context];
+//	NSArray *releasePeriods = [ReleasePeriod MR_findAllSortedBy:@"identifier" ascending:YES inContext:context];
+//	NSArray *placeholderGames = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier == nil"] inContext:context];
+//	NSArray *regions = [Region MR_findAllSortedBy:@"identifier" ascending:YES inContext:context];
+	
+	for (NSDictionary *platformDictionary in initialDataDictionary[@"initial_data"][@"platforms"]){
+		Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"platform"][@"identifier"] inContext:context];
+		if (!platform) platform = [Platform MR_createInContext:context];
+		[platform setIdentifier:platformDictionary[@"platform"][@"identifier"]];
+		[platform setName:platformDictionary[@"platform"][@"name"]];
+		[platform setAbbreviation:platformDictionary[@"platform"][@"abbreviation"]];
+		[platform setIndex:platformDictionary[@"platform"][@"index"]];
+		[platform setGroup:platformDictionary[@"platform"][@"group"]];
+		[platform setMetacriticIdentifier:platformDictionary[@"platform"][@"metacritic_identifier"]];
+		[platform setColor:[UIColor colorWithRed:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"red"]].floatValue
+										   green:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"green"]].floatValue
+											blue:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"blue"]].floatValue
+										   alpha:1]];
+	}
+	
+	
+	
+	[context MR_saveToPersistentStoreAndWait];
 }
 
 + (void)setup{

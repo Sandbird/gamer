@@ -2,7 +2,7 @@
 //  Game.m
 //  Gamer
 //
-//  Created by Caio Mello on 03/04/2014.
+//  Created by Caio Mello on 04/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -11,6 +11,7 @@
 #import "Franchise.h"
 #import "Genre.h"
 #import "Image.h"
+#import "Metascore.h"
 #import "Platform.h"
 #import "Publisher.h"
 #import "Release.h"
@@ -36,6 +37,8 @@
 @dynamic imageURL;
 @dynamic imagePath;
 @dynamic location;
+@dynamic borrowed;
+@dynamic notes;
 @dynamic developers;
 @dynamic franchises;
 @dynamic genres;
@@ -50,6 +53,6 @@
 @dynamic videos;
 @dynamic metascores;
 @dynamic releases;
-@dynamic addedPlatforms;
+@dynamic selectedPlatforms;
 
 @end

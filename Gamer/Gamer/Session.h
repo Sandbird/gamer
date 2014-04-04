@@ -40,8 +40,20 @@ typedef NS_ENUM(NSInteger, GameImageType){
 };
 
 typedef NS_ENUM(NSInteger, GameLocation){
+	GameLocationNone = 0,
 	GameLocationWishlist = 1,
 	GameLocationLibrary = 2
+};
+
+typedef NS_ENUM(NSInteger, LibrarySize){
+	LibrarySizeSmall = 0,
+	LibrarySizeMedium = 1,
+	LibrarySizeLarge = 2
+};
+
+typedef NS_ENUM(NSInteger, PlatformGroup){
+	PlatformGroupModern = 0,
+	PlatformGroupLegacy = 1
 };
 
 @interface Session : NSObject
@@ -61,6 +73,6 @@ typedef NS_ENUM(NSInteger, GameLocation){
 + (UIImage *)aspectFitImageWithImage:(UIImage *)image type:(GameImageType)type;
 
 + (void)stp;
-+ (void)setup;
+//+ (void)setup;
 
 @end

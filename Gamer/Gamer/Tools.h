@@ -15,8 +15,9 @@
 
 // JSON
 + (NSString *)stringFromSourceIfNotNull:(id)source;
-+ (NSNumber *)integerNumberFromSourceIfNotNull:(id)source;
 + (NSNumber *)booleanNumberFromSourceIfNotNull:(id)source withDefault:(BOOL)defaultValue;
++ (NSNumber *)integerNumberFromSourceIfNotNull:(id)source;
++ (NSDecimalNumber *)decimalNumberFromSourceIfNotNull:(id)source;
 
 // Strings
 + (NSString *)dateStringFromString:(NSString *)string withFormat:(NSString *)sourceFormat toFormat:(NSString *)resultFormat;

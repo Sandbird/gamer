@@ -30,7 +30,7 @@
 	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	if (![Session gamer].librarySize){
-		[[Session gamer] setLibrarySize:@(1)];
+		[[Session gamer] setLibrarySize:@(LibrarySizeMedium)];
 		[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
@@ -114,21 +114,23 @@
 #pragma mark - Export
 
 - (void)exportGames{
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND (wanted = %@ OR owned = %@)", @(YES), @(YES)] inContext:_context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND (location = %@ OR location = %@)", @(GameLocationWishlist), @(GameLocationLibrary)] inContext:_context];
 	
 	NSMutableArray *gameDictionaries = [[NSMutableArray alloc] initWithCapacity:games.count];
 	
 	for (Game *game in games){
-		NSMutableArray *platformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.platforms.count];
-		[platformDictionaries addObject:@{@"id":game.wishlistPlatform ? game.wishlistPlatform.identifier : game.libraryPlatform.identifier}];
+		NSMutableArray *platformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.selectedPlatforms.count];
+		for (Platform *platform in game.selectedPlatforms){
+			[platformDictionaries addObject:@{@"id":platform.identifier}];
+		}
 		
 		NSDictionary *gameDictionary = @{@"id":game.identifier,
 										 @"title":game.title,
-										 @"location":[game.wanted isEqualToNumber:@(YES)] ? @(GameLocationWishlist) : @(GameLocationLibrary),
+										 @"location":game.location,
 										 @"selectedPlatforms":platformDictionaries,
-										 @"finished":game.completed,
+										 @"finished":game.finished,
 										 @"digital":game.digital,
-										 @"lent":game.loaned,
+										 @"lent":game.lent,
 										 @"preordered":game.preordered};
 		
 		[gameDictionaries addObject:gameDictionary];

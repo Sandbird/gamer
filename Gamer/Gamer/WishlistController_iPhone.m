@@ -38,7 +38,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[Session setup];
+//	[Session setup];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlist" object:nil];
@@ -74,7 +74,7 @@
 
 - (NSFetchedResultsController *)fetchData{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND (wanted = %@ OR identifier = nil)", @(NO), @(YES)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND (location = %@ OR identifier = nil)", @(NO), @(GameLocationWishlist)];
 		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES delegate:self];
 	}
 	
@@ -134,10 +134,10 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	[game setWanted:@(NO)];
-	[game setWishlistPlatform:nil];
+	[game setLocation:@(GameLocationNone)];
+	[game setSelectedPlatforms:nil];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", game.releasePeriod.identifier, @(YES)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND location = %@", game.releasePeriod.identifier, @(GameLocationWishlist)];
 	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:_context];
 	
 	// If no more games in section, hide placeholder so section is removed
@@ -153,50 +153,58 @@
 	
 	WishlistCell *customCell = (WishlistCell *)cell;
 	
-	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
-	
-	if (image){
-		[customCell.coverImageView setImage:image];
-		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
-	}
-	else{
-		[customCell.coverImageView setImage:nil];
-		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
-		
-		UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
-		
-		UIGraphicsBeginImageContext(image.size);
-		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-		image = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
-		
-		[customCell.coverImageView setImage:image];
-		[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-		
-		if (image){
-			[_imageCache setObject:image forKey:game.thumbnailName];
-		}
-	}
+//	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
+//	
+//	if (image){
+//		[customCell.coverImageView setImage:image];
+//		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
+//	}
+//	else{
+//		[customCell.coverImageView setImage:nil];
+//		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
+//		
+//		UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
+//		
+//		UIGraphicsBeginImageContext(image.size);
+//		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+//		image = UIGraphicsGetImageFromCurrentImageContext();
+//		UIGraphicsEndImageContext();
+//		
+//		[customCell.coverImageView setImage:image];
+//		[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+//		
+//		if (image){
+//			[_imageCache setObject:image forKey:game.thumbnailName];
+//		}
+//	}
 	
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.dateLabel setText:game.releaseDateText];
 	[customCell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];
-	[customCell.platformLabel setText:game.wishlistPlatform.abbreviation];
-	[customCell.platformLabel setBackgroundColor:game.wishlistPlatform.color];
 	
-	if ([game.released isEqualToNumber:@(YES)] && game.wishlistMetascore.length > 0 && game.wishlistMetascorePlatform == game.wishlistPlatform){
-		[customCell.metascoreLabel setHidden:NO];
-		[customCell.metascoreLabel setText:game.wishlistMetascore];
-		[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:game.wishlistMetascore]];
+	if (game.selectedPlatforms.count == 1){
+		Platform *platform = game.selectedPlatforms.allObjects.firstObject;
+		[customCell.platformLabel setText:platform.abbreviation];
+		[customCell.platformLabel setBackgroundColor:platform.color];
 	}
-	else
-		[customCell.metascoreLabel setHidden:YES];
+	else{
+		[customCell.platformLabel setText:nil];
+		[customCell.platformLabel setBackgroundColor:[UIColor clearColor]];
+	}
+	
+//	if ([game.released isEqualToNumber:@(YES)] && game.wishlistMetascore.length > 0 && game.wishlistMetascorePlatform == game.wishlistPlatform){
+//		[customCell.metascoreLabel setHidden:NO];
+//		[customCell.metascoreLabel setText:game.wishlistMetascore];
+//		[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:game.wishlistMetascore]];
+//	}
+//	else
+//		[customCell.metascoreLabel setHidden:YES];
 }
 
 #pragma mark - HidingSectionView
 
 - (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)headerView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", releasePeriod.identifier, @(YES)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND location = %@", releasePeriod.identifier, @(GameLocationWishlist)];
 	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:_context];
 	
 	// Switch hidden property of all games in section
@@ -225,19 +233,19 @@
 			
 			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 			
-			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
-				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-				
-				UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
-				CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
-				
-				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
-					[self downloadCoverImageForGame:game];
-				}
-			}
-			
-			if ([game.released isEqualToNumber:@(YES)])
-				[self requestMetascoreForGame:game];
+//			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
+//				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+//				
+//				UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
+//				CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
+//				
+//				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
+//					[self downloadCoverImageForGame:game];
+//				}
+//			}
+//			
+//			if ([game.released isEqualToNumber:@(YES)])
+//				[self requestMetascoreForGame:game];
 		}
 		
 		if (_numberOfRunningTasks == 0){
@@ -249,75 +257,75 @@
 	_numberOfRunningTasks++;
 }
 
-- (void)downloadCoverImageForGame:(Game *)game{
-	if (!game.coverImage.url) return;
-	
-	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
-	
-	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
-		return fileURL;
-	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Thumbnail", self, (long)((NSHTTPURLResponse *)response).statusCode);
-		}
-		else{
-			NSLog(@"Success in %@ - Status code: %ld - Thumbnail - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
-			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
-			
-			[_context MR_saveToPersistentStoreAndWait];
-		}
-	}];
-	[downloadTask resume];
-}
+//- (void)downloadCoverImageForGame:(Game *)game{
+//	if (!game.coverImage.url) return;
+//	
+//	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
+//	
+//	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+//		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
+//		return fileURL;
+//	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+//		if (error){
+//			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Thumbnail", self, (long)((NSHTTPURLResponse *)response).statusCode);
+//		}
+//		else{
+//			NSLog(@"Success in %@ - Status code: %ld - Thumbnail - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			
+//			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+//			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+//			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+//			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+//			
+//			[_context MR_saveToPersistentStoreAndWait];
+//		}
+//	}];
+//	[downloadTask resume];
+//}
 
-- (void)requestMetascoreForGame:(Game *)game{
-	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform];
-	
-	if (request.URL){
-		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
-			return fileURL;
-		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-			if (error){
-				NSLog(@"Failure in %@ - Metascore", self);
-			}
-			else{
-				NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
-				
-				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-				
-				[game setMetacriticURL:request.URL.absoluteString];
-				
-				if (HTML){
-					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-						[game setWishlistMetascore:metascore];
-						[game setWishlistMetascorePlatform:game.wishlistPlatform];
-					}
-					else{
-						[game setWishlistMetascore:nil];
-						[game setWishlistMetascorePlatform:nil];
-					}
-				}
-				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[self.tableView reloadData];
-				}];
-			}
-		}];
-		[downloadTask resume];
-	}
-}
+//- (void)requestMetascoreForGame:(Game *)game{
+//	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform];
+//	
+//	if (request.URL){
+//		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+//			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
+//			return fileURL;
+//		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+//			if (error){
+//				NSLog(@"Failure in %@ - Metascore", self);
+//			}
+//			else{
+//				NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
+//				
+//				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
+//				
+//				[game setMetacriticURL:request.URL.absoluteString];
+//				
+//				if (HTML){
+//					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
+//					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
+//						[game setWishlistMetascore:metascore];
+//						[game setWishlistMetascorePlatform:game.wishlistPlatform];
+//					}
+//					else{
+//						[game setWishlistMetascore:nil];
+//						[game setWishlistMetascorePlatform:nil];
+//					}
+//				}
+//				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+//					[self.tableView reloadData];
+//				}];
+//			}
+//		}];
+//		[downloadTask resume];
+//	}
+//}
 
 #pragma mark - Custom
 
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"wanted = %@", @(YES)] inContext:_context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationWishlist)] inContext:_context];
 	for (Game *game in games)
 		[game setReleasePeriod:[Networking releasePeriodForReleaseDate:game.releaseDate context:_context]];
 	
@@ -326,7 +334,7 @@
 		NSArray *releasePeriods = [ReleasePeriod MR_findAllInContext:_context];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND wanted = %@", releasePeriod.identifier, @(YES)];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND location = %@", releasePeriod.identifier, @(GameLocationWishlist)];
 			NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}
@@ -341,7 +349,7 @@
 		[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
 	}
 	
-	[Game MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND wanted = %@ AND owned = %@", @(NO), @(NO)]];
+	[Game MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location = %@", @(GameLocationNone)]];
 	[_context MR_saveToPersistentStoreAndWait];
 	
 	_numberOfRunningTasks = 0;

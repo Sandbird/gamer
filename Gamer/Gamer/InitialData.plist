@@ -2,12 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>initial data</key>
+	<key>initial_data</key>
 	<dict>
-		<key>release periods</key>
+		<key>release_periods</key>
 		<array>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>1</integer>
@@ -17,7 +17,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -25,7 +25,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>2</integer>
@@ -35,7 +35,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -43,7 +43,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>3</integer>
@@ -53,7 +53,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -61,7 +61,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>4</integer>
@@ -71,7 +71,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -79,7 +79,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>5</integer>
@@ -89,7 +89,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -97,7 +97,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>6</integer>
@@ -107,7 +107,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -115,7 +115,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>7</integer>
@@ -125,7 +125,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -133,7 +133,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>8</integer>
@@ -143,7 +143,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -151,7 +151,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>9</integer>
@@ -161,7 +161,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -169,7 +169,7 @@
 				</dict>
 			</dict>
 			<dict>
-				<key>release period</key>
+				<key>release_period</key>
 				<dict>
 					<key>identifier</key>
 					<integer>10</integer>
@@ -179,7 +179,7 @@
 					<dict>
 						<key>title</key>
 						<string>ZZZ</string>
-						<key>release date</key>
+						<key>release_date</key>
 						<date>2060-01-01T12:00:00Z</date>
 						<key>hidden</key>
 						<true/>
@@ -211,7 +211,7 @@
 					<integer>0</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>3</integer>
 				</dict>
 			</dict>
@@ -237,7 +237,7 @@
 					<integer>1</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>72496</integer>
 				</dict>
 			</dict>
@@ -263,7 +263,7 @@
 					<integer>2</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>80000</integer>
 				</dict>
 			</dict>
@@ -289,7 +289,7 @@
 					<integer>3</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>16</integer>
 				</dict>
 			</dict>
@@ -315,7 +315,7 @@
 					<integer>4</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>1</integer>
 				</dict>
 			</dict>
@@ -341,7 +341,7 @@
 					<integer>5</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>67365</integer>
 				</dict>
 			</dict>
@@ -367,7 +367,7 @@
 					<integer>6</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>8</integer>
 				</dict>
 			</dict>
@@ -393,7 +393,7 @@
 					<integer>7</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>68410</integer>
 				</dict>
 			</dict>
@@ -419,7 +419,7 @@
 					<integer>8</integer>
 					<key>group</key>
 					<integer>0</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>2</integer>
 				</dict>
 			</dict>
@@ -445,7 +445,7 @@
 					<integer>0</integer>
 					<key>group</key>
 					<integer>1</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>13</integer>
 				</dict>
 			</dict>
@@ -471,7 +471,7 @@
 					<integer>1</integer>
 					<key>group</key>
 					<integer>1</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>4</integer>
 				</dict>
 			</dict>
@@ -497,7 +497,7 @@
 					<integer>2</integer>
 					<key>group</key>
 					<integer>1</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>6</integer>
 				</dict>
 			</dict>
@@ -523,7 +523,7 @@
 					<integer>3</integer>
 					<key>group</key>
 					<integer>1</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>7</integer>
 				</dict>
 			</dict>
@@ -549,7 +549,7 @@
 					<integer>4</integer>
 					<key>group</key>
 					<integer>1</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>12</integer>
 				</dict>
 			</dict>
@@ -575,7 +575,7 @@
 					<integer>5</integer>
 					<key>group</key>
 					<integer>1</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>10</integer>
 				</dict>
 			</dict>
@@ -601,7 +601,7 @@
 					<integer>6</integer>
 					<key>group</key>
 					<integer>1</integer>
-					<key>metacriticIdentifier</key>
+					<key>metacritic_identifier</key>
 					<integer>14</integer>
 				</dict>
 			</dict>

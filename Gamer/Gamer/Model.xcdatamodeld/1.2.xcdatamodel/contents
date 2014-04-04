@@ -11,6 +11,7 @@
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="franchises" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="Game" representedClassName="Game" syncable="YES">
+        <attribute name="borrowed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="digital" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="finished" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -19,12 +20,12 @@
         <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lent" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="location" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="overview" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="preordered" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="released" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="releaseDateText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="addedPlatforms" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="addedGames" inverseEntity="Platform" syncable="YES"/>
         <relationship name="developers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Developer" inverseName="games" inverseEntity="Developer" syncable="YES"/>
         <relationship name="franchises" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Franchise" inverseName="games" inverseEntity="Franchise" syncable="YES"/>
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
@@ -36,6 +37,7 @@
         <relationship name="releaseDate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleaseDate" inverseName="games" inverseEntity="ReleaseDate" syncable="YES"/>
         <relationship name="releasePeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="games" inverseEntity="ReleasePeriod" syncable="YES"/>
         <relationship name="releases" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Release" inverseName="game" inverseEntity="Release" syncable="YES"/>
+        <relationship name="selectedPlatforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="addedGames" inverseEntity="Platform" syncable="YES"/>
         <relationship name="similarGames" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SimilarGame" inverseName="game" inverseEntity="SimilarGame" syncable="YES"/>
         <relationship name="themes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Theme" inverseName="games" inverseEntity="Theme" syncable="YES"/>
         <relationship name="videos" optional="YES" toMany="YES" maxCount="30" deletionRule="Cascade" destinationEntity="Video" inverseName="game" inverseEntity="Video" syncable="YES"/>
@@ -66,11 +68,12 @@
     <entity name="Platform" representedClassName="Platform" syncable="YES">
         <attribute name="abbreviation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="color" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="group" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" syncable="YES"/>
         <attribute name="metacriticIdentifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="addedGames" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="addedPlatforms" inverseEntity="Game" syncable="YES"/>
+        <relationship name="addedGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="selectedPlatforms" inverseEntity="Game" syncable="YES"/>
         <relationship name="gamer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Gamer" inverseName="platforms" inverseEntity="Gamer" syncable="YES"/>
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="platforms" inverseEntity="Game" syncable="YES"/>
         <relationship name="metascores" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Metascore" inverseName="platform" inverseEntity="Metascore" syncable="YES"/>
@@ -140,11 +143,11 @@
     <elements>
         <element name="Developer" positionX="106" positionY="-124" width="128" height="88"/>
         <element name="Franchise" positionX="106" positionY="126" width="128" height="88"/>
-        <element name="Game" positionX="-110" positionY="-243" width="128" height="463"/>
+        <element name="Game" positionX="-110" positionY="-243" width="128" height="493"/>
         <element name="Gamer" positionX="-486" positionY="-243" width="128" height="88"/>
         <element name="Genre" positionX="106" positionY="-243" width="128" height="88"/>
         <element name="Image" positionX="286" positionY="-241" width="128" height="103"/>
-        <element name="Platform" positionX="-299" positionY="-243" width="128" height="208"/>
+        <element name="Platform" positionX="-299" positionY="-243" width="128" height="223"/>
         <element name="Publisher" positionX="106" positionY="2" width="128" height="88"/>
         <element name="ReleaseDate" positionX="-299" positionY="140" width="128" height="163"/>
         <element name="ReleasePeriod" positionX="-299" positionY="5" width="128" height="103"/>

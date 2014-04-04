@@ -92,17 +92,17 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	[game setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
 	
 	// Cover image
-	if (results[@"image"] != [NSNull null]){
-		NSString *imageURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-		
-		CoverImage *coverImage = [CoverImage MR_findFirstByAttribute:@"url" withValue:imageURL inContext:context];
-		if (!coverImage){
-			coverImage = [CoverImage MR_createInContext:context];
-			[coverImage setUrl:imageURL];
-		}
-		[game setCoverImage:coverImage];
-		[game setThumbnailName:[imageURL lastPathComponent]];
-	}
+//	if (results[@"image"] != [NSNull null]){
+//		NSString *imageURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
+//		
+//		CoverImage *coverImage = [CoverImage MR_findFirstByAttribute:@"url" withValue:imageURL inContext:context];
+//		if (!coverImage){
+//			coverImage = [CoverImage MR_createInContext:context];
+//			[coverImage setUrl:imageURL];
+//		}
+//		[game setCoverImage:coverImage];
+//		[game setThumbnailName:[imageURL lastPathComponent]];
+//	}
 	
 	// Platforms
 	if (results[@"platforms"] != [NSNull null]){

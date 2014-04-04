@@ -47,20 +47,11 @@
 			if (!game) game = [Game MR_createInContext:_context];
 			[game setIdentifier:identifier];
 			[game setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
-			[game setCompleted:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"finished"] withDefault:NO]];
+			[game setFinished:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"finished"] withDefault:NO]];
 			[game setDigital:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"digital"] withDefault:NO]];
-			[game setLoaned:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"lent"] withDefault:NO]];
+			[game setLent:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"lent"] withDefault:NO]];
 			[game setPreordered:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"preordered"] withDefault:NO]];
-			
-			NSNumber *location = [Tools integerNumberFromSourceIfNotNull:dictionary[@"location"]];
-			if ([location isEqualToNumber:@(GameLocationWishlist)]){
-				[game setWanted:@(YES)];
-				[game setOwned:@(NO)];
-			}
-			else{
-				[game setWanted:@(NO)];
-				[game setOwned:@(YES)];
-			}
+			[game setLocation:[Tools integerNumberFromSourceIfNotNull:dictionary[@"location"]]];
 			
 			if (dictionary[@"selectedPlatforms"] != [NSNull null]){
 				NSMutableArray *selectedPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"selectedPlatforms"] count]];
@@ -69,15 +60,12 @@
 					[selectedPlatforms addObject:platform];
 				}
 				
-				if ([game.wanted isEqualToNumber:@(YES)])
-					[game setWishlistPlatform:selectedPlatforms.firstObject];
-				else if ([game.owned isEqualToNumber:@(YES)])
-					[game setLibraryPlatform:selectedPlatforms.firstObject];
+				[game setSelectedPlatforms:[NSSet setWithArray:selectedPlatforms]];
 			}
 			
-			if ([game.wanted isEqualToNumber:@(YES)])
+			if ([game.location isEqualToNumber:@(GameLocationWishlist)])
 				[_importedWishlistGames addObject:game];
-			else if ([game.owned isEqualToNumber:@(YES)])
+			else if ([game.location isEqualToNumber:@(GameLocationLibrary)])
 				[_importedLibraryGames addObject:game];
 			
 			// If game not in database, download
@@ -133,30 +121,30 @@
 	ImportCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
 	
-	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
+//	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
 	
-	if (image){
-		[cell.coverImageView setImage:image];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-	}
-	else{
-		[cell.coverImageView setImage:nil];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-		
-		UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
-		
-		UIGraphicsBeginImageContext(image.size);
-		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-		image = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
-		
-		[cell.coverImageView setImage:image];
-		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-		
-		if (image){
-			[_imageCache setObject:image forKey:game.thumbnailName];
-		}
-	}
+//	if (image){
+//		[cell.coverImageView setImage:image];
+//		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+//	}
+//	else{
+//		[cell.coverImageView setImage:nil];
+//		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+//		
+//		UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
+//		
+//		UIGraphicsBeginImageContext(image.size);
+//		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+//		image = UIGraphicsGetImageFromCurrentImageContext();
+//		UIGraphicsEndImageContext();
+//		
+//		[cell.coverImageView setImage:image];
+//		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+//		
+//		if (image){
+//			[_imageCache setObject:image forKey:game.thumbnailName];
+//		}
+//	}
 	
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	[cell setAccessoryType:game.releaseDate ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
@@ -201,9 +189,9 @@
 }
 
 - (void)downloadCoverImageForGame:(Game *)game{
-	if (!game.coverImage.url) return;
+	if (!game.imageURL) return;
 	
-	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
+	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.imageURL]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
 		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
@@ -224,10 +212,10 @@
 			NSLog(@"Success in %@ - Status code: %ld - Thumbnail - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			_numberOfRunningTasks--;
 			
-			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+//			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
+//			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
+//			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
+//			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 			
 			[self.tableView reloadData];
 			
