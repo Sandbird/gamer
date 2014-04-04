@@ -68,6 +68,9 @@
 		25AC857618EE37B400919A15 /* ReleasePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC857518EE37B400919A15 /* ReleasePeriod.m */; };
 		25AC857918EE37B400919A15 /* Developer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC857818EE37B400919A15 /* Developer.m */; };
 		25AC857C18EE37B400919A15 /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC857B18EE37B400919A15 /* Theme.m */; };
+		25AC857F18EE3AFF00919A15 /* ReleasesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC857E18EE3AFF00919A15 /* ReleasesController.m */; };
+		25AC858218EE3B0E00919A15 /* MetascoreController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC858118EE3B0E00919A15 /* MetascoreController.m */; };
+		25AC858418EE3CB800919A15 /* InitialData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 25AC858318EE3CB800919A15 /* InitialData.plist */; };
 		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
 		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
 		25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */; };
@@ -209,6 +212,11 @@
 		25AC857818EE37B400919A15 /* Developer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Developer.m; sourceTree = "<group>"; };
 		25AC857A18EE37B400919A15 /* Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theme.h; sourceTree = "<group>"; };
 		25AC857B18EE37B400919A15 /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
+		25AC857D18EE3AFF00919A15 /* ReleasesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesController.h; sourceTree = "<group>"; };
+		25AC857E18EE3AFF00919A15 /* ReleasesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesController.m; sourceTree = "<group>"; };
+		25AC858018EE3B0E00919A15 /* MetascoreController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetascoreController.h; sourceTree = "<group>"; };
+		25AC858118EE3B0E00919A15 /* MetascoreController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetascoreController.m; sourceTree = "<group>"; };
+		25AC858318EE3CB800919A15 /* InitialData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InitialData.plist; sourceTree = "<group>"; };
 		25B094031824882E003A0365 /* SearchCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCollectionCell.h; sourceTree = "<group>"; };
 		25B094041824882E003A0365 /* SearchCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCollectionCell.m; sourceTree = "<group>"; };
 		25B094061829BFA4003A0365 /* iPadTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadTabBarController.h; sourceTree = "<group>"; };
@@ -462,6 +470,7 @@
 				2531E855176CDBBB005881A4 /* Session.m */,
 				25CF6AE7180B697B000E51B2 /* Networking.h */,
 				25CF6AE8180B697B000E51B2 /* Networking.m */,
+				25AC858318EE3CB800919A15 /* InitialData.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -557,6 +566,10 @@
 			children = (
 				2506A185176CD5540010E61D /* GameController.h */,
 				2506A186176CD5540010E61D /* GameController.m */,
+				25AC857D18EE3AFF00919A15 /* ReleasesController.h */,
+				25AC857E18EE3AFF00919A15 /* ReleasesController.m */,
+				25AC858018EE3B0E00919A15 /* MetascoreController.h */,
+				25AC858118EE3B0E00919A15 /* MetascoreController.m */,
 				2593051517C90017001DC04B /* MetacriticController.h */,
 				2593051617C90017001DC04B /* MetacriticController.m */,
 				25D2E5FF178BB22900C7EDDB /* ImageViewerController.h */,
@@ -688,6 +701,7 @@
 			files = (
 				25C9FE7217DA2B0100CCDD59 /* iPhone.xib in Resources */,
 				25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */,
+				25AC858418EE3CB800919A15 /* InitialData.plist in Resources */,
 				2570403E176CB12800642430 /* Images.xcassets in Resources */,
 				25C9FE7417DA2B0E00CCDD59 /* iPad.xib in Resources */,
 				25704030176CB12800642430 /* InfoPlist.strings in Resources */,
@@ -777,6 +791,7 @@
 				25AC857918EE37B400919A15 /* Developer.m in Sources */,
 				25AC856718EE37B400919A15 /* Region.m in Sources */,
 				25BE542218BED50200BCBAFB /* ImportController.m in Sources */,
+				25AC858218EE3B0E00919A15 /* MetascoreController.m in Sources */,
 				2531E83C176CDB60005881A4 /* SearchController_iPhone.m in Sources */,
 				2531E83D176CDB60005881A4 /* GameController.m in Sources */,
 				257E18C3182453460088699B /* SearchController_iPad.m in Sources */,
@@ -809,6 +824,7 @@
 				25AC856D18EE37B400919A15 /* Game.m in Sources */,
 				25704032176CB12800642430 /* main.m in Sources */,
 				25AC855B18EE37B400919A15 /* Publisher.m in Sources */,
+				25AC857F18EE3AFF00919A15 /* ReleasesController.m in Sources */,
 				25AC854F18EE37B300919A15 /* Release.m in Sources */,
 				25704036176CB12800642430 /* GamerAppDelegate.m in Sources */,
 				25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */,

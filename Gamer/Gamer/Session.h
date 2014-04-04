@@ -60,6 +60,7 @@ typedef NS_ENUM(NSInteger, GameLocation){
 
 + (UIImage *)aspectFitImageWithImage:(UIImage *)image type:(GameImageType)type;
 
++ (void)stp;
 + (void)setup;
 
 @end

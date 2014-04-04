@@ -120,6 +120,12 @@ static NSArray *SEARCHRESULTS;
 	}
 }
 
++ (void)stp{
+	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
+	
+	
+}
+
 + (void)setup{
 	// Initial data
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
