@@ -2,13 +2,14 @@
 //  Platform.m
 //  Gamer
 //
-//  Created by Caio Mello on 06/11/2013.
-//  Copyright (c) 2013 Caio Mello. All rights reserved.
+//  Created by Caio Mello on 03/04/2014.
+//  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
 #import "Platform.h"
 #import "Game.h"
 #import "Gamer.h"
+#import "Release.h"
 
 
 @implementation Platform
@@ -18,11 +19,11 @@
 @dynamic identifier;
 @dynamic index;
 @dynamic name;
+@dynamic metacriticIdentifier;
 @dynamic gamer;
 @dynamic games;
-@dynamic libraryGames;
-@dynamic wishlistGames;
-@dynamic metascoreGames;
-@dynamic wishlistMetascoreGames;
+@dynamic metascores;
+@dynamic releases;
+@dynamic addedGames;
 
 @end

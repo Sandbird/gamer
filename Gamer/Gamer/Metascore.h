@@ -1,5 +1,5 @@
 //
-//  SimilarGame.h
+//  Metascore.h
 //  Gamer
 //
 //  Created by Caio Mello on 03/04/2014.
@@ -9,13 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Game;
+@class Game, Platform;
 
-@interface SimilarGame : NSManagedObject
+@interface Metascore : NSManagedObject
 
-@property (nonatomic, retain) NSString * imageURL;
-@property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * identifier;
+@property (nonatomic, retain) NSNumber * userScore;
+@property (nonatomic, retain) NSNumber * criticScore;
 @property (nonatomic, retain) Game *game;
+@property (nonatomic, retain) Platform *platform;
 
 @end

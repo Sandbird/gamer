@@ -2,8 +2,8 @@
 //  Video.m
 //  Gamer
 //
-//  Created by Caio Mello on 17/10/2013.
-//  Copyright (c) 2013 Caio Mello. All rights reserved.
+//  Created by Caio Mello on 03/04/2014.
+//  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
 #import "Video.h"
@@ -19,7 +19,7 @@
 @dynamic lowQualityURL;
 @dynamic overview;
 @dynamic publishDate;
-@dynamic thumbnailURL;
+@dynamic imageURL;
 @dynamic title;
 @dynamic type;
 @dynamic game;

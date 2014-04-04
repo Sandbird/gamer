@@ -1,19 +1,22 @@
 //
-//  Genre.m
+//  Region.m
 //  Gamer
 //
 //  Created by Caio Mello on 03/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
-#import "Genre.h"
-#import "Game.h"
+#import "Region.h"
+#import "Gamer.h"
+#import "Release.h"
 
 
-@implementation Genre
+@implementation Region
 
 @dynamic identifier;
 @dynamic name;
-@dynamic games;
+@dynamic abbreviation;
+@dynamic releases;
+@dynamic gamer;
 
 @end

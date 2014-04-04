@@ -2,42 +2,34 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 11/02/2014.
+//  Created by Caio Mello on 03/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class CoverImage, Developer, Franchise, Genre, Image, Platform, Publisher, ReleaseDate, ReleasePeriod, SimilarGame, Theme, Video;
+@class Developer, Franchise, Genre, Image, Platform, Publisher, Release, ReleaseDate, ReleasePeriod, SimilarGame, Theme, Video;
 
 @interface Game : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * completed;
+@property (nonatomic, retain) NSNumber * finished;
 @property (nonatomic, retain) NSNumber * digital;
 @property (nonatomic, retain) NSNumber * hidden;
 @property (nonatomic, retain) NSNumber * identifier;
-@property (nonatomic, retain) NSNumber * loaned;
-@property (nonatomic, retain) NSString * metacriticURL;
-@property (nonatomic, retain) NSString * metascore;
+@property (nonatomic, retain) NSNumber * lent;
 @property (nonatomic, retain) NSString * overview;
-@property (nonatomic, retain) NSNumber * owned;
 @property (nonatomic, retain) NSNumber * preordered;
 @property (nonatomic, retain) NSNumber * released;
 @property (nonatomic, retain) NSString * releaseDateText;
-@property (nonatomic, retain) NSData * thumbnailLibrary;
-@property (nonatomic, retain) NSData * thumbnailWishlist;
 @property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSNumber * wanted;
-@property (nonatomic, retain) NSString * wishlistMetascore;
-@property (nonatomic, retain) NSString * thumbnailName;
-@property (nonatomic, retain) CoverImage *coverImage;
+@property (nonatomic, retain) NSString * imageURL;
+@property (nonatomic, retain) NSString * imagePath;
+@property (nonatomic, retain) NSNumber * location;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
 @property (nonatomic, retain) NSSet *images;
-@property (nonatomic, retain) Platform *libraryPlatform;
-@property (nonatomic, retain) Platform *metascorePlatform;
 @property (nonatomic, retain) ReleasePeriod *placeholderPeriod;
 @property (nonatomic, retain) NSSet *platforms;
 @property (nonatomic, retain) NSSet *publishers;
@@ -46,8 +38,9 @@
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
-@property (nonatomic, retain) Platform *wishlistMetascorePlatform;
-@property (nonatomic, retain) Platform *wishlistPlatform;
+@property (nonatomic, retain) NSSet *metascores;
+@property (nonatomic, retain) NSSet *releases;
+@property (nonatomic, retain) Platform *addedPlatforms;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)
@@ -96,5 +89,15 @@
 - (void)removeVideosObject:(Video *)value;
 - (void)addVideos:(NSSet *)values;
 - (void)removeVideos:(NSSet *)values;
+
+- (void)addMetascoresObject:(NSManagedObject *)value;
+- (void)removeMetascoresObject:(NSManagedObject *)value;
+- (void)addMetascores:(NSSet *)values;
+- (void)removeMetascores:(NSSet *)values;
+
+- (void)addReleasesObject:(Release *)value;
+- (void)removeReleasesObject:(Release *)value;
+- (void)addReleases:(NSSet *)values;
+- (void)removeReleases:(NSSet *)values;
 
 @end
