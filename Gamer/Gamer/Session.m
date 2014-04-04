@@ -121,7 +121,7 @@ static NSArray *SEARCHRESULTS;
 	}
 }
 
-+ (void)stp{
++ (void)setupInitialData{
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	Gamer *gamer = [Gamer MR_findFirstInContext:context];
@@ -131,7 +131,7 @@ static NSArray *SEARCHRESULTS;
 	if (!gamer.librarySize) [gamer setLibrarySize:@(LibrarySizeMedium)];
 	
 	NSDictionary *initialDataDictionary = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"InitialData" ofType:@"plist"]];
-	NSLog(@"%@", initialDataDictionary);
+//	NSLog(@"%@", initialDataDictionary);
 	
 //	NSArray *platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES inContext:context];
 //	NSArray *releasePeriods = [ReleasePeriod MR_findAllSortedBy:@"identifier" ascending:YES inContext:context];
@@ -153,169 +153,34 @@ static NSArray *SEARCHRESULTS;
 										   alpha:1]];
 	}
 	
+	for (NSDictionary *releasePeriodDictionary in initialDataDictionary[@"initial_data"][@"release_periods"]){
+		ReleasePeriod *releasePeriod = [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:releasePeriodDictionary[@"release_period"][@"identifier"] inContext:context];
+		if (!releasePeriod) releasePeriod = [ReleasePeriod MR_createInContext:context];
+		[releasePeriod setIdentifier:releasePeriodDictionary[@"release_period"][@"identifier"]];
+		[releasePeriod setName:releasePeriodDictionary[@"release_period"][@"name"]];
+		
+		ReleaseDate *releaseDate = [ReleaseDate MR_findFirstByAttribute:@"date" withValue:releasePeriodDictionary[@"release_period"][@"placeholder"][@"release_date"] inContext:context];
+		if (!releaseDate) releaseDate = [ReleaseDate MR_createInContext:context];
+		[releaseDate setDate:releasePeriodDictionary[@"release_period"][@"placeholder"][@"release_date"]];
+		
+		Game *placeholderGame = releasePeriod.placeholderGame;
+		if (!placeholderGame) placeholderGame = [Game MR_createInContext:context];
+		[placeholderGame setTitle:releasePeriodDictionary[@"release_period"][@"placeholder"][@"title"]];
+		[placeholderGame setHidden:releasePeriodDictionary[@"release_period"][@"placeholder"][@"hidden"]];
+		[placeholderGame setReleaseDate:releaseDate];
+		
+		[releasePeriod setPlaceholderGame:placeholderGame];
+	}
 	
+	for (NSDictionary *regionDictionary in initialDataDictionary[@"initial_data"][@"regions"]){
+		Region *region = [Region MR_findFirstByAttribute:@"identifier" withValue:regionDictionary[@"region"][@"identifier"] inContext:context];
+		if (!region) region = [Region MR_createInContext:context];
+		[region setIdentifier:regionDictionary[@"region"][@"identifier"]];
+		[region setName:regionDictionary[@"region"][@"name"]];
+		[region setAbbreviation:regionDictionary[@"region"][@"abbreviation"]];
+	}
 	
 	[context MR_saveToPersistentStoreAndWait];
-}
-
-+ (void)setup{
-	// Initial data
-	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
-	
-	// (AKA the user)
-	Gamer *gamer = [Gamer MR_findFirstInContext:context];
-	
-	if (gamer){
-		GAMER = gamer;
-		
-		if (!gamer.librarySize) [gamer setLibrarySize:@(1)];
-		
-		if ([Platform MR_countOfEntities] < 11){
-			NSArray *identifiers = @[@(52), @(18), @(36)];
-			
-			NSArray *names = @[@"Nintendo DS",
-							   @"PlayStation Portable",
-							   @"Wii"];
-			
-			NSArray *abbreviations = @[@"DS",
-									   @"PSP",
-									   @"WII"];
-			
-			NSArray *colors = @[[UIColor colorWithRed:.666666667 green:.31372549 blue:.31372549 alpha:1],
-								[UIColor colorWithRed:.235294118 green:.235294118 blue:.549019608 alpha:1],
-								[UIColor colorWithRed:.352941176 green:.784313725 blue:.941176471 alpha:1]];
-			
-			for (NSInteger index = 0; index < identifiers.count; index++){
-				Platform *platform = [Platform MR_createInContext:context];
-				[platform setIdentifier:identifiers[index]];
-				[platform setName:names[index]];
-				[platform setAbbreviation:abbreviations[index]];
-				[platform setColor:colors[index]];
-				[platform setIndex:@(8 + index)];
-			}
-		}
-		
-		if ([ReleasePeriod MR_countOfEntities] < 10){
-			NSArray *releasePeriods = [ReleasePeriod MR_findAllSortedBy:@"identifier" ascending:YES inContext:context];
-			for (ReleasePeriod *releasePeriod in releasePeriods){
-				if (releasePeriod.identifier.integerValue > 1){
-					[releasePeriod setIdentifier:@(releasePeriod.identifier.integerValue + 1)];
-				}
-			}
-			
-			NSCalendar *calendar = [NSCalendar currentCalendar];
-			[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-			NSDateComponents *components = [calendar components:NSYearCalendarUnit fromDate:[NSDate date]];
-			[components setYear:2060];
-			
-			ReleaseDate *releaseDate = [ReleaseDate MR_findFirstByAttribute:@"date" withValue:[calendar dateFromComponents:components] inContext:context];
-			
-			ReleasePeriod *releasePeriod = [ReleasePeriod MR_createInContext:context];
-			[releasePeriod setIdentifier:@(2)];
-			[releasePeriod setName:@"Recently Released"];
-			
-			Game *placeholderGame = [Game MR_createInContext:context];
-			[placeholderGame setTitle:@"ZZZ"];
-			[placeholderGame setReleasePeriod:releasePeriod];
-			[placeholderGame setReleaseDate:releaseDate];
-			[placeholderGame setHidden:@(YES)];
-			
-			[releasePeriod setPlaceholderGame:placeholderGame];
-		}
-		
-		[context MR_saveToPersistentStoreAndWait];
-	}
-	else {
-		// New user
-		gamer = [Gamer MR_createInContext:context];
-		GAMER = gamer;
-		
-		// Release periods
-		NSCalendar *calendar = [NSCalendar currentCalendar];
-		[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-		NSDateComponents *components = [calendar components:NSYearCalendarUnit fromDate:[NSDate date]];
-		[components setYear:2060];
-		
-		ReleaseDate *releaseDate = [ReleaseDate MR_createInContext:context];
-		[releaseDate setDate:[calendar dateFromComponents:components]];
-		
-		NSArray *periods = @[@"Released", @"Recently Released", @"This Month", @"Next Month", @"This Quarter", @"Next Quarter", @"This Year", @"Next Year", @"Later", @"To Be Announced"];
-		for (NSInteger period = 1; period <= periods.count; period++){
-			ReleasePeriod *releasePeriod = [ReleasePeriod MR_createInContext:context];
-			[releasePeriod setIdentifier:@(period)];
-			[releasePeriod setName:periods[period - 1]];
-			
-			Game *placeholderGame = [Game MR_createInContext:context];
-			[placeholderGame setTitle:@"ZZZ"];
-			[placeholderGame setReleasePeriod:releasePeriod];
-			[placeholderGame setReleaseDate:releaseDate];
-			[placeholderGame setHidden:@(YES)];
-			
-			[releasePeriod setPlaceholderGame:placeholderGame];
-		}
-		
-		[context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			// Platforms
-			NSArray *identifiers = @[@(117),
-									 @(52),
-									 @(94),
-									 @(35),
-									 @(146),
-									 @(18),
-									 @(129),
-									 @(36),
-									 @(139),
-									 @(20),
-									 @(145)];
-			
-			NSArray *names = @[@"Nintendo 3DS",
-							   @"Nintendo DS",
-							   @"PC",
-							   @"PlayStation 3",
-							   @"PlayStation 4",
-							   @"PlayStation Portable",
-							   @"PlayStation Vita",
-							   @"Wii",
-							   @"Wii U",
-							   @"Xbox 360",
-							   @"Xbox One"];
-			
-			NSArray *abbreviations = @[@"3DS",
-									   @"DS",
-									   @"PC",
-									   @"PS3",
-									   @"PS4",
-									   @"PSP",
-									   @"VITA",
-									   @"WII",
-									   @"WIIU",
-									   @"X360",
-									   @"XONE"];
-			
-			NSArray *colors = @[[UIColor colorWithRed:.764705882 green:0 blue:.058823529 alpha:1],
-								[UIColor colorWithRed:.666666667 green:.31372549 blue:.31372549 alpha:1],
-								[UIColor colorWithRed:0 green:0 blue:0 alpha:1],
-								[UIColor colorWithRed:0 green:.039215686 blue:.525490196 alpha:1],
-								[UIColor colorWithRed:.039215686 green:.254901961 blue:.588235294 alpha:1],
-								[UIColor colorWithRed:.235294118 green:.235294118 blue:.549019608 alpha:1],
-								[UIColor colorWithRed:0 green:.235294118 blue:.592156863 alpha:1],
-								[UIColor colorWithRed:.352941176 green:.784313725 blue:.941176471 alpha:1],
-								[UIColor colorWithRed:0 green:.521568627 blue:.749019608 alpha:1],
-								[UIColor colorWithRed:.501960784 green:.760784314 blue:.145098039 alpha:1],
-								[UIColor colorWithRed:.058823529 green:.42745098 blue:0 alpha:1]];
-			
-			for (NSInteger index = 0; index < identifiers.count; index++){
-				Platform *platform = [Platform MR_createInContext:context];
-				[platform setIdentifier:identifiers[index]];
-				[platform setName:names[index]];
-				[platform setAbbreviation:abbreviations[index]];
-				[platform setColor:colors[index]];
-				[platform setIndex:@(index)];
-			}
-			
-			[context MR_saveToPersistentStoreAndWait];
-		}];
-	}
 }
 
 @end

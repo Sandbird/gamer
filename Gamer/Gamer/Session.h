@@ -72,7 +72,6 @@ typedef NS_ENUM(NSInteger, PlatformGroup){
 
 + (UIImage *)aspectFitImageWithImage:(UIImage *)image type:(GameImageType)type;
 
-+ (void)stp;
-//+ (void)setup;
++ (void)setupInitialData;
 
 @end

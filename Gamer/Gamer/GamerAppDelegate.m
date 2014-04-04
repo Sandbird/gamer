@@ -27,7 +27,7 @@
 	
 	[MagicalRecord setupAutoMigratingCoreDataStack];
 	
-	[Session stp];
+	[Session setupInitialData];
 	
 #if !(TARGET_IPHONE_SIMULATOR)
 	// Crashlytics
