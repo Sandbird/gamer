@@ -1052,10 +1052,32 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection footerTitle="Select your region. This will change the primary release that shows on the game screen." id="YPZ-ua-MWR">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="DcG-O8-UTe" style="IBUITableViewCellStyleDefault" id="48n-gf-BiP" userLabel="Button Cell">
+                                        <rect key="frame" x="0.0" y="248" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="48n-gf-BiP" id="bYW-1t-fjS">
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Regions" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="DcG-O8-UTe">
+                                                    <rect key="frame" x="15" y="0.0" width="270" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                             <tableViewSection footerTitle="Library game size." id="jhM-XO-Cyi">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="nAd-nG-9T0" userLabel="Slider Cell" customClass="SettingsSegmentedControlCell">
-                                        <rect key="frame" x="0.0" y="248" width="320" height="44"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="nAd-nG-9T0" userLabel="Slider Cell" customClass="SegmentedControlCell">
+                                        <rect key="frame" x="0.0" y="377" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nAd-nG-9T0" id="dhZ-0x-cIa">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1090,7 +1112,7 @@
                             <tableViewSection headerTitle="Even More" footerTitle="Save all your games to a backup file. To import just open the file in your iOS device. More info in the FAQ." id="hnJ-qJ-GDh">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hUq-ZC-ZMC" style="IBUITableViewCellStyleDefault" id="RhF-Mx-C7w" userLabel="Button Cell">
-                                        <rect key="frame" x="0.0" y="367" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="496" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RhF-Mx-C7w" id="YQ9-a9-R6V">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1112,7 +1134,7 @@
                             <tableViewSection footerTitle="Some details about how various parts of this app work." id="B2W-h2-jr6">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="oIO-5O-nvz" style="IBUITableViewCellStyleDefault" id="Op7-hm-Fyl" userLabel="Button Cell">
-                                        <rect key="frame" x="0.0" y="496" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="625" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Op7-hm-Fyl" id="c7a-GK-2Nt">
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
@@ -1134,7 +1156,7 @@
                             <tableViewSection footerTitle="Tell me about bugs, ask for a feature you would like, give me some suggestions!" id="PdQ-RX-X8A">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="0qu-iQ-XQ4" style="IBUITableViewCellStyleDefault" id="bP2-eK-5jh" userLabel="Button Cell">
-                                        <rect key="frame" x="0.0" y="609" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="738" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bP2-eK-5jh" id="5da-DB-6q0">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1163,7 +1185,8 @@
                     <connections>
                         <outlet property="librarySizeSegmentedControl" destination="oEc-mA-pUt" id="Yjq-VY-ZY9"/>
                         <segue destination="hDU-qZ-6Ly" kind="push" identifier="PlatformsSegue" id="QtC-aY-2lb"/>
-                        <segue destination="GHJ-hd-3sL" kind="push" identifier="FAQSegue" id="pjr-ZU-m2O"/>
+                        <segue destination="GHJ-hd-3sL" kind="push" identifier="AboutSegue" id="pjr-ZU-m2O"/>
+                        <segue destination="elU-LI-hEo" kind="push" identifier="RegionsSegue" id="U4c-Zm-GDP"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Un7-hF-qf9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1181,7 +1204,7 @@
                         <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <inset key="separatorInset" minX="21" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="yEl-cb-mxl" customClass="FAQCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="yEl-cb-mxl" customClass="AboutCell">
                                 <rect key="frame" x="0.0" y="86" width="320" height="300"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yEl-cb-mxl" id="ZIs-dk-tAx">
@@ -1243,7 +1266,7 @@
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" id="Nac-XZ-dVL" userLabel="Platform Cell" customClass="SettingsPlatformCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" id="Nac-XZ-dVL" userLabel="Platform Cell" customClass="PlatformCell">
                                 <rect key="frame" x="0.0" y="119" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Nac-XZ-dVL" id="Xpu-Kf-Kis">
@@ -1573,6 +1596,55 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uCI-ah-Ewu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="144" y="777"/>
+        </scene>
+        <!--Regions Controller - Regions-->
+        <scene sceneID="9N4-q9-V7O">
+            <objects>
+                <tableViewController id="elU-LI-hEo" customClass="RegionsController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="60" sectionHeaderHeight="10" sectionFooterHeight="10" id="JaD-l8-Wr0">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" rowHeight="60" id="IzQ-4T-gl7" userLabel="Platform Cell" customClass="RegionCell">
+                                <rect key="frame" x="0.0" y="119" width="320" height="60"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="IzQ-4T-gl7" id="B8s-uQ-hAd">
+                                    <rect key="frame" x="0.0" y="0.0" width="281" height="59"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="United States" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GYB-vv-bgj">
+                                            <rect key="frame" x="58" y="19" width="203" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wtg-Fb-Wny">
+                                            <rect key="frame" x="10" y="16" width="40" height="28"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                                <inset key="separatorInset" minX="58" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <connections>
+                                    <outlet property="flagImageView" destination="wtg-Fb-Wny" id="3pR-s2-NIX"/>
+                                    <outlet property="titleLabel" destination="GYB-vv-bgj" id="rHI-Au-7Ts"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="elU-LI-hEo" id="8lq-Ra-gVg"/>
+                            <outlet property="delegate" destination="elU-LI-hEo" id="MCI-0c-hq3"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Regions" id="ASG-Yg-Su0"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WSx-7n-1v7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1168" y="2529"/>
         </scene>
     </scenes>
     <resources>

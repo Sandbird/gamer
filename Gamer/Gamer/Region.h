@@ -2,7 +2,7 @@
 //  Region.h
 //  Gamer
 //
-//  Created by Caio Mello on 03/04/2014.
+//  Created by Caio Mello on 05/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -16,6 +16,7 @@
 @property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * abbreviation;
+@property (nonatomic, retain) NSString * imageName;
 @property (nonatomic, retain) NSSet *releases;
 @property (nonatomic, retain) Gamer *gamer;
 @end

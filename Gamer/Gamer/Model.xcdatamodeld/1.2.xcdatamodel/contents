@@ -87,6 +87,7 @@
     <entity name="Region" representedClassName="Region" syncable="YES">
         <attribute name="abbreviation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="imageName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="gamer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Gamer" inverseName="region" inverseEntity="Gamer" syncable="YES"/>
         <relationship name="releases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Release" inverseName="region" inverseEntity="Release" syncable="YES"/>
@@ -156,6 +157,6 @@
         <element name="Video" positionX="286" positionY="-54" width="128" height="208"/>
         <element name="Metascore" positionX="-110" positionY="314" width="128" height="118"/>
         <element name="Release" positionX="-290" positionY="347" width="128" height="148"/>
-        <element name="Region" positionX="-452" positionY="245" width="128" height="118"/>
+        <element name="Region" positionX="-452" positionY="245" width="128" height="133"/>
     </elements>
 </model>

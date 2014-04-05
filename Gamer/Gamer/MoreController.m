@@ -10,9 +10,19 @@
 #import "Game.h"
 #import "Platform.h"
 #import "PlatformsController.h"
+#import "RegionsController.h"
 #import "AboutController.h"
 #import <MessageUI/MFMailComposeViewController.h>
 #include <sys/sysctl.h>
+
+typedef NS_ENUM(NSInteger, Section){
+	SectionPlatforms,
+	SectionRegions,
+	SectionLibrarySize,
+	SectionExport,
+	SectionAbout,
+	SectionFeedback
+};
 
 @interface MoreController () <MFMailComposeViewControllerDelegate>
 
@@ -60,7 +70,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
-		case 0:{
+		case SectionPlatforms:{
 			if ([Tools deviceIsiPhone]){
 				[self performSegueWithIdentifier:@"PlatformsSegue" sender:nil];
 			}
@@ -72,21 +82,33 @@
 			}
 			break;
 		}
-		case 2:
-			[self exportGames];
-			break;
-		case 3:
+		case SectionRegions:{
 			if ([Tools deviceIsiPhone]){
-				[self performSegueWithIdentifier:@"FAQSegue" sender:nil];
+				[self performSegueWithIdentifier:@"RegionsSegue" sender:nil];
 			}
 			else{
 				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
-				AboutController *FAQController = [storyboard instantiateViewControllerWithIdentifier:@"FAQController"];
-				[self.splitViewController setViewControllers:@[self.navigationController, FAQController]];
+				RegionsController *regionsController = [storyboard instantiateViewControllerWithIdentifier:@"RegionsController"];
+				[self.splitViewController setViewControllers:@[self.navigationController, regionsController]];
 				[tableView deselectRowAtIndexPath:indexPath animated:NO];
 			}
 			break;
-		case 4:{
+		}
+		case SectionExport:
+			[self exportGames];
+			break;
+		case SectionAbout:
+			if ([Tools deviceIsiPhone]){
+				[self performSegueWithIdentifier:@"AboutSegue" sender:nil];
+			}
+			else{
+				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
+				AboutController *AboutController = [storyboard instantiateViewControllerWithIdentifier:@"AboutController"];
+				[self.splitViewController setViewControllers:@[self.navigationController, AboutController]];
+				[tableView deselectRowAtIndexPath:indexPath animated:NO];
+			}
+			break;
+		case SectionFeedback:{
 			MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
 			if (mailComposeViewController){
 				[mailComposeViewController setMailComposeDelegate:self];
@@ -114,7 +136,7 @@
 #pragma mark - Export
 
 - (void)exportGames{
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND (location = %@ OR location = %@)", @(GameLocationWishlist), @(GameLocationLibrary)] inContext:_context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location != %@", @(GameLocationNone)] inContext:_context];
 	
 	NSMutableArray *gameDictionaries = [[NSMutableArray alloc] initWithCapacity:games.count];
 	

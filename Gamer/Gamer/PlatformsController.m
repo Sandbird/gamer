@@ -8,7 +8,7 @@
 
 #import "PlatformsController.h"
 #import "Platform.h"
-#import "SettingsPlatformCell.h"
+#import "PlatformCell.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	SectionModern,
@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 @property (nonatomic, strong) NSMutableArray *modernPlatforms;
 @property (nonatomic, strong) NSMutableArray *legacyPlatforms;
+
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
 @end
@@ -85,14 +86,17 @@ typedef NS_ENUM(NSInteger, Section){
 		default: break;
 	}
 	
-	SettingsPlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:platform.name];
 	[cell.abbreviationLabel setText:platform.abbreviation];
 	[cell.abbreviationLabel setBackgroundColor:platform.color];
 	[cell.switchControl setOn:([[Session gamer].platforms containsObject:platform]) ? YES : NO];
 	[cell.switchControl setTag:indexPath.row];
-	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -131,7 +135,7 @@ typedef NS_ENUM(NSInteger, Section){
 			
 			[platform setIndex:@(index)];
 			
-			SettingsPlatformCell *cell = (SettingsPlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+			PlatformCell *cell = (PlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 			[cell.switchControl setTag:index];
 		}
 	}
@@ -146,7 +150,7 @@ typedef NS_ENUM(NSInteger, Section){
 			
 			[platform setIndex:@(index)];
 			
-			SettingsPlatformCell *cell = (SettingsPlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+			PlatformCell *cell = (PlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 			[cell.switchControl setTag:index];
 		}
 	}

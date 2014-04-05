@@ -178,6 +178,7 @@ static NSArray *SEARCHRESULTS;
 		[region setIdentifier:regionDictionary[@"region"][@"identifier"]];
 		[region setName:regionDictionary[@"region"][@"name"]];
 		[region setAbbreviation:regionDictionary[@"region"][@"abbreviation"]];
+		[region setImageName:regionDictionary[@"region"][@"image_name"]];
 	}
 	
 	[context MR_saveToPersistentStoreAndWait];

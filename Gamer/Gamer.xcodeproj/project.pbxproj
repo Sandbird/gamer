@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		250B37DF1808613B009EB170 /* SettingsSegmentedControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250B37DE1808613B009EB170 /* SettingsSegmentedControlCell.m */; };
+		250B37DF1808613B009EB170 /* SegmentedControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250B37DE1808613B009EB170 /* SegmentedControlCell.m */; };
 		250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 250D487717BFFFB1006B4C29 /* ContentStatusView.m */; };
 		25180CA117DFD534002675F1 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25180CA017DFD534002675F1 /* MobileCoreServices.framework */; };
 		25180CA217DFD541002675F1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA76179B55E4009B42BF /* SystemConfiguration.framework */; };
-		251DEA42178CF3EA0094A6CB /* SettingsPlatformCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251DEA41178CF3EA0094A6CB /* SettingsPlatformCell.m */; };
+		251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251DEA41178CF3EA0094A6CB /* PlatformCell.m */; };
 		2531E820176CDA35005881A4 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E81F176CDA35005881A4 /* CoreData.framework */; };
 		2531E822176CDA48005881A4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2531E821176CDA48005881A4 /* QuartzCore.framework */; };
 		2531E839176CDB60005881A4 /* WishlistController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506A17E176CD4EA0010E61D /* WishlistController_iPhone.m */; };
@@ -26,7 +26,7 @@
 		2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2570405D176CB55500642430 /* Model.xcdatamodeld */; };
 		2531E85B176CDC68005881A4 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E85A176CDC3B005881A4 /* SearchResult.m */; };
 		25348F9218D4A37400F5A76D /* AboutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9118D4A37400F5A76D /* AboutController.m */; };
-		25348F9518D4A40200F5A76D /* FAQCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9418D4A40100F5A76D /* FAQCell.m */; };
+		25348F9518D4A40200F5A76D /* AboutCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9418D4A40100F5A76D /* AboutCell.m */; };
 		253B57F21834536B00617E3B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 253B57F11834536B00617E3B /* MessageUI.framework */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
 		255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA78179B566E009B42BF /* AdSupport.framework */; };
@@ -59,7 +59,6 @@
 		25AC855B18EE37B400919A15 /* Publisher.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC855A18EE37B400919A15 /* Publisher.m */; };
 		25AC855E18EE37B400919A15 /* Gamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC855D18EE37B400919A15 /* Gamer.m */; };
 		25AC856418EE37B400919A15 /* SimilarGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC856318EE37B400919A15 /* SimilarGame.m */; };
-		25AC856718EE37B400919A15 /* Region.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC856618EE37B400919A15 /* Region.m */; };
 		25AC856A18EE37B400919A15 /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC856918EE37B400919A15 /* Franchise.m */; };
 		25AC857018EE37B400919A15 /* Metascore.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC856F18EE37B400919A15 /* Metascore.m */; };
 		25AC857318EE37B400919A15 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC857218EE37B400919A15 /* Genre.m */; };
@@ -72,6 +71,11 @@
 		25AC859618EE5E6F00919A15 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC859518EE5E6F00919A15 /* Platform.m */; };
 		25AC859918EE63A100919A15 /* PlatformPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC859818EE63A100919A15 /* PlatformPickerController.m */; };
 		25AC859C18EE64DF00919A15 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC859B18EE64DF00919A15 /* Game.m */; };
+		25AC859F18EF425500919A15 /* RegionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC859E18EF425500919A15 /* RegionsController.m */; };
+		25AC85A218F031A800919A15 /* RegionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A118F031A800919A15 /* RegionCell.m */; };
+		25AC85A518F031B200919A15 /* MetascoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A418F031B200919A15 /* MetascoreCell.m */; };
+		25AC85A818F031BC00919A15 /* ReleaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A718F031BC00919A15 /* ReleaseCell.m */; };
+		25AC85AB18F0349A00919A15 /* Region.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85AA18F0349A00919A15 /* Region.m */; };
 		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
 		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
 		25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */; };
@@ -119,14 +123,14 @@
 		2506A189176CD5B80010E61D /* FetchedTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FetchedTableViewController.h; sourceTree = "<group>"; };
 		2506A18A176CD5B80010E61D /* FetchedTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FetchedTableViewController.m; sourceTree = "<group>"; };
 		2506F9A217F12CC800329CF2 /* 1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.xcdatamodel; sourceTree = "<group>"; };
-		250B37DD1808613B009EB170 /* SettingsSegmentedControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsSegmentedControlCell.h; sourceTree = "<group>"; };
-		250B37DE1808613B009EB170 /* SettingsSegmentedControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsSegmentedControlCell.m; sourceTree = "<group>"; };
+		250B37DD1808613B009EB170 /* SegmentedControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentedControlCell.h; sourceTree = "<group>"; };
+		250B37DE1808613B009EB170 /* SegmentedControlCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentedControlCell.m; sourceTree = "<group>"; };
 		250B37E018086795009EB170 /* 1.1.2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.2.xcdatamodel; sourceTree = "<group>"; };
 		250D487617BFFFB1006B4C29 /* ContentStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentStatusView.h; sourceTree = "<group>"; };
 		250D487717BFFFB1006B4C29 /* ContentStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentStatusView.m; sourceTree = "<group>"; };
 		25180CA017DFD534002675F1 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		251DEA40178CF3EA0094A6CB /* SettingsPlatformCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsPlatformCell.h; sourceTree = "<group>"; };
-		251DEA41178CF3EA0094A6CB /* SettingsPlatformCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsPlatformCell.m; sourceTree = "<group>"; };
+		251DEA40178CF3EA0094A6CB /* PlatformCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCell.h; sourceTree = "<group>"; };
+		251DEA41178CF3EA0094A6CB /* PlatformCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCell.m; sourceTree = "<group>"; };
 		2531E81F176CDA35005881A4 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2531E821176CDA48005881A4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2531E852176CDBB1005881A4 /* Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tools.h; sourceTree = "<group>"; };
@@ -137,8 +141,8 @@
 		2531E85A176CDC3B005881A4 /* SearchResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
 		25348F9018D4A37400F5A76D /* AboutController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutController.h; sourceTree = "<group>"; };
 		25348F9118D4A37400F5A76D /* AboutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutController.m; sourceTree = "<group>"; };
-		25348F9318D4A40100F5A76D /* FAQCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAQCell.h; sourceTree = "<group>"; };
-		25348F9418D4A40100F5A76D /* FAQCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAQCell.m; sourceTree = "<group>"; };
+		25348F9318D4A40100F5A76D /* AboutCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutCell.h; sourceTree = "<group>"; };
+		25348F9418D4A40100F5A76D /* AboutCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutCell.m; sourceTree = "<group>"; };
 		253B57DC182B159400617E3B /* 1.1.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.3.xcdatamodel; sourceTree = "<group>"; };
 		253B57F11834536B00617E3B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		2555469F17DFF9430069F8A5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -195,8 +199,6 @@
 		25AC855D18EE37B400919A15 /* Gamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Gamer.m; sourceTree = "<group>"; };
 		25AC856218EE37B400919A15 /* SimilarGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarGame.h; sourceTree = "<group>"; };
 		25AC856318EE37B400919A15 /* SimilarGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimilarGame.m; sourceTree = "<group>"; };
-		25AC856518EE37B400919A15 /* Region.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Region.h; sourceTree = "<group>"; };
-		25AC856618EE37B400919A15 /* Region.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Region.m; sourceTree = "<group>"; };
 		25AC856818EE37B400919A15 /* Franchise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Franchise.h; sourceTree = "<group>"; };
 		25AC856918EE37B400919A15 /* Franchise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Franchise.m; sourceTree = "<group>"; };
 		25AC856E18EE37B400919A15 /* Metascore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Metascore.h; sourceTree = "<group>"; };
@@ -220,6 +222,16 @@
 		25AC859818EE63A100919A15 /* PlatformPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformPickerController.m; sourceTree = "<group>"; };
 		25AC859A18EE64DF00919A15 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		25AC859B18EE64DF00919A15 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		25AC859D18EF425500919A15 /* RegionsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegionsController.h; sourceTree = "<group>"; };
+		25AC859E18EF425500919A15 /* RegionsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionsController.m; sourceTree = "<group>"; };
+		25AC85A018F031A800919A15 /* RegionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegionCell.h; sourceTree = "<group>"; };
+		25AC85A118F031A800919A15 /* RegionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionCell.m; sourceTree = "<group>"; };
+		25AC85A318F031B200919A15 /* MetascoreCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetascoreCell.h; sourceTree = "<group>"; };
+		25AC85A418F031B200919A15 /* MetascoreCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetascoreCell.m; sourceTree = "<group>"; };
+		25AC85A618F031BC00919A15 /* ReleaseCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseCell.h; sourceTree = "<group>"; };
+		25AC85A718F031BC00919A15 /* ReleaseCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseCell.m; sourceTree = "<group>"; };
+		25AC85A918F0349A00919A15 /* Region.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Region.h; sourceTree = "<group>"; };
+		25AC85AA18F0349A00919A15 /* Region.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Region.m; sourceTree = "<group>"; };
 		25B094031824882E003A0365 /* SearchCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCollectionCell.h; sourceTree = "<group>"; };
 		25B094041824882E003A0365 /* SearchCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCollectionCell.m; sourceTree = "<group>"; };
 		25B094061829BFA4003A0365 /* iPadTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadTabBarController.h; sourceTree = "<group>"; };
@@ -332,14 +344,20 @@
 				259DD14517ADBE8600FAD645 /* SearchCell.m */,
 				25B094031824882E003A0365 /* SearchCollectionCell.h */,
 				25B094041824882E003A0365 /* SearchCollectionCell.m */,
-				251DEA40178CF3EA0094A6CB /* SettingsPlatformCell.h */,
-				251DEA41178CF3EA0094A6CB /* SettingsPlatformCell.m */,
-				250B37DD1808613B009EB170 /* SettingsSegmentedControlCell.h */,
-				250B37DE1808613B009EB170 /* SettingsSegmentedControlCell.m */,
+				251DEA40178CF3EA0094A6CB /* PlatformCell.h */,
+				251DEA41178CF3EA0094A6CB /* PlatformCell.m */,
+				250B37DD1808613B009EB170 /* SegmentedControlCell.h */,
+				250B37DE1808613B009EB170 /* SegmentedControlCell.m */,
 				25BE541D18BED3FA00BCBAFB /* ImportCell.h */,
 				25BE541E18BED3FA00BCBAFB /* ImportCell.m */,
-				25348F9318D4A40100F5A76D /* FAQCell.h */,
-				25348F9418D4A40100F5A76D /* FAQCell.m */,
+				25348F9318D4A40100F5A76D /* AboutCell.h */,
+				25348F9418D4A40100F5A76D /* AboutCell.m */,
+				25AC85A018F031A800919A15 /* RegionCell.h */,
+				25AC85A118F031A800919A15 /* RegionCell.m */,
+				25AC85A318F031B200919A15 /* MetascoreCell.h */,
+				25AC85A418F031B200919A15 /* MetascoreCell.m */,
+				25AC85A618F031BC00919A15 /* ReleaseCell.h */,
+				25AC85A718F031BC00919A15 /* ReleaseCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -504,6 +522,8 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				25AC85A918F0349A00919A15 /* Region.h */,
+				25AC85AA18F0349A00919A15 /* Region.m */,
 				25AC859A18EE64DF00919A15 /* Game.h */,
 				25AC859B18EE64DF00919A15 /* Game.m */,
 				25AC859418EE5E6F00919A15 /* Platform.h */,
@@ -520,8 +540,6 @@
 				25AC856F18EE37B400919A15 /* Metascore.m */,
 				25AC856818EE37B400919A15 /* Franchise.h */,
 				25AC856918EE37B400919A15 /* Franchise.m */,
-				25AC856518EE37B400919A15 /* Region.h */,
-				25AC856618EE37B400919A15 /* Region.m */,
 				25AC856218EE37B400919A15 /* SimilarGame.h */,
 				25AC856318EE37B400919A15 /* SimilarGame.m */,
 				25AC855C18EE37B400919A15 /* Gamer.h */,
@@ -610,6 +628,8 @@
 				2506A188176CD5620010E61D /* MoreController.m */,
 				25B7997118CD5AEA00B9B7C9 /* PlatformsController.h */,
 				25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */,
+				25AC859D18EF425500919A15 /* RegionsController.h */,
+				25AC859E18EF425500919A15 /* RegionsController.m */,
 				25348F9018D4A37400F5A76D /* AboutController.h */,
 				25348F9118D4A37400F5A76D /* AboutController.m */,
 			);
@@ -782,19 +802,20 @@
 				25AC859918EE63A100919A15 /* PlatformPickerController.m in Sources */,
 				259DD14617ADBE8600FAD645 /* SearchCell.m in Sources */,
 				25AC857318EE37B400919A15 /* Genre.m in Sources */,
+				25AC85A818F031BC00919A15 /* ReleaseCell.m in Sources */,
 				2593051717C90017001DC04B /* MetacriticController.m in Sources */,
 				25C9FE7717DA7FB400CCDD59 /* VideoPlayerController.m in Sources */,
 				25C9FE4517CD729E00CCDD59 /* HeaderCollectionReusableView.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
+				25AC85A518F031B200919A15 /* MetascoreCell.m in Sources */,
 				25AC855818EE37B400919A15 /* Image.m in Sources */,
 				25AC855E18EE37B400919A15 /* Gamer.m in Sources */,
 				25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
-				250B37DF1808613B009EB170 /* SettingsSegmentedControlCell.m in Sources */,
+				250B37DF1808613B009EB170 /* SegmentedControlCell.m in Sources */,
 				25998C08181093F500F1AA8F /* CoverImage.m in Sources */,
 				2531E839176CDB60005881A4 /* WishlistController_iPhone.m in Sources */,
 				25AC857918EE37B400919A15 /* Developer.m in Sources */,
-				25AC856718EE37B400919A15 /* Region.m in Sources */,
 				25BE542218BED50200BCBAFB /* ImportController.m in Sources */,
 				25AC858218EE3B0E00919A15 /* MetascoreController.m in Sources */,
 				2531E83C176CDB60005881A4 /* SearchController_iPhone.m in Sources */,
@@ -802,10 +823,11 @@
 				257E18C3182453460088699B /* SearchController_iPad.m in Sources */,
 				25AC857018EE37B400919A15 /* Metascore.m in Sources */,
 				2531E83E176CDB60005881A4 /* MoreController.m in Sources */,
-				251DEA42178CF3EA0094A6CB /* SettingsPlatformCell.m in Sources */,
+				251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */,
 				259DBBAF18958D0700B274F4 /* NSString+FetchedGroupByString.m in Sources */,
 				2531E83F176CDB60005881A4 /* FetchedTableViewController.m in Sources */,
 				2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */,
+				25AC859F18EF425500919A15 /* RegionsController.m in Sources */,
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
 				25AC859618EE5E6F00919A15 /* Platform.m in Sources */,
 				25AC856A18EE37B400919A15 /* Franchise.m in Sources */,
@@ -827,11 +849,13 @@
 				25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */,
 				259DBBB21895A79700B274F4 /* LibraryFilterView.m in Sources */,
 				25AC857618EE37B400919A15 /* ReleasePeriod.m in Sources */,
-				25348F9518D4A40200F5A76D /* FAQCell.m in Sources */,
+				25348F9518D4A40200F5A76D /* AboutCell.m in Sources */,
 				25704032176CB12800642430 /* main.m in Sources */,
+				25AC85A218F031A800919A15 /* RegionCell.m in Sources */,
 				25AC855B18EE37B400919A15 /* Publisher.m in Sources */,
 				25AC857F18EE3AFF00919A15 /* ReleasesController.m in Sources */,
 				25AC854F18EE37B300919A15 /* Release.m in Sources */,
+				25AC85AB18F0349A00919A15 /* Region.m in Sources */,
 				25704036176CB12800642430 /* GamerAppDelegate.m in Sources */,
 				25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */,
 			);

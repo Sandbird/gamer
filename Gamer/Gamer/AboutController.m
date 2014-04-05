@@ -7,7 +7,7 @@
 //
 
 #import "AboutController.h"
-#import "FAQCell.h"
+#import "AboutCell.h"
 
 @interface AboutController () <UISplitViewControllerDelegate>
 
@@ -55,7 +55,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	FAQCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	AboutCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	
 	switch (indexPath.row) {
 		case 0:

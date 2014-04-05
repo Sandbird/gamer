@@ -617,6 +617,8 @@
 					<string>United States</string>
 					<key>abbreviation</key>
 					<string>US</string>
+					<key>image_name</key>
+					<string>FlagUnitedStates</string>
 				</dict>
 			</dict>
 			<dict>
@@ -626,8 +628,8 @@
 					<integer>2</integer>
 					<key>name</key>
 					<string>United Kingdom</string>
-					<key>abbreviation</key>
-					<string>UK</string>
+					<key>image_name</key>
+					<string>FlagUnitedKingdom</string>
 				</dict>
 			</dict>
 			<dict>
@@ -637,8 +639,8 @@
 					<integer>6</integer>
 					<key>name</key>
 					<string>Japan</string>
-					<key>abbreviation</key>
-					<string>JP</string>
+					<key>image_name</key>
+					<string>FlagJapan</string>
 				</dict>
 			</dict>
 			<dict>
@@ -648,8 +650,8 @@
 					<integer>11</integer>
 					<key>name</key>
 					<string>Australia</string>
-					<key>abbreviation</key>
-					<string>AU</string>
+					<key>image_name</key>
+					<string>FlagAustralia</string>
 				</dict>
 			</dict>
 		</array>
