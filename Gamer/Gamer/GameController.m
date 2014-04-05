@@ -57,8 +57,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 @property (nonatomic, strong) IBOutlet UISwitch *preorderedSwitch;
 @property (nonatomic, strong) IBOutlet UISwitch *finishedSwitch;
-@property (nonatomic, strong) IBOutlet UISwitch *lentSwitch;
-@property (nonatomic, strong) IBOutlet UISwitch *digitalSwitch;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *retailDigitalSegmentedControl;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *lentBorrowedSegmentedControl;
 
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
 
@@ -180,8 +180,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-//	if (section == SectionStatus && ([_game.wanted isEqualToNumber:@(NO)] || ([_game.wanted isEqualToNumber:@(YES)] && [_game.released isEqualToNumber:@(YES)])) && [_game.owned isEqualToNumber:@(NO)])
-//		return 0;
+	if (section == SectionStatus && ([_game.location isEqualToNumber:@(GameLocationNone)] || ([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(YES)])))
+		return 0;
 	return [super tableView:tableView heightForHeaderInSection:section];
 }
 
@@ -787,8 +787,14 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
 	[_finishedSwitch setOn:_game.finished.boolValue animated:animated];
-	[_lentSwitch setOn:_game.lent.boolValue animated:animated];
-	[_digitalSwitch setOn:_game.digital.boolValue animated:animated];
+	[_retailDigitalSegmentedControl setSelectedSegmentIndex:_game.digital.boolValue];
+	
+	if ([_game.lent isEqualToNumber:@(YES)])
+		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:1];
+	else if ([_game.borrowed isEqualToNumber:@(YES)])
+		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:2];
+	else
+		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
 	
 //	if (_game.metascore.length > 0){
 //		[_metascoreButton setBackgroundColor:[Networking colorForMetascore:_game.metascore]];
@@ -956,8 +962,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		
 		[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
 		[_finishedSwitch setOn:_game.finished.boolValue animated:YES];
-		[_lentSwitch setOn:_game.lent.boolValue animated:YES];
-		[_digitalSwitch setOn:_game.digital.boolValue animated:YES];
+		
+		if ([_game.lent isEqualToNumber:@(YES)])
+			[_lentBorrowedSegmentedControl setSelectedSegmentIndex:1];
+		else if ([_game.borrowed isEqualToNumber:@(YES)])
+			[_lentBorrowedSegmentedControl setSelectedSegmentIndex:2];
+		else
+			[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
 		
 		[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
 		
@@ -1009,32 +1020,49 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 //	}
 }
 
-- (IBAction)statusSwitchAction:(UISwitch *)sender{
-	if (sender == _preorderedSwitch)
-		[_game setPreordered:@(sender.isOn)];
-	else if (sender == _finishedSwitch)
-		[_game setFinished:@(sender.isOn)];
-	else if (sender == _lentSwitch){
-		[_game setLent:@(sender.isOn)];
-		if (sender.isOn){
-			[_digitalSwitch setOn:NO animated:YES];
-			[_game setDigital:@(NO)];
+- (IBAction)segmentedControlValueChangedAction:(UISegmentedControl *)sender{
+	if (sender == _retailDigitalSegmentedControl){
+		switch (sender.selectedSegmentIndex) {
+			case 0:
+				[_game setDigital:@(NO)];
+				break;
+			case 1:
+				[_game setDigital:@(YES)];
+				[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
+				break;
+			default:
+				break;
 		}
 	}
-	else if (sender == _digitalSwitch){
-		[_game setDigital:@(sender.isOn)];
-		if (sender.isOn){
-			[_lentSwitch setOn:NO animated:YES];
-			[_game setLent:@(NO)];
+	else{
+		switch (sender.selectedSegmentIndex) {
+			case 0:
+				[_game setLent:@(NO)];
+				[_game setBorrowed:@(NO)];
+				break;
+			case 1:
+				[_game setLent:@(YES)];
+				[_game setBorrowed:@(NO)];
+				break;
+			case 2:
+				[_game setLent:@(NO)];
+				[_game setBorrowed:@(YES)];
+				break;
+			default:
+				break;
 		}
 	}
 	
-	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		if (sender != _preorderedSwitch)
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
-		else
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-	}];
+	[_context MR_saveToPersistentStoreAndWait];
+}
+
+- (IBAction)switchValueChangedAction:(UISwitch *)sender{
+	if (sender == _preorderedSwitch)
+		[_game setPreordered:@(sender.isOn)];
+	else
+		[_game setFinished:@(sender.isOn)];
+	
+	[_context MR_saveToPersistentStoreAndWait];
 }
 
 - (IBAction)metascoreButtonAction:(UIButton *)sender{
