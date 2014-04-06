@@ -30,6 +30,7 @@
 #import "VideoPlayerController.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import "SimilarGameCollectionCell.h"
+#import "PlatformPickerController.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	SectionCover,
@@ -44,7 +45,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	ActionSheetTagLibrary
 };
 
-@interface GameController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface GameController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
@@ -589,7 +590,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 //			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
-			NSDictionary *results = responseObject[@"results"];
+//			NSDictionary *results = responseObject[@"results"];
 			
 //			if (results[@"image"] != [NSNull null])
 //				[similarGame setThumbnailURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
@@ -738,23 +739,27 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[dataTask resume];
 }
 
-#pragma mark - ActionSheet
+#pragma mark - PlatformPicker
 
-// REWRITE
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-	if (buttonIndex != actionSheet.cancelButtonIndex){
-//		if (actionSheet.tag == ActionSheetTagWishlist)
-//			[self addGameToWishlistWithPlatform:_selectablePlatforms[buttonIndex]];
-//		else
-//			[self addGameToLibraryWithPlatform:_selectablePlatforms[buttonIndex]];
+- (void)platformPicker:(PlatformPickerController *)picker didSelectPlatforms:(NSArray *)platforms{
+	if (!platforms || platforms.count == 0){
+		[self removeGameFromWishlistOrLibrary];
 	}
 	else{
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[_wishlistButton setHighlighted:NO];
-			[_libraryButton setHighlighted:NO];
-		});
+		if (_wishlistButton.isHighlighted){
+			[self addGameToWishlistWithPlatforms:platforms];
+		}
+		else if (_libraryButton.isHighlighted){
+			[self addGameToLibraryWithPlatforms:platforms];
+		}
 	}
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[_wishlistButton setHighlighted:NO];
+		[_libraryButton setHighlighted:NO];
+	});
+	
+	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Custom
@@ -902,59 +907,51 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	}];
 }
 
-//- (void)addGameToWishlistWithPlatform:(Platform *)platform{
-//	[_game setWishlistPlatform:platform];
-//	[_game setLibraryPlatform:nil];
-//	
-//	// If release period is collapsed, set game to hidden
-//	if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-//		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", _game.releasePeriod.identifier, @(NO), @(YES)];
-//		NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
-//		[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
-//	}
-//	
-//	[_game setWanted:@(YES)];
-//	[_game setOwned:@(NO)];
-//	
-//	[_game setPreordered:@(NO)];
-//	[_game setCompleted:@(NO)];
-//	[_game setLoaned:@(NO)];
-//	[_game setDigital:@(NO)];
-//	
-//	[_game setWishlistMetascore:(_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform) ? _game.metascore : nil];
-//	
-//	[self saveAndRefreshAfterStateChange];
-//}
+- (void)addGameToWishlistWithPlatforms:(NSArray *)platforms{
+	[_game setSelectedPlatforms:[NSSet setWithArray:platforms]];
+	[_game setLocation:@(GameLocationWishlist)];
+	
+	// If release period is collapsed, set game to hidden
+	if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", _game.releasePeriod.identifier, @(NO), @(YES)];
+		NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
+		[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
+	}
+	
+	[_game setPreordered:@(NO)];
+	[_game setFinished:@(NO)];
+	[_game setDigital:@(NO)];
+	[_game setLent:@(NO)];
+	[_game setBorrowed:@(NO)];
+	
+	[self saveAndRefreshAfterStateChange];
+}
 
-//- (void)addGameToLibraryWithPlatform:(Platform *)platform{
-//	[_game setWishlistPlatform:nil];
-//	[_game setLibraryPlatform:platform];
-//	
-//	[_game setWanted:@(NO)];
-//	[_game setOwned:@(YES)];
-//	
-//	[_game setPreordered:@(NO)];
-//	[_game setCompleted:@(NO)];
-//	[_game setLoaned:@(NO)];
-//	[_game setDigital:@(NO)];
-//	
-//	[self saveAndRefreshAfterStateChange];
-//}
+- (void)addGameToLibraryWithPlatforms:(NSArray *)platforms{
+	[_game setSelectedPlatforms:[NSSet setWithArray:platforms]];
+	[_game setLocation:@(GameLocationLibrary)];
+	
+	[_game setPreordered:@(NO)];
+	[_game setFinished:@(NO)];
+	[_game setDigital:@(NO)];
+	[_game setLent:@(NO)];
+	[_game setBorrowed:@(NO)];
+	
+	[self saveAndRefreshAfterStateChange];
+}
 
-//- (void)removeGameFromWishlistOrLibrary{
-//	[_game setWanted:@(NO)];
-//	[_game setOwned:@(NO)];
-//	
-//	[_game setWishlistPlatform:nil];
-//	[_game setLibraryPlatform:nil];
-//	
-//	[_game setPreordered:@(NO)];
-//	[_game setCompleted:@(NO)];
-//	[_game setLoaned:@(NO)];
-//	[_game setDigital:@(NO)];
-//	
-//	[self saveAndRefreshAfterStateChange];
-//}
+- (void)removeGameFromWishlistOrLibrary{
+	[_game setSelectedPlatforms:nil];
+	[_game setLocation:@(GameLocationNone)];
+	
+	[_game setPreordered:@(NO)];
+	[_game setFinished:@(NO)];
+	[_game setDigital:@(NO)];
+	[_game setLent:@(NO)];
+	[_game setBorrowed:@(NO)];
+	
+	[self saveAndRefreshAfterStateChange];
+}
 
 - (void)saveAndRefreshAfterStateChange{
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -986,38 +983,30 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 #pragma mark - Actions
 
-// REWRITE
-
 - (IBAction)addButtonPressAction:(UIButton *)sender{
-//	dispatch_async(dispatch_get_main_queue(), ^{
-//		[sender setHighlighted:YES];
-//	});
-//	
-//	// Removing from wishlist or library
-//	if ((sender == _wishlistButton && [_game.wanted isEqualToNumber:@(YES)]) || (sender == _libraryButton && [_game.owned isEqualToNumber:@(YES)])){
-//		[self removeGameFromWishlistOrLibrary];
-//	}
-//	else{
-//		// Multiple platforms to select
-//		if (_selectablePlatforms.count > 1){
-//			UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-//			[actionSheet setTag:(sender == _wishlistButton) ? ActionSheetTagWishlist : ActionSheetTagLibrary];
-//			
-//			for (Platform *platform in _selectablePlatforms)
-//				[actionSheet addButtonWithTitle:platform.name];
-//			[actionSheet addButtonWithTitle:@"Cancel"];
-//			[actionSheet setCancelButtonIndex:_selectablePlatforms.count];
-//			
-//			[actionSheet showInView:self.view.window];
-//		}
-//		// Single platform
-//		else{
-//			if (sender == _wishlistButton)
-//				[self addGameToWishlistWithPlatform:(_selectablePlatforms.count > 0) ? _selectablePlatforms.firstObject : nil];
-//			else
-//				[self addGameToLibraryWithPlatform:(_selectablePlatforms.count > 0) ? _selectablePlatforms.firstObject : nil];
-//		}
-//	}
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[sender setHighlighted:YES];
+	});
+	
+	// Removing from wishlist or library
+	if ((sender == _wishlistButton && [_game.location isEqualToNumber:@(GameLocationWishlist)]) || (sender == _libraryButton && [_game.location isEqualToNumber:@(GameLocationLibrary)])){
+		[self removeGameFromWishlistOrLibrary];
+	}
+	else{
+		// Multiple platforms to select
+		if (_selectablePlatforms.count > 1){
+			[self performSegueWithIdentifier:@"PlatformPickerSegue" sender:nil];
+		}
+		// Single platform
+		else{
+			if (sender == _wishlistButton){
+				[self addGameToWishlistWithPlatforms:@[_selectablePlatforms.firstObject]];
+			}
+			else{
+				[self addGameToLibraryWithPlatforms:@[_selectablePlatforms.firstObject]];
+			}
+		}
+	}
 }
 
 - (IBAction)segmentedControlValueChangedAction:(UISegmentedControl *)sender{
@@ -1025,10 +1014,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		switch (sender.selectedSegmentIndex) {
 			case 0:
 				[_game setDigital:@(NO)];
+				[_lentBorrowedSegmentedControl setEnabled:YES];
 				break;
 			case 1:
 				[_game setDigital:@(YES)];
 				[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
+				[_lentBorrowedSegmentedControl setEnabled:NO];
 				break;
 			default:
 				break;
@@ -1089,14 +1080,21 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-	if ([segue.identifier isEqualToString:@"ViewerSegue"]){
+	if ([segue.identifier isEqualToString:@"PlatformPickerSegue"]){
+		UINavigationController *navigationController = segue.destinationViewController;
+		PlatformPickerController *destination = (PlatformPickerController *)navigationController.topViewController;
+		[destination setSelectablePlatforms:_selectablePlatforms];
+		[destination setSelectedPlatforms:_game.selectedPlatforms.allObjects.mutableCopy];
+		[destination setDelegate:self];
+	}
+	else if ([segue.identifier isEqualToString:@"ViewerSegue"]){
 		Image *image = sender;
 		
 		ImageViewerController *destination = segue.destinationViewController;
 		[destination setImage:image];
 	}
 	else if ([segue.identifier isEqualToString:@"MetacriticSegue"]){
-		MetacriticController *destination = segue.destinationViewController;
+//		MetacriticController *destination = segue.destinationViewController;
 //		[destination setURL:[NSURL URLWithString:_game.metacriticURL]];
 	}
 	else if ([segue.identifier isEqualToString:@"SimilarGameSegue"]){

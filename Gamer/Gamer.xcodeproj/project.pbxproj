@@ -76,6 +76,7 @@
 		25AC85A518F031B200919A15 /* MetascoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A418F031B200919A15 /* MetascoreCell.m */; };
 		25AC85A818F031BC00919A15 /* ReleaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A718F031BC00919A15 /* ReleaseCell.m */; };
 		25AC85AB18F0349A00919A15 /* Region.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85AA18F0349A00919A15 /* Region.m */; };
+		25AC85AE18F0575B00919A15 /* PlatformPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85AD18F0575B00919A15 /* PlatformPickerCell.m */; };
 		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
 		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
 		25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */; };
@@ -232,6 +233,8 @@
 		25AC85A718F031BC00919A15 /* ReleaseCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseCell.m; sourceTree = "<group>"; };
 		25AC85A918F0349A00919A15 /* Region.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Region.h; sourceTree = "<group>"; };
 		25AC85AA18F0349A00919A15 /* Region.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Region.m; sourceTree = "<group>"; };
+		25AC85AC18F0575B00919A15 /* PlatformPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformPickerCell.h; sourceTree = "<group>"; };
+		25AC85AD18F0575B00919A15 /* PlatformPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformPickerCell.m; sourceTree = "<group>"; };
 		25B094031824882E003A0365 /* SearchCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCollectionCell.h; sourceTree = "<group>"; };
 		25B094041824882E003A0365 /* SearchCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCollectionCell.m; sourceTree = "<group>"; };
 		25B094061829BFA4003A0365 /* iPadTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadTabBarController.h; sourceTree = "<group>"; };
@@ -358,6 +361,8 @@
 				25AC85A418F031B200919A15 /* MetascoreCell.m */,
 				25AC85A618F031BC00919A15 /* ReleaseCell.h */,
 				25AC85A718F031BC00919A15 /* ReleaseCell.m */,
+				25AC85AC18F0575B00919A15 /* PlatformPickerCell.h */,
+				25AC85AD18F0575B00919A15 /* PlatformPickerCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -829,6 +834,7 @@
 				2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */,
 				25AC859F18EF425500919A15 /* RegionsController.m in Sources */,
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
+				25AC85AE18F0575B00919A15 /* PlatformPickerCell.m in Sources */,
 				25AC859618EE5E6F00919A15 /* Platform.m in Sources */,
 				25AC856A18EE37B400919A15 /* Franchise.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ImageViewerController.m in Sources */,

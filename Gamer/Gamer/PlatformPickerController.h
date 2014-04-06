@@ -8,6 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@class PlatformPickerController;
+
+@protocol PlatformPickerControllerDelegate <NSObject>
+
+- (void)platformPicker:(PlatformPickerController *)picker didSelectPlatforms:(NSArray *)platforms;
+
+@end
+
 @interface PlatformPickerController : UITableViewController
+
+@property (nonatomic, strong) NSArray *selectablePlatforms;
+@property (nonatomic, strong) NSMutableArray *selectedPlatforms;
+
+@property (nonatomic, weak) id<PlatformPickerControllerDelegate> delegate;
 
 @end
