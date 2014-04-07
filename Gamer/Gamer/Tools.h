@@ -12,6 +12,8 @@
 
 // Tools
 + (NSDateFormatter *)dateFormatter;
++ (NSString *)imagesDirectory;
++ (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL;
 
 // JSON
 + (NSString *)stringFromSourceIfNotNull:(id)source;

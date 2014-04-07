@@ -47,7 +47,6 @@
 		257E18C3182453460088699B /* SearchController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 257E18C2182453460088699B /* SearchController_iPad.m */; };
 		258A8C6718AAF81E00B38515 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 258A8C6618AAF81E00B38515 /* Crashlytics.framework */; };
 		2593051717C90017001DC04B /* MetacriticController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051617C90017001DC04B /* MetacriticController.m */; };
-		25998C08181093F500F1AA8F /* CoverImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 25998C07181093F500F1AA8F /* CoverImage.m */; };
 		259DBBAF18958D0700B274F4 /* NSString+FetchedGroupByString.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DBBAE18958D0700B274F4 /* NSString+FetchedGroupByString.m */; };
 		259DBBB21895A79700B274F4 /* LibraryFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DBBB11895A79700B274F4 /* LibraryFilterView.m */; };
 		259DD14617ADBE8600FAD645 /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DD14517ADBE8600FAD645 /* SearchCell.m */; };
@@ -174,8 +173,6 @@
 		258A8C6618AAF81E00B38515 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		2593051517C90017001DC04B /* MetacriticController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetacriticController.h; sourceTree = "<group>"; };
 		2593051617C90017001DC04B /* MetacriticController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetacriticController.m; sourceTree = "<group>"; };
-		25998C06181093F500F1AA8F /* CoverImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverImage.h; sourceTree = "<group>"; };
-		25998C07181093F500F1AA8F /* CoverImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverImage.m; sourceTree = "<group>"; };
 		259DBBAD18958D0700B274F4 /* NSString+FetchedGroupByString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FetchedGroupByString.h"; sourceTree = "<group>"; };
 		259DBBAE18958D0700B274F4 /* NSString+FetchedGroupByString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FetchedGroupByString.m"; sourceTree = "<group>"; };
 		259DBBB01895A79700B274F4 /* LibraryFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryFilterView.h; sourceTree = "<group>"; };
@@ -559,8 +556,6 @@
 				25AC855118EE37B400919A15 /* ReleaseDate.m */,
 				25AC854D18EE37B300919A15 /* Release.h */,
 				25AC854E18EE37B300919A15 /* Release.m */,
-				25998C06181093F500F1AA8F /* CoverImage.h */,
-				25998C07181093F500F1AA8F /* CoverImage.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -818,7 +813,6 @@
 				25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */,
 				25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */,
 				250B37DF1808613B009EB170 /* SegmentedControlCell.m in Sources */,
-				25998C08181093F500F1AA8F /* CoverImage.m in Sources */,
 				2531E839176CDB60005881A4 /* WishlistController_iPhone.m in Sources */,
 				25AC857918EE37B400919A15 /* Developer.m in Sources */,
 				25BE542218BED50200BCBAFB /* ImportController.m in Sources */,

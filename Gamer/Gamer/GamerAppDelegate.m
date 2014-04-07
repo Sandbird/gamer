@@ -8,7 +8,6 @@
 
 #import "GamerAppDelegate.h"
 #import "Game.h"
-#import "CoverImage.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <Crashlytics/Crashlytics.h>
 #import "ImportController.h"
@@ -74,6 +73,21 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application{
+	// Delete all games not added
+	
+	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@", @(GameLocationNone)];
+	
+	NSArray *nonAddedGames = [Game MR_findAllWithPredicate:predicate inContext:context];
+	
+	for (Game *game in nonAddedGames){
+		[[NSFileManager defaultManager] removeItemAtPath:game.imagePath error:nil];
+		[game MR_deleteInContext:context];
+	}
+	
+	[context MR_saveToPersistentStoreAndWait];
+	
 	[MagicalRecord cleanUp];
 }
 

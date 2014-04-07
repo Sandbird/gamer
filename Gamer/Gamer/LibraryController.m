@@ -10,7 +10,6 @@
 #import "LibraryCollectionCell.h"
 #import "Game.h"
 #import "Platform.h"
-#import "CoverImage.h"
 #import "Genre.h"
 #import "Developer.h"
 #import "Publisher.h"
@@ -105,7 +104,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_filter = LibraryFilterPlatform;
 	
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Platform MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@", [Session gamer].platforms] sortedBy:@"index" ascending:YES inContext:_context];
 	
 	_imageCache = [NSCache new];
 	
@@ -146,35 +145,40 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
 	[_guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)]] == 0) ? NO : YES];
 	
-	return _fetchedResultsController.sections.count;
+	return _fetchedResultsController.fetchedObjects.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
-	
+//	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
+//	
 //	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
-	
-	NSString *headerTitle;
-	
-	switch (_filter) {
+//	
+//	NSString *headerTitle;
+//	
+//	switch (_filter) {
 //		case LibraryFilterTitle: headerTitle = sectionName; break;
 //		case LibraryFilterPlatform: headerTitle = game.libraryPlatform.name; break;
 //		case LibraryFilterReleaseYear: headerTitle = game.releaseDate.year.stringValue; break;
 //		case LibraryFilterMetascore: headerTitle = game.metascore.length > 0 ? game.metascore : @"Unavailable"; break;
-		default: break;
-	}
+//		default: break;
+//	}
+//	
+//	if ([headerTitle isEqualToString:@"2050"])
+//		headerTitle = @"Unknown";
+//
 	
-	if ([headerTitle isEqualToString:@"2050"])
-		headerTitle = @"Unknown";
+	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:indexPath.section inSection:0]];
 	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
-	[headerView.titleLabel setText:headerTitle];
+	[headerView.titleLabel setText:platform.name];
 	[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
 	return headerView;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	return [_fetchedResultsController.sections[section] numberOfObjects];
+	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:section inSection:0]];
+	return platform.addedGames.count;
+//	return [_fetchedResultsController.sections[section] numberOfObjects];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -187,34 +191,36 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
+	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:indexPath.section inSection:0]];
+	
+	Game *game = platform.addedGames.allObjects[indexPath.row];
 	
 	LibraryCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+	[cell.coverImageView setBackgroundColor:[UIColor darkGrayColor]];
+	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
 	
-//	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
-//	
-//	if (image){
-//		[cell.coverImageView setImage:image];
-//		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-//	}
-//	else{
-//		[cell.coverImageView setImage:nil];
-//		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-//		
-//		UIImage *image = [UIImage imageWithData:game.thumbnailLibrary];
-//		
-//		UIGraphicsBeginImageContext(image.size);
-//		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-//		image = UIGraphicsGetImageFromCurrentImageContext();
-//		UIGraphicsEndImageContext();
-//		
-//		[cell.coverImageView setImage:image];
-//		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-//		
-//		if (image){
-//			[_imageCache setObject:image forKey:game.thumbnailName];
-//		}
-//	}
+	if (image){
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[cell.coverImageView setImage:nil];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+		
+		UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+		
+		UIGraphicsBeginImageContext(image.size);
+		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+		image = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+		
+		if (image){
+			[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+		}
+	}
 	
 	return cell;
 }
@@ -250,8 +256,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 					[_collectionView reloadData];
 					
-					BOOL imagesDownloaded = NO;
-					
+//					BOOL imagesDownloaded = NO;
+//					
 //					for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++){
 //						for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++){
 //							Game *fetchedGame = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
@@ -489,11 +495,15 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+	NSIndexPath *indexPath = sender;
+	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:indexPath.section inSection:0]];
+	Game *game = platform.addedGames.allObjects[indexPath.row];
+	
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
 		if ([Tools deviceIsiPad]){
 			UINavigationController *navigationController = segue.destinationViewController;
 			GameController *destination = (GameController *)navigationController.topViewController;
-			[destination setGame:[_fetchedResultsController objectAtIndexPath:sender]];
+			[destination setGame:game];
 		}
 		else{
 			// Pop other tabs when opening game details
@@ -502,7 +512,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			}
 			
 			GameController *destination = segue.destinationViewController;
-			[destination setGame:[_fetchedResultsController objectAtIndexPath:sender]];
+			[destination setGame:game];
 		}
 	}
 }

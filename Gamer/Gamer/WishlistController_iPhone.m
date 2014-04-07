@@ -17,7 +17,6 @@
 #import "Theme.h"
 #import "ReleasePeriod.h"
 #import "ReleaseDate.h"
-#import "CoverImage.h"
 #import "SimilarGame.h"
 #import "GameController.h"
 #import "WishlistSectionHeaderView.h"
@@ -153,30 +152,30 @@
 	
 	WishlistCell *customCell = (WishlistCell *)cell;
 	
-//	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
-//	
-//	if (image){
-//		[customCell.coverImageView setImage:image];
-//		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
-//	}
-//	else{
-//		[customCell.coverImageView setImage:nil];
-//		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
-//		
-//		UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
-//		
-//		UIGraphicsBeginImageContext(image.size);
-//		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-//		image = UIGraphicsGetImageFromCurrentImageContext();
-//		UIGraphicsEndImageContext();
-//		
-//		[customCell.coverImageView setImage:image];
-//		[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-//		
-//		if (image){
-//			[_imageCache setObject:image forKey:game.thumbnailName];
-//		}
-//	}
+	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	
+	if (image){
+		[customCell.coverImageView setImage:image];
+		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[customCell.coverImageView setImage:nil];
+		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
+		
+		UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+		
+		UIGraphicsBeginImageContext(image.size);
+		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+		image = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		
+		[customCell.coverImageView setImage:image];
+		[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+		
+		if (image){
+			[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+		}
+	}
 	
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.dateLabel setText:game.releaseDateText];
@@ -349,8 +348,8 @@
 		[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
 	}
 	
-	[Game MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location = %@", @(GameLocationNone)]];
-	[_context MR_saveToPersistentStoreAndWait];
+//	[Game MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location = %@", @(GameLocationNone)]];
+//	[_context MR_saveToPersistentStoreAndWait];
 	
 	_numberOfRunningTasks = 0;
 	

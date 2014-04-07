@@ -122,6 +122,12 @@ static NSArray *SEARCHRESULTS;
 }
 
 + (void)setupInitialData{
+	NSString *imagesDirectoryPath = [Tools imagesDirectory];
+	if (![[NSFileManager defaultManager] fileExistsAtPath:imagesDirectoryPath]){
+		[[NSFileManager defaultManager] createDirectoryAtPath:imagesDirectoryPath withIntermediateDirectories:NO attributes:nil error:nil];
+		[Tools addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:imagesDirectoryPath isDirectory:YES]];
+	}
+	
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	Gamer *gamer = [Gamer MR_findFirstInContext:context];

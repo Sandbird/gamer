@@ -10,7 +10,6 @@
 #import "ImportCell.h"
 #import "Game.h"
 #import "Platform.h"
-#import "CoverImage.h"
 
 @interface ImportController ()
 

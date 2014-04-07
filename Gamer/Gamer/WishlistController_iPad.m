@@ -16,7 +16,6 @@
 #import "Theme.h"
 #import "ReleasePeriod.h"
 #import "ReleaseDate.h"
-#import "CoverImage.h"
 #import "SimilarGame.h"
 #import "GameController.h"
 #import "WishlistCollectionCell.h"

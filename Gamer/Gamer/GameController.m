@@ -16,7 +16,6 @@
 #import "Image.h"
 #import "Video.h"
 #import "ReleasePeriod.h"
-#import "CoverImage.h"
 #import "ReleaseDate.h"
 #import "SimilarGame.h"
 #import <MediaPlayer/MediaPlayer.h>
@@ -76,7 +75,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UILabel *franchiseLabel;
 @property (nonatomic, strong) IBOutlet UILabel *franchiseTitleLabel;
 
-@property (nonatomic, strong) IBOutlet UICollectionView *platformsCollectionView;
+@property (nonatomic, strong) IBOutlet UICollectionView *selectedPlatformsCollectionView;
+@property (nonatomic, strong) IBOutlet UICollectionView *selectablePlatformsCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *similarGamesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *imagesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *videosCollectionView;
@@ -86,12 +86,11 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
-@property (nonatomic, strong) NSArray *platforms;
+@property (nonatomic, strong) NSArray *selectedPlatforms;
+@property (nonatomic, strong) NSArray *selectablePlatforms;
 @property (nonatomic, strong) NSArray *similarGames;
 @property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSArray *videos;
-
-@property (nonatomic, strong) NSArray *selectablePlatforms;
 
 @property (nonatomic, strong) UITapGestureRecognizer *dismissTapGesture;
 
@@ -188,6 +187,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
+		case SectionCover:
+			if ([_game.location isEqualToNumber:@(GameLocationNone)])
+				return 2;
+			break;
 		case SectionStatus:
 			if (![_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)])
 				return 1;
@@ -295,8 +298,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 #pragma mark - CollectionView
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	if (collectionView == _platformsCollectionView)
-		return _platforms.count;
+	if (collectionView == _selectedPlatformsCollectionView)
+		return _selectedPlatforms.count;
+	else if (collectionView == _selectablePlatformsCollectionView)
+		return _selectablePlatforms.count;
 	else if (collectionView == _similarGamesCollectionView)
 		return _similarGames.count;
 	else if (collectionView == _imagesCollectionView){
@@ -310,8 +315,15 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-	if (collectionView == _platformsCollectionView){
-		Platform *platform = _platforms[indexPath.item];
+	if (collectionView == _selectedPlatformsCollectionView){
+		Platform *platform = _selectedPlatforms[indexPath.item];
+		PlatformCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+		[cell.platformLabel setText:platform.abbreviation];
+		[cell.platformLabel setBackgroundColor:platform.color];
+		return cell;
+	}
+	else if (collectionView == _selectablePlatformsCollectionView){
+		Platform *platform = _selectablePlatforms[indexPath.item];
 		PlatformCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		[cell.platformLabel setText:platform.abbreviation];
 		[cell.platformLabel setBackgroundColor:platform.color];
@@ -445,13 +457,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				[self requestImageForSimilarGame:similarGame];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-//				
-//				UIImage *coverImage = [UIImage imageWithData:_game.coverImage.data];
+				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+				
+				UIImage *coverImage = [UIImage imageWithContentsOfFile:_game.imagePath];
 //				CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage type:GameImageTypeCover];
-//				
-//				if (!_game.thumbnailWishlist || !_game.thumbnailLibrary || !_game.coverImage.data || ![_game.coverImage.url isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
-//					[self downloadImageForCoverImage:_game.coverImage];
+				
+//				if (!coverImage || !_game.imagePath || ![_game.imageURL isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
+				[self downloadImageWithURL:coverImageURL];
 //				}
 				
 				[self requestMediaForGame:_game];
@@ -460,7 +472,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				
 				[self.tableView reloadData];
 				
-				[_platformsCollectionView reloadData];
+				[_selectablePlatformsCollectionView reloadData];
 				[_similarGamesCollectionView reloadData];
 				
 				// If game is released and has at least one platform, request metascore
@@ -475,15 +487,17 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[dataTask resume];
 }
 
-- (void)downloadImageForCoverImage:(CoverImage *)coverImage{
-	if (!coverImage.url) return;
+- (void)downloadImageWithURL:(NSString *)URLString{
+	if (!URLString) return;
 	
 	[_activityIndicator startAnimating];
 	
-	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:coverImage.url]];
+	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLString]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
+//		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
+		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
+		NSLog(@"%@", fileURL);
 		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		[_activityIndicator stopAnimating];
@@ -494,9 +508,11 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
+			NSLog(@"%@", filePath);
+			[_game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
+			
 //			NSData *downloadedData = [NSData dataWithContentsOfURL:filePath];
 //			UIImage *downloadedImage = [UIImage imageWithData:downloadedData];
-//			
 //			[coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
 //			[_game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
 //			[_game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
@@ -766,11 +782,11 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 - (void)setCoverImageAnimated:(BOOL)animated{
 	if (animated){
-//		[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
+		[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
 		[_coverImageView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 	}
-//	else
-//		[_coverImageView setImage:[UIImage imageWithData:_game.coverImage.data]];
+	else
+		[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
 	
 	[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:[Tools frameForImageInImageView:_coverImageView]];
 }
@@ -782,9 +798,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[_releaseDateLabel setText:_game.releaseDateText];
 	
-	_platforms = [self orderedPlatformsFromGame:_game];
-	
 	_selectablePlatforms = [self selectablePlatformsFromGame:_game];
+	
+	_selectedPlatforms = [self orderedSelectedPlatformsFromGame:_game];
 	
 	_similarGames = [self orderedSimilarGamesFromGame:_game];
 	
@@ -860,6 +876,14 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 - (NSArray *)orderedPlatformsFromGame:(Game *)game{
 	return [game.platforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		Platform *platform1 = (Platform *)obj1;
+		Platform *platform2 = (Platform *)obj2;
+		return [platform1.index compare:platform2.index] == NSOrderedDescending;
+	}];
+}
+
+- (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
+	return [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		Platform *platform1 = (Platform *)obj1;
 		Platform *platform2 = (Platform *)obj2;
 		return [platform1.index compare:platform2.index] == NSOrderedDescending;
@@ -967,7 +991,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		else
 			[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
 		
-		[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionStatus] withRowAnimation:UITableViewRowAnimationAutomatic];
+		_selectedPlatforms = _game.selectedPlatforms.allObjects;
+		[_selectedPlatformsCollectionView reloadData];
+		
+//		[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];
+//		[self.tableView beginUpdates];
+//		[self.tableView endUpdates];
+		[self.tableView reloadData];
 		
 		[_wishlistButton setHighlighted:NO];
 		[_libraryButton setHighlighted:NO];

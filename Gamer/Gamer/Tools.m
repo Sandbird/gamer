@@ -37,6 +37,21 @@
 	return dateFormatter;
 }
 
++ (NSString *)imagesDirectory{
+	return [NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES).firstObject, @"Images"];
+}
+
++ (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL{
+	assert([[NSFileManager defaultManager] fileExistsAtPath: [URL path]]);
+	
+	NSError *error = nil;
+	BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES] forKey: NSURLIsExcludedFromBackupKey error: &error];
+	if(!success){
+		NSLog(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
+	}
+	return success;
+}
+
 #pragma mark - JSON
 
 + (NSString *)stringFromSourceIfNotNull:(id)source{

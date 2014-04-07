@@ -17,7 +17,6 @@
 #import "Image.h"
 #import "Video.h"
 #import "ReleasePeriod.h"
-#import "CoverImage.h"
 #import "ReleaseDate.h"
 #import "SimilarGame.h"
 
