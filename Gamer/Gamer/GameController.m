@@ -219,6 +219,19 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
+		case SectionCover:
+			switch (indexPath.row) {
+				case 2:
+					if ([Tools deviceIsiPhone]){
+						if (_game.platforms.count > 0){
+							return 20 + 17 + 13 + ((_game.platforms.count/5 + 1) * 31) + 20;
+						}
+					}
+					break;
+				default:
+					break;
+			}
+			break;
 		case SectionDetails:{
 			switch (indexPath.row) {
 				// Description row
@@ -460,11 +473,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 				
 				UIImage *coverImage = [UIImage imageWithContentsOfFile:_game.imagePath];
-//				CGSize optimalSize = [Session optimalCoverImageSizeForImage:coverImage type:GameImageTypeCover];
 				
-//				if (!coverImage || !_game.imagePath || ![_game.imageURL isEqualToString:coverImageURL] || (coverImage.size.width != optimalSize.width || coverImage.size.height != optimalSize.height)){
-				[self downloadImageWithURL:coverImageURL];
-//				}
+				if (!coverImage || !_game.imagePath || ![_game.imageURL isEqualToString:coverImageURL]){
+					[self downloadImageWithURL:coverImageURL];
+				}
 				
 				[self requestMediaForGame:_game];
 				
@@ -495,9 +507,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLString]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-//		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
 		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
-		NSLog(@"%@", fileURL);
 		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		[_activityIndicator stopAnimating];
@@ -508,14 +518,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			NSLog(@"%@", filePath);
 			[_game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
-			
-//			NSData *downloadedData = [NSData dataWithContentsOfURL:filePath];
-//			UIImage *downloadedImage = [UIImage imageWithData:downloadedData];
-//			[coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-//			[_game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-//			[_game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
@@ -603,13 +606,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}
 		else{
-//			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
-//			NSDictionary *results = responseObject[@"results"];
+			NSDictionary *results = responseObject[@"results"];
 			
-//			if (results[@"image"] != [NSNull null])
-//				[similarGame setThumbnailURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
+			if (results[@"image"] != [NSNull null])
+				[similarGame setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_similarGamesCollectionView reloadData];
