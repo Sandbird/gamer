@@ -2,20 +2,20 @@
 //  Gamer.h
 //  Gamer
 //
-//  Created by Caio Mello on 03/04/2014.
+//  Created by Caio Mello on 07/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Platform;
+@class Platform, Region;
 
 @interface Gamer : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * librarySize;
 @property (nonatomic, retain) NSSet *platforms;
-@property (nonatomic, retain) NSManagedObject *region;
+@property (nonatomic, retain) Region *region;
 @end
 
 @interface Gamer (CoreDataGeneratedAccessors)

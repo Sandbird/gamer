@@ -14,17 +14,19 @@
 
 + (AFURLSessionManager *)manager;
 
-+ (NSMutableURLRequest *)requestForGamesWithTitle:(NSString *)title fields:(NSString *)fields platforms:(NSArray *)platforms;
-+ (NSMutableURLRequest *)requestForGameWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
-+ (NSMutableURLRequest *)requestForVideoWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
++ (NSURLRequest *)requestForGamesWithTitle:(NSString *)title fields:(NSString *)fields platforms:(NSArray *)platforms;
++ (NSURLRequest *)requestForGameWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
++ (NSURLRequest *)requestForVideoWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
++ (NSURLRequest *)requestForReleaseWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
 
 + (void)updateGame:(Game *)game withDataFromJSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context;
-+ (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform;
+//+ (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform;
 
++ (void)setReleaseDateForGameOrRelease:(id)object dateString:(NSString *)date expectedReleaseDay:(NSInteger)day expectedReleaseMonth:(NSInteger)month expectedReleaseQuarter:(NSInteger)quarter expectedReleaseYear:(NSInteger)year;
 + (NSInteger)quarterForMonth:(NSInteger)month;
-+ (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate context:(NSManagedObjectContext *)context;
++ (ReleasePeriod *)releasePeriodForGame:(Game *)game context:(NSManagedObjectContext *)context;
 
 + (UIColor *)colorForMetascore:(NSString *)metascore;
-+ (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML;
+//+ (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML;
 
 @end

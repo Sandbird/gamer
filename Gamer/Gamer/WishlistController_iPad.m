@@ -15,7 +15,6 @@
 #import "Franchise.h"
 #import "Theme.h"
 #import "ReleasePeriod.h"
-#import "ReleaseDate.h"
 #import "SimilarGame.h"
 #import "GameController.h"
 #import "WishlistCollectionCell.h"
@@ -308,7 +307,7 @@
 	// Set release period for all games in Wishlist
 	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationWishlist)] inContext:_context];
 	for (Game *game in games)
-		[game setReleasePeriod:[Networking releasePeriodForReleaseDate:game.releaseDate context:_context]];
+		[game setReleasePeriod:[Networking releasePeriodForGame:game context:_context]];
 	
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		// Show section if it has any games

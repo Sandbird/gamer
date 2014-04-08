@@ -2,7 +2,7 @@
 //  Region.m
 //  Gamer
 //
-//  Created by Caio Mello on 05/04/2014.
+//  Created by Caio Mello on 07/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -13,11 +13,11 @@
 
 @implementation Region
 
-@dynamic identifier;
-@dynamic name;
 @dynamic abbreviation;
+@dynamic identifier;
 @dynamic imageName;
-@dynamic releases;
+@dynamic name;
 @dynamic gamer;
+@dynamic releases;
 
 @end

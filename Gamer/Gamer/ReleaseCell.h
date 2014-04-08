@@ -10,4 +10,10 @@
 
 @interface ReleaseCell : UITableViewCell
 
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel *dateLabel;
+@property (nonatomic, strong) IBOutlet UILabel *platformLabel;
+@property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
+@property (nonatomic, strong) IBOutlet UIImageView *regionImageView;
+
 @end

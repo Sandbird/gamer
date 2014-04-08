@@ -7,7 +7,6 @@
 //
 
 #import "Session.h"
-#import "ReleaseDate.h"
 #import "Platform.h"
 #import "ReleasePeriod.h"
 #import "Region.h"
@@ -139,11 +138,6 @@ static NSArray *SEARCHRESULTS;
 	NSDictionary *initialDataDictionary = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"InitialData" ofType:@"plist"]];
 //	NSLog(@"%@", initialDataDictionary);
 	
-//	NSArray *platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES inContext:context];
-//	NSArray *releasePeriods = [ReleasePeriod MR_findAllSortedBy:@"identifier" ascending:YES inContext:context];
-//	NSArray *placeholderGames = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier == nil"] inContext:context];
-//	NSArray *regions = [Region MR_findAllSortedBy:@"identifier" ascending:YES inContext:context];
-	
 	for (NSDictionary *platformDictionary in initialDataDictionary[@"initial_data"][@"platforms"]){
 		Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"platform"][@"identifier"] inContext:context];
 		if (!platform) platform = [Platform MR_createInContext:context];
@@ -165,15 +159,11 @@ static NSArray *SEARCHRESULTS;
 		[releasePeriod setIdentifier:releasePeriodDictionary[@"release_period"][@"identifier"]];
 		[releasePeriod setName:releasePeriodDictionary[@"release_period"][@"name"]];
 		
-		ReleaseDate *releaseDate = [ReleaseDate MR_findFirstByAttribute:@"date" withValue:releasePeriodDictionary[@"release_period"][@"placeholder"][@"release_date"] inContext:context];
-		if (!releaseDate) releaseDate = [ReleaseDate MR_createInContext:context];
-		[releaseDate setDate:releasePeriodDictionary[@"release_period"][@"placeholder"][@"release_date"]];
-		
 		Game *placeholderGame = releasePeriod.placeholderGame;
 		if (!placeholderGame) placeholderGame = [Game MR_createInContext:context];
 		[placeholderGame setTitle:releasePeriodDictionary[@"release_period"][@"placeholder"][@"title"]];
 		[placeholderGame setHidden:releasePeriodDictionary[@"release_period"][@"placeholder"][@"hidden"]];
-		[placeholderGame setReleaseDate:releaseDate];
+		[placeholderGame setReleaseDate:releasePeriodDictionary[@"release_period"][@"placeholder"][@"release_date"]];
 		
 		[releasePeriod setPlaceholderGame:placeholderGame];
 	}

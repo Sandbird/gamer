@@ -17,8 +17,8 @@
 #import "Image.h"
 #import "Video.h"
 #import "ReleasePeriod.h"
-#import "ReleaseDate.h"
 #import "SimilarGame.h"
+#import "Release.h"
 
 @implementation Networking
 
@@ -74,9 +74,13 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	return [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
 }
 
++ (NSURLRequest *)requestForReleaseWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields{
+	NSString *path = [NSString stringWithFormat:@"/release/3050-%@/?api_key=%@&format=json&field_list=%@", identifier, APIKEY, fields];
+	NSString *stringURL = [BASEURL stringByAppendingString:path];
+	return [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
+}
+
 + (void)updateGame:(Game *)game withDataFromJSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context{
-	[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-	
 //	NSLog(@"%@", JSON);
 	
 	if ([JSON[@"status_code"] isEqualToNumber:@(101)]) return;
@@ -89,19 +93,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	[game setIdentifier:identifier];
 	[game setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
 	[game setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
-	
-	// Cover image
-//	if (results[@"image"] != [NSNull null]){
-//		NSString *imageURL = [Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]];
-//		
-//		CoverImage *coverImage = [CoverImage MR_findFirstByAttribute:@"url" withValue:imageURL inContext:context];
-//		if (!coverImage){
-//			coverImage = [CoverImage MR_createInContext:context];
-//			[coverImage setUrl:imageURL];
-//		}
-//		[game setCoverImage:coverImage];
-//		[game setThumbnailName:[imageURL lastPathComponent]];
-//	}
 	
 	// Platforms
 	if (results[@"platforms"] != [NSNull null]){
@@ -123,13 +114,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (results[@"genres"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"genres"]){
 			Genre *genre = [Genre MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
-			if (genre)
-				[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			else{
-				genre = [Genre MR_createInContext:context];
-				[genre setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-				[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			}
+			if (!genre) genre = [Genre MR_createInContext:context];
+			[genre setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+			[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[game addGenresObject:genre];
 		}
 	}
@@ -138,13 +125,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (results[@"developers"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"developers"]){
 			Developer *developer = [Developer MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
-			if (developer)
-				[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			else{
-				developer = [Developer MR_createInContext:context];
-				[developer setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-				[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			}
+			if (!developer) developer = [Developer MR_createInContext:context];
+			[developer setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+			[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[game addDevelopersObject:developer];
 		}
 	}
@@ -153,13 +136,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (results[@"publishers"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"publishers"]){
 			Publisher *publisher = [Publisher MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
-			if (publisher)
-				[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			else{
-				publisher = [Publisher MR_createInContext:context];
-				[publisher setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-				[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			}
+			if (!publisher) publisher = [Publisher MR_createInContext:context];
+			[publisher setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+			[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[game addPublishersObject:publisher];
 		}
 	}
@@ -168,13 +147,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (results[@"franchises"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"franchises"]){
 			Franchise *franchise = [Franchise MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
-			if (franchise)
-				[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			else{
-				franchise = [Franchise MR_createInContext:context];
-				[franchise setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-				[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			}
+			if (!franchise) franchise = [Franchise MR_createInContext:context];
+			[franchise setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+			[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[game addFranchisesObject:franchise];
 		}
 	}
@@ -183,13 +158,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (results[@"similar_games"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"similar_games"]){
 			SimilarGame *similarGame = [SimilarGame MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
-			if (similarGame)
-				[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			else{
-				similarGame = [SimilarGame MR_createInContext:context];
-				[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-				[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			}
+			if (!similarGame) similarGame = [SimilarGame MR_createInContext:context];
+			[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+			[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[game addSimilarGamesObject:similarGame];
 		}
 	}
@@ -198,14 +169,21 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	if (results[@"themes"] != [NSNull null]){
 		for (NSDictionary *dictionary in results[@"themes"]){
 			Theme *theme = [Theme MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
-			if (theme)
-				[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			else{
-				theme = [Theme MR_createInContext:context];
-				[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-				[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			}
+			if (!theme) theme = [Theme MR_createInContext:context];
+			[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+			[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[game addThemesObject:theme];
+		}
+	}
+	
+	// Releases
+	if (results[@"releases"] != [NSNull null]){
+		for (NSDictionary *dictionary in results[@"releases"]){
+			Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
+			if (!release) release = [Release MR_createInContext:context];
+			[release setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+			[release setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+			[game addReleasesObject:release];
 		}
 	}
 	
@@ -222,34 +200,36 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		expectedReleaseYear = 2014;
 	}
 	
+	[self setReleaseDateForGameOrRelease:game dateString:originalReleaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
+	[game setReleasePeriod:[self releasePeriodForGame:game context:context]];
+}
+
++ (void)setReleaseDateForGameOrRelease:(id)object dateString:(NSString *)date expectedReleaseDay:(NSInteger)day expectedReleaseMonth:(NSInteger)month expectedReleaseQuarter:(NSInteger)quarter expectedReleaseYear:(NSInteger)year{
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
-	// Game is released
-	if (originalReleaseDate){
-		NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Tools dateFormatter] dateFromString:originalReleaseDate]];
+	if (date){
+		[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+		
+		NSDateComponents *originalReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:[[Tools dateFormatter] dateFromString:date]];
 		[originalReleaseDateComponents setHour:10];
 		[originalReleaseDateComponents setQuarter:[self quarterForMonth:originalReleaseDateComponents.month]];
 		
 		NSDate *releaseDateFromComponents = [calendar dateFromComponents:originalReleaseDateComponents];
 		
-		ReleaseDate *releaseDate = [ReleaseDate MR_findFirstByAttribute:@"date" withValue:releaseDateFromComponents inContext:context];
-		if (!releaseDate) releaseDate = [ReleaseDate MR_createInContext:context];
-		[releaseDate setDate:releaseDateFromComponents];
-		[releaseDate setDay:@(originalReleaseDateComponents.day)];
-		[releaseDate setMonth:@(originalReleaseDateComponents.month)];
-		[releaseDate setQuarter:@(originalReleaseDateComponents.quarter)];
-		[releaseDate setYear:@(originalReleaseDateComponents.year)];
+		[object setReleaseDate:releaseDateFromComponents];
+		[object setReleaseDay:@(originalReleaseDateComponents.day)];
+		[object setReleaseMonth:@(originalReleaseDateComponents.month)];
+		[object setReleaseQuarter:@(originalReleaseDateComponents.quarter)];
+		[object setReleaseYear:@(originalReleaseDateComponents.year)];
 		
 		[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
-		[game setReleaseDateText:[[Tools dateFormatter] stringFromDate:releaseDateFromComponents]];
-		[game setReleased:@(YES)];
+		[object setReleaseDateText:[[Tools dateFormatter] stringFromDate:releaseDateFromComponents]];
+		[object setReleased:@(YES)];
 		
-		[game setReleaseDate:releaseDate];
-		[game.releaseDate setDefined:@(YES)];
-		[game setReleasePeriod:[self releasePeriodForReleaseDate:releaseDate context:context]];
+		[object setReleaseDateDefined:@(YES)];
+//		[game setReleasePeriod:[self releasePeriodForGame:game context:context]];
 	}
-	// Game is not yet released
 	else{
 		NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 		[expectedReleaseDateComponents setHour:10];
@@ -257,33 +237,33 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		BOOL defined = NO;
 		
 		// Exact release date is known
-		if (expectedReleaseDay){
-			[expectedReleaseDateComponents setDay:expectedReleaseDay];
-			[expectedReleaseDateComponents setMonth:expectedReleaseMonth];
-			[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
-			[expectedReleaseDateComponents setYear:expectedReleaseYear];
+		if (day){
+			[expectedReleaseDateComponents setDay:day];
+			[expectedReleaseDateComponents setMonth:month];
+			[expectedReleaseDateComponents setQuarter:[self quarterForMonth:month]];
+			[expectedReleaseDateComponents setYear:year];
 			[[Tools dateFormatter] setDateFormat:@"d MMMM yyyy"];
 			defined = YES;
 		}
 		// Release month is known
-		else if (expectedReleaseMonth){
-			[expectedReleaseDateComponents setMonth:expectedReleaseMonth + 1];
+		else if (month){
+			[expectedReleaseDateComponents setMonth:month + 1];
 			[expectedReleaseDateComponents setDay:0];
-			[expectedReleaseDateComponents setQuarter:[self quarterForMonth:expectedReleaseMonth]];
-			[expectedReleaseDateComponents setYear:expectedReleaseYear];
+			[expectedReleaseDateComponents setQuarter:[self quarterForMonth:month]];
+			[expectedReleaseDateComponents setYear:year];
 			[[Tools dateFormatter] setDateFormat:@"MMMM yyyy"];
 		}
 		// Release quarter is known
-		else if (expectedReleaseQuarter){
-			[expectedReleaseDateComponents setQuarter:expectedReleaseQuarter];
-			[expectedReleaseDateComponents setMonth:((expectedReleaseQuarter * 3) + 1)];
+		else if (quarter){
+			[expectedReleaseDateComponents setQuarter:quarter];
+			[expectedReleaseDateComponents setMonth:((quarter * 3) + 1)];
 			[expectedReleaseDateComponents setDay:0];
-			[expectedReleaseDateComponents setYear:expectedReleaseYear];
+			[expectedReleaseDateComponents setYear:year];
 			[[Tools dateFormatter] setDateFormat:@"QQQ yyyy"];
 		}
 		// Release year is known
-		else if (expectedReleaseYear){
-			[expectedReleaseDateComponents setYear:expectedReleaseYear];
+		else if (year){
+			[expectedReleaseDateComponents setYear:year];
 			[expectedReleaseDateComponents setQuarter:4];
 			[expectedReleaseDateComponents setMonth:13];
 			[expectedReleaseDateComponents setDay:0];
@@ -299,47 +279,43 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		
 		NSDate *expectedReleaseDateFromComponents = [calendar dateFromComponents:expectedReleaseDateComponents];
 		
-		ReleaseDate *releaseDate = [ReleaseDate MR_findFirstByAttribute:@"date" withValue:expectedReleaseDateFromComponents inContext:context];
-		if (!releaseDate) releaseDate = [ReleaseDate MR_createInContext:context];
-		[releaseDate setDate:expectedReleaseDateFromComponents];
-		[releaseDate setDay:@(expectedReleaseDateComponents.day)];
-		[releaseDate setMonth:@(expectedReleaseDateComponents.month)];
-		[releaseDate setQuarter:@(expectedReleaseDateComponents.quarter)];
-		[releaseDate setYear:@(expectedReleaseDateComponents.year)];
+		[object setReleaseDate:expectedReleaseDateFromComponents];
+		[object setReleaseDay:@(expectedReleaseDateComponents.day)];
+		[object setReleaseMonth:@(expectedReleaseDateComponents.month)];
+		[object setReleaseQuarter:@(expectedReleaseDateComponents.quarter)];
+		[object setReleaseYear:@(expectedReleaseDateComponents.year)];
 		
-		[releaseDate setDefined:@(defined)];
+		[object setReleaseDateDefined:@(defined)];
 		
-		[game setReleaseDateText:(expectedReleaseYear) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
-		[game setReleased:@(NO)];
-		
-		[game setReleaseDate:releaseDate];
+		[object setReleaseDateText:(year) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
+		[object setReleased:@(NO)];
 	}
 }
 
-+ (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
-	NSMutableString *formattedTitle = title.lowercaseString.mutableCopy;
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""]];
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""]];
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"& " withString:@""]];
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"/" withString:@"-"]];
-	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
-	[formattedTitle setString:[formattedTitle stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale localeWithLocaleIdentifier:@"en_US"]]];
-	
-	NSMutableString *formattedPlatform = platform.name.lowercaseString.mutableCopy;
-	if ([platform.abbreviation isEqualToString:@"PSP"]){
-		[formattedPlatform setString:@"psp"];
-	}
-	else{
-		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"nintendo " withString:@""]];
-		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""]];
-		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""]];
-		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
-	}
-	
-	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
-	
-	return [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-}
+//+ (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
+//	NSMutableString *formattedTitle = title.lowercaseString.mutableCopy;
+//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""]];
+//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""]];
+//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"& " withString:@""]];
+//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"/" withString:@"-"]];
+//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
+//	[formattedTitle setString:[formattedTitle stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale localeWithLocaleIdentifier:@"en_US"]]];
+//	
+//	NSMutableString *formattedPlatform = platform.name.lowercaseString.mutableCopy;
+//	if ([platform.abbreviation isEqualToString:@"PSP"]){
+//		[formattedPlatform setString:@"psp"];
+//	}
+//	else{
+//		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"nintendo " withString:@""]];
+//		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""]];
+//		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""]];
+//		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
+//	}
+//	
+//	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
+//	
+//	return [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+//}
 
 + (NSInteger)quarterForMonth:(NSInteger)month{
 	switch (month) {
@@ -351,7 +327,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	}
 }
 
-+ (ReleasePeriod *)releasePeriodForReleaseDate:(ReleaseDate *)releaseDate context:(NSManagedObjectContext *)context{
++ (ReleasePeriod *)releasePeriodForGame:(Game *)game context:(NSManagedObjectContext *)context{
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
@@ -370,31 +346,31 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	next.year++;
 	
 	NSInteger period = 0;
-	if ([releaseDate.date compare:[calendar dateFromComponents:threeMonthsAgo]] <= NSOrderedSame)
+	if ([game.releaseDate compare:[calendar dateFromComponents:threeMonthsAgo]] <= NSOrderedSame)
 		period = 1; // Released
-	else if ([releaseDate.date compare:[calendar dateFromComponents:current]] <= NSOrderedSame)
+	else if ([game.releaseDate compare:[calendar dateFromComponents:current]] <= NSOrderedSame)
 		period = 2; // Recently released
 	else{
-		if (releaseDate.year.integerValue == 2050)
+		if (game.releaseYear.integerValue == 2050)
 			period = 10; // TBA
-		else if (releaseDate.year.integerValue > next.year)
+		else if (game.releaseYear.integerValue > next.year)
 			period = 9; // Later
-		else if (releaseDate.year.integerValue == next.year){
-			if (current.month == 12 && releaseDate.month.integerValue == 1)
+		else if (game.releaseYear.integerValue == next.year){
+			if (current.month == 12 && game.releaseMonth.integerValue == 1)
 				period = 4; // Next month
-			else if (current.quarter == 4 && releaseDate.quarter.integerValue == 1)
+			else if (current.quarter == 4 && game.releaseQuarter.integerValue == 1)
 				period = 6; // Next quarter
 			else
 				period = 8; // Next year
 		}
-		else if (releaseDate.year.integerValue == current.year){
-			if (releaseDate.month.integerValue == current.month)
+		else if (game.releaseYear.integerValue == current.year){
+			if (game.releaseMonth.integerValue == current.month)
 				period = 3; // This month
-			else if (releaseDate.month.integerValue == next.month)
+			else if (game.releaseMonth.integerValue == next.month)
 				period = 4; // Next month
-			else if (releaseDate.quarter.integerValue == current.quarter)
+			else if (game.releaseQuarter.integerValue == current.quarter)
 				period = 5; // This quarter
-			else if (releaseDate.quarter.integerValue == next.quarter)
+			else if (game.releaseQuarter.integerValue == next.quarter)
 				period = 6; // Next quarter
 			else
 				period = 7; // This year
@@ -404,24 +380,24 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	return [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(period) inContext:context];
 }
 
-+ (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML{
-	// Regex magic
-	NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"xlarge game" options:NSRegularExpressionCaseInsensitive error:nil];
-	NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:HTML options:NSMatchingReportProgress range:NSMakeRange(0, HTML.length)];
-	NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
-	
-	NSRegularExpression *secondExpression = [NSRegularExpression regularExpressionWithPattern:@"</span" options:NSRegularExpressionCaseInsensitive error:nil];
-	NSTextCheckingResult *secondResult = [secondExpression firstMatchInString:HTML options:NSMatchingReportProgress range:NSMakeRange(startIndex, HTML.length - startIndex)];
-	NSUInteger endIndex = secondResult.range.location;
-	
-//	NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
-	NSString *metascore = (startIndex >= 2 && endIndex >= 2) ? [HTML substringWithRange:NSMakeRange(endIndex - 2, 2)] : nil;
-	
-//	NSLog(@"HTML: %@", HTML);
-//	NSLog(@"Metascore: %@", metascore);
-	
-	return metascore;
-}
+//+ (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML{
+//	// Regex magic
+//	NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"xlarge game" options:NSRegularExpressionCaseInsensitive error:nil];
+//	NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:HTML options:NSMatchingReportProgress range:NSMakeRange(0, HTML.length)];
+//	NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
+//	
+//	NSRegularExpression *secondExpression = [NSRegularExpression regularExpressionWithPattern:@"</span" options:NSRegularExpressionCaseInsensitive error:nil];
+//	NSTextCheckingResult *secondResult = [secondExpression firstMatchInString:HTML options:NSMatchingReportProgress range:NSMakeRange(startIndex, HTML.length - startIndex)];
+//	NSUInteger endIndex = secondResult.range.location;
+//	
+////	NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
+//	NSString *metascore = (startIndex >= 2 && endIndex >= 2) ? [HTML substringWithRange:NSMakeRange(endIndex - 2, 2)] : nil;
+//	
+////	NSLog(@"HTML: %@", HTML);
+////	NSLog(@"Metascore: %@", metascore);
+//	
+//	return metascore;
+//}
 
 + (UIColor *)colorForMetascore:(NSString *)metascore{
 	if (metascore.integerValue >= 75)

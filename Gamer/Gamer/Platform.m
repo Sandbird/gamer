@@ -2,7 +2,7 @@
 //  Platform.m
 //  Gamer
 //
-//  Created by Caio Mello on 04/04/2014.
+//  Created by Caio Mello on 07/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -17,15 +17,15 @@
 
 @dynamic abbreviation;
 @dynamic color;
+@dynamic group;
 @dynamic identifier;
 @dynamic index;
-@dynamic name;
 @dynamic metacriticIdentifier;
-@dynamic group;
+@dynamic name;
+@dynamic addedGames;
 @dynamic gamer;
 @dynamic games;
 @dynamic metascores;
 @dynamic releases;
-@dynamic addedGames;
 
 @end

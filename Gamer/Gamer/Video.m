@@ -2,7 +2,7 @@
 //  Video.m
 //  Gamer
 //
-//  Created by Caio Mello on 03/04/2014.
+//  Created by Caio Mello on 07/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -14,12 +14,12 @@
 
 @dynamic highQualityURL;
 @dynamic identifier;
+@dynamic imageURL;
 @dynamic index;
 @dynamic length;
 @dynamic lowQualityURL;
 @dynamic overview;
 @dynamic publishDate;
-@dynamic imageURL;
 @dynamic title;
 @dynamic type;
 @dynamic game;

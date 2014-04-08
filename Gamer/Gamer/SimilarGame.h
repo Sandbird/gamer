@@ -2,7 +2,7 @@
 //  SimilarGame.h
 //  Gamer
 //
-//  Created by Caio Mello on 03/04/2014.
+//  Created by Caio Mello on 07/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -13,9 +13,9 @@
 
 @interface SimilarGame : NSManagedObject
 
+@property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) NSString * imageURL;
 @property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) Game *game;
 
 @end

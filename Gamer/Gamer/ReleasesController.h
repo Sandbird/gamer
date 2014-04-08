@@ -10,4 +10,6 @@
 
 @interface ReleasesController : UITableViewController
 
+@property (nonatomic, strong) Game *game;
+
 @end
