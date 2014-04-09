@@ -245,8 +245,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					break;
 				case 3:
 					if ([Tools deviceIsiPhone]){
-						if (_game.platforms.count > 0){
-							return 20 + 17 + 13 + ((_game.platforms.count/5 + 1) * 31) + 20;
+						if (_selectedPlatforms.count > 0){
+							return 20 + 17 + 13 + ((_selectedPlatforms.count/5 + 1) * 31) + 20;
 						}
 					}
 					break;
@@ -298,8 +298,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				// Platforms row
 				case 2:
 					if ([Tools deviceIsiPhone]){
-						if (_game.platforms.count > 0)
-							return 20 + 17 + 13 + ((_game.platforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+						if (_selectablePlatforms.count > 0)
+							return 20 + 17 + 13 + ((_selectablePlatforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
 						else
 							return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
 					}

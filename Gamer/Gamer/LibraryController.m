@@ -181,6 +181,13 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:indexPath.section inSection:0]];
+	Game *game = platform.addedGames.allObjects[indexPath.row];
+	
+	if ([game.location isEqualToNumber:@(GameLocationWishlist)]){
+		return CGSizeZero;
+	}
+	
 	switch ([Session gamer].librarySize.integerValue) {
 		case 0: return [Tools deviceIsiPhone] ? CGSizeMake(40, 50) : CGSizeMake(83, 91);
 		case 1: return [Tools deviceIsiPhone] ? CGSizeMake(50, 63) : CGSizeMake(115, 127);
