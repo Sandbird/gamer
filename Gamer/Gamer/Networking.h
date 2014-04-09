@@ -24,7 +24,7 @@
 
 + (void)setReleaseDateForGameOrRelease:(id)object dateString:(NSString *)date expectedReleaseDay:(NSInteger)day expectedReleaseMonth:(NSInteger)month expectedReleaseQuarter:(NSInteger)quarter expectedReleaseYear:(NSInteger)year;
 + (NSInteger)quarterForMonth:(NSInteger)month;
-+ (ReleasePeriod *)releasePeriodForGame:(Game *)game context:(NSManagedObjectContext *)context;
++ (ReleasePeriod *)releasePeriodForGameOrRelease:(id)object context:(NSManagedObjectContext *)context;
 
 + (UIColor *)colorForMetascore:(NSString *)metascore;
 //+ (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML;

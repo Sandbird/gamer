@@ -155,7 +155,7 @@
         <element name="Platform" positionX="-299" positionY="-243" width="128" height="208"/>
         <element name="Publisher" positionX="106" positionY="2" width="128" height="88"/>
         <element name="Region" positionX="-488" positionY="245" width="128" height="133"/>
-        <element name="Release" positionX="-297" positionY="155" width="128" height="268"/>
+        <element name="Release" positionX="-288" positionY="207" width="128" height="268"/>
         <element name="ReleasePeriod" positionX="-299" positionY="5" width="128" height="103"/>
         <element name="SimilarGame" positionX="106" positionY="387" width="128" height="103"/>
         <element name="Theme" positionX="106" positionY="263" width="128" height="88"/>

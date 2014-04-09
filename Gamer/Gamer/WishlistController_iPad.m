@@ -103,7 +103,7 @@
 - (NSFetchedResultsController *)fetchData{
 	if (!_fetchedResultsController){
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@", @(GameLocationWishlist)];
-		_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate.date,title" ascending:YES];
+		_fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES];
 	}
 	return _fetchedResultsController;
 }
@@ -306,15 +306,19 @@
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist
 	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationWishlist)] inContext:_context];
-	for (Game *game in games)
-		[game setReleasePeriod:[Networking releasePeriodForGame:game context:_context]];
+	for (Game *game in games){
+		if (game.selectedRelease)
+			[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:game.selectedRelease context:_context]];
+		else
+			[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:game context:_context]];
+	}
 	
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		// Show section if it has any games
 		NSArray *releasePeriods = [ReleasePeriod MR_findAllInContext:_context];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND location = %@", releasePeriod.identifier, @(GameLocationWishlist)];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@", releasePeriod, @(GameLocationWishlist)];
 			NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}

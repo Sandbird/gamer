@@ -135,6 +135,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	if (!_game)
 		_game = [Game MR_findFirstByAttribute:@"identifier" withValue:_gameIdentifier inContext:_context];
+	
 	if (_game){
 		[self refreshAnimated:NO];
 		
@@ -707,6 +708,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					for (Release *release in _game.releases){
 						if ([_game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
 							[_game setSelectedRelease:release];
+							[_game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
 							
 							[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 								[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
@@ -886,6 +888,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 - (void)releasesController:(ReleasesController *)controller didSelectRelease:(Release *)release{
 	[_game setSelectedRelease:release];
+	[_game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
 		[self.navigationController popViewControllerAnimated:YES];
@@ -912,6 +915,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
 	
+	[_changePlatformsButton setEnabled:[_game.location isEqualToNumber:@(GameLocationNone)] ? NO : YES];
+	
+	[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%d Releases" : @"%d Release", _game.releases.count]];
+	
 	_selectablePlatforms = [self selectablePlatformsFromGame:_game];
 	
 	_selectedPlatforms = [self orderedSelectedPlatformsFromGame:_game];
@@ -919,8 +926,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	_similarGames = [self orderedSimilarGamesFromGame:_game];
 	
 	[self refreshAddButtonsAnimated:animated];
-	
-	[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%d Releases" : @"%d Release", _game.releases.count]];
 	
 	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
 	[_finishedSwitch setOn:_game.finished.boolValue animated:animated];
@@ -1053,7 +1058,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	// If release period is collapsed, set game to hidden
 	if ([_game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod.identifier = %@ AND (hidden = %@ AND wanted = %@)", _game.releasePeriod.identifier, @(NO), @(YES)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND (hidden = %@ AND location = %@)", _game.releasePeriod, @(NO), @(GameLocationWishlist)];
 		NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
 		[_game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
 	}
@@ -1113,6 +1118,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		for (Release *release in _game.releases){
 			if (release.platform == _selectedPlatforms.firstObject && release.region == [Session gamer].region){
 				[_game setSelectedRelease:release];
+				[_game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
 			}
 		}
 		

@@ -201,7 +201,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	}
 	
 	[self setReleaseDateForGameOrRelease:game dateString:originalReleaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
-	[game setReleasePeriod:[self releasePeriodForGame:game context:context]];
+	[game setReleasePeriod:[self releasePeriodForGameOrRelease:game context:context]];
 }
 
 + (void)setReleaseDateForGameOrRelease:(id)object dateString:(NSString *)date expectedReleaseDay:(NSInteger)day expectedReleaseMonth:(NSInteger)month expectedReleaseQuarter:(NSInteger)quarter expectedReleaseYear:(NSInteger)year{
@@ -327,7 +327,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	}
 }
 
-+ (ReleasePeriod *)releasePeriodForGame:(Game *)game context:(NSManagedObjectContext *)context{
++ (ReleasePeriod *)releasePeriodForGameOrRelease:(id)object context:(NSManagedObjectContext *)context{
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	[calendar setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 	
@@ -335,9 +335,17 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	[threeMonthsAgo setMonth:threeMonthsAgo.month - 3];
 	
 	// Components for today, this month, this quarter, this year
-	NSDateComponents *current = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
+	NSDateComponents *current = [calendar components:NSDayCalendarUnit | NSWeekdayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	[current setQuarter:[self quarterForMonth:current.month]];
 	[current setHour:10];
+	
+	// Components for the start of the week
+	NSDateComponents *startOfCurrentWeek = [NSDateComponents new];
+	[startOfCurrentWeek setDay:current.day - current.weekday + 1];
+	
+	// Components for the end of the week
+	NSDateComponents *endOfCurrentWeek = [NSDateComponents new];
+	[endOfCurrentWeek setDay:startOfCurrentWeek.day + 6];
 	
 	// Components for next month, next quarter, next year
 	NSDateComponents *next = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
@@ -346,34 +354,36 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	next.year++;
 	
 	NSInteger period = 0;
-	if ([game.releaseDate compare:[calendar dateFromComponents:threeMonthsAgo]] <= NSOrderedSame)
+	if ([[object releaseDate] compare:[calendar dateFromComponents:threeMonthsAgo]] <= NSOrderedSame)
 		period = 1; // Released
-	else if ([game.releaseDate compare:[calendar dateFromComponents:current]] <= NSOrderedSame)
+	else if ([[object releaseDate] compare:[calendar dateFromComponents:current]] <= NSOrderedSame)
 		period = 2; // Recently released
 	else{
-		if (game.releaseYear.integerValue == 2050)
-			period = 10; // TBA
-		else if (game.releaseYear.integerValue > next.year)
-			period = 9; // Later
-		else if (game.releaseYear.integerValue == next.year){
-			if (current.month == 12 && game.releaseMonth.integerValue == 1)
-				period = 4; // Next month
-			else if (current.quarter == 4 && game.releaseQuarter.integerValue == 1)
-				period = 6; // Next quarter
+		if ([object releaseYear].integerValue == 2050)
+			period = 11; // TBA
+		else if ([object releaseYear].integerValue > next.year)
+			period = 10; // Later
+		else if ([object releaseYear].integerValue == next.year){
+			if (current.month == 12 && [object releaseMonth].integerValue == 1)
+				period = 5; // Next month
+			else if (current.quarter == 4 && [object releaseQuarter].integerValue == 1)
+				period = 7; // Next quarter
 			else
-				period = 8; // Next year
+				period = 9; // Next year
 		}
-		else if (game.releaseYear.integerValue == current.year){
-			if (game.releaseMonth.integerValue == current.month)
-				period = 3; // This month
-			else if (game.releaseMonth.integerValue == next.month)
-				period = 4; // Next month
-			else if (game.releaseQuarter.integerValue == current.quarter)
-				period = 5; // This quarter
-			else if (game.releaseQuarter.integerValue == next.quarter)
-				period = 6; // Next quarter
+		else if ([object releaseYear].integerValue == current.year){
+			if ([object releaseDay].integerValue >= startOfCurrentWeek.day && [object releaseDay].integerValue <= endOfCurrentWeek.day)
+				period = 3;
+			else if ([object releaseMonth].integerValue == current.month)
+				period = 4; // This month
+			else if ([object releaseMonth].integerValue == next.month)
+				period = 5; // Next month
+			else if ([object releaseQuarter].integerValue == current.quarter)
+				period = 6; // This quarter
+			else if ([object releaseQuarter].integerValue == next.quarter)
+				period = 7; // Next quarter
 			else
-				period = 7; // This year
+				period = 8; // This year
 		}
 	}
 	
