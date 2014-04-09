@@ -874,10 +874,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 	}
 	
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[_wishlistButton setHighlighted:NO];
-		[_libraryButton setHighlighted:NO];
-	});
+//	dispatch_async(dispatch_get_main_queue(), ^{
+//		[_wishlistButton setHighlighted:NO];
+//		[_libraryButton setHighlighted:NO];
+//	});
 	
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -1102,8 +1102,24 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[self refreshAddButtonsAnimated:YES];
 		
+		// Update selected platforms
+		_selectedPlatforms = [self orderedSelectedPlatformsFromGame:_game];
+		[_selectedPlatformsCollectionView reloadData];
+		
+		// Disable platform change if game not added
 		[_changePlatformsButton setEnabled:[_game.location isEqualToNumber:@(GameLocationNone)] ? NO : YES];
 		
+		// Auto-select release based on top selected platform and region
+		for (Release *release in _game.releases){
+			if (release.platform == _selectedPlatforms.firstObject && release.region == [Session gamer].region){
+				[_game setSelectedRelease:release];
+			}
+		}
+		
+		// Update release date
+		[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
+		
+		// Update statuses
 		[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
 		[_finishedSwitch setOn:_game.finished.boolValue animated:YES];
 		
@@ -1113,9 +1129,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[_lentBorrowedSegmentedControl setSelectedSegmentIndex:2];
 		else
 			[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
-		
-		_selectedPlatforms = _game.selectedPlatforms.allObjects;
-		[_selectedPlatformsCollectionView reloadData];
 		
 //		[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];
 //		[self.tableView beginUpdates];
