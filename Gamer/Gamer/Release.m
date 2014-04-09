@@ -2,7 +2,7 @@
 //  Release.m
 //  Gamer
 //
-//  Created by Caio Mello on 07/04/2014.
+//  Created by Caio Mello on 08/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -28,5 +28,6 @@
 @dynamic game;
 @dynamic platform;
 @dynamic region;
+@dynamic selectedGame;
 
 @end

@@ -489,7 +489,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_filter = LibraryFilterPlatform;
 	
 	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
+	_fetchedResultsController = [Platform MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@", [Session gamer].platforms] sortedBy:@"index" ascending:YES inContext:_context];
 	[_collectionView reloadData];
 }
 

@@ -17,6 +17,7 @@
 #import "Theme.h"
 #import "ReleasePeriod.h"
 #import "SimilarGame.h"
+#import "Release.h"
 #import "GameController.h"
 #import "WishlistSectionHeaderView.h"
 #import <AFNetworking/AFNetworking.h>
@@ -177,7 +178,7 @@
 	}
 	
 	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
-	[customCell.dateLabel setText:game.releaseDateText];
+	[customCell.dateLabel setText:game.selectedRelease ? game.selectedRelease.releaseDateText : game.releaseDateText];
 	[customCell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];
 	
 	if (game.selectedPlatforms.count == 1){

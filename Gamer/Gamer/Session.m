@@ -145,7 +145,6 @@ static NSArray *SEARCHRESULTS;
 		[platform setName:platformDictionary[@"platform"][@"name"]];
 		[platform setAbbreviation:platformDictionary[@"platform"][@"abbreviation"]];
 		[platform setIndex:platformDictionary[@"platform"][@"index"]];
-		[platform setGroup:platformDictionary[@"platform"][@"group"]];
 		[platform setMetacriticIdentifier:platformDictionary[@"platform"][@"metacritic_identifier"]];
 		[platform setColor:[UIColor colorWithRed:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"red"]].floatValue
 										   green:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"green"]].floatValue

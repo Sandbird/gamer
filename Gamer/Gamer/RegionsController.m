@@ -53,10 +53,13 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	[[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[_regions indexOfObject:[Session gamer].region] inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+	
 	[[Session gamer] setRegion:_regions[indexPath.row]];
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[self.tableView reloadData];
-		[self.navigationController popViewControllerAnimated:YES];
+		[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
 	}];
 }
 

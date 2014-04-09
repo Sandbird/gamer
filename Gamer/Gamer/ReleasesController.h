@@ -8,8 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+@class ReleasesController;
+
+@protocol ReleasesControllerDelegate <NSObject>
+
+- (void)releasesController:(ReleasesController *)controller didSelectRelease:(Release *)release;
+
+@end
+
 @interface ReleasesController : UITableViewController
 
 @property (nonatomic, strong) Game *game;
+
+@property (nonatomic, weak) id<ReleasesControllerDelegate> delegate;
 
 @end

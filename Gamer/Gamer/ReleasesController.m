@@ -39,7 +39,7 @@
 
 - (NSFetchedResultsController *)fetch{
 	if (!_fetchedResultsController){
-		_fetchedResultsController = [Release MR_fetchAllGroupedBy:@"region.name" withPredicate:[NSPredicate predicateWithFormat:@"game = %@", _game] sortedBy:@"region.name,identifier" ascending:YES inContext:_context];
+		_fetchedResultsController = [Release MR_fetchAllGroupedBy:@"platform.index" withPredicate:[NSPredicate predicateWithFormat:@"game = %@", _game] sortedBy:@"platform.index,releaseDate" ascending:YES inContext:_context];
 	}
 	
 	return _fetchedResultsController;
@@ -53,7 +53,8 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	NSString *sectionName = [self.fetchedResultsController.sections[section] name];
-	return sectionName;
+	Platform *platform = [Platform MR_findFirstByAttribute:@"index" withValue:sectionName inContext:_context];
+	return platform.name;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -66,12 +67,19 @@
 	ReleaseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:release.title];
 	[cell.dateLabel setText:release.releaseDateText];
-	[cell.platformLabel setText:release.platform.abbreviation];
-	[cell.platformLabel setBackgroundColor:release.platform.color];
 	[cell.coverImageView setImageWithURL:[NSURL URLWithString:release.imageURL]];
 	[cell.coverImageView setBackgroundColor:release.imageURL ? [UIColor clearColor] : [UIColor darkGrayColor]];
 	[cell.regionImageView setImage:[UIImage imageNamed:release.region.imageName]];
+	[cell setAccessoryType:release == _game.selectedRelease ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+	[cell setSelectionStyle:[[Session gamer].platforms containsObject:release.platform] ? UITableViewCellSelectionStyleBlue : UITableViewCellSelectionStyleNone];
 	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+	if ([tableView cellForRowAtIndexPath:indexPath].selectionStyle != UITableViewCellSelectionStyleNone){
+		Release *release = [_fetchedResultsController objectAtIndexPath:indexPath];
+		[self.delegate releasesController:self didSelectRelease:release];
+	}
 }
 
 @end

@@ -46,7 +46,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	ActionSheetTagLibrary
 };
 
-@interface GameController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate>
+@interface GameController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate, ReleasesControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
@@ -98,6 +98,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 @property (nonatomic, assign) NSInteger totalNumberOfReleases;
 @property (nonatomic, assign) NSInteger numberOfReleasesDownloaded;
+@property (nonatomic, assign) BOOL releasesDownloaded;
 
 @property (nonatomic, strong) UITapGestureRecognizer *dismissTapGesture;
 
@@ -141,6 +142,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		
 		(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
 		(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
+		
+		_releasesDownloaded = YES;
 	}
 	else{
 		[_imagesStatusView setStatus:ContentStatusLoading];
@@ -235,7 +238,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		case SectionCover:
 			switch (indexPath.row) {
 				case 2:
-					if (_game.releases.count == 0){
+					if (_game.releases.count == 0 || _releasesDownloaded == NO){
 						return 0;
 					}
 					break;
@@ -491,17 +494,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			
 			[Networking updateGame:_game withDataFromJSON:responseObject context:_context];
 			
-			for (SimilarGame *similarGame in _game.similarGames){
-				[self requestImageForSimilarGame:similarGame];
-			}
-			
-			_totalNumberOfReleases = _game.releases.count;
-			_numberOfReleasesDownloaded = 0;
-			
-			for (Release *release in _game.releases){
-				[self requestInfoForRelease:release];
-			}
-			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 				
@@ -512,6 +504,17 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				}
 				
 				[self requestMediaForGame:_game];
+				
+				for (SimilarGame *similarGame in _game.similarGames){
+					[self requestImageForSimilarGame:similarGame];
+				}
+				
+				_totalNumberOfReleases = _game.releases.count;
+				_numberOfReleasesDownloaded = 0;
+				
+				for (Release *release in _game.releases){
+					[self requestInfoForRelease:release];
+				}
 				
 				[self refreshAnimated:NO];
 				
@@ -666,7 +669,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %d - Release - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			NSLog(@"%@", responseObject);
+//			NSLog(@"%@", responseObject);
 			
 			_numberOfReleasesDownloaded++;
 			
@@ -695,9 +698,20 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				if (_numberOfReleasesDownloaded == _totalNumberOfReleases){
-					NSLog(@"FINISHED");
+					_releasesDownloaded = YES;
+					
 					[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%d Releases" : @"%d Release", _game.releases.count]];
 					[self.tableView reloadData];
+					
+					for (Release *release in _game.releases){
+						if ([_game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
+							[_game setSelectedRelease:release];
+							
+							[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+								[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
+							}];
+						}
+					}
 				}
 			}];
 		}
@@ -864,6 +878,16 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - ReleasesController
+
+- (void)releasesController:(ReleasesController *)controller didSelectRelease:(Release *)release{
+	[_game setSelectedRelease:release];
+	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
+		[self.navigationController popViewControllerAnimated:YES];
+	}];
+}
+
 #pragma mark - Custom
 
 - (void)setCoverImageAnimated:(BOOL)animated{
@@ -882,7 +906,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[_titleLabel setText:_game.title];
 	
-	[_releaseDateLabel setText:_game.releaseDateText];
+	[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
 	
 	_selectablePlatforms = [self selectablePlatformsFromGame:_game];
 	
@@ -991,7 +1015,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	return [selectablePlatforms sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		Platform *platform1 = (Platform *)obj1;
 		Platform *platform2 = (Platform *)obj2;
-		return [platform1.index compare:platform2.index] == NSOrderedAscending;
+		return [platform1.index compare:platform2.index] == NSOrderedDescending;
 	}];
 }
 
@@ -1208,6 +1232,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	else if ([segue.identifier isEqualToString:@"ReleasesSegue"]){
 		ReleasesController *destination = segue.destinationViewController;
 		[destination setGame:_game];
+		[destination setDelegate:self];
 	}
 	else if ([segue.identifier isEqualToString:@"ViewerSegue"]){
 		Image *image = sender;

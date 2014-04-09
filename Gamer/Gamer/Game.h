@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 07/04/2014.
+//  Created by Caio Mello on 08/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -48,6 +48,7 @@
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
+@property (nonatomic, retain) Release *selectedRelease;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)

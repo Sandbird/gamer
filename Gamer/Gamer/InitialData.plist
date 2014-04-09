@@ -209,8 +209,6 @@
 					</dict>
 					<key>index</key>
 					<integer>0</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>3</integer>
 				</dict>
@@ -235,8 +233,6 @@
 					</dict>
 					<key>index</key>
 					<integer>1</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>72496</integer>
 				</dict>
@@ -261,8 +257,6 @@
 					</dict>
 					<key>index</key>
 					<integer>2</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>80000</integer>
 				</dict>
@@ -287,8 +281,6 @@
 					</dict>
 					<key>index</key>
 					<integer>3</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>16</integer>
 				</dict>
@@ -313,8 +305,6 @@
 					</dict>
 					<key>index</key>
 					<integer>4</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>1</integer>
 				</dict>
@@ -339,8 +329,6 @@
 					</dict>
 					<key>index</key>
 					<integer>5</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>67365</integer>
 				</dict>
@@ -365,8 +353,6 @@
 					</dict>
 					<key>index</key>
 					<integer>6</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>8</integer>
 				</dict>
@@ -391,8 +377,6 @@
 					</dict>
 					<key>index</key>
 					<integer>7</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>68410</integer>
 				</dict>
@@ -417,8 +401,6 @@
 					</dict>
 					<key>index</key>
 					<integer>8</integer>
-					<key>group</key>
-					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>2</integer>
 				</dict>
@@ -442,9 +424,7 @@
 						<real>0.333333333</real>
 					</dict>
 					<key>index</key>
-					<integer>0</integer>
-					<key>group</key>
-					<integer>1</integer>
+					<integer>9</integer>
 					<key>metacritic_identifier</key>
 					<integer>13</integer>
 				</dict>
@@ -468,9 +448,7 @@
 						<real>0.333333333</real>
 					</dict>
 					<key>index</key>
-					<integer>1</integer>
-					<key>group</key>
-					<integer>1</integer>
+					<integer>10</integer>
 					<key>metacritic_identifier</key>
 					<integer>4</integer>
 				</dict>
@@ -494,9 +472,7 @@
 						<real>0.333333333</real>
 					</dict>
 					<key>index</key>
-					<integer>2</integer>
-					<key>group</key>
-					<integer>1</integer>
+					<integer>11</integer>
 					<key>metacritic_identifier</key>
 					<integer>6</integer>
 				</dict>
@@ -520,9 +496,7 @@
 						<real>0.333333333</real>
 					</dict>
 					<key>index</key>
-					<integer>3</integer>
-					<key>group</key>
-					<integer>1</integer>
+					<integer>12</integer>
 					<key>metacritic_identifier</key>
 					<integer>7</integer>
 				</dict>
@@ -546,9 +520,7 @@
 						<real>0.333333333</real>
 					</dict>
 					<key>index</key>
-					<integer>4</integer>
-					<key>group</key>
-					<integer>1</integer>
+					<integer>13</integer>
 					<key>metacritic_identifier</key>
 					<integer>12</integer>
 				</dict>
@@ -572,9 +544,7 @@
 						<real>0.333333333</real>
 					</dict>
 					<key>index</key>
-					<integer>5</integer>
-					<key>group</key>
-					<integer>1</integer>
+					<integer>14</integer>
 					<key>metacritic_identifier</key>
 					<integer>10</integer>
 				</dict>
@@ -598,9 +568,7 @@
 						<real>0.333333333</real>
 					</dict>
 					<key>index</key>
-					<integer>6</integer>
-					<key>group</key>
-					<integer>1</integer>
+					<integer>15</integer>
 					<key>metacritic_identifier</key>
 					<integer>14</integer>
 				</dict>

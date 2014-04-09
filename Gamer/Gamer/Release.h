@@ -2,7 +2,7 @@
 //  Release.h
 //  Gamer
 //
-//  Created by Caio Mello on 07/04/2014.
+//  Created by Caio Mello on 08/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -27,5 +27,6 @@
 @property (nonatomic, retain) Game *game;
 @property (nonatomic, retain) Platform *platform;
 @property (nonatomic, retain) Region *region;
+@property (nonatomic, retain) Game *selectedGame;
 
 @end

@@ -19,8 +19,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 @property (nonatomic, strong) UIPopoverController *menuPopoverController;
 
-@property (nonatomic, strong) NSMutableArray *modernPlatforms;
-@property (nonatomic, strong) NSMutableArray *legacyPlatforms;
+@property (nonatomic, strong) NSMutableArray *platforms;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
@@ -33,8 +32,7 @@ typedef NS_ENUM(NSInteger, Section){
 	
 	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_modernPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(PlatformGroupModern)] inContext:_context].mutableCopy;
-	_legacyPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(PlatformGroupLegacy)] inContext:_context].mutableCopy;
+	_platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:nil inContext:_context].mutableCopy;
 	
 	[self.tableView setEditing:YES animated:NO];
 	
@@ -57,34 +55,12 @@ typedef NS_ENUM(NSInteger, Section){
 
 #pragma mark - TableView
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-	return 2;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-	switch (section) {
-		case PlatformGroupModern: return @"Modern";
-		case PlatformGroupLegacy: return @"Legacy";
-		default: return nil;
-	}
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	switch (section) {
-		case PlatformGroupModern: return _modernPlatforms.count;
-		case PlatformGroupLegacy: return _legacyPlatforms.count;
-		default: return 0;
-	}
+	return _platforms.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	Platform *platform;
-	
-	switch (indexPath.section) {
-		case PlatformGroupModern: platform = _modernPlatforms[indexPath.row]; break;
-		case PlatformGroupLegacy: platform = _legacyPlatforms[indexPath.row]; break;
-		default: break;
-	}
+	Platform *platform = _platforms[indexPath.row];
 	
 	PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:platform.name];
@@ -123,30 +99,14 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
 	// Set platform indexes accordingly
-	
 	if (sourceIndexPath.section == SectionModern){
-		Platform *platform = _modernPlatforms[sourceIndexPath.row];
+		Platform *platform = _platforms[sourceIndexPath.row];
 		
-		[_modernPlatforms removeObject:platform];
-		[_modernPlatforms insertObject:platform atIndex:destinationIndexPath.row];
+		[_platforms removeObject:platform];
+		[_platforms insertObject:platform atIndex:destinationIndexPath.row];
 		
-		for (Platform *platform in _modernPlatforms){
-			NSInteger index = [_modernPlatforms indexOfObject:platform];
-			
-			[platform setIndex:@(index)];
-			
-			PlatformCell *cell = (PlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-			[cell.switchControl setTag:index];
-		}
-	}
-	else{
-		Platform *platform = _legacyPlatforms[sourceIndexPath.row];
-		
-		[_legacyPlatforms removeObject:platform];
-		[_legacyPlatforms insertObject:platform atIndex:destinationIndexPath.row];
-		
-		for (Platform *platform in _legacyPlatforms){
-			NSInteger index = [_legacyPlatforms indexOfObject:platform];
+		for (Platform *platform in _platforms){
+			NSInteger index = [_platforms indexOfObject:platform];
 			
 			[platform setIndex:@(index)];
 			
@@ -165,13 +125,7 @@ typedef NS_ENUM(NSInteger, Section){
 - (IBAction)switchAction:(UISwitch *)sender{
 	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview.superview;
 	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-	Platform *platform;
-	
-	switch (indexPath.section) {
-		case PlatformGroupModern: platform = _modernPlatforms[indexPath.row]; break;
-		case PlatformGroupLegacy: platform = _legacyPlatforms[indexPath.row]; break;
-		default: break;
-	}
+	Platform *platform = _platforms[indexPath.row];
 	
 	sender.isOn ? [[Session gamer] addPlatformsObject:platform] : [[Session gamer] removePlatformsObject:platform];
 	
