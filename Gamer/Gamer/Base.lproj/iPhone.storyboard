@@ -221,14 +221,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Release" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hgp-fA-juX" userLabel="Release Label">
-                                                    <rect key="frame" x="20" y="25" width="70" height="14"/>
+                                                    <rect key="frame" x="20" y="11" width="70" height="14"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="25 November 2013" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="SV0-L3-EX0" userLabel="Release Date Label">
-                                                    <rect key="frame" x="20" y="43" width="134" height="21"/>
+                                                    <rect key="frame" x="20" y="29" width="134" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -264,6 +264,17 @@
                                                     </state>
                                                     <connections>
                                                         <action selector="addButtonPressAction:" destination="daZ-J4-g3E" eventType="touchUpInside" id="nqS-hD-HNo"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y4o-IC-HJ9">
+                                                    <rect key="frame" x="20" y="49" width="134" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
+                                                    <state key="normal" title="CHANGE PLATFORMS">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="changePlatformsButtonAction:" destination="daZ-J4-g3E" eventType="touchUpInside" id="XX3-1p-ma9"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -957,6 +968,7 @@
                     </refreshControl>
                     <connections>
                         <outlet property="activityIndicator" destination="Aub-c2-LhF" id="PSF-2P-MH8"/>
+                        <outlet property="changePlatformsButton" destination="Y4o-IC-HJ9" id="WUK-AF-gTn"/>
                         <outlet property="coverImageView" destination="ivh-Tr-p21" id="THA-ol-Mkp"/>
                         <outlet property="descriptionTextView" destination="LmU-26-hGZ" id="njo-lM-UYA"/>
                         <outlet property="developerFirstLabel" destination="738-nn-79F" id="j8O-YO-iuE"/>

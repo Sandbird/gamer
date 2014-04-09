@@ -56,6 +56,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 @property (nonatomic, strong) IBOutlet UIButton *wishlistButton;
 @property (nonatomic, strong) IBOutlet UIButton *libraryButton;
+@property (nonatomic, strong) IBOutlet UIButton *changePlatformsButton;
 
 @property (nonatomic, strong) IBOutlet UILabel *releasesLabel;
 
@@ -868,6 +869,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		else if (_libraryButton.isHighlighted){
 			[self addGameToLibraryWithPlatforms:platforms];
 		}
+		else{
+			[self changeSelectedPlatformsToPlatforms:platforms];
+		}
 	}
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
@@ -1076,6 +1080,11 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[self saveAndRefreshAfterStateChange];
 }
 
+- (void)changeSelectedPlatformsToPlatforms:(NSArray *)platforms{
+	[_game setSelectedPlatforms:[NSSet setWithArray:platforms]];
+	[self saveAndRefreshAfterStateChange];
+}
+
 - (void)removeGameFromWishlistOrLibrary{
 	[_game setSelectedPlatforms:nil];
 	[_game setLocation:@(GameLocationNone)];
@@ -1092,6 +1101,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (void)saveAndRefreshAfterStateChange{
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[self refreshAddButtonsAnimated:YES];
+		
+		[_changePlatformsButton setEnabled:[_game.location isEqualToNumber:@(GameLocationNone)] ? NO : YES];
 		
 		[_preorderedSwitch setOn:_game.preordered.boolValue animated:YES];
 		[_finishedSwitch setOn:_game.finished.boolValue animated:YES];
@@ -1149,6 +1160,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			}
 		}
 	}
+}
+
+- (IBAction)changePlatformsButtonAction:(UIButton *)sender{
+	[self performSegueWithIdentifier:@"PlatformPickerSegue" sender:nil];
 }
 
 - (IBAction)segmentedControlValueChangedAction:(UISegmentedControl *)sender{
