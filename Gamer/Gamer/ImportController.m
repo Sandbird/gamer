@@ -51,6 +51,9 @@
 			[game setLent:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"lent"] withDefault:NO]];
 			[game setPreordered:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"preordered"] withDefault:NO]];
 			[game setLocation:[Tools integerNumberFromSourceIfNotNull:dictionary[@"location"]]];
+			[game setBorrowed:[Tools integerNumberFromSourceIfNotNull:dictionary[@"borrowed"]]];
+			[game setPersonalRating:[Tools integerNumberFromSourceIfNotNull:dictionary[@"personalRating"]]];
+			[game setNotes:[Tools stringFromSourceIfNotNull:dictionary[@"notes"]]];
 			
 			if (dictionary[@"selectedPlatforms"] != [NSNull null]){
 				NSMutableArray *selectedPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"selectedPlatforms"] count]];

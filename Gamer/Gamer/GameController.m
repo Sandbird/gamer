@@ -46,7 +46,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	ActionSheetTagLibrary
 };
 
-@interface GameController () <UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate, ReleasesControllerDelegate>
+@interface GameController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate, ReleasesControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
@@ -64,6 +64,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UISwitch *finishedSwitch;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *retailDigitalSegmentedControl;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *lentBorrowedSegmentedControl;
+@property (nonatomic, strong) IBOutlet UITextView *notesTextView;
 
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
 
@@ -206,14 +207,29 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
 		case SectionCover:
-			if ([_game.location isEqualToNumber:@(GameLocationNone)])
-				return 3;
+			if ([_game.location isEqualToNumber:@(GameLocationNone)]){
+				if (_releasesDownloaded == YES && _game.releases.count > 0){
+					return 3;
+				}
+				else
+					return 2;
+			}
+			else if (_selectedPlatforms.count > 0){
+				if (_releasesDownloaded == YES && _game.releases.count > 0){
+					return 4;
+				}
+				else
+					return 3;
+			}
+			else{
+				return 2;
+			}
 			break;
 		case SectionStatus:
-			if (![_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)])
-				return 1;
+			if ([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)])
+				return 2;
 			else if ([_game.location isEqualToNumber:@(GameLocationLibrary)])
-				return 3;
+				return 5;
 			else
 				return 0;
 			break;
@@ -238,21 +254,20 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
 		case SectionCover:
-			switch (indexPath.row) {
-				case 2:
-					if (_game.releases.count == 0 || _releasesDownloaded == NO){
-						return 0;
-					}
-					break;
-				case 3:
-					if ([Tools deviceIsiPhone]){
-						if (_selectedPlatforms.count > 0){
-							return 20 + 17 + 13 + ((_selectedPlatforms.count/5 + 1) * 31) + 20;
-						}
-					}
-					break;
-				default:
-					break;
+			if (indexPath.row == 2){
+				if (_game.releases.count > 0 && _releasesDownloaded == YES)
+					return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+				else
+					return 20 + 17 + 13 + ((_selectedPlatforms.count/5 + 1) * 31) + 20;
+			}
+			else if (indexPath.row == 3){
+				return 20 + 17 + 13 + ((_selectedPlatforms.count/5 + 1) * 31) + 20;
+			}
+			break;
+		case SectionStatus:
+			if (([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)] && indexPath.row == 1) || ([_game.location isEqualToNumber:@(GameLocationLibrary)] && indexPath.row == 4)){
+				CGRect textRect = [_game.notes boundingRectWithSize:CGSizeMake(_notesTextView.frame.size.width - 10, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
+				return 45 + 20 + textRect.size.height + 20; // Top padding + note text height + bottom padding
 			}
 			break;
 		case SectionDetails:{
@@ -317,12 +332,27 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	if (indexPath.section == SectionStatus && [_game.location isEqualToNumber:@(GameLocationLibrary)])
-		return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section]];
-	else if (indexPath.section == SectionDetails && indexPath.row == 2){
-		if (_game.platforms.count == 0)
-			return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:indexPath.section]];
+	switch (indexPath.section) {
+		case SectionCover:
+			if (indexPath.row == 2 && _game.releases.count == 0 && _selectedPlatforms.count > 0)
+				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionCover]];
+			break;
+		case SectionStatus:
+			if ([_game.location isEqualToNumber:@(GameLocationWishlist)]){
+				if (indexPath.row == 1)
+					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionStatus]];
+			}
+			else
+				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:SectionStatus]];
+			break;
+		case SectionDetails:
+			if (indexPath.row == 2 && _game.platforms.count == 0)
+				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
+			break;
+		default:
+			break;
 	}
+	
 	return [super tableView:tableView cellForRowAtIndexPath:indexPath];
 }
 
@@ -332,8 +362,17 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	if (indexPath.section == SectionCover && indexPath.row == 2){
-		[self performSegueWithIdentifier:@"ReleasesSegue" sender:nil];
+	switch (indexPath.section) {
+		case SectionCover:
+			if (indexPath.row == 2 && _game.releases.count > 0)
+				[self performSegueWithIdentifier:@"ReleasesSegue" sender:nil];
+			break;
+		case SectionStatus:
+			if (indexPath.row == ([tableView numberOfRowsInSection:SectionStatus] - 1))
+				[tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+				[_notesTextView becomeFirstResponder];
+		default:
+			break;
 	}
 }
 
@@ -472,6 +511,22 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			}
 		}
 	}
+}
+
+#pragma mark - TextView
+
+- (void)textViewDidChange:(UITextView *)textView{
+	[self.tableView beginUpdates];
+	[self.tableView endUpdates];
+	
+	[_game setNotes:textView.text];
+	[_context MR_saveToPersistentStoreAndWait];
+}
+
+#pragma mark - ScrollView
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+	[_notesTextView resignFirstResponder];
 }
 
 #pragma mark - Networking
@@ -703,7 +758,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					_releasesDownloaded = YES;
 					
 					[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%d Releases" : @"%d Release", _game.releases.count]];
-					[self.tableView reloadData];
+					
+					[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
+					[self.tableView beginUpdates];
+					[self.tableView endUpdates];
 					
 					for (Release *release in _game.releases){
 						if ([_game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
@@ -938,6 +996,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	else
 		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
 	
+	[_notesTextView setText:_game.notes];
+	
 //	if (_game.metascore.length > 0){
 //		[_metascoreButton setBackgroundColor:[Networking colorForMetascore:_game.metascore]];
 //		[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
@@ -1136,10 +1196,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		else
 			[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
 		
-//		[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 1)] withRowAnimation:UITableViewRowAnimationAutomatic];
-//		[self.tableView beginUpdates];
-//		[self.tableView endUpdates];
-		[self.tableView reloadData];
+		[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)] withRowAnimation:UITableViewRowAnimationAutomatic];
+		[self.tableView beginUpdates];
+		[self.tableView endUpdates];
 		
 		[_wishlistButton setHighlighted:NO];
 		[_libraryButton setHighlighted:NO];

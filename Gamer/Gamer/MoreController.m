@@ -153,7 +153,10 @@ typedef NS_ENUM(NSInteger, Section){
 										 @"finished":game.finished,
 										 @"digital":game.digital,
 										 @"lent":game.lent,
-										 @"preordered":game.preordered};
+										 @"preordered":game.preordered,
+										 @"borrowed":game.borrowed,
+										 @"personalRating":game.personalRating,
+										 @"notes":game.notes};
 		
 		[gameDictionaries addObject:gameDictionary];
 	}
