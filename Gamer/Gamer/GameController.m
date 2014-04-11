@@ -702,7 +702,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %d - Similar Game Image - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Similar Game Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
 			
 			NSDictionary *results = responseObject[@"results"];
@@ -728,7 +728,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			_numberOfReleasesDownloaded++;
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %d - Release - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Release - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
 			_numberOfReleasesDownloaded++;
@@ -760,7 +760,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				if (_numberOfReleasesDownloaded == _totalNumberOfReleases){
 					_releasesDownloaded = YES;
 					
-					[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%d Releases" : @"%d Release", _game.releases.count]];
+					[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)_game.releases.count]];
 					
 					[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
 					[self.tableView beginUpdates];
@@ -978,7 +978,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[_changePlatformsButton setEnabled:[_game.location isEqualToNumber:@(GameLocationNone)] ? NO : YES];
 	
-	[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%d Releases" : @"%d Release", _game.releases.count]];
+	[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)_game.releases.count]];
 	
 	_selectablePlatforms = [self selectablePlatformsFromGame:_game];
 	
