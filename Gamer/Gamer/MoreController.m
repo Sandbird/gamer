@@ -147,16 +147,16 @@ typedef NS_ENUM(NSInteger, Section){
 		}
 		
 		NSDictionary *gameDictionary = @{@"id":game.identifier,
-										 @"title":game.title,
+										 @"title":game.title ? game.title : @"",
 										 @"location":game.location,
-										 @"selectedPlatforms":platformDictionaries,
-										 @"finished":game.finished,
-										 @"digital":game.digital,
-										 @"lent":game.lent,
-										 @"preordered":game.preordered,
-										 @"borrowed":game.borrowed,
-										 @"personalRating":game.personalRating,
-										 @"notes":game.notes};
+										 @"selectedPlatforms":platformDictionaries ? platformDictionaries : [NSNull null],
+										 @"finished":game.finished ? game.finished : @(0),
+										 @"digital":game.digital ? game.digital : @(0),
+										 @"lent":game.lent ? game.lent : @(0),
+										 @"preordered":game.preordered ? game.preordered : @(0),
+										 @"borrowed":game.borrowed ? game.borrowed : @(0),
+										 @"personalRating":game.personalRating ? game.personalRating : @(0),
+										 @"notes":game.notes ? game.notes : @""};
 		
 		[gameDictionaries addObject:gameDictionary];
 	}
