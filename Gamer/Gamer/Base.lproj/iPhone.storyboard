@@ -472,9 +472,9 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RTh-fB-SLY">
-                                                    <rect key="frame" x="114" y="6" width="92" height="31"/>
+                                                    <rect key="frame" x="60" y="2" width="200" height="40"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                 </view>
                                             </subviews>
                                         </tableViewCellContentView>
@@ -502,7 +502,7 @@
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Fx-nh-U4i" userLabel="Overview Text View">
                                                     <rect key="frame" x="15" y="45" width="290" height="35"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardAppearance="alert"/>
@@ -570,14 +570,14 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Genre" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QFb-V4-x2A" userLabel="Genre First Label">
-                                                    <rect key="frame" x="20" y="40" width="200" height="17"/>
+                                                    <rect key="frame" x="20" y="40" width="280" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Genre" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="200" translatesAutoresizingMaskIntoConstraints="NO" id="hdt-f7-HLB" userLabel="Genre Second Label">
-                                                    <rect key="frame" x="20" y="60" width="200" height="17"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Genre" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="hdt-f7-HLB" userLabel="Genre Second Label">
+                                                    <rect key="frame" x="20" y="60" width="280" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -660,34 +660,9 @@
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6CX-nX-SUT" userLabel="Metascore Button">
-                                                    <rect key="frame" x="236" y="20" width="64" height="64"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" red="0.38431372549019605" green="0.80784313725490198" blue="0.12941176470588234" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="64" id="Ut4-Aw-XR8"/>
-                                                        <constraint firstAttribute="height" constant="64" id="bx1-pi-y8w"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
-                                                    <state key="normal" title="90">
-                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </state>
-                                                    <connections>
-                                                        <action selector="metascoreButtonAction:" destination="daZ-J4-g3E" eventType="touchUpInside" id="4ML-xc-n4h"/>
-                                                    </connections>
-                                                </button>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Nintendo 3DS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="GOx-DN-4ey">
-                                                    <rect key="frame" x="223" y="87" width="90" height="16"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="hdt-f7-HLB" firstAttribute="trailing" secondItem="QFb-V4-x2A" secondAttribute="trailing" id="1nC-cd-8Bm"/>
-                                                <constraint firstItem="6CX-nX-SUT" firstAttribute="leading" secondItem="QFb-V4-x2A" secondAttribute="trailing" constant="16" id="2jA-tt-xBv"/>
-                                                <constraint firstAttribute="trailing" secondItem="6CX-nX-SUT" secondAttribute="trailing" constant="20" symbolic="YES" id="4on-aP-TAy"/>
                                                 <constraint firstItem="V3h-ss-fJq" firstAttribute="trailing" secondItem="RdQ-fe-psz" secondAttribute="trailing" id="7bZ-A7-EGQ"/>
                                                 <constraint firstItem="V3h-ss-fJq" firstAttribute="top" secondItem="SbN-4a-ln9" secondAttribute="bottom" constant="3" id="AJR-AH-5dI"/>
                                                 <constraint firstItem="C1T-cQ-Qus" firstAttribute="trailing" secondItem="SbN-4a-ln9" secondAttribute="trailing" id="Ac7-vJ-wR6"/>
@@ -716,9 +691,9 @@
                                                 <constraint firstItem="SbN-4a-ln9" firstAttribute="leading" secondItem="V3h-ss-fJq" secondAttribute="leading" id="btV-Rn-ecS"/>
                                                 <constraint firstItem="OUt-U8-NSi" firstAttribute="leading" secondItem="pgM-G5-2Qh" secondAttribute="leading" id="c3m-JK-4tk"/>
                                                 <constraint firstItem="jsI-2E-szF" firstAttribute="leading" secondItem="C1T-cQ-Qus" secondAttribute="leading" id="fPP-yM-JFe"/>
+                                                <constraint firstAttribute="trailing" secondItem="QFb-V4-x2A" secondAttribute="trailing" constant="20" id="fse-vR-1wo"/>
                                                 <constraint firstItem="Ajx-IA-vDb" firstAttribute="trailing" secondItem="738-nn-79F" secondAttribute="trailing" id="g19-wb-HN3"/>
                                                 <constraint firstItem="QFb-V4-x2A" firstAttribute="leading" secondItem="hdt-f7-HLB" secondAttribute="leading" id="gkQ-VY-d7U"/>
-                                                <constraint firstItem="6CX-nX-SUT" firstAttribute="top" secondItem="eCX-7n-pJ2" secondAttribute="top" id="h7m-S5-31b"/>
                                                 <constraint firstItem="Gva-cv-pHu" firstAttribute="top" secondItem="C1T-cQ-Qus" secondAttribute="bottom" constant="3" id="jZl-n4-wui"/>
                                                 <constraint firstItem="C1T-cQ-Qus" firstAttribute="trailing" secondItem="lTX-zW-QH8" secondAttribute="trailing" id="jxw-HN-dIP"/>
                                                 <constraint firstItem="pgM-G5-2Qh" firstAttribute="top" secondItem="OUt-U8-NSi" secondAttribute="bottom" constant="3" id="mpX-dd-fO4"/>
@@ -1042,12 +1017,11 @@
                         <outlet property="imagesCollectionView" destination="Kwg-Br-TqV" id="9Jb-tT-Lhd"/>
                         <outlet property="lentBorrowedSegmentedControl" destination="MCh-ro-p8s" id="sUn-pE-N8k"/>
                         <outlet property="libraryButton" destination="Szq-Ge-fAn" id="2Sc-lQ-g20"/>
-                        <outlet property="metascoreButton" destination="6CX-nX-SUT" id="4d6-ZW-6wd"/>
-                        <outlet property="metascorePlatformLabel" destination="GOx-DN-4ey" id="8fC-Vu-obR"/>
                         <outlet property="notesTextView" destination="3Fx-nh-U4i" id="kF2-Ea-d7n"/>
                         <outlet property="preorderedSwitch" destination="Mzt-6A-Xm3" id="VNB-c3-U23"/>
                         <outlet property="publisherFirstLabel" destination="Gva-cv-pHu" id="jvm-C7-7xc"/>
                         <outlet property="publisherSecondLabel" destination="RdQ-fe-psz" id="4gV-vo-9kl"/>
+                        <outlet property="ratingView" destination="RTh-fB-SLY" id="Nub-j6-sPB"/>
                         <outlet property="releaseDateLabel" destination="SV0-L3-EX0" id="fxL-dE-Rsq"/>
                         <outlet property="releasesLabel" destination="iwu-SH-4tS" id="f1x-fh-wIm"/>
                         <outlet property="retailDigitalSegmentedControl" destination="EuX-5e-v0Y" id="s8o-r6-yw7"/>

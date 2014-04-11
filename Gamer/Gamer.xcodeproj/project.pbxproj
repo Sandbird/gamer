@@ -68,6 +68,7 @@
 		25BE541F18BED3FA00BCBAFB /* ImportCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE541E18BED3FA00BCBAFB /* ImportCell.m */; };
 		25BE542218BED50200BCBAFB /* ImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE542118BED50200BCBAFB /* ImportController.m */; };
 		25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */; };
+		25C5880718F6DCDF002A2EF4 /* StarRatingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C5880618F6DCDE002A2EF4 /* StarRatingControl.m */; };
 		25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */; };
 		25C9FE3917CC4C4500CCDD59 /* WishlistController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3817CC4C4500CCDD59 /* WishlistController_iPad.m */; };
 		25C9FE4517CD729E00CCDD59 /* HeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4417CD729E00CCDD59 /* HeaderCollectionReusableView.m */; };
@@ -215,6 +216,8 @@
 		25BE542118BED50200BCBAFB /* ImportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImportController.m; sourceTree = "<group>"; };
 		25BE617817EFC4D3008F5AB8 /* RotationLockedTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotationLockedTabBarController.h; sourceTree = "<group>"; };
 		25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotationLockedTabBarController.m; sourceTree = "<group>"; };
+		25C5880518F6DCD5002A2EF4 /* StarRatingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarRatingControl.h; sourceTree = "<group>"; };
+		25C5880618F6DCDE002A2EF4 /* StarRatingControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarRatingControl.m; sourceTree = "<group>"; };
 		25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionCell.h; sourceTree = "<group>"; };
 		25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionCell.m; sourceTree = "<group>"; };
 		25C9FE3717CC4C4500CCDD59 /* WishlistController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistController_iPad.h; sourceTree = "<group>"; };
@@ -316,6 +319,7 @@
 				2506A16E176CD3190010E61D /* Views */,
 				2506A16D176CD2F10010E61D /* Cells */,
 				259DBBAC18958B7500B274F4 /* Categories */,
+				25C5880818F6DF65002A2EF4 /* Controls */,
 			);
 			name = Subclasses;
 			sourceTree = "<group>";
@@ -631,6 +635,15 @@
 			name = More;
 			sourceTree = "<group>";
 		};
+		25C5880818F6DF65002A2EF4 /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				25C5880518F6DCD5002A2EF4 /* StarRatingControl.h */,
+				25C5880618F6DCDE002A2EF4 /* StarRatingControl.m */,
+			);
+			name = Controls;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -836,6 +849,7 @@
 				250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */,
 				25D4E68618F3419500D93F80 /* Theme.m in Sources */,
 				25B9E9C017A0B70200881089 /* LibraryController.m in Sources */,
+				25C5880718F6DCDF002A2EF4 /* StarRatingControl.m in Sources */,
 				259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */,
 				25D4E68F18F3419600D93F80 /* Publisher.m in Sources */,
 				25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */,

@@ -32,6 +32,7 @@
 #import "SimilarGameCollectionCell.h"
 #import "PlatformPickerController.h"
 #import "ReleasesController.h"
+#import "StarRatingControl.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	SectionCover,
@@ -64,12 +65,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UISwitch *finishedSwitch;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *retailDigitalSegmentedControl;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *lentBorrowedSegmentedControl;
+@property (nonatomic, strong) IBOutlet UIView *ratingView;
+@property (nonatomic, strong) StarRatingControl *ratingControl;
 @property (nonatomic, strong) IBOutlet UITextView *notesTextView;
 
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
 
-@property (nonatomic, strong) IBOutlet UIButton *metascoreButton;
-@property (nonatomic, strong) IBOutlet UILabel *metascorePlatformLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreFirstLabel;
 @property (nonatomic, strong) IBOutlet UILabel *genreSecondLabel;
 @property (nonatomic, strong) IBOutlet UILabel *themeFirstLabel;
@@ -123,7 +124,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_libraryButton.layer setCornerRadius:4];
 	[_libraryButton setBackgroundImage:[Tools imageWithColor:_libraryButton.tintColor] forState:UIControlStateHighlighted];
 	
-	[Tools setMaskToView:_metascoreButton roundCorners:UIRectCornerAllCorners radius:32];
+	[self setupRatingControl];
 	
 	[self.refreshControl setTintColor:[UIColor lightGrayColor]];
 	
@@ -199,7 +200,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-	if (section == SectionStatus && ([_game.location isEqualToNumber:@(GameLocationNone)] || ([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(YES)])))
+	if (section == SectionStatus && [_game.location isEqualToNumber:@(GameLocationNone)])
 		return 0;
 	return [super tableView:tableView heightForHeaderInSection:section];
 }
@@ -226,8 +227,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			}
 			break;
 		case SectionStatus:
-			if ([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)])
-				return 2;
+			if ([_game.location isEqualToNumber:@(GameLocationWishlist)])
+				return [_game.released isEqualToNumber:@(YES)] ? 1 : 2;
 			else if ([_game.location isEqualToNumber:@(GameLocationLibrary)])
 				return 5;
 			else
@@ -265,7 +266,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			}
 			break;
 		case SectionStatus:
-			if (([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)] && indexPath.row == 1) || ([_game.location isEqualToNumber:@(GameLocationLibrary)] && indexPath.row == 4)){
+			if (([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)] && indexPath.row == 1) || ([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(YES)] && indexPath.row == 0) || ([_game.location isEqualToNumber:@(GameLocationLibrary)] && indexPath.row == 4)){
 				CGRect textRect = [_game.notes boundingRectWithSize:CGSizeMake(_notesTextView.frame.size.width - 10, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
 				return 45 + 20 + textRect.size.height + 20; // Top padding + note text height + bottom padding
 			}
@@ -339,7 +340,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			break;
 		case SectionStatus:
 			if ([_game.location isEqualToNumber:@(GameLocationWishlist)]){
-				if (indexPath.row == 1)
+				if (([_game.released isEqualToNumber:@(YES)] && indexPath.row == 0) || ([_game.released isEqualToNumber:@(NO)] && indexPath.row == 1))
 					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionStatus]];
 			}
 			else
@@ -368,9 +369,11 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				[self performSegueWithIdentifier:@"ReleasesSegue" sender:nil];
 			break;
 		case SectionStatus:
-			if (indexPath.row == ([tableView numberOfRowsInSection:SectionStatus] - 1))
+			if (indexPath.row == ([tableView numberOfRowsInSection:SectionStatus] - 1)){
 				[tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
 				[_notesTextView becomeFirstResponder];
+			}
+			break;
 		default:
 			break;
 	}
@@ -996,6 +999,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	else
 		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
 	
+	[_ratingControl setRating:_game.personalRating.floatValue];
+	
 	[_notesTextView setText:_game.notes];
 	
 //	if (_game.metascore.length > 0){
@@ -1203,12 +1208,29 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[_wishlistButton setHighlighted:NO];
 		[_libraryButton setHighlighted:NO];
 		
-//		NSIndexPath *lastStatusIndexPath = [NSIndexPath indexPathForRow:([self.tableView numberOfRowsInSection:SectionStatus] - 1) inSection:SectionStatus];
-//		if ((([_game.wanted isEqualToNumber:@(YES)] && [_game.released isEqualToNumber:@(NO)]) || [_game.owned isEqualToNumber:@(YES)]) && ![self.tableView.indexPathsForVisibleRows containsObject:lastStatusIndexPath])
-//			[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+		// Scroll to last row of status section if game added to library
+		if ([_game.location isEqualToNumber:@(GameLocationLibrary)]){
+			NSIndexPath *lastStatusIndexPath = [NSIndexPath indexPathForRow:([self.tableView numberOfRowsInSection:SectionStatus] - 1) inSection:SectionStatus];
+			[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+	}];
+}
+
+- (void)setupRatingControl{
+	_ratingControl = [[StarRatingControl alloc] initWithLocation:CGPointMake(5, 0) emptyColor:[UIColor orangeColor] solidColor:[UIColor orangeColor] andMaxRating:5];
+	[_ratingView setBackgroundColor:[UIColor clearColor]];
+	[_ratingControl setStarWidthAndHeight:40];
+	[_ratingControl setStarFontSize:30];
+	[_ratingView addSubview:_ratingControl];
+	
+	__weak Game *game = _game;
+	__weak NSManagedObjectContext *context = _context;
+	[_ratingControl setEditingChangedBlock:^(NSUInteger rating){
+		[game setPersonalRating:@(rating)];
+		[context MR_saveToPersistentStoreAndWait];
 	}];
 }
 
