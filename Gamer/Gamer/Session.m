@@ -165,6 +165,8 @@ static NSArray *SEARCHRESULTS;
 		[placeholderGame setReleaseDate:releasePeriodDictionary[@"release_period"][@"placeholder"][@"release_date"]];
 		[placeholderGame setLocation:@(GameLocationWishlist)];
 		[placeholderGame setReleasePeriod:releasePeriod];
+		
+		[releasePeriod setPlaceholderGame:placeholderGame];
 	}
 	
 	for (NSDictionary *regionDictionary in initialDataDictionary[@"initial_data"][@"regions"]){

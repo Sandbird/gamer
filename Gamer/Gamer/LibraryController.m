@@ -16,6 +16,8 @@
 #import "Franchise.h"
 #import "Theme.h"
 #import "SimilarGame.h"
+#import "Region.h"
+#import "Release.h"
 #import "GameController.h"
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
@@ -237,8 +239,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 #pragma mark - Networking
 
-- (void)requestInformationForGame:(Game *)game{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
+- (void)requestGame:(Game *)game{
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,releases"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -258,30 +260,25 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 			
+			if (responseObject[@"results"] != [NSNull null]){
+				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+				
+				UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
+				
+				if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
+					[self downloadCoverImageWithURL:coverImageURL game:game];
+				}
+			}
+			
+			for (Release *release in game.releases){
+				[self requestRelease:release];
+			}
+			
 			if (_numberOfRunningTasks == 0){
 				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					[_refreshBarButton setEnabled:YES];
+					[_refreshControl endRefreshing];
 					[_collectionView reloadData];
-					
-//					BOOL imagesDownloaded = NO;
-//					
-//					for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++){
-//						for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++){
-//							Game *fetchedGame = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
-//							
-//							UIImage *thumbnail = [UIImage imageWithData:fetchedGame.thumbnailLibrary];
-//							CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeLibrary];
-//							
-//							if (!fetchedGame.thumbnailWishlist || !fetchedGame.thumbnailLibrary || !fetchedGame.coverImage.data || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
-//								imagesDownloaded = YES;
-//								[self downloadCoverImageForGame:fetchedGame];
-//							}
-//							
-//							if (section == _fetchedResultsController.sections.count - 1 && row == [_fetchedResultsController.sections[section] numberOfObjects] - 1 && imagesDownloaded == NO){
-//								[_refreshBarButton setEnabled:YES];
-//								[_refreshControl endRefreshing];
-//							}
-//						}
-//					}
 				}];
 			}
 		}
@@ -290,40 +287,67 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	_numberOfRunningTasks++;
 }
 
-//- (void)downloadCoverImageForGame:(Game *)game{
-//	if (!game.coverImage.url) return;
-//	
-//	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.coverImage.url]];
-//	
-//	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-//		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
-//		return fileURL;
-//	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-//		if (error){
-//			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Thumbnail", self, (long)((NSHTTPURLResponse *)response).statusCode);
-//			_numberOfRunningTasks--;
-//		}
-//		else{
-//			NSLog(@"Success in %@ - Status code: %ld - Thumbnail - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-//			_numberOfRunningTasks--;
-//			
-//			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-//			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-//			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-//			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
-//			
-//			if (_numberOfRunningTasks == 0){
-//				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//					[_collectionView reloadData];
-//					[_refreshBarButton setEnabled:YES];
-//					[_refreshControl endRefreshing];
-//				}];
-//			}
-//		}
-//	}];
-//	[downloadTask resume];
-//	_numberOfRunningTasks++;
-//}
+- (void)downloadCoverImageWithURL:(NSString *)URLString game:(Game *)game{
+	if (!URLString) return;
+	
+	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:URLString]];
+	
+	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
+		return fileURL;
+	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Cover Image", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			
+			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
+			
+			[_context MR_saveToPersistentStoreAndWait];
+		}
+	}];
+	[downloadTask resume];
+}
+
+- (void)requestRelease:(Release *)release{
+	NSURLRequest *request = [Networking requestForReleaseWithIdentifier:release.identifier fields:@"platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Release", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Release - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			//			NSLog(@"%@", responseObject);
+			
+			NSDictionary *results = responseObject[@"results"];
+			
+			Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:results[@"platform"][@"id"] inContext:_context];
+			
+			if (platform){
+				[release setPlatform:platform];
+				[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:results[@"region"][@"id"] inContext:_context]];
+				
+				NSString *releaseDate = [Tools stringFromSourceIfNotNull:results[@"release_date"]];
+				NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
+				NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
+				NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
+				NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
+				
+				[Networking setReleaseDateForGameOrRelease:release dateString:releaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
+				
+				if (results[@"image"] != [NSNull null])
+					[release setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
+			}
+			else{
+				[release MR_deleteInContext:_context];
+			}
+		}
+	}];
+	[dataTask resume];
+	_numberOfRunningTasks++;
+}
 
 #pragma mark - LibraryFilterView
 
@@ -437,7 +461,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	// Request info for all games in the Wishlist
 	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
 		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
-			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+			[self requestGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
 }
 
 - (void)showSortOptions{

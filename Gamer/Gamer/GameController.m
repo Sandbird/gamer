@@ -560,7 +560,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				UIImage *coverImage = [UIImage imageWithContentsOfFile:_game.imagePath];
 				
 				if (!coverImage || !_game.imagePath || ![_game.imageURL isEqualToString:coverImageURL]){
-					[self downloadImageWithURL:coverImageURL];
+					[self downloadCoverImageWithURL:coverImageURL];
 				}
 				
 				[self requestMediaForGame:_game];
@@ -595,7 +595,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[dataTask resume];
 }
 
-- (void)downloadImageWithURL:(NSString *)URLString{
+- (void)downloadCoverImageWithURL:(NSString *)URLString{
 	if (!URLString) return;
 	
 	[_activityIndicator startAnimating];

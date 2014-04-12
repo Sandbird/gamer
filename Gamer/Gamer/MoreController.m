@@ -9,6 +9,7 @@
 #import "MoreController.h"
 #import "Game.h"
 #import "Platform.h"
+#import "Release.h"
 #import "PlatformsController.h"
 #import "RegionsController.h"
 #import "AboutController.h"
@@ -156,7 +157,8 @@ typedef NS_ENUM(NSInteger, Section){
 										 @"preordered":game.preordered ? game.preordered : @(0),
 										 @"borrowed":game.borrowed ? game.borrowed : @(0),
 										 @"personalRating":game.personalRating ? game.personalRating : @(0),
-										 @"notes":game.notes ? game.notes : @""};
+										 @"notes":game.notes ? game.notes : @"",
+										 @"selectedRelease":game.selectedRelease ? game.selectedRelease.identifier : [NSNull null]};
 		
 		[gameDictionaries addObject:gameDictionary];
 	}

@@ -10,6 +10,8 @@
 #import "ImportCell.h"
 #import "Game.h"
 #import "Platform.h"
+#import "Release.h"
+#import "Region.h"
 
 @interface ImportController ()
 
@@ -42,7 +44,7 @@
 		
 		for (NSDictionary *dictionary in importedDictionary[@"games"]){
 			NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
-			Game *game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier];
+			Game *game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
 			if (!game) game = [Game MR_createInContext:_context];
 			[game setIdentifier:identifier];
 			[game setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
@@ -55,6 +57,11 @@
 			[game setPersonalRating:[Tools integerNumberFromSourceIfNotNull:dictionary[@"personalRating"]]];
 			[game setNotes:[Tools stringFromSourceIfNotNull:dictionary[@"notes"]]];
 			
+			if ([game.location isEqualToNumber:@(GameLocationWishlist)])
+				[_importedWishlistGames addObject:game];
+			else if ([game.location isEqualToNumber:@(GameLocationLibrary)])
+				[_importedLibraryGames addObject:game];
+			
 			if (dictionary[@"selectedPlatforms"] != [NSNull null]){
 				NSMutableArray *selectedPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"selectedPlatforms"] count]];
 				for (NSDictionary *platformDictionary in dictionary[@"selectedPlatforms"]){
@@ -65,14 +72,16 @@
 				[game setSelectedPlatforms:[NSSet setWithArray:selectedPlatforms]];
 			}
 			
-			if ([game.location isEqualToNumber:@(GameLocationWishlist)])
-				[_importedWishlistGames addObject:game];
-			else if ([game.location isEqualToNumber:@(GameLocationLibrary)])
-				[_importedLibraryGames addObject:game];
+			NSNumber *releaseIdentifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"selectedRelease"]];
+			Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:releaseIdentifier inContext:_context];
+			if (!release) release = [Release MR_createInContext:_context];
+			[release setIdentifier:releaseIdentifier];
+			
+			[game setSelectedRelease:release];
 			
 			// If game not in database, download
 			if (!game.releaseDate)
-				[self requestInformationForGame:game];
+				[self requestGame:game];
 		}
 		
 		_importedWishlistGames = [_importedWishlistGames sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
@@ -88,7 +97,7 @@
 		}].mutableCopy;
 	}
 	
-	[self.tableView reloadData];
+//	[self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -123,30 +132,30 @@
 	ImportCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
 	
-//	UIImage *image = [_imageCache objectForKey:game.thumbnailName];
+	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
 	
-//	if (image){
-//		[cell.coverImageView setImage:image];
-//		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-//	}
-//	else{
-//		[cell.coverImageView setImage:nil];
-//		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-//		
-//		UIImage *image = [UIImage imageWithData:game.thumbnailWishlist];
-//		
-//		UIGraphicsBeginImageContext(image.size);
-//		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-//		image = UIGraphicsGetImageFromCurrentImageContext();
-//		UIGraphicsEndImageContext();
-//		
-//		[cell.coverImageView setImage:image];
-//		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-//		
-//		if (image){
-//			[_imageCache setObject:image forKey:game.thumbnailName];
-//		}
-//	}
+	if (image){
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[cell.coverImageView setImage:nil];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+		
+		UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+		
+		UIGraphicsBeginImageContext(image.size);
+		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+		image = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+		
+		if (image){
+			[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+		}
+	}
 	
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	[cell setAccessoryType:game.releaseDate ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
@@ -156,12 +165,13 @@
 
 #pragma mark - Networking
 
-- (void)requestInformationForGame:(Game *)game{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
+- (void)requestGame:(Game *)game{
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,releases"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			
 			_numberOfRunningTasks--;
 			
 			if (_numberOfRunningTasks == 0){
@@ -173,13 +183,22 @@
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			
 			_numberOfRunningTasks--;
 			
 			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 			
-			[self.tableView reloadData];
+			NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 			
-			[self downloadCoverImageForGame:game];
+			UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
+			
+			if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
+				[self downloadCoverImageWithURL:coverImageURL game:game];
+			}
+			
+			for (Release *release in game.releases){
+				[self requestRelease:release];
+			}
 			
 			if (_numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
@@ -190,17 +209,18 @@
 	_numberOfRunningTasks++;
 }
 
-- (void)downloadCoverImageForGame:(Game *)game{
-	if (!game.imageURL) return;
+- (void)downloadCoverImageWithURL:(NSString *)URLString game:(Game *)game{
+	if (!URLString) return;
 	
-	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:game.imageURL]];
+	NSURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:URLString]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
+		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
 		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Thumbnail", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Cover Image", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			
 			_numberOfRunningTasks--;
 			
 			if (_numberOfRunningTasks == 0){
@@ -211,13 +231,11 @@
 			}
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %ld - Thumbnail - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			
 			_numberOfRunningTasks--;
 			
-//			UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
-//			[game.coverImage setData:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeCover])];
-//			[game setThumbnailWishlist:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeWishlist])];
-//			[game setThumbnailLibrary:UIImagePNGRepresentation([Session aspectFitImageWithImage:downloadedImage type:GameImageTypeLibrary])];
+			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
 			
 			[self.tableView reloadData];
 			
@@ -227,6 +245,59 @@
 		}
 	}];
 	[downloadTask resume];
+	_numberOfRunningTasks++;
+}
+
+- (void)requestRelease:(Release *)release{
+	NSURLRequest *request = [Networking requestForReleaseWithIdentifier:release.identifier fields:@"platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Release", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			
+			_numberOfRunningTasks--;
+			
+			if (_numberOfRunningTasks == 0){
+				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
+			}
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Release - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			
+			_numberOfRunningTasks--;
+			
+			NSDictionary *results = responseObject[@"results"];
+			
+			Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:results[@"platform"][@"id"] inContext:_context];
+			
+			if (platform){
+				[release setPlatform:platform];
+				[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:results[@"region"][@"id"] inContext:_context]];
+				
+				NSString *releaseDate = [Tools stringFromSourceIfNotNull:results[@"release_date"]];
+				NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
+				NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
+				NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
+				NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
+				
+				[Networking setReleaseDateForGameOrRelease:release dateString:releaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
+				
+				if (results[@"image"] != [NSNull null])
+					[release setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
+			}
+			else{
+				[release MR_deleteInContext:_context];
+			}
+			
+			if (_numberOfRunningTasks == 0){
+				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			}
+		}
+	}];
+	[dataTask resume];
 	_numberOfRunningTasks++;
 }
 
