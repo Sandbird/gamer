@@ -73,7 +73,7 @@
 
 - (NSFetchedResultsController *)fetchData{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND (location = %@ OR identifier = nil)", @(NO), @(GameLocationWishlist)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"hidden = %@ AND location = %@", @(NO), @(GameLocationWishlist)];
 		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES delegate:self];
 	}
 	
@@ -97,7 +97,6 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
 	NSString *sectionName = [self.fetchedResultsController.sections[section] name];
 	ReleasePeriod *releasePeriod = [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue) inContext:_context];
-	
 	WishlistSectionHeaderView *headerView = [[WishlistSectionHeaderView alloc] initWithReleasePeriod:releasePeriod];
 	[headerView setDelegate:self];
 	
@@ -203,7 +202,7 @@
 #pragma mark - HidingSectionView
 
 - (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)headerView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@", releasePeriod, @(GameLocationWishlist)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@ AND identifier != nil", releasePeriod, @(GameLocationWishlist)];
 	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:_context];
 	
 	// Switch hidden property of all games in section
@@ -324,7 +323,7 @@
 
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationWishlist)] inContext:_context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)] inContext:_context];
 	for (Game *game in games){
 		if (game.selectedRelease)
 			[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:game.selectedRelease context:_context]];
@@ -337,7 +336,7 @@
 		NSArray *releasePeriods = [ReleasePeriod MR_findAllInContext:_context];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@", releasePeriod, @(GameLocationWishlist)];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@ AND identifier != nil", releasePeriod, @(GameLocationWishlist)];
 			NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}
@@ -351,9 +350,6 @@
 	for (UIViewController *viewController in self.tabBarController.viewControllers){
 		[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
 	}
-	
-//	[Game MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location = %@", @(GameLocationNone)]];
-//	[_context MR_saveToPersistentStoreAndWait];
 	
 	_numberOfRunningTasks = 0;
 	

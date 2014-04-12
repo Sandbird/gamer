@@ -228,7 +228,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		[object setReleased:@(YES)];
 		
 		[object setReleaseDateDefined:@(YES)];
-//		[game setReleasePeriod:[self releasePeriodForGame:game context:context]];
 	}
 	else{
 		NSDateComponents *expectedReleaseDateComponents = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
