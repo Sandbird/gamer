@@ -38,8 +38,6 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-//	[Session setup];
-	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlist" object:nil];
 	
@@ -108,10 +106,10 @@
 	return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//	return (game.identifier) ? tableView.rowHeight : 0;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	return (game.identifier) ? tableView.rowHeight : 0;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
@@ -199,7 +197,7 @@
 //		[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:game.wishlistMetascore]];
 //	}
 //	else
-//		[customCell.metascoreLabel setHidden:YES];
+		[customCell.metascoreLabel setHidden:YES];
 }
 
 #pragma mark - HidingSectionView

@@ -547,7 +547,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//		NSLog(@"%@", JSON);
+//			NSLog(@"%@", responseObject);
 			
 			_game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
 			if (!_game) _game = [Game MR_createInContext:_context];

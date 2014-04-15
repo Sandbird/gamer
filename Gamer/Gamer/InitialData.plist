@@ -205,6 +205,55 @@
 				</dict>
 			</dict>
 		</array>
+		<key>regions</key>
+		<array>
+			<dict>
+				<key>region</key>
+				<dict>
+					<key>identifier</key>
+					<integer>1</integer>
+					<key>name</key>
+					<string>United States</string>
+					<key>abbreviation</key>
+					<string>US</string>
+					<key>image_name</key>
+					<string>FlagUnitedStates</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>region</key>
+				<dict>
+					<key>identifier</key>
+					<integer>2</integer>
+					<key>name</key>
+					<string>United Kingdom</string>
+					<key>image_name</key>
+					<string>FlagUnitedKingdom</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>region</key>
+				<dict>
+					<key>identifier</key>
+					<integer>6</integer>
+					<key>name</key>
+					<string>Japan</string>
+					<key>image_name</key>
+					<string>FlagJapan</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>region</key>
+				<dict>
+					<key>identifier</key>
+					<integer>11</integer>
+					<key>name</key>
+					<string>Australia</string>
+					<key>image_name</key>
+					<string>FlagAustralia</string>
+				</dict>
+			</dict>
+		</array>
 		<key>platforms</key>
 		<array>
 			<dict>
@@ -589,55 +638,6 @@
 					<integer>15</integer>
 					<key>metacritic_identifier</key>
 					<integer>14</integer>
-				</dict>
-			</dict>
-		</array>
-		<key>regions</key>
-		<array>
-			<dict>
-				<key>region</key>
-				<dict>
-					<key>identifier</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>United States</string>
-					<key>abbreviation</key>
-					<string>US</string>
-					<key>image_name</key>
-					<string>FlagUnitedStates</string>
-				</dict>
-			</dict>
-			<dict>
-				<key>region</key>
-				<dict>
-					<key>identifier</key>
-					<integer>2</integer>
-					<key>name</key>
-					<string>United Kingdom</string>
-					<key>image_name</key>
-					<string>FlagUnitedKingdom</string>
-				</dict>
-			</dict>
-			<dict>
-				<key>region</key>
-				<dict>
-					<key>identifier</key>
-					<integer>6</integer>
-					<key>name</key>
-					<string>Japan</string>
-					<key>image_name</key>
-					<string>FlagJapan</string>
-				</dict>
-			</dict>
-			<dict>
-				<key>region</key>
-				<dict>
-					<key>identifier</key>
-					<integer>11</integer>
-					<key>name</key>
-					<string>Australia</string>
-					<key>image_name</key>
-					<string>FlagAustralia</string>
 				</dict>
 			</dict>
 		</array>

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		250B37DF1808613B009EB170 /* SegmentedControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250B37DE1808613B009EB170 /* SegmentedControlCell.m */; };
 		250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 250D487717BFFFB1006B4C29 /* ContentStatusView.m */; };
+		25112F5318F8E6DA001B93EB /* Platform+Library.m in Sources */ = {isa = PBXBuildFile; fileRef = 25112F5218F8E6DA001B93EB /* Platform+Library.m */; };
 		25180CA117DFD534002675F1 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25180CA017DFD534002675F1 /* MobileCoreServices.framework */; };
 		25180CA217DFD541002675F1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA76179B55E4009B42BF /* SystemConfiguration.framework */; };
 		251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 251DEA41178CF3EA0094A6CB /* PlatformCell.m */; };
@@ -128,6 +129,8 @@
 		250B37E018086795009EB170 /* 1.1.2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.2.xcdatamodel; sourceTree = "<group>"; };
 		250D487617BFFFB1006B4C29 /* ContentStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentStatusView.h; sourceTree = "<group>"; };
 		250D487717BFFFB1006B4C29 /* ContentStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentStatusView.m; sourceTree = "<group>"; };
+		25112F5118F8E6DA001B93EB /* Platform+Library.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Platform+Library.h"; sourceTree = "<group>"; };
+		25112F5218F8E6DA001B93EB /* Platform+Library.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Platform+Library.m"; sourceTree = "<group>"; };
 		25180CA017DFD534002675F1 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		251DEA40178CF3EA0094A6CB /* PlatformCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformCell.h; sourceTree = "<group>"; };
 		251DEA41178CF3EA0094A6CB /* PlatformCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformCell.m; sourceTree = "<group>"; };
@@ -607,6 +610,8 @@
 			children = (
 				259DBBAD18958D0700B274F4 /* NSString+FetchedGroupByString.h */,
 				259DBBAE18958D0700B274F4 /* NSString+FetchedGroupByString.m */,
+				25112F5118F8E6DA001B93EB /* Platform+Library.h */,
+				25112F5218F8E6DA001B93EB /* Platform+Library.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -851,6 +856,7 @@
 				25B9E9C017A0B70200881089 /* LibraryController.m in Sources */,
 				25C5880718F6DCDF002A2EF4 /* StarRatingControl.m in Sources */,
 				259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */,
+				25112F5318F8E6DA001B93EB /* Platform+Library.m in Sources */,
 				25D4E68F18F3419600D93F80 /* Publisher.m in Sources */,
 				25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */,
 				25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */,

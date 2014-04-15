@@ -23,6 +23,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "SearchController_iPad.h"
 #import "LibraryFilterView.h"
+#import "Platform+Library.h"
 
 typedef NS_ENUM(NSInteger, LibraryFilter){
 	LibraryFilterTitle,
@@ -48,13 +49,14 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 @property (nonatomic, strong) LibraryFilterView *filterView;
 
+@property (nonatomic, strong) NSMutableArray *dataSource;
+
 @property (nonatomic, assign) LibraryFilter filter;
 
 @property (nonatomic, strong) NSCache *imageCache;
 
 @property (nonatomic, assign) NSInteger numberOfRunningTasks;
 
-@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
 @end
@@ -105,7 +107,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_filter = LibraryFilterPlatform;
 	
-	_fetchedResultsController = [Platform MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@", [Session gamer].platforms] sortedBy:@"index" ascending:YES inContext:_context];
+	[self loadDataSource];
 	
 	_imageCache = [NSCache new];
 	
@@ -146,7 +148,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
 	[_guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)]] == 0) ? NO : YES];
 	
-	return _fetchedResultsController.fetchedObjects.count;
+	return _dataSource.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
@@ -168,28 +170,17 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 //		headerTitle = @"Unknown";
 //
 	
-	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:indexPath.section inSection:0]];
-	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
-	[headerView.titleLabel setText:platform.name];
+	[headerView.titleLabel setText:_dataSource[indexPath.section][@"platform"][@"name"]];
 	[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
 	return headerView;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:section inSection:0]];
-	return platform.addedGames.count;
-//	return [_fetchedResultsController.sections[section] numberOfObjects];
+	return [_dataSource[section][@"platform"][@"games"] count];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:indexPath.section inSection:0]];
-	Game *game = platform.addedGames.allObjects[indexPath.row];
-	
-	if ([game.location isEqualToNumber:@(GameLocationWishlist)]){
-		return CGSizeZero;
-	}
-	
 	switch ([Session gamer].librarySize.integerValue) {
 		case 0: return [Tools deviceIsiPhone] ? CGSizeMake(40, 50) : CGSizeMake(83, 91);
 		case 1: return [Tools deviceIsiPhone] ? CGSizeMake(50, 63) : CGSizeMake(115, 127);
@@ -199,36 +190,43 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:indexPath.section inSection:0]];
-	
-	Game *game = platform.addedGames.allObjects[indexPath.row];
+	Game *game = _dataSource[indexPath.section][@"platform"][@"games"][indexPath.row];
 	
 	LibraryCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.coverImageView setBackgroundColor:[UIColor darkGrayColor]];
-	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
 	
-	if (image){
-		[cell.coverImageView setImage:image];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-	}
-	else{
-		[cell.coverImageView setImage:nil];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-		
-		UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-		
-		UIGraphicsBeginImageContext(image.size);
-		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-		image = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
-		
-		[cell.coverImageView setImage:image];
-		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
 		
 		if (image){
-			[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[cell.coverImageView setImage:image];
+				[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+			});
 		}
-	}
+		else{
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[cell.coverImageView setImage:nil];
+				[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+			});
+			
+			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+			
+			UIGraphicsBeginImageContext(image.size);
+			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+			image = UIGraphicsGetImageFromCurrentImageContext();
+			UIGraphicsEndImageContext();
+			
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[cell.coverImageView setImage:image];
+				[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+			});
+			
+			if (image){
+				[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+			}
+		}
+	});
 	
 	return cell;
 }
@@ -304,7 +302,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
 			
-			[_context MR_saveToPersistentStoreAndWait];
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_collectionView reloadData];
+			}];
 		}
 	}];
 	[downloadTask resume];
@@ -346,7 +346,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		}
 	}];
 	[dataTask resume];
-	_numberOfRunningTasks++;
 }
 
 #pragma mark - LibraryFilterView
@@ -364,9 +363,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_filter = LibraryFilterPlatform;
 	
-	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
-	[_collectionView reloadData];
+//	_fetchedResultsController = nil;
+//	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
+//	[_collectionView reloadData];
 }
 
 #pragma mark - ActionSheet
@@ -443,25 +442,45 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 #pragma mark - Custom
 
+- (void)loadDataSource{
+	_dataSource = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
+	
+	NSArray *platforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", [Session gamer].platforms] inContext:_context];
+	
+	for (Platform *platform in platforms){
+		if (platform.containsLibraryGames){
+			[_dataSource addObject:@{@"platform":@{@"id":platform.identifier,
+												   @"name":platform.name,
+												   @"games":platform.sortedLibraryGames}}];
+		}
+	}
+}
+
 - (void)fetchGamesWithFilter:(LibraryFilter)filter group:(NSString *)group predicate:(NSPredicate *)predicate sort:(NSString *)sort ascending:(BOOL)ascending{
 	_filter = filter;
 	
-	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:group withPredicate:predicate sortedBy:sort ascending:ascending inContext:_context];
-	[_collectionView reloadData];
+//	_fetchedResultsController = nil;
+//	_fetchedResultsController = [Game MR_fetchAllGroupedBy:group withPredicate:predicate sortedBy:sort ascending:ascending inContext:_context];
+//	[_collectionView reloadData];
 }
 
 - (void)refreshLibraryGames{
-	if (_fetchedResultsController.fetchedObjects.count > 0){
-		[_refreshBarButton setEnabled:NO];
-	}
+//	if (_fetchedResultsController.fetchedObjects.count > 0){
+//		[_refreshBarButton setEnabled:NO];
+//	}
 	
 	_numberOfRunningTasks = 0;
 	
 	// Request info for all games in the Wishlist
-	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
-		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
-			[self requestGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+	for (NSDictionary *dictionary in _dataSource){
+		for (Game *game in dictionary[@"platform"][@"games"]){
+			[self requestGame:game];
+		}
+	}
+	
+//	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
+//		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
+//			[self requestGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
 }
 
 - (void)showSortOptions{
@@ -501,9 +520,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_filter = LibraryFilterPlatform;
 	
-	_fetchedResultsController = nil;
-	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
-	[_collectionView reloadData];
+//	_fetchedResultsController = nil;
+//	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
+//	[_collectionView reloadData];
 }
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
@@ -519,15 +538,14 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_filter = LibraryFilterPlatform;
 	
-	_fetchedResultsController = nil;
-	_fetchedResultsController = [Platform MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@", [Session gamer].platforms] sortedBy:@"index" ascending:YES inContext:_context];
-	[_collectionView reloadData];
+//	_fetchedResultsController = nil;
+//	_fetchedResultsController = [Platform MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@", [Session gamer].platforms] sortedBy:@"index" ascending:YES inContext:_context];
+//	[_collectionView reloadData];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	NSIndexPath *indexPath = sender;
-	Platform *platform = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForItem:indexPath.section inSection:0]];
-	Game *game = platform.addedGames.allObjects[indexPath.row];
+	Game *game = _dataSource[indexPath.section][@"platform"][@"games"][indexPath.row];
 	
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
 		if ([Tools deviceIsiPad]){
