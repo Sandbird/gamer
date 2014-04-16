@@ -140,11 +140,13 @@ static NSArray *SEARCHRESULTS;
 	
 	for (NSDictionary *platformDictionary in initialDataDictionary[@"initial_data"][@"platforms"]){
 		Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"platform"][@"identifier"] inContext:context];
-		if (!platform) platform = [Platform MR_createInContext:context];
+		if (!platform){
+			platform = [Platform MR_createInContext:context];
+			[platform setIndex:platformDictionary[@"platform"][@"index"]];
+		}
 		[platform setIdentifier:platformDictionary[@"platform"][@"identifier"]];
 		[platform setName:platformDictionary[@"platform"][@"name"]];
 		[platform setAbbreviation:platformDictionary[@"platform"][@"abbreviation"]];
-		[platform setIndex:platformDictionary[@"platform"][@"index"]];
 		[platform setMetacriticIdentifier:platformDictionary[@"platform"][@"metacritic_identifier"]];
 		[platform setColor:[UIColor colorWithRed:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"red"]].floatValue
 										   green:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"green"]].floatValue

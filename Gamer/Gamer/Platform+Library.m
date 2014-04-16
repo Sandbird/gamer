@@ -26,7 +26,7 @@
 	return [libraryGames sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		Game *game1 = (Game *)obj1;
 		Game *game2 = (Game *)obj2;
-		return [game1.title compare:game2.title] == NSOrderedAscending;
+		return [game1.title compare:game2.title] == NSOrderedDescending;
 	}];
 }
 

@@ -182,9 +182,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 	switch ([Session gamer].librarySize.integerValue) {
-		case 0: return [Tools deviceIsiPhone] ? CGSizeMake(40, 50) : CGSizeMake(83, 91);
-		case 1: return [Tools deviceIsiPhone] ? CGSizeMake(50, 63) : CGSizeMake(115, 127);
-		case 2: return [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
+		case LibrarySizeSmall: return [Tools deviceIsiPhone] ? CGSizeMake(40, 50) : CGSizeMake(83, 91);
+		case LibrarySizeMedium: return [Tools deviceIsiPhone] ? CGSizeMake(50, 63) : CGSizeMake(115, 127);
+		case LibrarySizeLarge: return [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
 		default: return CGSizeZero;
 	}
 }
@@ -212,8 +212,12 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 			
-			UIGraphicsBeginImageContext(image.size);
-			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+			CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
+			
+			CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
+			
+			UIGraphicsBeginImageContext(imageSize);
+			[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
 			image = UIGraphicsGetImageFromCurrentImageContext();
 			UIGraphicsEndImageContext();
 			
@@ -449,9 +453,31 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	for (Platform *platform in platforms){
 		if (platform.containsLibraryGames){
+			NSArray *games = platform.sortedLibraryGames;
+			
 			[_dataSource addObject:@{@"platform":@{@"id":platform.identifier,
 												   @"name":platform.name,
-												   @"games":platform.sortedLibraryGames}}];
+												   @"games":games}}];
+			
+			// Cache images
+//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//				for (Game *game in games){
+//					UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+//					
+//					CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
+//					
+//					CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
+//					
+//					UIGraphicsBeginImageContext(imageSize);
+//					[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
+//					image = UIGraphicsGetImageFromCurrentImageContext();
+//					UIGraphicsEndImageContext();
+//					
+//					if (image){
+//						[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+//					}
+//				}
+//			});
 		}
 	}
 }
@@ -477,10 +503,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			[self requestGame:game];
 		}
 	}
-	
-//	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
-//		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
-//			[self requestGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
 }
 
 - (void)showSortOptions{
@@ -520,9 +542,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_filter = LibraryFilterPlatform;
 	
-//	_fetchedResultsController = nil;
-//	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
-//	[_collectionView reloadData];
+	[self loadDataSource];
+	[_collectionView reloadData];
 }
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
@@ -538,9 +559,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_filter = LibraryFilterPlatform;
 	
-//	_fetchedResultsController = nil;
-//	_fetchedResultsController = [Platform MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@", [Session gamer].platforms] sortedBy:@"index" ascending:YES inContext:_context];
-//	[_collectionView reloadData];
+	[self loadDataSource];
+	[_collectionView reloadData];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

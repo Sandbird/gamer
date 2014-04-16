@@ -132,30 +132,38 @@
 	ImportCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
 	
-	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
-	
-	if (image){
-		[cell.coverImageView setImage:image];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-	}
-	else{
-		[cell.coverImageView setImage:nil];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-		
-		UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-		
-		UIGraphicsBeginImageContext(image.size);
-		[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-		image = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
-		
-		[cell.coverImageView setImage:image];
-		[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
 		
 		if (image){
-			[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[cell.coverImageView setImage:image];
+				[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+			});
 		}
-	}
+		else{
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[cell.coverImageView setImage:nil];
+				[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+			});
+			
+			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+			
+			UIGraphicsBeginImageContext(image.size);
+			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+			image = UIGraphicsGetImageFromCurrentImageContext();
+			UIGraphicsEndImageContext();
+			
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[cell.coverImageView setImage:image];
+				[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+			});
+			
+			if (image){
+				[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+			}
+		}
+	});
 	
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	[cell setAccessoryType:game.releaseDate ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];

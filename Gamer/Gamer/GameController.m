@@ -999,6 +999,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	else
 		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
 	
+	NSLog(@"RATING: %@", _game.personalRating);
+	
 	[_ratingControl setRating:_game.personalRating.floatValue];
 	
 	[_notesTextView setText:_game.notes];
@@ -1226,9 +1228,15 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_ratingControl setStarFontSize:30];
 	[_ratingView addSubview:_ratingControl];
 	
-	__weak Game *game = _game;
-	__weak NSManagedObjectContext *context = _context;
+	__block Game *game = _game;
+	__block NSManagedObjectContext *context = _context;
+	
 	[_ratingControl setEditingChangedBlock:^(NSUInteger rating){
+		[game setPersonalRating:@(rating)];
+		[context MR_saveToPersistentStoreAndWait];
+	}];
+	
+	[_ratingControl setEditingDidEndBlock:^(NSUInteger rating){
 		[game setPersonalRating:@(rating)];
 		[context MR_saveToPersistentStoreAndWait];
 	}];
