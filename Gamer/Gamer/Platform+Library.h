@@ -13,4 +13,7 @@
 - (BOOL)containsLibraryGames;
 - (NSArray *)sortedLibraryGames;
 
+- (BOOL)containsReleasesWithGame:(Game *)game;
+- (NSArray *)sortedReleasesWithGame:(Game *)game;
+
 @end

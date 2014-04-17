@@ -12,10 +12,11 @@
 #import "Platform.h"
 #import "Region.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import "Platform+Library.h"
 
 @interface ReleasesController ()
 
-@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, strong) NSMutableArray *dataSource;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
@@ -28,41 +29,41 @@
 	
 	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_fetchedResultsController = [self fetch];
+	_dataSource = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
+	
+	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", [Session gamer].platforms] inContext:_context];
+	
+	for (Platform *platform in platforms){
+		if ([platform containsReleasesWithGame:_game]){
+			NSArray *releases = [platform sortedReleasesWithGame:_game];
+			
+			[_dataSource addObject:@{@"platform":@{@"id":platform.identifier,
+												   @"name":platform.name,
+												   @"releases":releases}}];
+		}
+	}
 }
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 }
 
-#pragma mark - Fetch
-
-- (NSFetchedResultsController *)fetch{
-	if (!_fetchedResultsController){
-		_fetchedResultsController = [Release MR_fetchAllGroupedBy:@"platform.identifier" withPredicate:[NSPredicate predicateWithFormat:@"game = %@", _game] sortedBy:@"platform.identifier,releaseDate" ascending:YES inContext:_context];
-	}
-	
-	return _fetchedResultsController;
-}
-
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-	return self.fetchedResultsController.sections.count;
+	return _dataSource.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-	NSString *sectionName = [self.fetchedResultsController.sections[section] name];
-	Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:sectionName inContext:_context];
-	return platform.name;
+	return _dataSource[section][@"platform"][@"name"];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return [self.fetchedResultsController.sections[section] numberOfObjects];
+	return [_dataSource[section][@"platform"][@"releases"] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	Release *release = [_fetchedResultsController objectAtIndexPath:indexPath];
+	Release *release = _dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
 	
 	ReleaseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:release.title];
@@ -77,7 +78,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	if ([tableView cellForRowAtIndexPath:indexPath].selectionStyle != UITableViewCellSelectionStyleNone){
-		Release *release = [_fetchedResultsController objectAtIndexPath:indexPath];
+		Release *release = _dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
 		[self.delegate releasesController:self didSelectRelease:release == _game.selectedRelease ? nil : release];
 	}
 }
