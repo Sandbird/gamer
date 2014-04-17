@@ -39,7 +39,7 @@
 
 - (NSFetchedResultsController *)fetch{
 	if (!_fetchedResultsController){
-		_fetchedResultsController = [Release MR_fetchAllGroupedBy:@"platform.index" withPredicate:[NSPredicate predicateWithFormat:@"game = %@", _game] sortedBy:@"platform.index,releaseDate" ascending:YES inContext:_context];
+		_fetchedResultsController = [Release MR_fetchAllGroupedBy:@"platform.identifier" withPredicate:[NSPredicate predicateWithFormat:@"game = %@", _game] sortedBy:@"platform.identifier,releaseDate" ascending:YES inContext:_context];
 	}
 	
 	return _fetchedResultsController;
@@ -53,7 +53,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	NSString *sectionName = [self.fetchedResultsController.sections[section] name];
-	Platform *platform = [Platform MR_findFirstByAttribute:@"index" withValue:sectionName inContext:_context];
+	Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:sectionName inContext:_context];
 	return platform.name;
 }
 
@@ -78,7 +78,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	if ([tableView cellForRowAtIndexPath:indexPath].selectionStyle != UITableViewCellSelectionStyleNone){
 		Release *release = [_fetchedResultsController objectAtIndexPath:indexPath];
-		[self.delegate releasesController:self didSelectRelease:release];
+		[self.delegate releasesController:self didSelectRelease:release == _game.selectedRelease ? nil : release];
 	}
 }
 

@@ -218,10 +218,10 @@ typedef NS_ENUM(NSInteger, Section){
 	Platform *platform;
 	
 	switch (indexPath.section) {
-		case Section8thGen: platform = _eighthGenPlatforms[indexPath.row];
-		case Section7thGen: platform = _seventhGenPlatforms[indexPath.row];
-		case Section6thGen: platform = _sixthGenPlatforms[indexPath.row];
-		case Section5thGen: platform = _fifthGenPlatforms[indexPath.row];
+		case Section8thGen: platform = _eighthGenPlatforms[indexPath.row]; break;
+		case Section7thGen: platform = _seventhGenPlatforms[indexPath.row]; break;
+		case Section6thGen: platform = _sixthGenPlatforms[indexPath.row]; break;
+		case Section5thGen: platform = _fifthGenPlatforms[indexPath.row]; break;
 		default: break;
 	}
 	
