@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5063" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Developer" representedClassName="Developer" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -75,6 +75,7 @@
     <entity name="Platform" representedClassName="Platform" syncable="YES">
         <attribute name="abbreviation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="color" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="group" optional="YES" attributeType="Integer 16" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" syncable="YES"/>
         <attribute name="metacriticIdentifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
@@ -153,7 +154,7 @@
         <element name="Genre" positionX="106" positionY="-243" width="128" height="88"/>
         <element name="Image" positionX="286" positionY="-241" width="128" height="103"/>
         <element name="Metascore" positionX="-108" positionY="386" width="128" height="118"/>
-        <element name="Platform" positionX="-299" positionY="-243" width="128" height="208"/>
+        <element name="Platform" positionX="-299" positionY="-243" width="128" height="223"/>
         <element name="Publisher" positionX="106" positionY="2" width="128" height="88"/>
         <element name="Region" positionX="-488" positionY="245" width="128" height="133"/>
         <element name="Release" positionX="-288" positionY="207" width="128" height="268"/>

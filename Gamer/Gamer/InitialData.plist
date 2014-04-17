@@ -276,6 +276,8 @@
 					</dict>
 					<key>index</key>
 					<integer>0</integer>
+					<key>group</key>
+					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>3</integer>
 				</dict>
@@ -292,14 +294,16 @@
 					<key>color</key>
 					<dict>
 						<key>red</key>
-						<real>0.039215686</real>
+						<real>0.003921569</real>
 						<key>green</key>
-						<real>0.254901961</real>
+						<real>0.262745098</real>
 						<key>blue</key>
-						<real>0.588235294</real>
+						<real>0.603921569</real>
 					</dict>
 					<key>index</key>
 					<integer>1</integer>
+					<key>group</key>
+					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>72496</integer>
 				</dict>
@@ -324,8 +328,36 @@
 					</dict>
 					<key>index</key>
 					<integer>2</integer>
+					<key>group</key>
+					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>80000</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>platform</key>
+				<dict>
+					<key>identifier</key>
+					<integer>139</integer>
+					<key>name</key>
+					<string>Wii U</string>
+					<key>abbreviation</key>
+					<string>WIIU</string>
+					<key>color</key>
+					<dict>
+						<key>red</key>
+						<integer>0</integer>
+						<key>green</key>
+						<real>0.521568627</real>
+						<key>blue</key>
+						<real>0.749019608</real>
+					</dict>
+					<key>index</key>
+					<integer>3</integer>
+					<key>group</key>
+					<integer>0</integer>
+					<key>metacritic_identifier</key>
+					<integer>68410</integer>
 				</dict>
 			</dict>
 			<dict>
@@ -347,33 +379,11 @@
 						<real>0.058823529</real>
 					</dict>
 					<key>index</key>
-					<integer>3</integer>
+					<integer>4</integer>
+					<key>group</key>
+					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>16</integer>
-				</dict>
-			</dict>
-			<dict>
-				<key>platform</key>
-				<dict>
-					<key>identifier</key>
-					<integer>35</integer>
-					<key>name</key>
-					<string>PlayStation 3</string>
-					<key>abbreviation</key>
-					<string>PS3</string>
-					<key>color</key>
-					<dict>
-						<key>red</key>
-						<integer>0</integer>
-						<key>green</key>
-						<real>0.039215686</real>
-						<key>blue</key>
-						<real>0.525490196</real>
-					</dict>
-					<key>index</key>
-					<integer>4</integer>
-					<key>metacritic_identifier</key>
-					<integer>1</integer>
 				</dict>
 			</dict>
 			<dict>
@@ -396,6 +406,8 @@
 					</dict>
 					<key>index</key>
 					<integer>5</integer>
+					<key>group</key>
+					<integer>0</integer>
 					<key>metacritic_identifier</key>
 					<integer>67365</integer>
 				</dict>
@@ -404,48 +416,26 @@
 				<key>platform</key>
 				<dict>
 					<key>identifier</key>
-					<integer>36</integer>
+					<integer>35</integer>
 					<key>name</key>
-					<string>Wii</string>
+					<string>PlayStation 3</string>
 					<key>abbreviation</key>
-					<string>WII</string>
-					<key>color</key>
-					<dict>
-						<key>red</key>
-						<real>0.352941176</real>
-						<key>green</key>
-						<real>0.784313725</real>
-						<key>blue</key>
-						<real>0.941176471</real>
-					</dict>
-					<key>index</key>
-					<integer>6</integer>
-					<key>metacritic_identifier</key>
-					<integer>8</integer>
-				</dict>
-			</dict>
-			<dict>
-				<key>platform</key>
-				<dict>
-					<key>identifier</key>
-					<integer>139</integer>
-					<key>name</key>
-					<string>Wii U</string>
-					<key>abbreviation</key>
-					<string>WIIU</string>
+					<string>PS3</string>
 					<key>color</key>
 					<dict>
 						<key>red</key>
 						<integer>0</integer>
 						<key>green</key>
-						<real>0.521568627</real>
+						<real>0.039215686</real>
 						<key>blue</key>
-						<real>0.749019608</real>
+						<real>0.525490196</real>
 					</dict>
 					<key>index</key>
-					<integer>7</integer>
+					<integer>0</integer>
+					<key>group</key>
+					<integer>1</integer>
 					<key>metacritic_identifier</key>
-					<integer>68410</integer>
+					<integer>1</integer>
 				</dict>
 			</dict>
 			<dict>
@@ -467,7 +457,9 @@
 						<real>0.145098039</real>
 					</dict>
 					<key>index</key>
-					<integer>8</integer>
+					<integer>1</integer>
+					<key>group</key>
+					<integer>1</integer>
 					<key>metacritic_identifier</key>
 					<integer>2</integer>
 				</dict>
@@ -476,24 +468,26 @@
 				<key>platform</key>
 				<dict>
 					<key>identifier</key>
-					<integer>23</integer>
+					<integer>36</integer>
 					<key>name</key>
-					<string>GameCube</string>
+					<string>Wii</string>
 					<key>abbreviation</key>
-					<string>GC</string>
+					<string>WII</string>
 					<key>color</key>
 					<dict>
 						<key>red</key>
-						<real>0.333333333</real>
+						<real>0.352941176</real>
 						<key>green</key>
-						<real>0.333333333</real>
+						<real>0.784313725</real>
 						<key>blue</key>
-						<real>0.333333333</real>
+						<real>0.941176471</real>
 					</dict>
 					<key>index</key>
-					<integer>9</integer>
+					<integer>2</integer>
+					<key>group</key>
+					<integer>1</integer>
 					<key>metacritic_identifier</key>
-					<integer>13</integer>
+					<integer>8</integer>
 				</dict>
 			</dict>
 			<dict>
@@ -508,40 +502,18 @@
 					<key>color</key>
 					<dict>
 						<key>red</key>
-						<real>0.333333333</real>
+						<real>0.666666667</real>
 						<key>green</key>
-						<real>0.333333333</real>
+						<real>0.31372549</real>
 						<key>blue</key>
-						<real>0.333333333</real>
+						<real>0.31372549</real>
 					</dict>
 					<key>index</key>
-					<integer>10</integer>
+					<integer>3</integer>
+					<key>group</key>
+					<integer>1</integer>
 					<key>metacritic_identifier</key>
 					<integer>4</integer>
-				</dict>
-			</dict>
-			<dict>
-				<key>platform</key>
-				<dict>
-					<key>identifier</key>
-					<integer>19</integer>
-					<key>name</key>
-					<string>PlayStation 2</string>
-					<key>abbreviation</key>
-					<string>PS2</string>
-					<key>color</key>
-					<dict>
-						<key>red</key>
-						<real>0.333333333</real>
-						<key>green</key>
-						<real>0.333333333</real>
-						<key>blue</key>
-						<real>0.333333333</real>
-					</dict>
-					<key>index</key>
-					<integer>11</integer>
-					<key>metacritic_identifier</key>
-					<integer>6</integer>
 				</dict>
 			</dict>
 			<dict>
@@ -556,16 +528,70 @@
 					<key>color</key>
 					<dict>
 						<key>red</key>
-						<real>0.333333333</real>
+						<real>0.196078431</real>
 						<key>green</key>
-						<real>0.333333333</real>
+						<real>0.196078431</real>
 						<key>blue</key>
-						<real>0.333333333</real>
+						<real>0.549019608</real>
 					</dict>
 					<key>index</key>
-					<integer>12</integer>
+					<integer>4</integer>
+					<key>group</key>
+					<integer>1</integer>
 					<key>metacritic_identifier</key>
 					<integer>7</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>platform</key>
+				<dict>
+					<key>identifier</key>
+					<integer>23</integer>
+					<key>name</key>
+					<string>GameCube</string>
+					<key>abbreviation</key>
+					<string>GC</string>
+					<key>color</key>
+					<dict>
+						<key>red</key>
+						<real>0.282352941</real>
+						<key>green</key>
+						<real>0.321568627</real>
+						<key>blue</key>
+						<real>0.603921569</real>
+					</dict>
+					<key>index</key>
+					<integer>0</integer>
+					<key>group</key>
+					<integer>2</integer>
+					<key>metacritic_identifier</key>
+					<integer>13</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>platform</key>
+				<dict>
+					<key>identifier</key>
+					<integer>19</integer>
+					<key>name</key>
+					<string>PlayStation 2</string>
+					<key>abbreviation</key>
+					<string>PS2</string>
+					<key>color</key>
+					<dict>
+						<key>red</key>
+						<integer>0</integer>
+						<key>green</key>
+						<integer>0</integer>
+						<key>blue</key>
+						<real>0.392156863</real>
+					</dict>
+					<key>index</key>
+					<integer>1</integer>
+					<key>group</key>
+					<integer>2</integer>
+					<key>metacritic_identifier</key>
+					<integer>6</integer>
 				</dict>
 			</dict>
 			<dict>
@@ -576,18 +602,20 @@
 					<key>name</key>
 					<string>Xbox</string>
 					<key>abbreviation</key>
-					<string>XB</string>
+					<string>XBOX</string>
 					<key>color</key>
 					<dict>
 						<key>red</key>
-						<real>0.333333333</real>
+						<real>0.549019608</real>
 						<key>green</key>
-						<real>0.333333333</real>
+						<real>0.862745098</real>
 						<key>blue</key>
-						<real>0.333333333</real>
+						<real>0.392156863</real>
 					</dict>
 					<key>index</key>
-					<integer>13</integer>
+					<integer>2</integer>
+					<key>group</key>
+					<integer>2</integer>
 					<key>metacritic_identifier</key>
 					<integer>12</integer>
 				</dict>
@@ -596,24 +624,52 @@
 				<key>platform</key>
 				<dict>
 					<key>identifier</key>
-					<integer>22</integer>
+					<integer>37</integer>
 					<key>name</key>
-					<string>PlayStation</string>
+					<string>Dreamcast</string>
 					<key>abbreviation</key>
-					<string>PS</string>
+					<string>DC</string>
 					<key>color</key>
 					<dict>
 						<key>red</key>
-						<real>0.333333333</real>
+						<real>0.929411765</real>
 						<key>green</key>
-						<real>0.333333333</real>
+						<real>0.517647059</real>
 						<key>blue</key>
-						<real>0.333333333</real>
+						<real>0.196078431</real>
 					</dict>
 					<key>index</key>
-					<integer>14</integer>
+					<integer>3</integer>
+					<key>group</key>
+					<integer>2</integer>
 					<key>metacritic_identifier</key>
-					<integer>10</integer>
+					<integer>15</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>platform</key>
+				<dict>
+					<key>identifier</key>
+					<integer>4</integer>
+					<key>name</key>
+					<string>Game Boy Advance</string>
+					<key>abbreviation</key>
+					<string>GBA</string>
+					<key>color</key>
+					<dict>
+						<key>red</key>
+						<real>0.384313725</real>
+						<key>green</key>
+						<real>0.133333333</real>
+						<key>blue</key>
+						<real>0.588235294</real>
+					</dict>
+					<key>index</key>
+					<integer>4</integer>
+					<key>group</key>
+					<integer>2</integer>
+					<key>metacritic_identifier</key>
+					<integer>11</integer>
 				</dict>
 			</dict>
 			<dict>
@@ -628,16 +684,96 @@
 					<key>color</key>
 					<dict>
 						<key>red</key>
-						<real>0.333333333</real>
+						<real>0.956862745</real>
 						<key>green</key>
-						<real>0.333333333</real>
+						<real>0.7019607839999999</real>
 						<key>blue</key>
-						<real>0.333333333</real>
+						<integer>0</integer>
 					</dict>
 					<key>index</key>
-					<integer>15</integer>
+					<integer>0</integer>
+					<key>group</key>
+					<integer>3</integer>
 					<key>metacritic_identifier</key>
 					<integer>14</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>platform</key>
+				<dict>
+					<key>identifier</key>
+					<integer>22</integer>
+					<key>name</key>
+					<string>PlayStation</string>
+					<key>abbreviation</key>
+					<string>PS1</string>
+					<key>color</key>
+					<dict>
+						<key>red</key>
+						<real>0.2</real>
+						<key>green</key>
+						<real>0.423529412</real>
+						<key>blue</key>
+						<real>0.7019607839999999</real>
+					</dict>
+					<key>index</key>
+					<integer>1</integer>
+					<key>group</key>
+					<integer>3</integer>
+					<key>metacritic_identifier</key>
+					<integer>10</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>platform</key>
+				<dict>
+					<key>identifier</key>
+					<integer>42</integer>
+					<key>name</key>
+					<string>Saturn</string>
+					<key>abbreviation</key>
+					<string>SAT</string>
+					<key>color</key>
+					<dict>
+						<key>red</key>
+						<real>0.22745098</real>
+						<key>green</key>
+						<real>0.490196078</real>
+						<key>blue</key>
+						<integer>1</integer>
+					</dict>
+					<key>index</key>
+					<integer>2</integer>
+					<key>group</key>
+					<integer>3</integer>
+					<key>metacritic_identifier</key>
+					<integer>0</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>platform</key>
+				<dict>
+					<key>identifier</key>
+					<integer>57</integer>
+					<key>name</key>
+					<string>Game Boy Color</string>
+					<key>abbreviation</key>
+					<string>GBC</string>
+					<key>color</key>
+					<dict>
+						<key>red</key>
+						<integer>0</integer>
+						<key>green</key>
+						<real>0.584313725</real>
+						<key>blue</key>
+						<real>0.541176471</real>
+					</dict>
+					<key>index</key>
+					<integer>3</integer>
+					<key>group</key>
+					<integer>3</integer>
+					<key>metacritic_identifier</key>
+					<integer>0</integer>
 				</dict>
 			</dict>
 		</array>

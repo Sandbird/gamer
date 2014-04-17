@@ -142,7 +142,7 @@ static NSArray *SEARCHRESULTS;
 		Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"platform"][@"identifier"] inContext:context];
 		if (!platform){
 			platform = [Platform MR_createInContext:context];
-			[platform setIndex:platformDictionary[@"platform"][@"index"]];
+//			[platform setIndex:platformDictionary[@"platform"][@"index"]];
 		}
 		[platform setIdentifier:platformDictionary[@"platform"][@"identifier"]];
 		[platform setName:platformDictionary[@"platform"][@"name"]];
@@ -152,6 +152,9 @@ static NSArray *SEARCHRESULTS;
 										   green:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"green"]].floatValue
 											blue:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"blue"]].floatValue
 										   alpha:1]];
+		
+		[platform setGroup:platformDictionary[@"platform"][@"group"]];
+		[platform setIndex:platformDictionary[@"platform"][@"index"]];
 	}
 	
 	for (NSDictionary *releasePeriodDictionary in initialDataDictionary[@"initial_data"][@"release_periods"]){

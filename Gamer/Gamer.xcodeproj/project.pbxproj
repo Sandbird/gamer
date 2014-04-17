@@ -28,6 +28,7 @@
 		2531E85B176CDC68005881A4 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 2531E85A176CDC3B005881A4 /* SearchResult.m */; };
 		25348F9218D4A37400F5A76D /* AboutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9118D4A37400F5A76D /* AboutController.m */; };
 		25348F9518D4A40200F5A76D /* AboutCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9418D4A40100F5A76D /* AboutCell.m */; };
+		253B475318FF702100CC4140 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 253B475218FF702100CC4140 /* Platform.m */; };
 		253B57F21834536B00617E3B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 253B57F11834536B00617E3B /* MessageUI.framework */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
 		255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA78179B566E009B42BF /* AdSupport.framework */; };
@@ -90,7 +91,6 @@
 		25D4E69518F3419600D93F80 /* Developer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E69418F3419600D93F80 /* Developer.m */; };
 		25D4E69818F3419600D93F80 /* Region.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E69718F3419600D93F80 /* Region.m */; };
 		25D4E69B18F3419600D93F80 /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E69A18F3419600D93F80 /* Video.m */; };
-		25D4E6AA18F493FD00D93F80 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E6A918F493FD00D93F80 /* Platform.m */; };
 		25D4E6B318F5C8A800D93F80 /* ReleasePeriod.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E6B218F5C8A800D93F80 /* ReleasePeriod.m */; };
 		25D4E6B618F5C8A900D93F80 /* Release.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E6B518F5C8A900D93F80 /* Release.m */; };
 		25D4E6B918F5D72300D93F80 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E6B818F5D72300D93F80 /* Game.m */; };
@@ -146,6 +146,8 @@
 		25348F9118D4A37400F5A76D /* AboutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutController.m; sourceTree = "<group>"; };
 		25348F9318D4A40100F5A76D /* AboutCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutCell.h; sourceTree = "<group>"; };
 		25348F9418D4A40100F5A76D /* AboutCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutCell.m; sourceTree = "<group>"; };
+		253B475118FF702100CC4140 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
+		253B475218FF702100CC4140 /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
 		253B57DC182B159400617E3B /* 1.1.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.3.xcdatamodel; sourceTree = "<group>"; };
 		253B57F11834536B00617E3B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		2555469F17DFF9430069F8A5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -258,8 +260,6 @@
 		25D4E69718F3419600D93F80 /* Region.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Region.m; sourceTree = "<group>"; };
 		25D4E69918F3419600D93F80 /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
 		25D4E69A18F3419600D93F80 /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video.m; sourceTree = "<group>"; };
-		25D4E6A818F493FD00D93F80 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
-		25D4E6A918F493FD00D93F80 /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
 		25D4E6B118F5C8A800D93F80 /* ReleasePeriod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasePeriod.h; sourceTree = "<group>"; };
 		25D4E6B218F5C8A800D93F80 /* ReleasePeriod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasePeriod.m; sourceTree = "<group>"; };
 		25D4E6B418F5C8A900D93F80 /* Release.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Release.h; sourceTree = "<group>"; };
@@ -528,14 +528,14 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				253B475118FF702100CC4140 /* Platform.h */,
+				253B475218FF702100CC4140 /* Platform.m */,
 				25D4E6B718F5D72300D93F80 /* Game.h */,
 				25D4E6B818F5D72300D93F80 /* Game.m */,
 				25D4E6B418F5C8A900D93F80 /* Release.h */,
 				25D4E6B518F5C8A900D93F80 /* Release.m */,
 				25D4E6B118F5C8A800D93F80 /* ReleasePeriod.h */,
 				25D4E6B218F5C8A800D93F80 /* ReleasePeriod.m */,
-				25D4E6A818F493FD00D93F80 /* Platform.h */,
-				25D4E6A918F493FD00D93F80 /* Platform.m */,
 				25D4E69918F3419600D93F80 /* Video.h */,
 				25D4E69A18F3419600D93F80 /* Video.m */,
 				25D4E69618F3419600D93F80 /* Region.h */,
@@ -810,6 +810,7 @@
 				2531E85B176CDC68005881A4 /* SearchResult.m in Sources */,
 				2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */,
 				25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */,
+				253B475318FF702100CC4140 /* Platform.m in Sources */,
 				2531E856176CDBDD005881A4 /* Tools.m in Sources */,
 				2531E857176CDBDD005881A4 /* Session.m in Sources */,
 				25AC859918EE63A100919A15 /* PlatformPickerController.m in Sources */,
@@ -848,7 +849,6 @@
 				25AC85AE18F0575B00919A15 /* PlatformPickerCell.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ImageViewerController.m in Sources */,
 				25CF6AE9180B697B000E51B2 /* Networking.m in Sources */,
-				25D4E6AA18F493FD00D93F80 /* Platform.m in Sources */,
 				25348F9218D4A37400F5A76D /* AboutController.m in Sources */,
 				25C9FE3917CC4C4500CCDD59 /* WishlistController_iPad.m in Sources */,
 				250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */,
