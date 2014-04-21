@@ -267,7 +267,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			break;
 		case SectionStatus:
 			if (([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)] && indexPath.row == 1) || ([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(YES)] && indexPath.row == 0) || ([_game.location isEqualToNumber:@(GameLocationLibrary)] && indexPath.row == 4)){
-				CGRect textRect = [_game.notes boundingRectWithSize:CGSizeMake(_notesTextView.frame.size.width - 10, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
+				CGRect textRect = [_game.notes boundingRectWithSize:CGSizeMake(_notesTextView.frame.size.width - 15, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
 				return 45 + 20 + textRect.size.height + 20; // Top padding + note text height + bottom padding
 			}
 			break;
@@ -988,18 +988,31 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[self refreshAddButtonsAnimated:animated];
 	
+	// Set status switches' position
 	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
 	[_finishedSwitch setOn:_game.finished.boolValue animated:animated];
-	[_retailDigitalSegmentedControl setSelectedSegmentIndex:_game.digital.boolValue];
 	
-	if ([_game.lent isEqualToNumber:@(YES)])
-		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:1];
-	else if ([_game.borrowed isEqualToNumber:@(YES)])
-		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:2];
-	else
+	// Set retailDigitalSegmentedControl selection
+	if ([_game.digital isEqualToNumber:@(YES)]){
+		[_retailDigitalSegmentedControl setSelectedSegmentIndex:1];
 		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
+	}
+	else{
+		[_retailDigitalSegmentedControl setSelectedSegmentIndex:0];
+	}
 	
-	NSLog(@"RATING: %@", _game.personalRating);
+	// Set lentBorrowedSegmentedControl selection
+	if ([_game.lent isEqualToNumber:@(YES)]){
+		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:1];
+		[_retailDigitalSegmentedControl setSelectedSegmentIndex:0];
+	}
+	else if ([_game.borrowed isEqualToNumber:@(YES)]){
+		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:2];
+		[_retailDigitalSegmentedControl setSelectedSegmentIndex:0];
+	}
+	else{
+		[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
+	}
 	
 	[_ratingControl setRating:_game.personalRating.floatValue];
 	
@@ -1279,12 +1292,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		switch (sender.selectedSegmentIndex) {
 			case 0:
 				[_game setDigital:@(NO)];
-				[_lentBorrowedSegmentedControl setEnabled:YES];
 				break;
 			case 1:
 				[_game setDigital:@(YES)];
 				[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
-				[_lentBorrowedSegmentedControl setEnabled:NO];
 				break;
 			default:
 				break;
@@ -1299,10 +1310,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			case 1:
 				[_game setLent:@(YES)];
 				[_game setBorrowed:@(NO)];
+				[_retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			case 2:
 				[_game setLent:@(NO)];
 				[_game setBorrowed:@(YES)];
+				[_retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			default:
 				break;

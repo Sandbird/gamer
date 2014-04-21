@@ -31,7 +31,7 @@
 	
 	_dataSource = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
 	
-	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", [Session gamer].platforms] inContext:_context];
+	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:nil inContext:_context];
 	
 	for (Platform *platform in platforms){
 		if ([platform containsReleasesWithGame:_game]){

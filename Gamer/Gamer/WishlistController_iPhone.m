@@ -151,21 +151,17 @@
 	
 	WishlistCell *customCell = (WishlistCell *)cell;
 	
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	
+	if (image){
+		[customCell.coverImageView setImage:image];
+		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[customCell.coverImageView setImage:nil];
+		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		if (image){
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[customCell.coverImageView setImage:image];
-				[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
-			});
-		}
-		else{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[customCell.coverImageView setImage:nil];
-				[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
-			});
-			
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 			
 			UIGraphicsBeginImageContext(image.size);
@@ -181,8 +177,8 @@
 			if (image){
 				[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
 			}
-		}
-	});
+		});
+	}
 	
 //	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.titleLabel setText:game.title];

@@ -18,21 +18,33 @@
 #import "SimilarGame.h"
 #import "Region.h"
 #import "Release.h"
+#import "Metascore.h"
 #import "GameController.h"
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
 #import "SearchController_iPad.h"
-#import "LibraryFilterView.h"
+#import "LibrarySortFilterView.h"
 #import "Platform+Library.h"
 
-typedef NS_ENUM(NSInteger, LibraryFilter){
-	LibraryFilterTitle,
-	LibraryFilterPlatform,
-	LibraryFilterReleaseYear,
-	LibraryFilterMetascore
+typedef NS_ENUM(NSInteger, LibrarySort){
+	LibrarySortTitle,
+	LibrarySortReleaseYear,
+	LibrarySortRating,
+//	LibrarySortMetascore,
+	LibrarySortPlatform
 };
 
-@interface LibraryController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, UIActionSheetDelegate, LibraryFilterViewDelegate>
+typedef NS_ENUM(NSInteger, LibraryFilter){
+	LibraryFilterFinished,
+	LibraryFilterUnfinished,
+	LibraryFilterRetail,
+	LibraryFilterDigital,
+	LibraryFilterLent,
+	LibraryFilterBorrowed,
+	LibraryFilterNone
+};
+
+@interface LibraryController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, UIActionSheetDelegate, LibrarySortFilterViewDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *refreshBarButton;
 @property (nonatomic, strong) UIBarButtonItem *searchBarItem;
@@ -47,11 +59,13 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 
-@property (nonatomic, strong) LibraryFilterView *filterView;
+@property (nonatomic, strong) LibrarySortFilterView *filterView;
 
 @property (nonatomic, strong) NSMutableArray *dataSource;
 
-@property (nonatomic, assign) LibraryFilter filter;
+@property (nonatomic, strong) NSFetchedResultsController *sortFilterDataSource;
+
+@property (nonatomic, assign) NSInteger sortOrFilter;
 
 @property (nonatomic, strong) NSCache *imageCache;
 
@@ -92,7 +106,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[_refreshControl addTarget:self action:@selector(refreshLibraryGames) forControlEvents:UIControlEventValueChanged];
 		[refreshView addSubview:_refreshControl];
 		
-		_filterView = [[LibraryFilterView alloc] initWithFrame:CGRectMake(0, -50, 320, 50)];
+		_filterView = [[LibrarySortFilterView alloc] initWithFrame:CGRectMake(0, -50, 320, 50)];
 		[_filterView setDelegate:self];
 		[_collectionView addSubview:_filterView];
 		
@@ -105,7 +119,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_filter = LibraryFilterPlatform;
+	_sortOrFilter = LibrarySortPlatform;
 	
 	[self loadDataSource];
 	
@@ -148,36 +162,55 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
 	[_guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)]] == 0) ? NO : YES];
 	
-	return _dataSource.count;
+	return (_sortOrFilter == LibrarySortPlatform) ? _dataSource.count : _sortFilterDataSource.sections.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-//	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
-//	
-//	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
-//	
-//	NSString *headerTitle;
-//	
-//	switch (_filter) {
-//		case LibraryFilterTitle: headerTitle = sectionName; break;
-//		case LibraryFilterPlatform: headerTitle = game.libraryPlatform.name; break;
-//		case LibraryFilterReleaseYear: headerTitle = game.releaseDate.year.stringValue; break;
-//		case LibraryFilterMetascore: headerTitle = game.metascore.length > 0 ? game.metascore : @"Unavailable"; break;
-//		default: break;
-//	}
-//	
-//	if ([headerTitle isEqualToString:@"2050"])
-//		headerTitle = @"Unknown";
-//
-	
-	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
-	[headerView.titleLabel setText:_dataSource[indexPath.section][@"platform"][@"name"]];
-	[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
-	return headerView;
+	if (_sortOrFilter == LibrarySortPlatform){
+		HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
+		[headerView.titleLabel setText:_dataSource[indexPath.section][@"platform"][@"name"]];
+		[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
+		return headerView;
+	}
+	else{
+		
+		NSString *sectionName = [_sortFilterDataSource.sections[indexPath.section] name];
+		
+		Game *game = [_sortFilterDataSource objectAtIndexPath:indexPath];
+		
+		NSString *headerTitle;
+		
+		switch (_sortOrFilter) {
+			case LibrarySortTitle: headerTitle = sectionName; break;
+			case LibrarySortReleaseYear: headerTitle = game.releaseYear.stringValue; break;
+			case LibrarySortRating:{
+				switch (game.personalRating.integerValue) {
+					case 5: headerTitle = @"★★★★★"; break;
+					case 4: headerTitle = @"★★★★"; break;
+					case 3: headerTitle = @"★★★"; break;
+					case 2: headerTitle = @"★★"; break;
+					case 1: headerTitle = @"★"; break;
+					case 0: headerTitle = @"No Rating"; break;
+					default: break;
+				}
+				break;
+			}
+//			case LibrarySortMetascore: headerTitle = game.metascore.length > 0 ? game.metascore : @"Unavailable"; break;
+			default: break;
+		}
+		
+		if ([headerTitle isEqualToString:@"2050"])
+			headerTitle = @"Unknown";
+		
+		HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
+		[headerView.titleLabel setText:headerTitle];
+		[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
+		return headerView;
+	}
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	return [_dataSource[section][@"platform"][@"games"] count];
+	return (_sortOrFilter == LibrarySortPlatform) ? [_dataSource[section][@"platform"][@"games"] count] : [_sortFilterDataSource.sections[section] numberOfObjects];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -190,26 +223,22 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-	Game *game = _dataSource[indexPath.section][@"platform"][@"games"][indexPath.row];
+	Game *game = (_sortOrFilter == LibrarySortPlatform) ? _dataSource[indexPath.section][@"platform"][@"games"][indexPath.row] : [_sortFilterDataSource objectAtIndexPath:indexPath];
 	
 	LibraryCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.coverImageView setBackgroundColor:[UIColor darkGrayColor]];
 	
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	
+	if (image){
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[cell.coverImageView setImage:nil];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		if (image){
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[cell.coverImageView setImage:image];
-				[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-			});
-		}
-		else{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[cell.coverImageView setImage:nil];
-				[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-			});
-			
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 			
 			CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
@@ -229,8 +258,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			if (image){
 				[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
 			}
-		}
-	});
+			
+		});
+	}
 	
 	return cell;
 }
@@ -352,24 +382,24 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	[dataTask resume];
 }
 
-#pragma mark - LibraryFilterView
+#pragma mark - LibrarySortFilterView
 
-- (void)libraryFilterView:(LibraryFilterView *)filterView didPressSortButton:(UIButton *)button{
+- (void)librarySortFilterView:(LibrarySortFilterView *)filterView didPressSortButton:(UIButton *)button{
 	[self showSortOptions];
 }
 
-- (void)libraryFilterView:(LibraryFilterView *)filterView didPressFilterButton:(UIButton *)button{
+- (void)librarySortFilterView:(LibrarySortFilterView *)filterView didPressFilterButton:(UIButton *)button{
 	[self showFilterOptions];
 }
 
-- (void)libraryFilterView:(LibraryFilterView *)filterView didPressCancelButton:(UIButton *)button{
+- (void)librarySortFilterView:(LibrarySortFilterView *)filterView didPressCancelButton:(UIButton *)button{
 	[_filterView resetAnimated:YES];
 	
-	_filter = LibraryFilterPlatform;
+	_sortOrFilter = LibrarySortPlatform;
 	
-//	_fetchedResultsController = nil;
-//	_fetchedResultsController = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
-//	[_collectionView reloadData];
+	_sortFilterDataSource = nil;
+//	_sortFilterDataSource = [Game MR_fetchAllGroupedBy:nil withPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)] sortedBy:@"title" ascending:YES inContext:_context];
+	[_collectionView reloadData];
 }
 
 #pragma mark - ActionSheet
@@ -381,53 +411,55 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			// Sort
 			switch (buttonIndex) {
-				case 0:
-					// Title
-					[self fetchGamesWithFilter:LibraryFilterTitle group:@"title.stringGroupByFirstInitial" predicate:predicate sort:@"title" ascending:YES];
+				case LibrarySortTitle:
+					[self fetchGameswithSortOrFilter:LibrarySortTitle group:@"title.stringGroupByFirstInitial" predicate:predicate sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Sorted by title" animated:YES];
 					break;
-				case 1:
-					// Year of release
-					[self fetchGamesWithFilter:LibraryFilterReleaseYear group:@"releaseDate.year" predicate:predicate sort:@"releaseDate.year,title" ascending:NO];
+				case LibrarySortReleaseYear:
+					[self fetchGameswithSortOrFilter:LibrarySortReleaseYear group:@"releaseYear" predicate:predicate sort:@"releaseYear,title" ascending:NO];
 					[_filterView showStatusWithTitle:@"Sorted by year of release" animated:YES];
 					break;
-				case 2:
-					// Metascore
-					[self fetchGamesWithFilter:LibraryFilterMetascore group:@"metascore" predicate:predicate sort:@"metascore,title" ascending:NO];
-					[_filterView showStatusWithTitle:@"Sorted by Metascore" animated:YES];
+				case LibrarySortRating:
+					[self fetchGameswithSortOrFilter:LibrarySortRating group:@"personalRating" predicate:predicate sort:@"personalRating,title" ascending:NO];
+					[_filterView showStatusWithTitle:@"Sorted by rating" animated:YES];
 					break;
-				default: break;
+//				case LibrarySortMetascore:
+//					[self fetchGameswithSortOrFilter:LibrarySortMetascore group:@"metascore" predicate:predicate sort:@"metascore,title" ascending:NO];
+//					[_filterView showStatusWithTitle:@"Sorted by Metascore" animated:YES];
+//					break;
+				default:
+					break;
 			}
 		}
 		else{
 			// Filter
 			switch (buttonIndex) {
-				case 0:
-					// Finished
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+				case LibraryFilterFinished:
+					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing finished games" animated:YES];
 					break;
-				case 1:
-					// Unfinished
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
+				case LibraryFilterUnfinished:
+					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing unfinished games" animated:YES];
 					break;
-				case 2:
-					// Digital
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
-					[_filterView showStatusWithTitle:@"Showing digital games" animated:YES];
-					break;
-				case 3:
-					// Retail
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
+				case LibraryFilterRetail:
+					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing retail games" animated:YES];
 					break;
-				case 4:
-					// Lent
-					[self fetchGamesWithFilter:LibraryFilterPlatform group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND lent = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+				case LibraryFilterDigital:
+					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Showing digital games" animated:YES];
+					break;
+				case LibraryFilterLent:
+					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND lent = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[_filterView showStatusWithTitle:@"Showing lent games" animated:YES];
 					break;
-				default: break;
+				case LibraryFilterBorrowed:
+					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND borrowed = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[_filterView showStatusWithTitle:@"Showing borrowed games" animated:YES];
+					break;
+				default:
+					break;
 			}
 		}
 		
@@ -458,36 +490,38 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			[_dataSource addObject:@{@"platform":@{@"id":platform.identifier,
 												   @"name":platform.name,
 												   @"games":games}}];
-			
-			// Cache images
-//			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//				for (Game *game in games){
-//					UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-//					
-//					CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
-//					
-//					CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
-//					
-//					UIGraphicsBeginImageContext(imageSize);
-//					[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
-//					image = UIGraphicsGetImageFromCurrentImageContext();
-//					UIGraphicsEndImageContext();
-//					
-//					if (image){
-//						[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
-//					}
-//				}
-//			});
 		}
 	}
+	
+	// Cache images
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		for (NSDictionary *dictionary in _dataSource){
+			for (Game *game in dictionary[@"platform"][@"games"]){
+				UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+				
+				CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
+				
+				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
+				
+				UIGraphicsBeginImageContext(imageSize);
+				[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
+				image = UIGraphicsGetImageFromCurrentImageContext();
+				UIGraphicsEndImageContext();
+				
+				if (image){
+					[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+				}
+			}
+		}
+	});
 }
 
-- (void)fetchGamesWithFilter:(LibraryFilter)filter group:(NSString *)group predicate:(NSPredicate *)predicate sort:(NSString *)sort ascending:(BOOL)ascending{
-	_filter = filter;
+- (void)fetchGameswithSortOrFilter:(NSInteger)filter group:(NSString *)group predicate:(NSPredicate *)predicate sort:(NSString *)sort ascending:(BOOL)ascending{
+	_sortOrFilter = filter;
 	
-//	_fetchedResultsController = nil;
-//	_fetchedResultsController = [Game MR_fetchAllGroupedBy:group withPredicate:predicate sortedBy:sort ascending:ascending inContext:_context];
-//	[_collectionView reloadData];
+	_sortFilterDataSource = nil;
+	_sortFilterDataSource = [Game MR_fetchAllGroupedBy:group withPredicate:predicate sortedBy:sort ascending:ascending inContext:_context];
+	[_collectionView reloadData];
 }
 
 - (void)refreshLibraryGames{
@@ -508,7 +542,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)showSortOptions{
 	UIActionSheet *actionSheet;
 	
-	actionSheet = [[UIActionSheet alloc] initWithTitle:@"Sort by" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Title", @"Year of Release", @"Metascore", nil];
+	actionSheet = [[UIActionSheet alloc] initWithTitle:@"Sort by" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Title", @"Year of Release", @"Rating", @"Metascore", nil];
 	[actionSheet setTag:1];
 	
 	if ([Tools deviceIsiPhone])
@@ -520,7 +554,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (void)showFilterOptions{
-	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Show only" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Finished", @"Unfinished", @"Digital", @"Retail", @"Lent", nil];
+	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Show only" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Finished", @"Unfinished", @"Retail", @"Digital", @"Lent", @"Borrowed", nil];
 	[actionSheet setTag:2];
 	
 	if ([Tools deviceIsiPhone])
@@ -540,9 +574,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)cancelBarButtonAction{
 	[self.navigationItem setLeftBarButtonItems:@[_sortBarButton, _filterBarButton] animated:YES];
 	
-	_filter = LibraryFilterPlatform;
+	_sortOrFilter = LibrarySortPlatform;
 	
-	[self loadDataSource];
+//	[self loadDataSource];
 	[_collectionView reloadData];
 }
 
@@ -557,7 +591,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	[_filterView resetAnimated:YES];
 	
-	_filter = LibraryFilterPlatform;
+	_sortOrFilter = LibrarySortPlatform;
 	
 	[self loadDataSource];
 	[_collectionView reloadData];
@@ -565,7 +599,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	NSIndexPath *indexPath = sender;
-	Game *game = _dataSource[indexPath.section][@"platform"][@"games"][indexPath.row];
+	Game *game = (_sortOrFilter == LibrarySortPlatform) ? _dataSource[indexPath.section][@"platform"][@"games"][indexPath.row] : [_sortFilterDataSource objectAtIndexPath:indexPath];
 	
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
 		if ([Tools deviceIsiPad]){

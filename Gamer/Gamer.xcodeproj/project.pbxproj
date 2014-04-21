@@ -50,7 +50,7 @@
 		258A8C6718AAF81E00B38515 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 258A8C6618AAF81E00B38515 /* Crashlytics.framework */; };
 		2593051717C90017001DC04B /* MetacriticController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2593051617C90017001DC04B /* MetacriticController.m */; };
 		259DBBAF18958D0700B274F4 /* NSString+FetchedGroupByString.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DBBAE18958D0700B274F4 /* NSString+FetchedGroupByString.m */; };
-		259DBBB21895A79700B274F4 /* LibraryFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DBBB11895A79700B274F4 /* LibraryFilterView.m */; };
+		259DBBB21895A79700B274F4 /* LibrarySortFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DBBB11895A79700B274F4 /* LibrarySortFilterView.m */; };
 		259DD14617ADBE8600FAD645 /* SearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259DD14517ADBE8600FAD645 /* SearchCell.m */; };
 		259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 259E4A3F1808ACAB00C1AC99 /* SimilarGameCollectionCell.m */; };
 		25AC857F18EE3AFF00919A15 /* ReleasesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC857E18EE3AFF00919A15 /* ReleasesController.m */; };
@@ -180,8 +180,8 @@
 		2593051617C90017001DC04B /* MetacriticController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetacriticController.m; sourceTree = "<group>"; };
 		259DBBAD18958D0700B274F4 /* NSString+FetchedGroupByString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FetchedGroupByString.h"; sourceTree = "<group>"; };
 		259DBBAE18958D0700B274F4 /* NSString+FetchedGroupByString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FetchedGroupByString.m"; sourceTree = "<group>"; };
-		259DBBB01895A79700B274F4 /* LibraryFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryFilterView.h; sourceTree = "<group>"; };
-		259DBBB11895A79700B274F4 /* LibraryFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryFilterView.m; sourceTree = "<group>"; };
+		259DBBB01895A79700B274F4 /* LibrarySortFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibrarySortFilterView.h; sourceTree = "<group>"; };
+		259DBBB11895A79700B274F4 /* LibrarySortFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibrarySortFilterView.m; sourceTree = "<group>"; };
 		259DD14417ADBE8600FAD645 /* SearchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCell.h; sourceTree = "<group>"; };
 		259DD14517ADBE8600FAD645 /* SearchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCell.m; sourceTree = "<group>"; };
 		259E4A3E1808ACAB00C1AC99 /* SimilarGameCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarGameCollectionCell.h; sourceTree = "<group>"; };
@@ -377,8 +377,8 @@
 				250D487717BFFFB1006B4C29 /* ContentStatusView.m */,
 				25C9FE4317CD729E00CCDD59 /* HeaderCollectionReusableView.h */,
 				25C9FE4417CD729E00CCDD59 /* HeaderCollectionReusableView.m */,
-				259DBBB01895A79700B274F4 /* LibraryFilterView.h */,
-				259DBBB11895A79700B274F4 /* LibraryFilterView.m */,
+				259DBBB01895A79700B274F4 /* LibrarySortFilterView.h */,
+				259DBBB11895A79700B274F4 /* LibrarySortFilterView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -863,7 +863,7 @@
 				25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */,
 				25D4E67A18F3419500D93F80 /* Franchise.m in Sources */,
 				25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */,
-				259DBBB21895A79700B274F4 /* LibraryFilterView.m in Sources */,
+				259DBBB21895A79700B274F4 /* LibrarySortFilterView.m in Sources */,
 				25348F9518D4A40200F5A76D /* AboutCell.m in Sources */,
 				25704032176CB12800642430 /* main.m in Sources */,
 				25AC85A218F031A800919A15 /* RegionCell.m in Sources */,

@@ -132,21 +132,17 @@
 	ImportCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
 	
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	
+	if (image){
+		[cell.coverImageView setImage:image];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+	}
+	else{
+		[cell.coverImageView setImage:nil];
+		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		if (image){
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[cell.coverImageView setImage:image];
-				[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-			});
-		}
-		else{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[cell.coverImageView setImage:nil];
-				[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
-			});
-			
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 			
 			UIGraphicsBeginImageContext(image.size);
@@ -162,8 +158,8 @@
 			if (image){
 				[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
 			}
-		}
-	});
+		});
+	}
 	
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	[cell setAccessoryType:game.releaseDate ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];

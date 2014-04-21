@@ -9,36 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "Gamer.h"
 
-typedef NS_ENUM(NSInteger, OptimalImageWidthiPhone){
-	OptimalImageWidthiPhoneCover = 280,
-	OptimalImageWidthiPhoneWishlist = 50,
-	OptimalImageWidthiPhoneLibrary = 66
-};
-
-typedef NS_ENUM(NSInteger, OptimalImageHeightiPhone){
-	OptimalImageHeightiPhoneCover = 200,
-	OptimalImageHeightiPhoneWishlist = 50,
-	OptimalImageHeightiPhoneLibrary = 83
-};
-
-typedef NS_ENUM(NSInteger, OptimalImageWidthiPad){
-	OptimalImageWidthiPadCover = 420,
-	OptimalImageWidthiPadWishlist = 135,
-	OptimalImageWidthiPadLibrary = 140
-};
-
-typedef NS_ENUM(NSInteger, OptimalImageHeightiPad){
-	OptimalImageHeightiPadCover = 300,
-	OptimalImageHeightiPadWishlist = 170,
-	OptimalImageHeightiPadLibrary = 176
-};
-
-typedef NS_ENUM(NSInteger, GameImageType){
-	GameImageTypeCover,
-	GameImageTypeWishlist,
-	GameImageTypeLibrary
-};
-
 typedef NS_ENUM(NSInteger, GameLocation){
 	GameLocationNone = 0,
 	GameLocationWishlist = 1,
@@ -49,11 +19,6 @@ typedef NS_ENUM(NSInteger, LibrarySize){
 	LibrarySizeSmall = 0,
 	LibrarySizeMedium = 1,
 	LibrarySizeLarge = 2
-};
-
-typedef NS_ENUM(NSInteger, PlatformGroup){
-	PlatformGroupModern = 0,
-	PlatformGroupLegacy = 1
 };
 
 @interface Session : NSObject
@@ -67,10 +32,6 @@ typedef NS_ENUM(NSInteger, PlatformGroup){
 
 + (NSArray *)searchResults;
 + (void)setSearchResults:(NSArray *)results;
-
-+ (CGSize)optimalCoverImageSizeForImage:(UIImage *)image type:(GameImageType)type;
-
-+ (UIImage *)aspectFitImageWithImage:(UIImage *)image type:(GameImageType)type;
 
 + (void)setupInitialData;
 

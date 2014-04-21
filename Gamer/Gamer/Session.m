@@ -42,84 +42,6 @@ static NSArray *SEARCHRESULTS;
 	SEARCHRESULTS = results;
 }
 
-+ (CGSize)optimalCoverImageSizeForImage:(UIImage *)image type:(GameImageType)type{
-	if ([Tools deviceIsiPhone]){
-		if (image.size.width > image.size.height){
-			switch (type) {
-				case GameImageTypeCover: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPhoneCover];
-				case GameImageTypeWishlist: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPhoneWishlist];
-				case GameImageTypeLibrary: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPhoneLibrary];
-				default: break;
-			}
-		}
-		else{
-			switch (type) {
-				case GameImageTypeCover: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPhoneCover];
-				case GameImageTypeWishlist: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPhoneWishlist];
-				case GameImageTypeLibrary: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPhoneLibrary];
-				default: break;
-			}
-		}
-	}
-	else{
-		if (image.size.width > image.size.height){
-			switch (type) {
-				case GameImageTypeCover: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPadCover];
-				case GameImageTypeWishlist: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPadWishlist];
-				case GameImageTypeLibrary: return [Tools sizeOfImage:image aspectFitToWidth:OptimalImageWidthiPadLibrary];
-				default: break;
-			}
-		}
-		else{
-			switch (type) {
-				case GameImageTypeCover: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPadCover];
-				case GameImageTypeWishlist: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPadWishlist];
-				case GameImageTypeLibrary: return [Tools sizeOfImage:image aspectFitToHeight:OptimalImageHeightiPadLibrary];
-				default: break;
-			}
-		}
-	}
-}
-
-+ (UIImage *)aspectFitImageWithImage:(UIImage *)image type:(GameImageType)type{
-	if ([Tools deviceIsiPhone]){
-		if (image.size.width > image.size.height){
-			switch (type) {
-				case GameImageTypeCover: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPhoneCover];
-				case GameImageTypeWishlist: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPhoneWishlist];
-				case GameImageTypeLibrary: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPhoneLibrary];
-				default: break;
-			}
-		}
-		else{
-			switch (type) {
-				case GameImageTypeCover: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPhoneCover];
-				case GameImageTypeWishlist: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPhoneWishlist];
-				case GameImageTypeLibrary: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPhoneLibrary];
-				default: break;
-			}
-		}
-	}
-	else{
-		if (image.size.width > image.size.height){
-			switch (type) {
-				case GameImageTypeCover: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPadCover];
-				case GameImageTypeWishlist: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPadWishlist];
-				case GameImageTypeLibrary: return [Tools imageWithImage:image scaledToWidth:OptimalImageWidthiPadLibrary];
-				default: break;
-			}
-		}
-		else{
-			switch (type) {
-				case GameImageTypeCover: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPadCover];
-				case GameImageTypeWishlist: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPadWishlist];
-				case GameImageTypeLibrary: return [Tools imageWithImage:image scaledToHeight:OptimalImageHeightiPadLibrary];
-				default: break;
-			}
-		}
-	}
-}
-
 + (void)setupInitialData{
 	NSString *imagesDirectoryPath = [Tools imagesDirectory];
 	if (![[NSFileManager defaultManager] fileExistsAtPath:imagesDirectoryPath]){
@@ -140,15 +62,17 @@ static NSArray *SEARCHRESULTS;
 	
 	for (NSDictionary *platformDictionary in initialDataDictionary[@"initial_data"][@"platforms"]){
 		Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"platform"][@"identifier"] inContext:context];
-		if (!platform){
-			platform = [Platform MR_createInContext:context];
-			[platform setIndex:platformDictionary[@"platform"][@"index"]];
-		}
+		if (!platform) platform = [Platform MR_createInContext:context];
 		[platform setIdentifier:platformDictionary[@"platform"][@"identifier"]];
 		[platform setName:platformDictionary[@"platform"][@"name"]];
 		[platform setAbbreviation:platformDictionary[@"platform"][@"abbreviation"]];
-		[platform setGroup:platformDictionary[@"platform"][@"group"]];
 		[platform setMetacriticIdentifier:platformDictionary[@"platform"][@"metacritic_identifier"]];
+		
+		if (!platform.group)
+			[platform setIndex:platformDictionary[@"platform"][@"index"]];
+		
+		[platform setGroup:platformDictionary[@"platform"][@"group"]];
+		
 		[platform setColor:[UIColor colorWithRed:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"red"]].floatValue
 										   green:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"green"]].floatValue
 											blue:[Tools decimalNumberFromSourceIfNotNull:platformDictionary[@"platform"][@"color"][@"blue"]].floatValue
