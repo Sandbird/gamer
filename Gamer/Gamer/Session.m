@@ -88,7 +88,6 @@ static NSArray *SEARCHRESULTS;
 		Game *placeholderGame = releasePeriod.placeholderGame;
 		if (!placeholderGame) placeholderGame = [Game MR_createInContext:context];
 		[placeholderGame setTitle:releasePeriodDictionary[@"release_period"][@"placeholder"][@"title"]];
-		[placeholderGame setHidden:releasePeriodDictionary[@"release_period"][@"placeholder"][@"hidden"]];
 		[placeholderGame setReleaseDate:releasePeriodDictionary[@"release_period"][@"placeholder"][@"release_date"]];
 		[placeholderGame setLocation:@(GameLocationWishlist)];
 		[placeholderGame setReleasePeriod:releasePeriod];
