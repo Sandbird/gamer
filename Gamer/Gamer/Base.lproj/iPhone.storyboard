@@ -270,7 +270,7 @@
                                                     <rect key="frame" x="20" y="49" width="134" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
-                                                    <state key="normal" title="CHANGE PLATFORMS">
+                                                    <state key="normal" title="SELECT PLATFORMS">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
@@ -1004,7 +1004,6 @@
                     </refreshControl>
                     <connections>
                         <outlet property="activityIndicator" destination="Aub-c2-LhF" id="PSF-2P-MH8"/>
-                        <outlet property="changePlatformsButton" destination="Y4o-IC-HJ9" id="WUK-AF-gTn"/>
                         <outlet property="coverImageView" destination="ivh-Tr-p21" id="THA-ol-Mkp"/>
                         <outlet property="descriptionTextView" destination="LmU-26-hGZ" id="njo-lM-UYA"/>
                         <outlet property="developerFirstLabel" destination="738-nn-79F" id="j8O-YO-iuE"/>
@@ -1025,6 +1024,7 @@
                         <outlet property="releaseDateLabel" destination="SV0-L3-EX0" id="fxL-dE-Rsq"/>
                         <outlet property="releasesLabel" destination="iwu-SH-4tS" id="f1x-fh-wIm"/>
                         <outlet property="retailDigitalSegmentedControl" destination="EuX-5e-v0Y" id="s8o-r6-yw7"/>
+                        <outlet property="selectPlatformsButton" destination="Y4o-IC-HJ9" id="hRx-03-osh"/>
                         <outlet property="selectablePlatformsCollectionView" destination="1Q9-oo-3iz" id="JeM-Og-OgS"/>
                         <outlet property="selectedPlatformsCollectionView" destination="2se-u2-mbb" id="3fw-zI-JO9"/>
                         <outlet property="similarGamesCollectionView" destination="hme-Y8-6oR" id="NxR-k7-21z"/>

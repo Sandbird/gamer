@@ -3,7 +3,7 @@
 //  Gamer
 //
 //  Created by Caio Mello on 6/15/13.
-//  Copyright (c) 2013 Caio Mello. All rights reserved.
+//  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
 #import "GameController.h"
@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 @property (nonatomic, strong) IBOutlet UIButton *wishlistButton;
 @property (nonatomic, strong) IBOutlet UIButton *libraryButton;
-@property (nonatomic, strong) IBOutlet UIButton *changePlatformsButton;
+@property (nonatomic, strong) IBOutlet UIButton *selectPlatformsButton;
 
 @property (nonatomic, strong) IBOutlet UILabel *releasesLabel;
 
@@ -976,8 +976,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
 	
-	[_changePlatformsButton setEnabled:[_game.location isEqualToNumber:@(GameLocationNone)] ? NO : YES];
-	
 	[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)_game.releases.count]];
 	
 	_selectablePlatforms = [self selectablePlatformsFromGame:_game];
@@ -985,6 +983,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	_selectedPlatforms = [self orderedSelectedPlatformsFromGame:_game];
 	
 	_similarGames = [self orderedSimilarGamesFromGame:_game];
+	
+	[_selectPlatformsButton setEnabled:([_game.location isEqualToNumber:@(GameLocationNone)] || _selectablePlatforms.count <= 1) ? NO : YES];
 	
 	[self refreshAddButtonsAnimated:animated];
 	
@@ -1192,7 +1192,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[_selectedPlatformsCollectionView reloadData];
 		
 		// Disable platform change if game not added
-		[_changePlatformsButton setEnabled:[_game.location isEqualToNumber:@(GameLocationNone)] ? NO : YES];
+		[_selectPlatformsButton setEnabled:([_game.location isEqualToNumber:@(GameLocationNone)] || _selectablePlatforms.count <= 1) ? NO : YES];
 		
 		// Auto-select release based on top selected platform and region
 		for (Release *release in _game.releases){
