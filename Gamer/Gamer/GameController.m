@@ -608,6 +608,46 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[downloadTask resume];
 }
 
+- (void)requestReleasesForGame:(Game *)game{
+	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"%@", responseObject);
+			
+			[game setReleases:nil];
+			
+			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
+			
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				if (!game.selectedRelease){
+					for (Release *release in game.releases){
+						if ([game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
+							[game setSelectedRelease:release];
+							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
+							
+							[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+								[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
+							}];
+						}
+					}
+				}
+				
+				[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)_game.releases.count]];
+				
+				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
+				[self.tableView beginUpdates];
+				[self.tableView endUpdates];
+			}];
+		}
+	}];
+	[dataTask resume];
+}
+
 //- (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
 //	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:title platform:platform];
 //	
@@ -695,44 +735,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_similarGamesCollectionView reloadData];
-			}];
-		}
-	}];
-	[dataTask resume];
-}
-
-- (void)requestReleasesForGame:(Game *)game{
-	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
-	
-	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
-		}
-		else{
-			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			NSLog(@"%@", responseObject);
-			
-			[game setReleases:nil];
-			
-			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
-			
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				for (Release *release in game.releases){
-					if ([game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
-						[game setSelectedRelease:release];
-						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
-						
-						[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-							[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
-						}];
-					}
-				}
-				
-				[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)_game.releases.count]];
-				
-				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
-				[self.tableView beginUpdates];
-				[self.tableView endUpdates];
 			}];
 		}
 	}];
