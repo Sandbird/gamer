@@ -230,10 +230,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			break;
 		case SectionDetails:
 			if ([Tools deviceIsiPhone]){
-				if (_game.platforms.count == 0 && _game.similarGames.count == 0)
-					return 2;
-				else if (_game.platforms.count == 0 || _game.similarGames.count == 0)
-					return 3;
+				NSLog(@"%d", (_game.metascores.count > 0) + (_game.platforms.count > 0) + (_game.similarGames.count > 0) + 2);
+				return (_game.metascores.count > 0) + (_game.platforms.count > 0) + (_game.similarGames.count > 0) + 2;
 				break;
 			}
 			else if (_game.similarGames.count == 0)
@@ -308,12 +306,26 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				}
 				// Platforms row
 				case 2:
-					if ([Tools deviceIsiPhone]){
-						if (_selectablePlatforms.count > 0)
-							return 20 + 17 + 13 + ((_selectablePlatforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
-						else
-							return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
+					// Similar games row
+					if (_game.platforms.count == 0 && _game.metascores.count == 0){
+						return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
 					}
+					// Metascore row
+					else if (_game.platforms.count == 0){
+						return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
+					}
+					// Platforms row
+					else{
+						if ([Tools deviceIsiPhone] && _selectablePlatforms.count > 0){
+							return 20 + 17 + 13 + ((_selectablePlatforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+						}
+					}
+					break;
+				case 3:
+					if ((_game.platforms.count == 0 && _game.metascores.count > 0) || (_game.platforms.count > 0 && _game.metascores.count == 0)){
+						return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
+					}
+					break;
 				default:
 					break;
 			}
@@ -341,8 +353,22 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:SectionStatus]];
 			break;
 		case SectionDetails:
-			if (indexPath.row == 2 && _game.platforms.count == 0)
-				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
+			if (indexPath.row == 2){
+				if (_game.platforms.count == 0 && _game.metascores.count == 0){
+					// Similar games row
+					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
+				}
+				else if (_game.platforms.count == 0){
+					// Metascore row
+					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
+				}
+			}
+			else if (indexPath.row == 3){
+				if ((_game.platforms.count == 0 && _game.metascores.count > 0) || (_game.platforms.count > 0 && _game.metascores.count == 0)){
+					// Similar games row
+					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
+				}
+			}
 			break;
 		default:
 			break;
