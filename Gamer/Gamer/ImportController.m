@@ -145,8 +145,10 @@
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 			
-			UIGraphicsBeginImageContext(image.size);
-			[image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
+			CGSize imageSize = [Tools sizeOfImage:image aspectFitToWidth:cell.coverImageView.frame.size.width];
+			
+			UIGraphicsBeginImageContext(imageSize);
+			[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
 			image = UIGraphicsGetImageFromCurrentImageContext();
 			UIGraphicsEndImageContext();
 			
