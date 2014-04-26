@@ -1039,6 +1039,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="Aub-c2-LhF" id="PSF-2P-MH8"/>
                         <outlet property="coverImageView" destination="ivh-Tr-p21" id="THA-ol-Mkp"/>
+                        <outlet property="criticScoreLabel" destination="ddK-CD-bab" id="wDV-qk-rxF"/>
                         <outlet property="descriptionTextView" destination="LmU-26-hGZ" id="njo-lM-UYA"/>
                         <outlet property="developerFirstLabel" destination="738-nn-79F" id="j8O-YO-iuE"/>
                         <outlet property="developerSecondLabel" destination="jsI-2E-szF" id="uHf-Ri-eDy"/>
@@ -1051,6 +1052,7 @@
                         <outlet property="imagesCollectionView" destination="Kwg-Br-TqV" id="9Jb-tT-Lhd"/>
                         <outlet property="lentBorrowedSegmentedControl" destination="MCh-ro-p8s" id="sUn-pE-N8k"/>
                         <outlet property="libraryButton" destination="Szq-Ge-fAn" id="2Sc-lQ-g20"/>
+                        <outlet property="metascorePlatformLabel" destination="adD-Aa-Nmg" id="cyB-ZK-gne"/>
                         <outlet property="notesTextView" destination="3Fx-nh-U4i" id="kF2-Ea-d7n"/>
                         <outlet property="preorderedSwitch" destination="Mzt-6A-Xm3" id="VNB-c3-U23"/>
                         <outlet property="publisherFirstLabel" destination="Gva-cv-pHu" id="jvm-C7-7xc"/>
@@ -1065,6 +1067,7 @@
                         <outlet property="themeFirstLabel" destination="pgM-G5-2Qh" id="R8S-pt-203"/>
                         <outlet property="themeSecondLabel" destination="Ajx-IA-vDb" id="Tpo-l2-YvJ"/>
                         <outlet property="titleLabel" destination="5TF-nW-hqd" id="b6Z-ol-EuS"/>
+                        <outlet property="userScoreLabel" destination="Ttr-hs-6az" id="Qcd-jO-KQW"/>
                         <outlet property="videosCollectionView" destination="PtU-8u-YEg" id="dRH-0j-f0X"/>
                         <outlet property="wishlistButton" destination="aGi-nA-yvy" id="jE1-CR-5Tm"/>
                         <segue destination="d8G-2S-1tf" kind="modal" identifier="ViewerSegue" id="zqi-V3-AY3"/>

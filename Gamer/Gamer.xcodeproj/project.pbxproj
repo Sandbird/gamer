@@ -71,6 +71,7 @@
 		25BE542218BED50200BCBAFB /* ImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE542118BED50200BCBAFB /* ImportController.m */; };
 		25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */; };
 		25C5880718F6DCDF002A2EF4 /* StarRatingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C5880618F6DCDE002A2EF4 /* StarRatingControl.m */; };
+		25C6CB72190C61F20056DB54 /* Metascore.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C6CB71190C61F20056DB54 /* Metascore.m */; };
 		25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */; };
 		25C9FE3917CC4C4500CCDD59 /* WishlistController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE3817CC4C4500CCDD59 /* WishlistController_iPad.m */; };
 		25C9FE4517CD729E00CCDD59 /* HeaderCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9FE4417CD729E00CCDD59 /* HeaderCollectionReusableView.m */; };
@@ -81,7 +82,6 @@
 		25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */; };
 		25D2E601178BB22900C7EDDB /* ImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ImageViewerController.m */; };
 		25D4E67118F3419400D93F80 /* Gamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E67018F3419400D93F80 /* Gamer.m */; };
-		25D4E67718F3419500D93F80 /* Metascore.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E67618F3419500D93F80 /* Metascore.m */; };
 		25D4E67A18F3419500D93F80 /* Franchise.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E67918F3419500D93F80 /* Franchise.m */; };
 		25D4E68018F3419500D93F80 /* SimilarGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E67F18F3419500D93F80 /* SimilarGame.m */; };
 		25D4E68618F3419500D93F80 /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D4E68518F3419500D93F80 /* Theme.m */; };
@@ -223,6 +223,8 @@
 		25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotationLockedTabBarController.m; sourceTree = "<group>"; };
 		25C5880518F6DCD5002A2EF4 /* StarRatingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarRatingControl.h; sourceTree = "<group>"; };
 		25C5880618F6DCDE002A2EF4 /* StarRatingControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarRatingControl.m; sourceTree = "<group>"; };
+		25C6CB70190C61F20056DB54 /* Metascore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Metascore.h; sourceTree = "<group>"; };
+		25C6CB71190C61F20056DB54 /* Metascore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Metascore.m; sourceTree = "<group>"; };
 		25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistCollectionCell.h; sourceTree = "<group>"; };
 		25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WishlistCollectionCell.m; sourceTree = "<group>"; };
 		25C9FE3717CC4C4500CCDD59 /* WishlistController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WishlistController_iPad.h; sourceTree = "<group>"; };
@@ -240,8 +242,6 @@
 		25D2E600178BB22900C7EDDB /* ImageViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewerController.m; sourceTree = "<group>"; };
 		25D4E66F18F3419400D93F80 /* Gamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gamer.h; sourceTree = "<group>"; };
 		25D4E67018F3419400D93F80 /* Gamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Gamer.m; sourceTree = "<group>"; };
-		25D4E67518F3419500D93F80 /* Metascore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Metascore.h; sourceTree = "<group>"; };
-		25D4E67618F3419500D93F80 /* Metascore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Metascore.m; sourceTree = "<group>"; };
 		25D4E67818F3419500D93F80 /* Franchise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Franchise.h; sourceTree = "<group>"; };
 		25D4E67918F3419500D93F80 /* Franchise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Franchise.m; sourceTree = "<group>"; };
 		25D4E67E18F3419500D93F80 /* SimilarGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarGame.h; sourceTree = "<group>"; };
@@ -528,6 +528,8 @@
 		25704060176CB5AE00642430 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				25C6CB70190C61F20056DB54 /* Metascore.h */,
+				25C6CB71190C61F20056DB54 /* Metascore.m */,
 				253B475118FF702100CC4140 /* Platform.h */,
 				253B475218FF702100CC4140 /* Platform.m */,
 				25D4E6B718F5D72300D93F80 /* Game.h */,
@@ -554,8 +556,6 @@
 				25D4E67F18F3419500D93F80 /* SimilarGame.m */,
 				25D4E67818F3419500D93F80 /* Franchise.h */,
 				25D4E67918F3419500D93F80 /* Franchise.m */,
-				25D4E67518F3419500D93F80 /* Metascore.h */,
-				25D4E67618F3419500D93F80 /* Metascore.m */,
 				25D4E66F18F3419400D93F80 /* Gamer.h */,
 				25D4E67018F3419400D93F80 /* Gamer.m */,
 			);
@@ -840,7 +840,6 @@
 				251DEA42178CF3EA0094A6CB /* PlatformCell.m in Sources */,
 				259DBBAF18958D0700B274F4 /* NSString+FetchedGroupByString.m in Sources */,
 				2531E83F176CDB60005881A4 /* FetchedTableViewController.m in Sources */,
-				25D4E67718F3419500D93F80 /* Metascore.m in Sources */,
 				2531E840176CDB60005881A4 /* WishlistSectionHeaderView.m in Sources */,
 				25AC859F18EF425500919A15 /* RegionsController.m in Sources */,
 				25D4E69B18F3419600D93F80 /* Video.m in Sources */,
@@ -850,6 +849,7 @@
 				25D2E601178BB22900C7EDDB /* ImageViewerController.m in Sources */,
 				25CF6AE9180B697B000E51B2 /* Networking.m in Sources */,
 				25348F9218D4A37400F5A76D /* AboutController.m in Sources */,
+				25C6CB72190C61F20056DB54 /* Metascore.m in Sources */,
 				25C9FE3917CC4C4500CCDD59 /* WishlistController_iPad.m in Sources */,
 				250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */,
 				25D4E68618F3419500D93F80 /* Theme.m in Sources */,

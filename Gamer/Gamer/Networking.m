@@ -23,8 +23,10 @@
 
 @implementation Networking
 
-static NSString *APIKEY = @"bb5b34c59426946bea05a8b0b2877789fb374d3c";
-static NSString *BASEURL = @"http://www.giantbomb.com/api";
+static const NSString *GIANTBOMBAPIKEY = @"bb5b34c59426946bea05a8b0b2877789fb374d3c";
+static NSString *METACRITICAPIKEY = @"eFo5WdsTbkoSVdFbS2qDl2TZlzsyC9Nm";
+static const NSString *GIANTBOMBBASEURL = @"http://www.giantbomb.com/api";
+static const NSString *METACRITICBASEURL = @"https://byroredux-metacritic.p.mashape.com/";
 static AFURLSessionManager *MANAGER;
 static NSMutableURLRequest *SEARCHREQUEST;
 
@@ -54,8 +56,8 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	}
 	NSString *platformsString = [platformIdentifiers componentsJoinedByString:@"|"];
 	
-	NSString *path = [NSString stringWithFormat:@"/games/3030/?api_key=%@&format=json&sort=date_added:desc&field_list=%@&filter=platforms:%@,name:%@", APIKEY, fields, platformsString, title];
-	NSString *stringURL = [BASEURL stringByAppendingString:path];
+	NSString *path = [NSString stringWithFormat:@"/games/3030/?api_key=%@&format=json&sort=date_added:desc&field_list=%@&filter=platforms:%@,name:%@", GIANTBOMBAPIKEY, fields, platformsString, title];
+	NSString *stringURL = [GIANTBOMBBASEURL stringByAppendingString:path];
 	
 	if (!SEARCHREQUEST) SEARCHREQUEST = [NSMutableURLRequest new];
 	[SEARCHREQUEST setURL:[NSURL URLWithString:[stringURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
@@ -64,27 +66,34 @@ static NSMutableURLRequest *SEARCHREQUEST;
 }
 
 + (NSURLRequest *)requestForGameWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields{
-	NSString *path = [NSString stringWithFormat:@"/game/3030-%@/?api_key=%@&format=json&field_list=%@", identifier, APIKEY, fields];
-	NSString *stringURL = [BASEURL stringByAppendingString:path];
+	NSString *path = [NSString stringWithFormat:@"/game/3030-%@/?api_key=%@&format=json&field_list=%@", identifier, GIANTBOMBAPIKEY, fields];
+	NSString *stringURL = [GIANTBOMBBASEURL stringByAppendingString:path];
 	return  [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
 }
 
 + (NSURLRequest *)requestForVideoWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields{
-	NSString *path = [NSString stringWithFormat:@"/video/2300-%@/?api_key=%@&format=json&field_list=%@", identifier, APIKEY, fields];
-	NSString *stringURL = [BASEURL stringByAppendingString:path];
-	return [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
-}
-
-+ (NSURLRequest *)requestForReleaseWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields{
-	NSString *path = [NSString stringWithFormat:@"/release/3050-%@/?api_key=%@&format=json&field_list=%@", identifier, APIKEY, fields];
-	NSString *stringURL = [BASEURL stringByAppendingString:path];
+	NSString *path = [NSString stringWithFormat:@"/video/2300-%@/?api_key=%@&format=json&field_list=%@", identifier, GIANTBOMBAPIKEY, fields];
+	NSString *stringURL = [GIANTBOMBBASEURL stringByAppendingString:path];
 	return [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
 }
 
 + (NSURLRequest *)requestForReleasesWithGameIdentifier:(NSNumber *)gameIdentifier fields:(NSString *)fields{
-	NSString *path = [NSString stringWithFormat:@"/releases/3050/?api_key=%@&format=json&filter=game:%@&field_list=%@", APIKEY, gameIdentifier, fields];
-	NSString *stringURL = [BASEURL stringByAppendingString:path];
+	NSString *path = [NSString stringWithFormat:@"/releases/3050/?api_key=%@&format=json&filter=game:%@&field_list=%@", GIANTBOMBAPIKEY, gameIdentifier, fields];
+	NSString *stringURL = [GIANTBOMBBASEURL stringByAppendingString:path];
 	return [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
+}
+
++ (NSURLRequest *)requestForMetascoreWithGame:(Game *)game platform:(Platform *)platform{
+	NSString *stringURL = [METACRITICBASEURL stringByAppendingString:@"/find/game"];
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
+	[request setHTTPMethod:@"POST"];
+	[request setValue:METACRITICAPIKEY forHTTPHeaderField:@"X-Mashape-Authorization"];
+	
+	NSDictionary *parameters = @{@"title":game.title, @"platform":platform.metacriticIdentifier};
+	
+	NSURLRequest *serializedRequest = [[AFJSONRequestSerializer serializer] requestBySerializingRequest:request withParameters:parameters error:nil];
+	
+	return serializedRequest;
 }
 
 + (void)updateGameInfoWithGame:(Game *)game JSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context{
@@ -409,7 +418,7 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		}
 		else if ([object releaseYear].integerValue == current.year){
 			if ([object releaseDay].integerValue >= startOfCurrentWeek.day && [object releaseDay].integerValue <= endOfCurrentWeek.day)
-				period = 3;
+				period = 3; // This week
 			else if ([object releaseMonth].integerValue == current.month)
 				period = 4; // This month
 			else if ([object releaseMonth].integerValue == next.month)

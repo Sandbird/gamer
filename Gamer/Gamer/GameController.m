@@ -19,6 +19,7 @@
 #import "SimilarGame.h"
 #import "Release.h"
 #import "Region.h"
+#import "Metascore.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "ImageCollectionCell.h"
 #import "VideoCollectionCell.h"
@@ -61,6 +62,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 @property (nonatomic, strong) IBOutlet UILabel *releasesLabel;
 
+@property (nonatomic, strong) IBOutlet UICollectionView *selectedPlatformsCollectionView;
+
 @property (nonatomic, strong) IBOutlet UISwitch *preorderedSwitch;
 @property (nonatomic, strong) IBOutlet UISwitch *finishedSwitch;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *retailDigitalSegmentedControl;
@@ -82,9 +85,14 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UILabel *franchiseLabel;
 @property (nonatomic, strong) IBOutlet UILabel *franchiseTitleLabel;
 
-@property (nonatomic, strong) IBOutlet UICollectionView *selectedPlatformsCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *selectablePlatformsCollectionView;
+
+@property (nonatomic, strong) IBOutlet UILabel *criticScoreLabel;
+@property (nonatomic, strong) IBOutlet UILabel *userScoreLabel;
+@property (nonatomic, strong) IBOutlet UILabel *metascorePlatformLabel;
+
 @property (nonatomic, strong) IBOutlet UICollectionView *similarGamesCollectionView;
+
 @property (nonatomic, strong) IBOutlet UICollectionView *imagesCollectionView;
 @property (nonatomic, strong) IBOutlet UICollectionView *videosCollectionView;
 
@@ -119,6 +127,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_libraryButton.layer setBorderColor:_libraryButton.tintColor.CGColor];
 	[_libraryButton.layer setCornerRadius:4];
 	[_libraryButton setBackgroundImage:[Tools imageWithColor:_libraryButton.tintColor] forState:UIControlStateHighlighted];
+	
+	[_userScoreLabel.layer setCornerRadius:44/2];
 	
 	[self setupRatingControl];
 	
@@ -569,10 +579,15 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[Networking updateGameInfoWithGame:_game JSON:responseObject context:_context];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				// Refresh UI
+				[self refreshAnimated:NO];
+				[self.tableView reloadData];
+				[_selectablePlatformsCollectionView reloadData];
+				[_similarGamesCollectionView reloadData];
+				
+				// Cover image download
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-				
 				UIImage *coverImage = [UIImage imageWithContentsOfFile:_game.imagePath];
-				
 				if (!coverImage || !_game.imagePath || ![_game.imageURL isEqualToString:coverImageURL]){
 					[self downloadCoverImageWithURL:coverImageURL];
 				}
@@ -581,16 +596,15 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				
 				[self requestMediaForGame:_game];
 				
+				if ([_game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
+					[self requestMetascoresForGame:_game platform:_selectablePlatforms.firstObject];
+				}
+				
 				for (SimilarGame *similarGame in _game.similarGames){
 					[self requestImageForSimilarGame:similarGame];
 				}
 				
-				[self refreshAnimated:NO];
-				
-				[self.tableView reloadData];
-				
-				[_selectablePlatformsCollectionView reloadData];
-				[_similarGamesCollectionView reloadData];
+//				if (
 				
 				// If game is released and has at least one platform, request metascore
 //				if (([_game.releasePeriod.identifier isEqualToNumber:@(1)] || [_game.releasePeriod.identifier isEqualToNumber:@(2)]) && _selectablePlatforms.count > 0){
@@ -667,6 +681,44 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)_game.releases.count]];
 				
 				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
+				[self.tableView beginUpdates];
+				[self.tableView endUpdates];
+			}];
+		}
+	}];
+	[dataTask resume];
+}
+
+- (void)requestMetascoresForGame:(Game *)game platform:(Platform *)platform{
+	NSURLRequest *request = [Networking requestForMetascoreWithGame:game platform:platform];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Metascore", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Metascore - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"%@", responseObject);
+			
+			NSDictionary *results = responseObject[@"result"];
+			
+			NSString *metacriticURL = [Tools stringFromSourceIfNotNull:results[@"url"]];
+			
+			Metascore *metascore = [Metascore MR_findFirstByAttribute:@"metacriticURL" withValue:metacriticURL inContext:_context];
+			if (!metascore) metascore = [Metascore MR_createInContext:_context];
+			[metascore setCriticScore:[Tools integerNumberFromSourceIfNotNull:results[@"score"]]];
+			[metascore setUserScore:[Tools decimalNumberFromSourceIfNotNull:results[@"userscore"]]];
+			[metascore setMetacriticURL:metacriticURL];
+			[metascore setPlatform:platform];
+			[game addMetascoresObject:metascore];
+			
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_criticScoreLabel setText:[NSString stringWithFormat:@"%@", metascore.criticScore]];
+				[_userScoreLabel setText:[NSString stringWithFormat:@"%.1f", metascore.userScore.floatValue]];
+				[_metascorePlatformLabel setText:platform.abbreviation];
+				[_metascorePlatformLabel setBackgroundColor:platform.color];
+				
+				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionDetails] withRowAnimation:UITableViewRowAnimationAutomatic];
 				[self.tableView beginUpdates];
 				[self.tableView endUpdates];
 			}];
@@ -1013,6 +1065,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_ratingControl setRating:_game.personalRating.floatValue];
 	
 	[_notesTextView setText:_game.notes];
+	
+	if (_game.metascores.count > 0){
+		[_criticScoreLabel setText:[NSString stringWithFormat:@"%@", [_game.metascores.allObjects[0] criticScore]]];
+		[_userScoreLabel setText:[NSString stringWithFormat:@"%.1f", [[_game.metascores.allObjects[0] userScore] floatValue]]];
+		[_metascorePlatformLabel setText:[_selectablePlatforms.firstObject abbreviation]];
+		[_metascorePlatformLabel setBackgroundColor:[_selectablePlatforms.firstObject color]];
+	}
 	
 //	if (_game.metascore.length > 0){
 //		[_metascoreButton setBackgroundColor:[Networking colorForMetascore:_game.metascore]];
