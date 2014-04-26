@@ -18,8 +18,10 @@
 + (NSURLRequest *)requestForGameWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
 + (NSURLRequest *)requestForVideoWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
 + (NSURLRequest *)requestForReleaseWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
++ (NSURLRequest *)requestForReleasesWithGameIdentifier:(NSNumber *)gameIdentifier fields:(NSString *)fields;
 
-+ (void)updateGame:(Game *)game withDataFromJSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context;
++ (void)updateGameInfoWithGame:(Game *)game JSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context;
++ (void)updateGameReleasesWithGame:(Game *)game JSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context;
 //+ (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform;
 
 + (void)setReleaseDateForGameOrRelease:(id)object dateString:(NSString *)date expectedReleaseDay:(NSInteger)day expectedReleaseMonth:(NSInteger)month expectedReleaseQuarter:(NSInteger)quarter expectedReleaseYear:(NSInteger)year;

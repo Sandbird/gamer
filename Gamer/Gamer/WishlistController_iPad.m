@@ -210,7 +210,7 @@
 			
 			_numberOfRunningTasks--;
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+			[Networking updateGameInfoWithGame:game JSON:responseObject context:_context];
 			
 //			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
 //				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;

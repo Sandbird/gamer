@@ -290,7 +290,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			_numberOfRunningTasks--;
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+			[Networking updateGameInfoWithGame:game JSON:responseObject context:_context];
 			
 			if (responseObject[@"results"] != [NSNull null]){
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
@@ -302,9 +302,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 				}
 			}
 			
-			for (Release *release in game.releases){
-				[self requestRelease:release];
-			}
+			[self requestReleasesForGame:game];
 			
 			if (_numberOfRunningTasks == 0){
 				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
@@ -344,39 +342,22 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	[downloadTask resume];
 }
 
-- (void)requestRelease:(Release *)release{
-	NSURLRequest *request = [Networking requestForReleaseWithIdentifier:release.identifier fields:@"platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+- (void)requestReleasesForGame:(Game *)game{
+	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Release", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %ld - Release - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//			NSLog(@"%@", responseObject);
+			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			NSLog(@"%@", responseObject);
 			
-			NSDictionary *results = responseObject[@"results"];
+			[game setReleases:nil];
 			
-			Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:results[@"platform"][@"id"] inContext:_context];
+			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
 			
-			if (platform){
-				[release setPlatform:platform];
-				[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:results[@"region"][@"id"] inContext:_context]];
-				
-				NSString *releaseDate = [Tools stringFromSourceIfNotNull:results[@"release_date"]];
-				NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
-				NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
-				NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
-				NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
-				
-				[Networking setReleaseDateForGameOrRelease:release dateString:releaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
-				
-				if (results[@"image"] != [NSNull null])
-					[release setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
-			}
-			else{
-				[release MR_deleteInContext:_context];
-			}
+			[_context MR_saveToPersistentStoreAndWait];
 		}
 	}];
 	[dataTask resume];

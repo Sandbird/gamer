@@ -99,10 +99,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSArray *videos;
 
-@property (nonatomic, assign) NSInteger totalNumberOfReleases;
-@property (nonatomic, assign) NSInteger numberOfReleasesDownloaded;
-@property (nonatomic, assign) BOOL releasesDownloaded;
-
 @property (nonatomic, strong) UITapGestureRecognizer *dismissTapGesture;
 
 @end
@@ -146,8 +142,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		
 		(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
 		(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
-		
-		_releasesDownloaded = YES;
 	}
 	else{
 		[_imagesStatusView setStatus:ContentStatusLoading];
@@ -209,14 +203,14 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	switch (section) {
 		case SectionCover:
 			if ([_game.location isEqualToNumber:@(GameLocationNone)]){
-				if (_releasesDownloaded == YES && _game.releases.count > 0){
+				if (_game.releases.count > 0){
 					return 3;
 				}
 				else
 					return 2;
 			}
 			else if (_selectedPlatforms.count > 0){
-				if (_releasesDownloaded == YES && _game.releases.count > 0){
+				if (_game.releases.count > 0){
 					return 4;
 				}
 				else
@@ -256,7 +250,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	switch (indexPath.section) {
 		case SectionCover:
 			if (indexPath.row == 2){
-				if (_game.releases.count > 0 && _releasesDownloaded == YES)
+				if (_game.releases.count > 0)
 					return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 				else
 					return 20 + 17 + 13 + ((_selectedPlatforms.count/5 + 1) * 31) + 20;
@@ -526,18 +520,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_context MR_saveToPersistentStoreAndWait];
 }
 
-#pragma mark - ScrollView
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-	[_notesTextView resignFirstResponder];
-}
-
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
 	[self.refreshControl beginRefreshing];
 	
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,releases"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -552,7 +540,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			_game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
 			if (!_game) _game = [Game MR_createInContext:_context];
 			
-			[Networking updateGame:_game withDataFromJSON:responseObject context:_context];
+			[Networking updateGameInfoWithGame:_game JSON:responseObject context:_context];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
@@ -563,17 +551,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					[self downloadCoverImageWithURL:coverImageURL];
 				}
 				
+				[self requestReleasesForGame:_game];
+				
 				[self requestMediaForGame:_game];
 				
 				for (SimilarGame *similarGame in _game.similarGames){
 					[self requestImageForSimilarGame:similarGame];
-				}
-				
-				_totalNumberOfReleases = _game.releases.count;
-				_numberOfReleasesDownloaded = 0;
-				
-				for (Release *release in _game.releases){
-					[self requestInfoForRelease:release];
 				}
 				
 				[self refreshAnimated:NO];
@@ -618,7 +601,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
-				[self setCoverImageAnimated:YES];
+				[self displayCoverImage];
 			}];
 		}
 	}];
@@ -718,65 +701,38 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[dataTask resume];
 }
 
-- (void)requestInfoForRelease:(Release *)release{
-	NSURLRequest *request = [Networking requestForReleaseWithIdentifier:release.identifier fields:@"platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+- (void)requestReleasesForGame:(Game *)game{
+	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Release", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			_numberOfReleasesDownloaded++;
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %ld - Release - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-//			NSLog(@"%@", responseObject);
+			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"%@", responseObject);
 			
-			_numberOfReleasesDownloaded++;
+			[game setReleases:nil];
 			
-			NSDictionary *results = responseObject[@"results"];
-			
-			Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:results[@"platform"][@"id"] inContext:_context];
-			
-			if (platform){
-				[release setPlatform:platform];
-				[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:results[@"region"][@"id"] inContext:_context]];
-				
-				NSString *releaseDate = [Tools stringFromSourceIfNotNull:results[@"release_date"]];
-				NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
-				NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
-				NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
-				NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
-				
-				[Networking setReleaseDateForGameOrRelease:release dateString:releaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
-				
-				if (results[@"image"] != [NSNull null])
-					[release setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
-			}
-			else{
-				[release MR_deleteInContext:_context];
-			}
+			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				if (_numberOfReleasesDownloaded == _totalNumberOfReleases){
-					_releasesDownloaded = YES;
-					
-					[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)_game.releases.count]];
-					
-					[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
-					[self.tableView beginUpdates];
-					[self.tableView endUpdates];
-					
-					for (Release *release in _game.releases){
-						if ([_game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
-							[_game setSelectedRelease:release];
-							[_game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
-							
-							[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-								[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
-							}];
-						}
+				for (Release *release in game.releases){
+					if ([game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
+						[game setSelectedRelease:release];
+						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
+						
+						[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+							[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
+						}];
 					}
 				}
+				
+				[_releasesLabel setText:[NSString stringWithFormat:_game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)_game.releases.count]];
+				
+				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
+				[self.tableView beginUpdates];
+				[self.tableView endUpdates];
 			}];
 		}
 	}];
@@ -798,6 +754,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Media - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			//		NSLog(@"%@", JSON);
+			
+			[_game setImages:nil];
+			[_game setVideos:nil];
 			
 			NSDictionary *results = responseObject[@"results"];
 			
@@ -958,7 +917,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 #pragma mark - Custom
 
-- (void)setCoverImageAnimated:(BOOL)animated{
+- (void)displayCoverImage{
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 		UIImage *image = [UIImage imageWithContentsOfFile:_game.imagePath];
 		
@@ -970,20 +929,15 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		UIGraphicsEndImageContext();
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
-			if (animated){
-				[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
-				[_coverImageView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-			}
-			else
-				[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
-			
+			[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
+			[_coverImageView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:[Tools frameForImageInImageView:_coverImageView]];
 		});
 	});
 }
 
 - (void)refreshAnimated:(BOOL)animated{
-	[self setCoverImageAnimated:animated];
+	[self displayCoverImage];
 	
 	[_titleLabel setText:_game.title];
 	

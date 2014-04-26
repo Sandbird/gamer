@@ -19,11 +19,12 @@
 #import "ReleasePeriod.h"
 #import "SimilarGame.h"
 #import "Release.h"
+#import "Region.h"
 
 @implementation Networking
 
 static NSString *APIKEY = @"bb5b34c59426946bea05a8b0b2877789fb374d3c";
-static NSString *BASEURL = @"http://api.giantbomb.com";
+static NSString *BASEURL = @"http://www.giantbomb.com/api";
 static AFURLSessionManager *MANAGER;
 static NSMutableURLRequest *SEARCHREQUEST;
 
@@ -80,10 +81,25 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	return [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
 }
 
-+ (void)updateGame:(Game *)game withDataFromJSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context{
++ (NSURLRequest *)requestForReleasesWithGameIdentifier:(NSNumber *)gameIdentifier fields:(NSString *)fields{
+	NSString *path = [NSString stringWithFormat:@"/releases/3050/?api_key=%@&format=json&filter=game:%@&field_list=%@", APIKEY, gameIdentifier, fields];
+	NSString *stringURL = [BASEURL stringByAppendingString:path];
+	return [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
+}
+
++ (void)updateGameInfoWithGame:(Game *)game JSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context{
 //	NSLog(@"%@", JSON);
 	
 	if ([JSON[@"status_code"] isEqualToNumber:@(101)]) return;
+	
+	// Reset collections
+	[game setPlatforms:nil];
+	[game setGenres:nil];
+	[game setDevelopers:nil];
+	[game setPublishers:nil];
+	[game setFranchises:nil];
+	[game setSimilarGames:nil];
+	[game setThemes:nil];
 	
 	NSDictionary *results = JSON[@"results"];
 	
@@ -173,17 +189,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[game addThemesObject:theme];
-		}
-	}
-	
-	// Releases
-	if (results[@"releases"] != [NSNull null]){
-		for (NSDictionary *dictionary in results[@"releases"]){
-			Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
-			if (!release) release = [Release MR_createInContext:context];
-			[release setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-			[release setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[game addReleasesObject:release];
 		}
 	}
 	
@@ -288,6 +293,38 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		
 		[object setReleaseDateText:(year) ? [[Tools dateFormatter] stringFromDate:expectedReleaseDateFromComponents] : @"TBA"];
 		[object setReleased:@(NO)];
+	}
+}
+
++ (void)updateGameReleasesWithGame:(Game *)game JSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context{
+	NSDictionary *results = JSON[@"results"];
+	
+	for (NSDictionary *dictionary in results){
+		Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"platform"][@"id"] inContext:context];
+		
+		if (platform){
+			NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+			
+			Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:context];
+			if (!release) release = [Release MR_createInContext:context];
+			[release setIdentifier:identifier];
+			[release setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+			[release setPlatform:platform];
+			[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"region"][@"id"]] inContext:context]];
+			
+			NSString *releaseDate = [Tools stringFromSourceIfNotNull:dictionary[@"release_date"]];
+			NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:dictionary[@"expected_release_day"]].integerValue;
+			NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:dictionary[@"expected_release_month"]].integerValue;
+			NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:dictionary[@"expected_release_quarter"]].integerValue;
+			NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:dictionary[@"expected_release_year"]].integerValue;
+			
+			[Networking setReleaseDateForGameOrRelease:release dateString:releaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
+			
+			if (dictionary[@"image"] != [NSNull null])
+				[release setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"thumb_url"]]];
+			
+			[game addReleasesObject:release];
+		}
 	}
 }
 

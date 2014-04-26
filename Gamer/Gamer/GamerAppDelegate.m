@@ -97,7 +97,7 @@
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
 	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:context];
 	
-	_numberOfReleasedGamesToRefreshMetascore = [games filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"released = %@", @(YES)]].count;
+//	_numberOfReleasedGamesToRefreshMetascore = [games filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"released = %@", @(YES)]].count;
 	
 	_numberOfRunningTasks = 0;
 	
@@ -160,12 +160,46 @@
 			
 			_numberOfRunningTasks--;
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:context];
+			[Networking updateGameInfoWithGame:game JSON:responseObject context:context];
 			
 //			if ([game.released isEqualToNumber:@(YES)])
 //				[self requestMetascoreForGame:game context:context completionHandler:completionHandler];
 			
 			if (_numberOfRunningTasks == 0 && _numberOfReleasedGamesToRefreshMetascore == 0){
+				completionHandler(UIBackgroundFetchResultNewData);
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+			}
+		}
+	}];
+	[dataTask resume];
+	_numberOfRunningTasks++;
+}
+
+- (void)requestReleasesForGame:(Game *)game context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Background (Releases)", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			
+			_numberOfRunningTasks--;
+			
+			if (_numberOfRunningTasks == 0){
+				completionHandler(UIBackgroundFetchResultNewData);
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+			}
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Background (Releases) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			//			NSLog(@"%@", responseObject);
+			
+			_numberOfRunningTasks--;
+			
+			[game setReleases:nil];
+			
+			[Networking updateGameReleasesWithGame:game JSON:responseObject context:context];
+			
+			if (_numberOfRunningTasks == 0){
 				completionHandler(UIBackgroundFetchResultNewData);
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 			}
