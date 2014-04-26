@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 @property (nonatomic, strong) IBOutlet UIButton *wishlistButton;
 @property (nonatomic, strong) IBOutlet UIButton *libraryButton;
-@property (nonatomic, strong) IBOutlet UIButton *selectPlatformsButton;
+@property (nonatomic, strong) IBOutlet UIButton *editPlatformsButton;
 
 @property (nonatomic, strong) IBOutlet UILabel *releasesLabel;
 
@@ -959,14 +959,27 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 #pragma mark - Custom
 
 - (void)setCoverImageAnimated:(BOOL)animated{
-	if (animated){
-		[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
-		[_coverImageView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-	}
-	else
-		[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
-	
-	[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:[Tools frameForImageInImageView:_coverImageView]];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		UIImage *image = [UIImage imageWithContentsOfFile:_game.imagePath];
+		
+		CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:_coverImageView.frame.size.width] : [Tools sizeOfImage:image aspectFitToHeight:_coverImageView.frame.size.height];
+		
+		UIGraphicsBeginImageContext(imageSize);
+		[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
+		image = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if (animated){
+				[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
+				[_coverImageView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+			}
+			else
+				[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
+			
+			[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:[Tools frameForImageInImageView:_coverImageView]];
+		});
+	});
 }
 
 - (void)refreshAnimated:(BOOL)animated{
@@ -984,7 +997,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	_similarGames = [self orderedSimilarGamesFromGame:_game];
 	
-	[_selectPlatformsButton setEnabled:([_game.location isEqualToNumber:@(GameLocationNone)] || _selectablePlatforms.count <= 1) ? NO : YES];
+	[_editPlatformsButton setHidden:([_game.location isEqualToNumber:@(GameLocationNone)] || _selectablePlatforms.count <= 1) ? YES : NO];
 	
 	[self refreshAddButtonsAnimated:animated];
 	
@@ -1191,8 +1204,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		_selectedPlatforms = [self orderedSelectedPlatformsFromGame:_game];
 		[_selectedPlatformsCollectionView reloadData];
 		
-		// Disable platform change if game not added
-		[_selectPlatformsButton setEnabled:([_game.location isEqualToNumber:@(GameLocationNone)] || _selectablePlatforms.count <= 1) ? NO : YES];
+		// Hide platform change if game not added
+		[_editPlatformsButton setHidden:([_game.location isEqualToNumber:@(GameLocationNone)] || _selectablePlatforms.count <= 1) ? YES : NO];
 		
 		// Auto-select release based on top selected platform and region
 		for (Release *release in _game.releases){
@@ -1283,7 +1296,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	}
 }
 
-- (IBAction)changePlatformsButtonAction:(UIButton *)sender{
+- (IBAction)editPlatformsButtonAction:(UIButton *)sender{
 	[self performSegueWithIdentifier:@"PlatformPickerSegue" sender:nil];
 }
 
