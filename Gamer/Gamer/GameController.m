@@ -1264,6 +1264,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				break;
 			case 1:
 				[_game setDigital:@(YES)];
+				[_game setLent:@(NO)];
+				[_game setBorrowed:@(NO)];
 				[_lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			default:
@@ -1279,11 +1281,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			case 1:
 				[_game setLent:@(YES)];
 				[_game setBorrowed:@(NO)];
+				[_game setDigital:@(NO)];
 				[_retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			case 2:
 				[_game setLent:@(NO)];
 				[_game setBorrowed:@(YES)];
+				[_game setDigital:@(NO)];
 				[_retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			default:
