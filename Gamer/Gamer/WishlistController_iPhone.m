@@ -325,7 +325,6 @@
 		}
 	}];
 	[dataTask resume];
-	
 	_numberOfRunningTasks++;
 }
 
@@ -419,7 +418,6 @@
 
 - (void)refreshWishlistNotification:(NSNotification *)notification{
 	[self updateGameReleasePeriods];
-	[self.tableView reloadData];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

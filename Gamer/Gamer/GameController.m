@@ -1119,7 +1119,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_game setLent:@(NO)];
 	[_game setBorrowed:@(NO)];
 	
-	[self saveAndRefreshAfterStateChange];
+	[self saveAndRefreshAfterLocationChange];
 }
 
 - (void)addGameToLibraryWithPlatforms:(NSArray *)platforms{
@@ -1132,12 +1132,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_game setLent:@(NO)];
 	[_game setBorrowed:@(NO)];
 	
-	[self saveAndRefreshAfterStateChange];
+	[self saveAndRefreshAfterLocationChange];
 }
 
 - (void)changeSelectedPlatformsToPlatforms:(NSArray *)platforms{
 	[_game setSelectedPlatforms:[NSSet setWithArray:platforms]];
-	[self saveAndRefreshAfterStateChange];
+	[self saveAndRefreshAfterLocationChange];
 }
 
 - (void)removeGameFromWishlistOrLibrary{
@@ -1150,10 +1150,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_game setLent:@(NO)];
 	[_game setBorrowed:@(NO)];
 	
-	[self saveAndRefreshAfterStateChange];
+	[self saveAndRefreshAfterLocationChange];
 }
 
-- (void)saveAndRefreshAfterStateChange{
+- (void)saveAndRefreshAfterLocationChange{
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[self refreshAddButtonsAnimated:YES];
 		
@@ -1195,11 +1195,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		
 		// Scroll to last row of status section if game added to library
 		if ([_game.location isEqualToNumber:@(GameLocationLibrary)]){
-			NSIndexPath *lastStatusIndexPath = [NSIndexPath indexPathForRow:([self.tableView numberOfRowsInSection:SectionStatus] - 1) inSection:SectionStatus];
-			[self.tableView scrollToRowAtIndexPath:lastStatusIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SectionStatus] atScrollPosition:UITableViewScrollPositionTop animated:YES];
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+		if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];
 }
