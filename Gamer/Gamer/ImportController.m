@@ -240,6 +240,7 @@
 			_numberOfRunningTasks--;
 			
 			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
+			[game setImageURL:URLString];
 			
 			[self.tableView reloadData];
 			

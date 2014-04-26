@@ -598,6 +598,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
 			[_game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
+			[_game setImageURL:URLString];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];

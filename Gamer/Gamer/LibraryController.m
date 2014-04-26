@@ -333,6 +333,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
 			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
+			[game setImageURL:URLString];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_collectionView reloadData];
