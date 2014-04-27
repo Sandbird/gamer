@@ -2,7 +2,7 @@
 //  Metascore.m
 //  Gamer
 //
-//  Created by Caio Mello on 26/04/2014.
+//  Created by Caio Mello on 27/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -18,5 +18,6 @@
 @dynamic metacriticURL;
 @dynamic game;
 @dynamic platform;
+@dynamic selectedGame;
 
 @end

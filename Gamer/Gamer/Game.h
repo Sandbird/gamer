@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 09/04/2014.
+//  Created by Caio Mello on 27/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -24,17 +24,17 @@
 @property (nonatomic, retain) NSNumber * location;
 @property (nonatomic, retain) NSString * notes;
 @property (nonatomic, retain) NSString * overview;
+@property (nonatomic, retain) NSNumber * personalRating;
 @property (nonatomic, retain) NSNumber * preordered;
 @property (nonatomic, retain) NSNumber * released;
-@property (nonatomic, retain) NSString * releaseDateText;
-@property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSDate * releaseDate;
-@property (nonatomic, retain) NSNumber * releaseDay;
 @property (nonatomic, retain) NSNumber * releaseDateDefined;
+@property (nonatomic, retain) NSString * releaseDateText;
+@property (nonatomic, retain) NSNumber * releaseDay;
 @property (nonatomic, retain) NSNumber * releaseMonth;
 @property (nonatomic, retain) NSNumber * releaseQuarter;
 @property (nonatomic, retain) NSNumber * releaseYear;
-@property (nonatomic, retain) NSNumber * personalRating;
+@property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
@@ -46,10 +46,11 @@
 @property (nonatomic, retain) ReleasePeriod *releasePeriod;
 @property (nonatomic, retain) NSSet *releases;
 @property (nonatomic, retain) NSSet *selectedPlatforms;
+@property (nonatomic, retain) Release *selectedRelease;
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
-@property (nonatomic, retain) Release *selectedRelease;
+@property (nonatomic, retain) Metascore *selectedMetascore;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)

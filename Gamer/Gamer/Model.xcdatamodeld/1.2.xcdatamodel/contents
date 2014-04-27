@@ -43,6 +43,7 @@
         <relationship name="publishers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Publisher" inverseName="games" inverseEntity="Publisher" syncable="YES"/>
         <relationship name="releasePeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="games" inverseEntity="ReleasePeriod" syncable="YES"/>
         <relationship name="releases" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Release" inverseName="game" inverseEntity="Release" syncable="YES"/>
+        <relationship name="selectedMetascore" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Metascore" inverseName="selectedGame" inverseEntity="Metascore" syncable="YES"/>
         <relationship name="selectedPlatforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="addedGames" inverseEntity="Platform" syncable="YES"/>
         <relationship name="selectedRelease" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Release" inverseName="selectedGame" inverseEntity="Release" syncable="YES"/>
         <relationship name="similarGames" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SimilarGame" inverseName="game" inverseEntity="SimilarGame" syncable="YES"/>
@@ -71,6 +72,7 @@
         <attribute name="userScore" optional="YES" attributeType="Decimal" defaultValueString="0" syncable="YES"/>
         <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="metascores" inverseEntity="Game" syncable="YES"/>
         <relationship name="platform" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="metascores" inverseEntity="Platform" syncable="YES"/>
+        <relationship name="selectedGame" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="selectedMetascore" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="Platform" representedClassName="Platform" syncable="YES">
         <attribute name="abbreviation" optional="YES" attributeType="String" syncable="YES"/>
@@ -149,11 +151,11 @@
     <elements>
         <element name="Developer" positionX="106" positionY="-124" width="128" height="88"/>
         <element name="Franchise" positionX="106" positionY="126" width="128" height="88"/>
-        <element name="Game" positionX="-110" positionY="-243" width="128" height="598"/>
+        <element name="Game" positionX="-110" positionY="-243" width="128" height="613"/>
         <element name="Gamer" positionX="-486" positionY="-243" width="128" height="88"/>
         <element name="Genre" positionX="106" positionY="-243" width="128" height="88"/>
         <element name="Image" positionX="286" positionY="-241" width="128" height="103"/>
-        <element name="Metascore" positionX="-108" positionY="386" width="128" height="118"/>
+        <element name="Metascore" positionX="-108" positionY="416" width="128" height="133"/>
         <element name="Platform" positionX="-299" positionY="-243" width="128" height="223"/>
         <element name="Publisher" positionX="106" positionY="2" width="128" height="88"/>
         <element name="Region" positionX="-488" positionY="245" width="128" height="133"/>

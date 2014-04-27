@@ -128,7 +128,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_libraryButton.layer setCornerRadius:4];
 	[_libraryButton setBackgroundImage:[Tools imageWithColor:_libraryButton.tintColor] forState:UIControlStateHighlighted];
 	
-	[_userScoreLabel.layer setCornerRadius:44/2];
+	[_userScoreLabel.layer setCornerRadius:60/2];
 	
 	[self setupRatingControl];
 	
@@ -239,13 +239,11 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				return 0;
 			break;
 		case SectionDetails:
-			if ([Tools deviceIsiPhone]){
-				NSLog(@"%d", (_game.metascores.count > 0) + (_game.platforms.count > 0) + (_game.similarGames.count > 0) + 2);
+//			if ([Tools deviceIsiPhone]){
 				return (_game.metascores.count > 0) + (_game.platforms.count > 0) + (_game.similarGames.count > 0) + 2;
-				break;
-			}
-			else if (_game.similarGames.count == 0)
-				return 3;
+//			}
+//			else if (_game.similarGames.count == 0)
+//				return 3;
 			break;
 		default:
 			break;
@@ -402,6 +400,14 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			if (indexPath.row == ([tableView numberOfRowsInSection:SectionStatus] - 1)){
 				[tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
 				[_notesTextView becomeFirstResponder];
+			}
+			break;
+		case SectionDetails:
+			if (indexPath.row == 2 && _game.platforms.count == 0 && _game.metascores.count > 0){
+				[self performSegueWithIdentifier:@"MetascoreSegue" sender:nil];
+			}
+			else if (indexPath.row == 3 && _game.platforms.count > 0 && _game.metascores.count > 0){
+				[self performSegueWithIdentifier:@"MetascoreSegue" sender:nil];
 			}
 			break;
 		default:
@@ -596,8 +602,11 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				
 				[self requestMediaForGame:_game];
 				
-				if ([_game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
-					[self requestMetascoresForGame:_game platform:_selectablePlatforms.firstObject];
+				if (_game.selectedMetascore){
+					[self requestMetascoreForGame:_game platform:_game.selectedMetascore.platform];
+				}
+				else if ([_game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
+					[self requestMetascoreForGame:_game platform:_selectablePlatforms.firstObject];
 				}
 				
 				for (SimilarGame *similarGame in _game.similarGames){
@@ -689,7 +698,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[dataTask resume];
 }
 
-- (void)requestMetascoresForGame:(Game *)game platform:(Platform *)platform{
+- (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform{
 	NSURLRequest *request = [Networking requestForMetascoreWithGame:game platform:platform];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
@@ -699,6 +708,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Metascore - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			NSLog(@"%@", responseObject);
+			
+			if ([responseObject[@"result"] isKindOfClass:[NSNumber class]])
+				return;
 			
 			NSDictionary *results = responseObject[@"result"];
 			
@@ -711,6 +723,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[metascore setMetacriticURL:metacriticURL];
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
+			[game setSelectedMetascore:metascore];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[_criticScoreLabel setText:[NSString stringWithFormat:@"%@", metascore.criticScore]];
@@ -726,73 +739,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	}];
 	[dataTask resume];
 }
-
-//- (void)requestMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
-//	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:title platform:platform];
-//	
-//	if (request.URL){
-//		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-//			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
-//			return fileURL;
-//		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-//			if (error){
-//				NSLog(@"Failure in %@ - Metascore", self);
-//			}
-//			else{
-//				NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
-//				
-//				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-//				//			NSLog(@"HTML: %@", HTML);
-//				
-//				[_game setMetacriticURL:request.URL.absoluteString];
-//				
-//				if (HTML){
-//					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-//					[_game setMetascore:metascore];
-//					
-//					[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//						[_metascoreButton setHidden:NO];
-//						[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-//						
-//						if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-//							[_metascoreButton setBackgroundColor:[Networking colorForMetascore:metascore]];
-//							[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
-//							[_metascoreButton setTitle:metascore forState:UIControlStateNormal];
-//							
-//							[_metascorePlatformLabel setText:platform.name];
-//							[_metascorePlatformLabel setHidden:NO];
-//							[_metascorePlatformLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-//							
-//							[_game setMetacriticURL:request.URL.absoluteString];
-//							[_game setMetascorePlatform:platform];
-//							
-//							if (_game.wishlistPlatform && _game.wishlistPlatform == _game.metascorePlatform){
-//								[_game setWishlistMetascore:metascore];
-//								[_game setWishlistMetascorePlatform:platform];
-//								[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-//							}
-//						}
-//						else{
-//							if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
-//								[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
-//							else{
-//								[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
-//								[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
-//								[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
-//								[_metascoreButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
-//							}
-//						}
-//					}];
-//				}
-//				else if (_selectablePlatforms.count > ([_selectablePlatforms indexOfObject:platform] + 1))
-//					[self requestMetascoreForGameWithTitle:title platform:_selectablePlatforms[[_selectablePlatforms indexOfObject:platform] + 1]];
-//				else
-//					[_context MR_saveToPersistentStoreAndWait];
-//			}
-//		}];
-//		[downloadTask resume];
-//	}
-//}
 
 - (void)requestImageForSimilarGame:(SimilarGame *)similarGame{
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:similarGame.identifier fields:@"image"];

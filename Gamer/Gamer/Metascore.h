@@ -2,7 +2,7 @@
 //  Metascore.h
 //  Gamer
 //
-//  Created by Caio Mello on 26/04/2014.
+//  Created by Caio Mello on 27/04/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -18,5 +18,6 @@
 @property (nonatomic, retain) NSString * metacriticURL;
 @property (nonatomic, retain) Game *game;
 @property (nonatomic, retain) Platform *platform;
+@property (nonatomic, retain) Game *selectedGame;
 
 @end
