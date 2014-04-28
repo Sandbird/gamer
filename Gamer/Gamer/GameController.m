@@ -34,6 +34,7 @@
 #import "PlatformPickerController.h"
 #import "ReleasesController.h"
 #import "StarRatingControl.h"
+#import "MetascoreController.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	SectionCover,
@@ -48,7 +49,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	ActionSheetTagLibrary
 };
 
-@interface GameController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate, ReleasesControllerDelegate>
+@interface GameController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate, ReleasesControllerDelegate, MetascoreControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
@@ -726,10 +727,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[game setSelectedMetascore:metascore];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[_criticScoreLabel setText:[NSString stringWithFormat:@"%@", metascore.criticScore]];
-				[_userScoreLabel setText:[NSString stringWithFormat:@"%.1f", metascore.userScore.floatValue]];
-				[_metascorePlatformLabel setText:platform.abbreviation];
-				[_metascorePlatformLabel setBackgroundColor:platform.color];
+				[self refreshMetascore];
 				
 				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionDetails] withRowAnimation:UITableViewRowAnimationAutomatic];
 				[self.tableView beginUpdates];
@@ -942,6 +940,16 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	}];
 }
 
+#pragma mark - MetascoreController
+
+- (void)metascoreController:(MetascoreController *)controller didSelectMetascore:(Metascore *)metascore{
+	[_game setSelectedMetascore:metascore];
+	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[self refreshMetascore];
+		[self.navigationController popViewControllerAnimated:YES];
+	}];
+}
+
 #pragma mark - Custom
 
 - (void)displayCoverImage{
@@ -1012,11 +1020,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[_notesTextView setText:_game.notes];
 	
-	if (_game.metascores.count > 0){
-		[_criticScoreLabel setText:[NSString stringWithFormat:@"%@", [_game.metascores.allObjects[0] criticScore]]];
-		[_userScoreLabel setText:[NSString stringWithFormat:@"%.1f", [[_game.metascores.allObjects[0] userScore] floatValue]]];
-		[_metascorePlatformLabel setText:[_selectablePlatforms.firstObject abbreviation]];
-		[_metascorePlatformLabel setBackgroundColor:[_selectablePlatforms.firstObject color]];
+	if (_game.selectedMetascore){
+		[self refreshMetascore];
 	}
 	
 //	if (_game.metascore.length > 0){
@@ -1055,6 +1060,15 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[_franchiseTitleLabel setHidden:NO];
 		[_franchiseTitleLabel setText:[_game.franchises.allObjects.firstObject name]];
 	}
+}
+
+- (void)refreshMetascore{
+	[_criticScoreLabel setText:[NSString stringWithFormat:@"%@", _game.selectedMetascore.criticScore]];
+	[_userScoreLabel setText:[NSString stringWithFormat:@"%.1f", _game.selectedMetascore.userScore.floatValue]];
+	[_criticScoreLabel setBackgroundColor:[Networking colorForMetascore:_criticScoreLabel.text]];
+	[_userScoreLabel setBackgroundColor:[Networking colorForMetascore:[_userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
+	[_metascorePlatformLabel setText:_game.selectedMetascore.platform.abbreviation];
+	[_metascorePlatformLabel setBackgroundColor:_game.selectedMetascore.platform.color];
 }
 
 - (void)refreshAddButtonsAnimated:(BOOL)animated{
@@ -1371,6 +1385,11 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	}
 	else if ([segue.identifier isEqualToString:@"ReleasesSegue"]){
 		ReleasesController *destination = segue.destinationViewController;
+		[destination setGame:_game];
+		[destination setDelegate:self];
+	}
+	else if ([segue.identifier isEqualToString:@"MetascoreSegue"]){
+		MetascoreController *destination = segue.destinationViewController;
 		[destination setGame:_game];
 		[destination setDelegate:self];
 	}

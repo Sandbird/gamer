@@ -8,6 +8,7 @@
 
 #import "Platform+Library.h"
 #import "Release.h"
+#import "Metascore.h"
 
 @implementation Platform (Library)
 
@@ -49,6 +50,16 @@
 		Release *release2 = (Release *)obj2;
 		return [release1.releaseDate compare:release2.releaseDate] == NSOrderedAscending;
 	}];
+}
+
+- (Metascore *)metascoreWithGame:(Game *)game{
+	for (Metascore *metascore in self.metascores){
+		if (metascore.game == game){
+			return metascore;
+		}
+	}
+	
+	return nil;
 }
 
 @end

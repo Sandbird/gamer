@@ -8,6 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+@class MetascoreController;
+
+@protocol MetascoreControllerDelegate <NSObject>
+
+- (void)metascoreController:(MetascoreController *)controller didSelectMetascore:(Metascore *)metascore;
+
+@end
+
 @interface MetascoreController : UITableViewController
+
+@property (nonatomic, strong) Game *game;
+
+@property (nonatomic, weak) id<MetascoreControllerDelegate> delegate;
 
 @end

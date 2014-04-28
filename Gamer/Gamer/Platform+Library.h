@@ -16,4 +16,6 @@
 - (BOOL)containsReleasesWithGame:(Game *)game;
 - (NSArray *)sortedReleasesWithGame:(Game *)game;
 
+- (Metascore *)metascoreWithGame:(Game *)game;
+
 @end

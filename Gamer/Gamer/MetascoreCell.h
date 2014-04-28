@@ -10,4 +10,7 @@
 
 @interface MetascoreCell : UITableViewCell
 
+@property (nonatomic, strong) IBOutlet UILabel *criticScoreLabel;
+@property (nonatomic, strong) IBOutlet UILabel *userScoreLabel;
+
 @end
