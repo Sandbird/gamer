@@ -86,7 +86,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UILabel *franchiseLabel;
 @property (nonatomic, strong) IBOutlet UILabel *franchiseTitleLabel;
 
-@property (nonatomic, strong) IBOutlet UICollectionView *selectablePlatformsCollectionView;
+@property (nonatomic, strong) IBOutlet UICollectionView *platformsCollectionView;
 
 @property (nonatomic, strong) IBOutlet UILabel *criticScoreLabel;
 @property (nonatomic, strong) IBOutlet UILabel *userScoreLabel;
@@ -104,6 +104,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 @property (nonatomic, strong) NSArray *selectedPlatforms;
 @property (nonatomic, strong) NSArray *selectablePlatforms;
+@property (nonatomic, strong) NSArray *platforms;
 @property (nonatomic, strong) NSArray *similarGames;
 @property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSArray *videos;
@@ -141,6 +142,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	_videosStatusView = [[ContentStatusView alloc] initWithUnavailableTitle:@"No videos available"];
 	[_imagesCollectionView addSubview:_imagesStatusView];
 	[_videosCollectionView addSubview:_videosStatusView];
+	
+	[_similarGamesCollectionView setScrollsToTop:NO];
+	[_imagesCollectionView setScrollsToTop:NO];
+	[_videosCollectionView setScrollsToTop:NO];
 	
 	if (!_game)
 		_game = [Game MR_findFirstByAttribute:@"identifier" withValue:_gameIdentifier inContext:_context];
@@ -263,7 +268,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					return 20 + 17 + 13 + ((_selectedPlatforms.count/5 + 1) * 31) + 20;
 			}
 			else if (indexPath.row == 3){
-				return 20 + 17 + 13 + ((_selectedPlatforms.count/5 + 1) * 31) + 20;
+				return 20 + 17 + 13 + (ceil((double)_selectedPlatforms.count/4) * 31) + 20;
 			}
 			break;
 		case SectionStatus:
@@ -325,8 +330,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					}
 					// Platforms row
 					else{
-						if ([Tools deviceIsiPhone] && _selectablePlatforms.count > 0){
-							return 20 + 17 + 13 + ((_selectablePlatforms.count/5 + 1) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+						if ([Tools deviceIsiPhone] && _platforms.count > 0){
+							return 20 + 17 + 13 + (ceil((double)_platforms.count/4) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
 						}
 					}
 					break;
@@ -421,8 +426,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
 	if (collectionView == _selectedPlatformsCollectionView)
 		return _selectedPlatforms.count;
-	else if (collectionView == _selectablePlatformsCollectionView)
-		return _selectablePlatforms.count;
+	else if (collectionView == _platformsCollectionView)
+		return _platforms.count;
 	else if (collectionView == _similarGamesCollectionView)
 		return _similarGames.count;
 	else if (collectionView == _imagesCollectionView){
@@ -443,8 +448,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[cell.platformLabel setBackgroundColor:platform.color];
 		return cell;
 	}
-	else if (collectionView == _selectablePlatformsCollectionView){
-		Platform *platform = _selectablePlatforms[indexPath.item];
+	else if (collectionView == _platformsCollectionView){
+		Platform *platform = _platforms[indexPath.item];
 		PlatformCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		[cell.platformLabel setText:platform.abbreviation];
 		[cell.platformLabel setBackgroundColor:platform.color];
@@ -589,7 +594,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				// Refresh UI
 				[self refreshAnimated:NO];
 				[self.tableView reloadData];
-				[_selectablePlatformsCollectionView reloadData];
+				[_platformsCollectionView reloadData];
 				[_similarGamesCollectionView reloadData];
 				
 				// Cover image download
@@ -984,6 +989,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	_selectedPlatforms = [self orderedSelectedPlatformsFromGame:_game];
 	
+	_platforms = [self orderedPlatformsFromGame:_game];
+	
 	_similarGames = [self orderedSimilarGamesFromGame:_game];
 	
 	[_editPlatformsButton setHidden:([_game.location isEqualToNumber:@(GameLocationNone)] || _selectablePlatforms.count <= 1) ? YES : NO];
@@ -1063,9 +1070,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (void)refreshMetascore{
-	[_criticScoreLabel setText:[NSString stringWithFormat:@"%@", _game.selectedMetascore.criticScore]];
+	[_criticScoreLabel setText:[_game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? @"?" : [NSString stringWithFormat:@"%@", _game.selectedMetascore.criticScore]];
+	[_criticScoreLabel setBackgroundColor:[_game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? [UIColor lightGrayColor] : [Networking colorForMetascore:_criticScoreLabel.text]];
 	[_userScoreLabel setText:[NSString stringWithFormat:@"%.1f", _game.selectedMetascore.userScore.floatValue]];
-	[_criticScoreLabel setBackgroundColor:[Networking colorForMetascore:_criticScoreLabel.text]];
 	[_userScoreLabel setBackgroundColor:[Networking colorForMetascore:[_userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
 	[_metascorePlatformLabel setText:_game.selectedMetascore.platform.abbreviation];
 	[_metascorePlatformLabel setBackgroundColor:_game.selectedMetascore.platform.color];
@@ -1091,7 +1098,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (NSArray *)orderedPlatformsFromGame:(Game *)game{
-	return [game.platforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+	NSArray *platformsOrderedByGroup = [game.platforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		Platform *platform1 = (Platform *)obj1;
+		Platform *platform2 = (Platform *)obj2;
+		return [platform1.group compare:platform2.group] == NSOrderedDescending;
+	}];
+	
+	return [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		Platform *platform1 = (Platform *)obj1;
 		Platform *platform2 = (Platform *)obj2;
 		return [platform1.index compare:platform2.index] == NSOrderedDescending;
@@ -1099,7 +1112,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
-	return [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+	NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		Platform *platform1 = (Platform *)obj1;
+		Platform *platform2 = (Platform *)obj2;
+		return [platform1.group compare:platform2.group] == NSOrderedDescending;
+	}];
+	
+	return [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		Platform *platform1 = (Platform *)obj1;
 		Platform *platform2 = (Platform *)obj2;
 		return [platform1.index compare:platform2.index] == NSOrderedDescending;
@@ -1116,7 +1135,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 	}
 	
-	return [selectablePlatforms sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+	NSArray *platformsOrderedByGroup = [selectablePlatforms sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		Platform *platform1 = (Platform *)obj1;
+		Platform *platform2 = (Platform *)obj2;
+		return [platform1.group compare:platform2.group] == NSOrderedDescending;
+	}];
+	
+	return [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		Platform *platform1 = (Platform *)obj1;
 		Platform *platform2 = (Platform *)obj2;
 		return [platform1.index compare:platform2.index] == NSOrderedDescending;

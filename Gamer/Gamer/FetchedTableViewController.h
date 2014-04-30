@@ -20,6 +20,6 @@
 
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
-@property (nonatomic, weak) id <FetchedTableViewDelegate> delegate;
+@property (nonatomic, weak) id <FetchedTableViewDelegate> fetchedTableViewDelegate;
 
 @end

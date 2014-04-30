@@ -31,7 +31,7 @@
     switch (type) {
         case NSFetchedResultsChangeInsert: [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationTop]; break;
         case NSFetchedResultsChangeDelete: [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop]; break;
-        case NSFetchedResultsChangeUpdate: [self.delegate configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath]; break;
+        case NSFetchedResultsChangeUpdate: [self.fetchedTableViewDelegate configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath]; break;
         case NSFetchedResultsChangeMove:
             [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];

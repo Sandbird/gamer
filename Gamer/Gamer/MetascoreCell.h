@@ -12,5 +12,6 @@
 
 @property (nonatomic, strong) IBOutlet UILabel *criticScoreLabel;
 @property (nonatomic, strong) IBOutlet UILabel *userScoreLabel;
+@property (nonatomic, strong) IBOutlet UILabel *platformLabel;
 
 @end

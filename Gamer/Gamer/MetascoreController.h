@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FetchedTableViewController.h"
 
 @class MetascoreController;
 
@@ -16,7 +17,7 @@
 
 @end
 
-@interface MetascoreController : UITableViewController
+@interface MetascoreController : FetchedTableViewController
 
 @property (nonatomic, strong) Game *game;
 
