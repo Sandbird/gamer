@@ -60,7 +60,7 @@
 					<key>identifier</key>
 					<integer>4</integer>
 					<key>name</key>
-					<string>This Month</string>
+					<string>Next Week</string>
 					<key>placeholder</key>
 					<dict>
 						<key>title</key>
@@ -76,7 +76,7 @@
 					<key>identifier</key>
 					<integer>5</integer>
 					<key>name</key>
-					<string>Next Month</string>
+					<string>This Month</string>
 					<key>placeholder</key>
 					<dict>
 						<key>title</key>
@@ -92,7 +92,7 @@
 					<key>identifier</key>
 					<integer>6</integer>
 					<key>name</key>
-					<string>This Quarter</string>
+					<string>Next Month</string>
 					<key>placeholder</key>
 					<dict>
 						<key>title</key>
@@ -108,7 +108,7 @@
 					<key>identifier</key>
 					<integer>7</integer>
 					<key>name</key>
-					<string>Next Quarter</string>
+					<string>This Quarter</string>
 					<key>placeholder</key>
 					<dict>
 						<key>title</key>
@@ -124,7 +124,7 @@
 					<key>identifier</key>
 					<integer>8</integer>
 					<key>name</key>
-					<string>This Year</string>
+					<string>Next Quarter</string>
 					<key>placeholder</key>
 					<dict>
 						<key>title</key>
@@ -140,7 +140,7 @@
 					<key>identifier</key>
 					<integer>9</integer>
 					<key>name</key>
-					<string>Next Year</string>
+					<string>This Year</string>
 					<key>placeholder</key>
 					<dict>
 						<key>title</key>
@@ -156,7 +156,7 @@
 					<key>identifier</key>
 					<integer>10</integer>
 					<key>name</key>
-					<string>Later</string>
+					<string>Next Year</string>
 					<key>placeholder</key>
 					<dict>
 						<key>title</key>
@@ -171,6 +171,22 @@
 				<dict>
 					<key>identifier</key>
 					<integer>11</integer>
+					<key>name</key>
+					<string>Later</string>
+					<key>placeholder</key>
+					<dict>
+						<key>title</key>
+						<string>ZZZ</string>
+						<key>release_date</key>
+						<date>2060-01-01T12:00:00Z</date>
+					</dict>
+				</dict>
+			</dict>
+			<dict>
+				<key>release_period</key>
+				<dict>
+					<key>identifier</key>
+					<integer>12</integer>
 					<key>name</key>
 					<string>To Be Announced</string>
 					<key>placeholder</key>

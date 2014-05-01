@@ -713,7 +713,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Metascore - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			NSLog(@"%@", responseObject);
+//			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"result"] isKindOfClass:[NSNumber class]])
 				return;
@@ -1072,8 +1072,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (void)refreshMetascore{
 	[_criticScoreLabel setText:[_game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? @"?" : [NSString stringWithFormat:@"%@", _game.selectedMetascore.criticScore]];
 	[_criticScoreLabel setBackgroundColor:[_game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? [UIColor lightGrayColor] : [Networking colorForMetascore:_criticScoreLabel.text]];
-	[_userScoreLabel setText:[NSString stringWithFormat:@"%.1f", _game.selectedMetascore.userScore.floatValue]];
-	[_userScoreLabel setBackgroundColor:[Networking colorForMetascore:[_userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
+	[_userScoreLabel setText:[_game.selectedMetascore.userScore isEqual:[NSDecimalNumber zero]] ? @"?" : [NSString stringWithFormat:@"%.1f", _game.selectedMetascore.userScore.floatValue]];
+	[_userScoreLabel setBackgroundColor:[_game.selectedMetascore.userScore isEqual:[NSDecimalNumber zero]] ? [UIColor lightGrayColor] : [Networking colorForMetascore:[_userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
 	[_metascorePlatformLabel setText:_game.selectedMetascore.platform.abbreviation];
 	[_metascorePlatformLabel setBackgroundColor:_game.selectedMetascore.platform.color];
 }

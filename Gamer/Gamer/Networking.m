@@ -354,18 +354,30 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	NSDateComponents *threeMonthsAgo = [calendar components:NSDayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	[threeMonthsAgo setMonth:threeMonthsAgo.month - 3];
 	
-	// Components for today, this month, this quarter, this year
+	// Components for current date
 	NSDateComponents *current = [calendar components:NSDayCalendarUnit | NSWeekdayCalendarUnit | NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
 	[current setQuarter:[self quarterForMonth:current.month]];
 	[current setHour:10];
 	
-	// Components for the start of the week
-	NSDateComponents *startOfCurrentWeek = [NSDateComponents new];
-	[startOfCurrentWeek setDay:current.day - current.weekday + 1];
+	// Components for the start of this week
+	NSDateComponents *startOfThisWeek = [NSDateComponents new];
+	[startOfThisWeek setDay:current.day - current.weekday + 1];
 	
-	// Components for the end of the week
-	NSDateComponents *endOfCurrentWeek = [NSDateComponents new];
-	[endOfCurrentWeek setDay:startOfCurrentWeek.day + 6];
+	// Components for the end of this week
+	NSDateComponents *endOfThisWeek = [NSDateComponents new];
+	[endOfThisWeek setDay:startOfThisWeek.day + 6];
+	
+	// Components to increment a week
+	NSDateComponents *oneWeekComponents = [NSDateComponents new];
+	[oneWeekComponents setDay:7];
+	
+	// Components for the start of next week
+	NSDateComponents *startOfNextWeek = [NSDateComponents new];
+	[startOfNextWeek setDay:[calendar components:NSDayCalendarUnit fromDate:[calendar dateByAddingComponents:oneWeekComponents toDate:[calendar dateFromComponents:startOfThisWeek] options:0]].day];
+	
+	// Components for the end of next week
+	NSDateComponents *endOfNextWeek = [NSDateComponents new];
+	[endOfNextWeek setDay:startOfNextWeek.day + 6];
 	
 	// Components for next month, next quarter, next year
 	NSDateComponents *next = [calendar components:NSMonthCalendarUnit | NSQuarterCalendarUnit | NSYearCalendarUnit fromDate:[NSDate date]];
@@ -392,10 +404,15 @@ static NSMutableURLRequest *SEARCHREQUEST;
 				period = ReleasePeriodIdentifierNextYear;
 		}
 		else if ([object releaseYear].integerValue == current.year){
-			if ([object releaseDay].integerValue >= startOfCurrentWeek.day && [object releaseDay].integerValue <= endOfCurrentWeek.day)
-				period = ReleasePeriodIdentifierThisWeek;
-			else if ([object releaseMonth].integerValue == current.month)
-				period = ReleasePeriodIdentifierThisMonth;
+			
+			if ([object releaseMonth].integerValue == current.month){
+				if ([object releaseDay].integerValue >= startOfThisWeek.day && [object releaseDay].integerValue <= endOfThisWeek.day)
+					period = ReleasePeriodIdentifierThisWeek;
+				else if ([object releaseDay].integerValue >= startOfNextWeek.day && [object releaseDay].integerValue <= endOfNextWeek.day)
+					period = ReleasePeriodIdentifierNextWeek;
+				else
+					period = ReleasePeriodIdentifierThisMonth;
+			}
 			else if ([object releaseMonth].integerValue == next.month)
 				period = ReleasePeriodIdentifierNextMonth;
 			else if ([object releaseQuarter].integerValue == current.quarter)

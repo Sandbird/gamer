@@ -189,7 +189,11 @@
 	[customCell.dateLabel setText:game.selectedRelease ? game.selectedRelease.releaseDateText : game.releaseDateText];
 	[customCell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];
 	
-	if (game.selectedPlatforms.count == 1){
+	if (game.selectedRelease){
+		[customCell.platformLabel setText:game.selectedRelease.platform.abbreviation];
+		[customCell.platformLabel setBackgroundColor:game.selectedRelease.platform.color];
+	}
+	else if (game.selectedPlatforms.count == 1){
 		Platform *platform = game.selectedPlatforms.allObjects.firstObject;
 		[customCell.platformLabel setText:platform.abbreviation];
 		[customCell.platformLabel setBackgroundColor:platform.color];
@@ -199,7 +203,7 @@
 		[customCell.platformLabel setBackgroundColor:[UIColor clearColor]];
 	}
 	
-	[customCell.metascoreLabel setText:[NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]];
+	[customCell.metascoreLabel setText:[game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? nil : [NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]];
 	[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:[NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]]];
 }
 

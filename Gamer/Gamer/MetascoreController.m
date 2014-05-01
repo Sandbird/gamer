@@ -80,8 +80,8 @@
 	MetascoreCell *customCell = (MetascoreCell *)cell;
 	[customCell.criticScoreLabel setText:[metascore.criticScore isEqualToNumber:@(0)] ? @"?" : [NSString stringWithFormat:@"%@", metascore.criticScore]];
 	[customCell.criticScoreLabel setTextColor:[metascore.criticScore isEqualToNumber:@(0)] ? [UIColor lightGrayColor] : [Networking colorForMetascore:customCell.criticScoreLabel.text]];
-	[customCell.userScoreLabel setText:[NSString stringWithFormat:@"%.1f", metascore.userScore.floatValue]];
-	[customCell.userScoreLabel setTextColor:[Networking colorForMetascore:[customCell.userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
+	[customCell.userScoreLabel setText:[metascore.userScore isEqual:[NSDecimalNumber zero]] ? @"?" : [NSString stringWithFormat:@"%.1f", metascore.userScore.floatValue]];
+	[customCell.userScoreLabel setTextColor:[_game.selectedMetascore.userScore isEqual:[NSDecimalNumber zero]] ? [UIColor lightGrayColor] : [Networking colorForMetascore:[customCell.userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
 	[customCell.platformLabel setText:metascore.platform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:metascore.platform.color];
 	[customCell setAccessoryType:metascore == _game.selectedMetascore ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];

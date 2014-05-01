@@ -15,14 +15,15 @@ typedef NS_ENUM(NSInteger, ReleasePeriodIdentifier){
 	ReleasePeriodIdentifierReleased = 1,
 	ReleasePeriodIdentifierRecentlyReleased = 2,
 	ReleasePeriodIdentifierThisWeek = 3,
-	ReleasePeriodIdentifierThisMonth = 4,
-	ReleasePeriodIdentifierNextMonth = 5,
-	ReleasePeriodIdentifierThisQuarter = 6,
-	ReleasePeriodIdentifierNextQuarter = 7,
-	ReleasePeriodIdentifierThisYear = 8,
-	ReleasePeriodIdentifierNextYear = 9,
-	ReleasePeriodIdentifierLater = 10,
-	ReleasePeriodIdentifierTBA = 11
+	ReleasePeriodIdentifierNextWeek = 4,
+	ReleasePeriodIdentifierThisMonth = 5,
+	ReleasePeriodIdentifierNextMonth = 6,
+	ReleasePeriodIdentifierThisQuarter = 7,
+	ReleasePeriodIdentifierNextQuarter = 8,
+	ReleasePeriodIdentifierThisYear = 9,
+	ReleasePeriodIdentifierNextYear = 10,
+	ReleasePeriodIdentifierLater = 11,
+	ReleasePeriodIdentifierTBA = 12
 };
 
 @interface Networking : NSObject
