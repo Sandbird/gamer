@@ -19,6 +19,7 @@
 #import "SimilarGame.h"
 #import "Release.h"
 #import "Region.h"
+#import "Metascore.h"
 #import "GameController.h"
 #import "WishlistSectionHeaderView.h"
 #import <AFNetworking/AFNetworking.h>
@@ -198,13 +199,8 @@
 		[customCell.platformLabel setBackgroundColor:[UIColor clearColor]];
 	}
 	
-//	if ([game.released isEqualToNumber:@(YES)] && game.wishlistMetascore.length > 0 && game.wishlistMetascorePlatform == game.wishlistPlatform){
-//		[customCell.metascoreLabel setHidden:NO];
-//		[customCell.metascoreLabel setText:game.wishlistMetascore];
-//		[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:game.wishlistMetascore]];
-//	}
-//	else
-		[customCell.metascoreLabel setHidden:YES];
+	[customCell.metascoreLabel setText:[NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]];
+	[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:[NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]]];
 }
 
 #pragma mark - HidingSectionView
@@ -228,19 +224,10 @@
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			_numberOfRunningTasks--;
-			
-			if (_numberOfRunningTasks == 0){
-				[self.refreshControl endRefreshing];
-				[self updateGameReleasePeriods];
-			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
-			
-			_numberOfRunningTasks--;
 			
 			[Networking updateGameInfoWithGame:game JSON:responseObject context:_context];
 			
@@ -256,9 +243,29 @@
 			
 			[self requestReleasesForGame:game];
 			
-//			if ([game.released isEqualToNumber:@(YES)])
-//				[self requestMetascoreForGame:game];
+			if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
+				if (game.selectedMetascore){
+					[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
+				}
+				else{
+					NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+						Platform *platform1 = (Platform *)obj1;
+						Platform *platform2 = (Platform *)obj2;
+						return [platform1.group compare:platform2.group] == NSOrderedDescending;
+					}];
+					
+					NSArray *platformsOrderedByIndex = [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+						Platform *platform1 = (Platform *)obj1;
+						Platform *platform2 = (Platform *)obj2;
+						return [platform1.index compare:platform2.index] == NSOrderedDescending;
+					}];
+					
+					[self requestMetascoreForGame:game platform:platformsOrderedByIndex.firstObject];
+				}
+			}
 		}
+		
+		_numberOfRunningTasks--;
 		
 		if (_numberOfRunningTasks == 0){
 			[self.refreshControl endRefreshing];
@@ -298,73 +305,64 @@
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			_numberOfRunningTasks--;
-			
-			if (_numberOfRunningTasks == 0){
-				[self.refreshControl endRefreshing];
-				[self updateGameReleasePeriods];
-			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			_numberOfRunningTasks--;
-			
 			[game setReleases:nil];
 			
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
 			
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				if (_numberOfRunningTasks == 0){
-					[self.refreshControl endRefreshing];
-					[self updateGameReleasePeriods];
-				}
-			}];
+			[_context MR_saveToPersistentStoreAndWait];
+		}
+		
+		_numberOfRunningTasks--;
+		
+		if (_numberOfRunningTasks == 0){
+			[self.refreshControl endRefreshing];
+			[self updateGameReleasePeriods];
 		}
 	}];
 	[dataTask resume];
 	_numberOfRunningTasks++;
 }
 
-//- (void)requestMetascoreForGame:(Game *)game{
-//	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform];
-//	
-//	if (request.URL){
-//		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-//			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
-//			return fileURL;
-//		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-//			if (error){
-//				NSLog(@"Failure in %@ - Metascore", self);
-//			}
-//			else{
-//				NSLog(@"Success in %@ - Metascore - %@", self, request.URL);
-//				
-//				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-//				
-//				[game setMetacriticURL:request.URL.absoluteString];
-//				
-//				if (HTML){
-//					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-//					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-//						[game setWishlistMetascore:metascore];
-//						[game setWishlistMetascorePlatform:game.wishlistPlatform];
-//					}
-//					else{
-//						[game setWishlistMetascore:nil];
-//						[game setWishlistMetascorePlatform:nil];
-//					}
-//				}
-//				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//					[self.tableView reloadData];
-//				}];
-//			}
-//		}];
-//		[downloadTask resume];
-//	}
-//}
+- (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform{
+	NSURLRequest *request = [Networking requestForMetascoreWithGame:game platform:platform];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Metascore", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Metascore - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			NSLog(@"%@", responseObject);
+			
+			if ([responseObject[@"result"] isKindOfClass:[NSNumber class]])
+				return;
+			
+			NSDictionary *results = responseObject[@"result"];
+			
+			NSString *metacriticURL = [Tools stringFromSourceIfNotNull:results[@"url"]];
+			
+			Metascore *metascore = [Metascore MR_findFirstByAttribute:@"metacriticURL" withValue:metacriticURL inContext:_context];
+			if (!metascore) metascore = [Metascore MR_createInContext:_context];
+			[metascore setCriticScore:[Tools integerNumberFromSourceIfNotNull:results[@"score"]]];
+			[metascore setUserScore:[Tools decimalNumberFromSourceIfNotNull:results[@"userscore"]]];
+			[metascore setMetacriticURL:metacriticURL];
+			[metascore setPlatform:platform];
+			[game addMetascoresObject:metascore];
+			
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+//				[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:game]] withRowAnimation:UITableViewRowAnimationAutomatic];
+//				[self.tableView beginUpdates];
+//				[self.tableView endUpdates];
+			}];
+		}
+	}];
+	[dataTask resume];
+}
 
 #pragma mark - Custom
 

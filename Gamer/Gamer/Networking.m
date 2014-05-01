@@ -337,31 +337,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	}
 }
 
-//+ (NSURLRequest *)requestForMetascoreForGameWithTitle:(NSString *)title platform:(Platform *)platform{
-//	NSMutableString *formattedTitle = title.lowercaseString.mutableCopy;
-//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"'" withString:@""]];
-//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@":" withString:@""]];
-//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"& " withString:@""]];
-//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@"/" withString:@"-"]];
-//	[formattedTitle setString:[formattedTitle stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
-//	[formattedTitle setString:[formattedTitle stringByFoldingWithOptions:NSDiacriticInsensitiveSearch locale:[NSLocale localeWithLocaleIdentifier:@"en_US"]]];
-//	
-//	NSMutableString *formattedPlatform = platform.name.lowercaseString.mutableCopy;
-//	if ([platform.abbreviation isEqualToString:@"PSP"]){
-//		[formattedPlatform setString:@"psp"];
-//	}
-//	else{
-//		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"nintendo " withString:@""]];
-//		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@"'" withString:@""]];
-//		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@":" withString:@""]];
-//		[formattedPlatform setString:[formattedPlatform stringByReplacingOccurrencesOfString:@" " withString:@"-"]];
-//	}
-//	
-//	NSString *url = [NSString stringWithFormat:@"http://www.metacritic.com/game/%@/%@", formattedPlatform, formattedTitle];
-//	
-//	return [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-//}
-
 + (NSInteger)quarterForMonth:(NSInteger)month{
 	switch (month) {
 		case 1: case 2: case 3: return 1;
@@ -398,61 +373,42 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	[next setQuarter:current.quarter + 1];
 	next.year++;
 	
-	NSInteger period = 0;
+	NSInteger period = ReleasePeriodIdentifierNone;
 	if ([[object releaseDate] compare:[calendar dateFromComponents:threeMonthsAgo]] <= NSOrderedSame)
-		period = 1; // Released
+		period = ReleasePeriodIdentifierReleased;
 	else if ([[object releaseDate] compare:[calendar dateFromComponents:current]] <= NSOrderedSame)
-		period = 2; // Recently released
+		period = ReleasePeriodIdentifierRecentlyReleased;
 	else{
 		if ([object releaseYear].integerValue == 2050)
-			period = 11; // TBA
+			period = ReleasePeriodIdentifierTBA;
 		else if ([object releaseYear].integerValue > next.year)
-			period = 10; // Later
+			period = ReleasePeriodIdentifierLater;
 		else if ([object releaseYear].integerValue == next.year){
 			if (current.month == 12 && [object releaseMonth].integerValue == 1)
-				period = 5; // Next month
+				period = ReleasePeriodIdentifierNextMonth;
 			else if (current.quarter == 4 && [object releaseQuarter].integerValue == 1)
-				period = 7; // Next quarter
+				period = ReleasePeriodIdentifierNextQuarter;
 			else
-				period = 9; // Next year
+				period = ReleasePeriodIdentifierNextYear;
 		}
 		else if ([object releaseYear].integerValue == current.year){
 			if ([object releaseDay].integerValue >= startOfCurrentWeek.day && [object releaseDay].integerValue <= endOfCurrentWeek.day)
-				period = 3; // This week
+				period = ReleasePeriodIdentifierThisWeek;
 			else if ([object releaseMonth].integerValue == current.month)
-				period = 4; // This month
+				period = ReleasePeriodIdentifierThisMonth;
 			else if ([object releaseMonth].integerValue == next.month)
-				period = 5; // Next month
+				period = ReleasePeriodIdentifierNextMonth;
 			else if ([object releaseQuarter].integerValue == current.quarter)
-				period = 6; // This quarter
+				period = ReleasePeriodIdentifierThisQuarter;
 			else if ([object releaseQuarter].integerValue == next.quarter)
-				period = 7; // Next quarter
+				period = ReleasePeriodIdentifierNextQuarter;
 			else
-				period = 8; // This year
+				period = ReleasePeriodIdentifierThisYear;
 		}
 	}
 	
 	return [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(period) inContext:context];
 }
-
-//+ (NSString *)retrieveMetascoreFromHTML:(NSString *)HTML{
-//	// Regex magic
-//	NSRegularExpression *firstExpression = [NSRegularExpression regularExpressionWithPattern:@"xlarge game" options:NSRegularExpressionCaseInsensitive error:nil];
-//	NSTextCheckingResult *firstResult = [firstExpression firstMatchInString:HTML options:NSMatchingReportProgress range:NSMakeRange(0, HTML.length)];
-//	NSUInteger startIndex = firstResult.range.location + firstResult.range.length;
-//	
-//	NSRegularExpression *secondExpression = [NSRegularExpression regularExpressionWithPattern:@"</span" options:NSRegularExpressionCaseInsensitive error:nil];
-//	NSTextCheckingResult *secondResult = [secondExpression firstMatchInString:HTML options:NSMatchingReportProgress range:NSMakeRange(startIndex, HTML.length - startIndex)];
-//	NSUInteger endIndex = secondResult.range.location;
-//	
-////	NSString *metascore = [html substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
-//	NSString *metascore = (startIndex >= 2 && endIndex >= 2) ? [HTML substringWithRange:NSMakeRange(endIndex - 2, 2)] : nil;
-//	
-////	NSLog(@"HTML: %@", HTML);
-////	NSLog(@"Metascore: %@", metascore);
-//	
-//	return metascore;
-//}
 
 + (UIColor *)colorForMetascore:(NSString *)metascore{
 	if (metascore.integerValue >= 75)

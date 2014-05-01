@@ -8,6 +8,9 @@
 
 #import "GamerAppDelegate.h"
 #import "Game.h"
+#import "Metascore.h"
+#import "ReleasePeriod.h"
+#import "Platform.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <Crashlytics/Crashlytics.h>
 #import "ImportController.h"
@@ -15,7 +18,6 @@
 @interface GamerAppDelegate ()
 
 @property (nonatomic, assign) NSInteger numberOfRunningTasks;
-@property (nonatomic, assign) NSInteger numberOfReleasedGamesToRefreshMetascore;
 
 @end
 
@@ -146,29 +148,40 @@
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			NSLog(@"Failure in %@ - Status code: %ld - Background (Game)", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			_numberOfRunningTasks--;
-			
-			if (_numberOfRunningTasks == 0 && _numberOfReleasedGamesToRefreshMetascore == 0){
-				completionHandler(UIBackgroundFetchResultNewData);
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Background (Game) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			NSLog(@"%@", responseObject);
-			
-			_numberOfRunningTasks--;
+//			NSLog(@"%@", responseObject);
 			
 			[Networking updateGameInfoWithGame:game JSON:responseObject context:context];
 			
-//			if ([game.released isEqualToNumber:@(YES)])
-//				[self requestMetascoreForGame:game context:context completionHandler:completionHandler];
-			
-			if (_numberOfRunningTasks == 0 && _numberOfReleasedGamesToRefreshMetascore == 0){
-				completionHandler(UIBackgroundFetchResultNewData);
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+			if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
+				if (game.selectedMetascore){
+					[self requestMetascoreForGame:game platform:game.selectedMetascore.platform context:context completionHandler:completionHandler];
+				}
+				else{
+					NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+						Platform *platform1 = (Platform *)obj1;
+						Platform *platform2 = (Platform *)obj2;
+						return [platform1.group compare:platform2.group] == NSOrderedDescending;
+					}];
+					
+					NSArray *platformsOrderedByIndex = [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+						Platform *platform1 = (Platform *)obj1;
+						Platform *platform2 = (Platform *)obj2;
+						return [platform1.index compare:platform2.index] == NSOrderedDescending;
+					}];
+					
+					[self requestMetascoreForGame:game platform:platformsOrderedByIndex.firstObject context:context completionHandler:completionHandler];
+				}
 			}
+		}
+		
+		_numberOfRunningTasks--;
+		
+		if (_numberOfRunningTasks == 0){
+			completionHandler(UIBackgroundFetchResultNewData);
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		}
 	}];
 	[dataTask resume];
@@ -181,81 +194,63 @@
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Background (Releases)", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			_numberOfRunningTasks--;
-			
-			if (_numberOfRunningTasks == 0){
-				completionHandler(UIBackgroundFetchResultNewData);
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Background (Releases) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//			NSLog(@"%@", responseObject);
-			
-			_numberOfRunningTasks--;
+//			NSLog(@"%@", responseObject);
 			
 			[game setReleases:nil];
 			
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:context];
-			
-			if (_numberOfRunningTasks == 0){
-				completionHandler(UIBackgroundFetchResultNewData);
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-			}
+		}
+		
+		_numberOfRunningTasks--;
+		
+		if (_numberOfRunningTasks == 0){
+			completionHandler(UIBackgroundFetchResultNewData);
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		}
 	}];
 	[dataTask resume];
 	_numberOfRunningTasks++;
 }
 
-//- (void)requestMetascoreForGame:(Game *)game context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-//	NSURLRequest *request = [Networking requestForMetascoreForGameWithTitle:game.title platform:game.wishlistPlatform];
-//	
-//	if (request.URL){
-//		NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-//			NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
-//			return fileURL;
-//		} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-//			_numberOfReleasedGamesToRefreshMetascore--;
-//			
-//			if (error){
-//				NSLog(@"Failure in %@ - Background (Metascore)", self);
-//				
-//				if (_numberOfReleasedGamesToRefreshMetascore == 0){
-//					completionHandler(UIBackgroundFetchResultNewData);
-//					[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-//				}
-//			}
-//			else{
-//				NSLog(@"Success in %@ - Background (Metascore) - %@", self, request.URL);
-//				
-//				NSString *HTML = [[NSString alloc] initWithData:[NSData dataWithContentsOfURL:filePath] encoding:NSUTF8StringEncoding];
-//				
-//				[game setMetacriticURL:request.URL.absoluteString];
-//				
-//				if (HTML){
-//					NSString *metascore = [Networking retrieveMetascoreFromHTML:HTML];
-//					if (metascore.length > 0 && [[NSScanner scannerWithString:metascore] scanInteger:nil]){
-//						[game setWishlistMetascore:metascore];
-//						[game setWishlistMetascorePlatform:game.wishlistPlatform];
-//					}
-//					else{
-//						[game setWishlistMetascore:nil];
-//						[game setWishlistMetascorePlatform:nil];
-//					}
-//				}
-//				
-//				[context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//					if (_numberOfReleasedGamesToRefreshMetascore == 0){
-//						completionHandler(UIBackgroundFetchResultNewData);
-//						[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-//					}
-//				}];
-//			}
-//		}];
-//		[downloadTask resume];
-//	}
-//}
+- (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+	NSURLRequest *request = [Networking requestForMetascoreWithGame:game platform:platform];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Background (Metascore)", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Background (Metascore) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			//			NSLog(@"%@", responseObject);
+			
+			if ([responseObject[@"result"] isKindOfClass:[NSNumber class]])
+				return;
+			
+			NSDictionary *results = responseObject[@"result"];
+			
+			NSString *metacriticURL = [Tools stringFromSourceIfNotNull:results[@"url"]];
+			
+			Metascore *metascore = [Metascore MR_findFirstByAttribute:@"metacriticURL" withValue:metacriticURL inContext:context];
+			if (!metascore) metascore = [Metascore MR_createInContext:context];
+			[metascore setCriticScore:[Tools integerNumberFromSourceIfNotNull:results[@"score"]]];
+			[metascore setUserScore:[Tools decimalNumberFromSourceIfNotNull:results[@"userscore"]]];
+			[metascore setMetacriticURL:metacriticURL];
+			[metascore setPlatform:platform];
+			[game addMetascoresObject:metascore];
+		}
+		
+		_numberOfRunningTasks--;
+		
+		if (_numberOfRunningTasks == 0){
+			completionHandler(UIBackgroundFetchResultNewData);
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+		}
+	}];
+	[dataTask resume];
+	_numberOfRunningTasks++;
+}
 
 @end

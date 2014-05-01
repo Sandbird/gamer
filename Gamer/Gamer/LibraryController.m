@@ -19,6 +19,7 @@
 #import "Region.h"
 #import "Release.h"
 #import "Metascore.h"
+#import "ReleasePeriod.h"
 #import "GameController.h"
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
@@ -30,7 +31,7 @@ typedef NS_ENUM(NSInteger, LibrarySort){
 	LibrarySortTitle,
 	LibrarySortReleaseYear,
 	LibrarySortRating,
-//	LibrarySortMetascore,
+	LibrarySortMetascore,
 	LibrarySortPlatform
 };
 
@@ -182,7 +183,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		
 		switch (_sortOrFilter) {
 			case LibrarySortTitle: headerTitle = sectionName; break;
-			case LibrarySortReleaseYear: headerTitle = game.releaseYear.stringValue; break;
+			case LibrarySortReleaseYear: headerTitle = [game.releaseYear isEqualToNumber:@(2050)] ? @"Unknown" : game.releaseYear.stringValue; break;
 			case LibrarySortRating:{
 				switch (game.personalRating.integerValue) {
 					case 5: headerTitle = @"★★★★★"; break;
@@ -195,12 +196,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 				}
 				break;
 			}
-//			case LibrarySortMetascore: headerTitle = game.metascore.length > 0 ? game.metascore : @"Unavailable"; break;
+			case LibrarySortMetascore: headerTitle = [game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? @"Unavailable" : [NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]; break;
 			default: break;
 		}
-		
-		if ([headerTitle isEqualToString:@"2050"])
-			headerTitle = @"Unknown";
 		
 		HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 		[headerView.titleLabel setText:headerTitle];
@@ -277,18 +275,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			_numberOfRunningTasks--;
-			
-			if (_numberOfRunningTasks == 0){
-				[_refreshBarButton setEnabled:YES];
-				[_refreshControl endRefreshing];
-			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
-			_numberOfRunningTasks--;
 			
 			[Networking updateGameInfoWithGame:game JSON:responseObject context:_context];
 			
@@ -304,13 +293,37 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			[self requestReleasesForGame:game];
 			
-			if (_numberOfRunningTasks == 0){
+			if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
+				if (game.selectedMetascore){
+					[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
+				}
+				else{
+					NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+						Platform *platform1 = (Platform *)obj1;
+						Platform *platform2 = (Platform *)obj2;
+						return [platform1.group compare:platform2.group] == NSOrderedDescending;
+					}];
+					
+					NSArray *platformsOrderedByIndex = [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+						Platform *platform1 = (Platform *)obj1;
+						Platform *platform2 = (Platform *)obj2;
+						return [platform1.index compare:platform2.index] == NSOrderedDescending;
+					}];
+					
+					[self requestMetascoreForGame:game platform:platformsOrderedByIndex.firstObject];
+				}
+			}
+			
 				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[_refreshBarButton setEnabled:YES];
-					[_refreshControl endRefreshing];
 					[_collectionView reloadData];
 				}];
-			}
+		}
+		
+		_numberOfRunningTasks--;
+		
+		if (_numberOfRunningTasks == 0){
+			[_refreshBarButton setEnabled:YES];
+			[_refreshControl endRefreshing];
 		}
 	}];
 	[dataTask resume];
@@ -364,6 +377,38 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	[dataTask resume];
 }
 
+- (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform{
+	NSURLRequest *request = [Networking requestForMetascoreWithGame:game platform:platform];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Metascore", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Metascore - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			//			NSLog(@"%@", responseObject);
+			
+			if ([responseObject[@"result"] isKindOfClass:[NSNumber class]])
+				return;
+			
+			NSDictionary *results = responseObject[@"result"];
+			
+			NSString *metacriticURL = [Tools stringFromSourceIfNotNull:results[@"url"]];
+			
+			Metascore *metascore = [Metascore MR_findFirstByAttribute:@"metacriticURL" withValue:metacriticURL inContext:_context];
+			if (!metascore) metascore = [Metascore MR_createInContext:_context];
+			[metascore setCriticScore:[Tools integerNumberFromSourceIfNotNull:results[@"score"]]];
+			[metascore setUserScore:[Tools decimalNumberFromSourceIfNotNull:results[@"userscore"]]];
+			[metascore setMetacriticURL:metacriticURL];
+			[metascore setPlatform:platform];
+			[game addMetascoresObject:metascore];
+			
+			[_context MR_saveToPersistentStoreAndWait];
+		}
+	}];
+	[dataTask resume];
+}
+
 #pragma mark - LibrarySortFilterView
 
 - (void)librarySortFilterView:(LibrarySortFilterView *)filterView didPressSortButton:(UIButton *)button{
@@ -405,10 +450,10 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 					[self fetchGameswithSortOrFilter:LibrarySortRating group:@"personalRating" predicate:predicate sort:@"personalRating,title" ascending:NO];
 					[_filterView showStatusWithTitle:@"Sorted by rating" animated:YES];
 					break;
-//				case LibrarySortMetascore:
-//					[self fetchGameswithSortOrFilter:LibrarySortMetascore group:@"metascore" predicate:predicate sort:@"metascore,title" ascending:NO];
-//					[_filterView showStatusWithTitle:@"Sorted by Metascore" animated:YES];
-//					break;
+				case LibrarySortMetascore:
+					[self fetchGameswithSortOrFilter:LibrarySortMetascore group:@"selectedMetascore.criticScore" predicate:predicate sort:@"selectedMetascore.criticScore,title" ascending:NO];
+					[_filterView showStatusWithTitle:@"Sorted by Metascore" animated:YES];
+					break;
 				default:
 					break;
 			}
