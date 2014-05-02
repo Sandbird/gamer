@@ -193,18 +193,20 @@
 		[customCell.platformLabel setText:game.selectedRelease.platform.abbreviation];
 		[customCell.platformLabel setBackgroundColor:game.selectedRelease.platform.color];
 	}
-	else if (game.selectedPlatforms.count == 1){
+	else{
 		Platform *platform = game.selectedPlatforms.allObjects.firstObject;
 		[customCell.platformLabel setText:platform.abbreviation];
 		[customCell.platformLabel setBackgroundColor:platform.color];
 	}
-	else{
-		[customCell.platformLabel setText:nil];
-		[customCell.platformLabel setBackgroundColor:[UIColor clearColor]];
-	}
 	
-	[customCell.metascoreLabel setText:[game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? nil : [NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]];
-	[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:[NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]]];
+	if (game.selectedMetascore){
+		[customCell.metascoreLabel setText:[game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? nil : [NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]];
+		[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:[NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]]];
+	}
+	else{
+		[customCell.metascoreLabel setText:nil];
+		[customCell.metascoreLabel setTextColor:[UIColor clearColor]];
+	}
 }
 
 #pragma mark - HidingSectionView
@@ -357,11 +359,12 @@
 			[metascore setMetacriticURL:metacriticURL];
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
+			[game setSelectedMetascore:metascore];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//				[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:game]] withRowAnimation:UITableViewRowAnimationAutomatic];
-//				[self.tableView beginUpdates];
-//				[self.tableView endUpdates];
+				[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:game]] withRowAnimation:UITableViewRowAnimationAutomatic];
+				[self.tableView beginUpdates];
+				[self.tableView endUpdates];
 			}];
 		}
 	}];

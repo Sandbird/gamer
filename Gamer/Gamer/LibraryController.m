@@ -196,7 +196,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 				}
 				break;
 			}
-			case LibrarySortMetascore: headerTitle = [game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? @"Unavailable" : [NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]; break;
+			case LibrarySortMetascore: headerTitle = (!game.selectedMetascore || [game.selectedMetascore.criticScore isEqualToNumber:@(0)]) ? @"Unavailable" : [NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]; break;
 			default: break;
 		}
 		
@@ -293,30 +293,28 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			[self requestReleasesForGame:game];
 			
-			if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
-				if (game.selectedMetascore){
-					[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
-				}
-				else{
-					NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-						Platform *platform1 = (Platform *)obj1;
-						Platform *platform2 = (Platform *)obj2;
-						return [platform1.group compare:platform2.group] == NSOrderedDescending;
-					}];
-					
-					NSArray *platformsOrderedByIndex = [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-						Platform *platform1 = (Platform *)obj1;
-						Platform *platform2 = (Platform *)obj2;
-						return [platform1.index compare:platform2.index] == NSOrderedDescending;
-					}];
-					
-					[self requestMetascoreForGame:game platform:platformsOrderedByIndex.firstObject];
-				}
+			if (game.selectedMetascore){
+				[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
+			}
+			else{
+				NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+					Platform *platform1 = (Platform *)obj1;
+					Platform *platform2 = (Platform *)obj2;
+					return [platform1.group compare:platform2.group] == NSOrderedDescending;
+				}];
+				
+				NSArray *platformsOrderedByIndex = [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+					Platform *platform1 = (Platform *)obj1;
+					Platform *platform2 = (Platform *)obj2;
+					return [platform1.index compare:platform2.index] == NSOrderedDescending;
+				}];
+				
+				[self requestMetascoreForGame:game platform:platformsOrderedByIndex.firstObject];
 			}
 			
-				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[_collectionView reloadData];
-				}];
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[_collectionView reloadData];
+			}];
 		}
 		
 		_numberOfRunningTasks--;
@@ -402,6 +400,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			[metascore setMetacriticURL:metacriticURL];
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
+			[game setSelectedMetascore:metascore];
 			
 			[_context MR_saveToPersistentStoreAndWait];
 		}

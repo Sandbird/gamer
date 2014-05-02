@@ -1155,7 +1155,7 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" fixedFrame="YES" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yen-KY-Jut">
+                            <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yen-KY-Jut">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -1165,6 +1165,12 @@
                             </webView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="yen-KY-Jut" secondAttribute="trailing" id="AkH-VW-jbk"/>
+                            <constraint firstAttribute="bottom" secondItem="yen-KY-Jut" secondAttribute="bottom" id="GMH-Xv-8dg"/>
+                            <constraint firstItem="yen-KY-Jut" firstAttribute="top" secondItem="9nI-Uh-jPu" secondAttribute="bottom" id="UkK-u1-IY8"/>
+                            <constraint firstItem="yen-KY-Jut" firstAttribute="leading" secondItem="KQI-sO-WF5" secondAttribute="leading" id="kNl-H6-ybn"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Metacritic" id="U7k-JO-8UW"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
@@ -2128,6 +2134,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="5qi-Mj-SGM"/>
+        <segue reference="HYd-CU-5hN"/>
     </inferredMetricsTieBreakers>
 </document>

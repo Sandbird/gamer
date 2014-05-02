@@ -50,6 +50,11 @@
 	
 	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
 	
+	UIView *cellBackgroundView = [UIView new];
+	[cellBackgroundView setBackgroundColor:[UIColor darkGrayColor]];
+	[cellBackgroundView.layer setMasksToBounds:YES];
+	[[UITableViewCell appearance] setSelectedBackgroundView:cellBackgroundView];
+	
 	// Stuff
 	[application setMinimumBackgroundFetchInterval:86400];
 	

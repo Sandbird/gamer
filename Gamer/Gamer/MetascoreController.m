@@ -81,7 +81,7 @@
 	[customCell.criticScoreLabel setText:[metascore.criticScore isEqualToNumber:@(0)] ? @"?" : [NSString stringWithFormat:@"%@", metascore.criticScore]];
 	[customCell.criticScoreLabel setTextColor:[metascore.criticScore isEqualToNumber:@(0)] ? [UIColor lightGrayColor] : [Networking colorForMetascore:customCell.criticScoreLabel.text]];
 	[customCell.userScoreLabel setText:[metascore.userScore isEqual:[NSDecimalNumber zero]] ? @"?" : [NSString stringWithFormat:@"%.1f", metascore.userScore.floatValue]];
-	[customCell.userScoreLabel setTextColor:[_game.selectedMetascore.userScore isEqual:[NSDecimalNumber zero]] ? [UIColor lightGrayColor] : [Networking colorForMetascore:[customCell.userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
+	[customCell.userScoreLabel setTextColor:[metascore.userScore isEqual:[NSDecimalNumber zero]] ? [UIColor lightGrayColor] : [Networking colorForMetascore:[customCell.userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
 	[customCell.platformLabel setText:metascore.platform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:metascore.platform.color];
 	[customCell setAccessoryType:metascore == _game.selectedMetascore ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
@@ -99,7 +99,7 @@
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Metascore - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			NSLog(@"%@", responseObject);
+//			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"result"] isKindOfClass:[NSNumber class]])
 				return;
@@ -116,7 +116,9 @@
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
 			
-			[_context MR_saveToPersistentStoreAndWait];
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[self.tableView reloadData];
+			}];
 		}
 		
 		[self.refreshControl endRefreshing];
