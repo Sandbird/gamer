@@ -35,6 +35,7 @@
 #import "ReleasesController.h"
 #import "StarRatingControl.h"
 #import "MetascoreController.h"
+#import "NotesController.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	SectionCover,
@@ -71,7 +72,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 @property (nonatomic, strong) IBOutlet UISegmentedControl *lentBorrowedSegmentedControl;
 @property (nonatomic, strong) IBOutlet UIView *ratingView;
 @property (nonatomic, strong) StarRatingControl *ratingControl;
-@property (nonatomic, strong) IBOutlet UITextView *notesTextView;
 
 @property (nonatomic, strong) IBOutlet UITextView *descriptionTextView;
 
@@ -143,10 +143,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_imagesCollectionView addSubview:_imagesStatusView];
 	[_videosCollectionView addSubview:_videosStatusView];
 	
-	[_similarGamesCollectionView setScrollsToTop:NO];
-	[_imagesCollectionView setScrollsToTop:NO];
-	[_videosCollectionView setScrollsToTop:NO];
-	
 	if (!_game)
 		_game = [Game MR_findFirstByAttribute:@"identifier" withValue:_gameIdentifier inContext:_context];
 	
@@ -156,6 +152,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	else{
 		[self requestGameWithIdentifier:_gameIdentifier];
 	}
+	
+	[_similarGamesCollectionView setScrollsToTop:NO];
+	[_imagesCollectionView setScrollsToTop:NO];
+	[_videosCollectionView setScrollsToTop:NO];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -264,9 +264,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			}
 			break;
 		case SectionStatus:
+			// Notes row
 			if (([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(NO)] && indexPath.row == 1) || ([_game.location isEqualToNumber:@(GameLocationWishlist)] && [_game.released isEqualToNumber:@(YES)] && indexPath.row == 0) || ([_game.location isEqualToNumber:@(GameLocationLibrary)] && indexPath.row == 4)){
-				CGRect textRect = [_game.notes boundingRectWithSize:CGSizeMake(_notesTextView.frame.size.width - 15, 50000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil];
-				return 45 + 20 + textRect.size.height + 20; // Top padding + note text height + bottom padding
+				return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionStatus]];
 			}
 			break;
 		case SectionDetails:{
@@ -396,8 +396,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			break;
 		case SectionStatus:
 			if (indexPath.row == ([tableView numberOfRowsInSection:SectionStatus] - 1)){
-				[tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-				[_notesTextView becomeFirstResponder];
+				[self performSegueWithIdentifier:@"NotesSegue" sender:nil];
 			}
 			break;
 		case SectionDetails:
@@ -977,8 +976,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[_ratingControl setRating:_game.personalRating.floatValue];
 	
-	[_notesTextView setText:_game.notes];
-	
 	if (_game.selectedMetascore){
 		[self refreshMetascore];
 	}
@@ -1329,7 +1326,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (IBAction)refreshControlValueChangedAction:(UIRefreshControl *)sender{
-	NSLog(@"REFRESH");
 	[self requestGameWithIdentifier:_game.identifier];
 }
 
@@ -1356,6 +1352,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[destination setGame:_game];
 		[destination setDelegate:self];
 	}
+	else if ([segue.identifier isEqualToString:@"NotesSegue"]){
+		NotesController *destination = segue.destinationViewController;
+		[destination setGame:_game];
+	}
 	else if ([segue.identifier isEqualToString:@"MetascoreSegue"]){
 		MetascoreController *destination = segue.destinationViewController;
 		[destination setGame:_game];
@@ -1366,10 +1366,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		
 		ImageViewerController *destination = segue.destinationViewController;
 		[destination setImage:image];
-	}
-	else if ([segue.identifier isEqualToString:@"MetacriticSegue"]){
-//		MetacriticController *destination = segue.destinationViewController;
-//		[destination setURL:[NSURL URLWithString:_game.metacriticURL]];
 	}
 	else if ([segue.identifier isEqualToString:@"SimilarGameSegue"]){
 		GameController *destination = segue.destinationViewController;

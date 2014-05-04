@@ -64,6 +64,7 @@
 		25AC85AE18F0575B00919A15 /* PlatformPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85AD18F0575B00919A15 /* PlatformPickerCell.m */; };
 		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
 		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
+		25B6274E1916AA9D0053329D /* NotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B6274D1916AA9D0053329D /* NotesController.m */; };
 		25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */; };
 		25B9E9C017A0B70200881089 /* LibraryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryController.m */; };
 		25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */; };
@@ -209,6 +210,8 @@
 		25B094041824882E003A0365 /* SearchCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCollectionCell.m; sourceTree = "<group>"; };
 		25B094061829BFA4003A0365 /* iPadTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadTabBarController.h; sourceTree = "<group>"; };
 		25B094071829BFA4003A0365 /* iPadTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPadTabBarController.m; sourceTree = "<group>"; };
+		25B6274C1916AA9D0053329D /* NotesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotesController.h; sourceTree = "<group>"; };
+		25B6274D1916AA9D0053329D /* NotesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotesController.m; sourceTree = "<group>"; };
 		25B7997118CD5AEA00B9B7C9 /* PlatformsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformsController.h; sourceTree = "<group>"; };
 		25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformsController.m; sourceTree = "<group>"; };
 		25B9E9BE17A0B70200881089 /* LibraryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryController.h; sourceTree = "<group>"; };
@@ -593,6 +596,8 @@
 				25AC859818EE63A100919A15 /* PlatformPickerController.m */,
 				25AC857D18EE3AFF00919A15 /* ReleasesController.h */,
 				25AC857E18EE3AFF00919A15 /* ReleasesController.m */,
+				25B6274C1916AA9D0053329D /* NotesController.h */,
+				25B6274D1916AA9D0053329D /* NotesController.m */,
 				25AC858018EE3B0E00919A15 /* MetascoreController.h */,
 				25AC858118EE3B0E00919A15 /* MetascoreController.m */,
 				2593051517C90017001DC04B /* MetacriticController.h */,
@@ -854,6 +859,7 @@
 				25C6CB78190D808E0056DB54 /* Game.m in Sources */,
 				25D4E68618F3419500D93F80 /* Theme.m in Sources */,
 				25B9E9C017A0B70200881089 /* LibraryController.m in Sources */,
+				25B6274E1916AA9D0053329D /* NotesController.m in Sources */,
 				25C5880718F6DCDF002A2EF4 /* StarRatingControl.m in Sources */,
 				259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */,
 				25112F5318F8E6DA001B93EB /* Platform+Library.m in Sources */,
