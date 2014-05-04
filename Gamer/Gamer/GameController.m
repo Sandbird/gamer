@@ -152,16 +152,8 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	if (_game){
 		[self refreshAnimated:NO];
-		
-		_images = [self orderedImagesFromGame:_game];
-		_videos = [self orderedVideosFromGame:_game];
-		
-		(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
-		(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
 	}
 	else{
-		[_imagesStatusView setStatus:ContentStatusLoading];
-		[_videosStatusView setStatus:ContentStatusLoading];
 		[self requestGameWithIdentifier:_gameIdentifier];
 	}
 }
@@ -458,7 +450,30 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	else if (collectionView == _similarGamesCollectionView){
 		SimilarGame *similarGame = _similarGames[indexPath.row];
 		SimilarGameCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
-		[cell.coverImageView setImageWithURL:[NSURL URLWithString:similarGame.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
+		
+		if (similarGame.imageURL){
+			[cell.coverImageView setImageWithURL:[NSURL URLWithString:similarGame.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
+		}
+		else{
+			NSURLRequest *request = [Networking requestForGameWithIdentifier:similarGame.identifier fields:@"image"];
+			NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+				if (error){
+					if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Similar Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
+				}
+				else{
+					NSLog(@"Success in %@ - Status code: %ld - Similar Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+					
+					NSDictionary *results = responseObject[@"results"];
+					if (results[@"image"] != [NSNull null])
+						[similarGame setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
+					[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+						[cell.coverImageView setImageWithURL:[NSURL URLWithString:similarGame.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
+					}];
+				}
+			}];
+			[dataTask resume];
+		}
+		
 		return cell;
 	}
 	else if (collectionView == _imagesCollectionView){
@@ -499,12 +514,93 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		// If before last cell, download image for next cell
 		if (_videos.count > (indexPath.item + 1)){
 			Video *nextVideo = _videos[indexPath.item + 1];
+			
 			VideoCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
+			[nextCell.titleLabel setText:nil];
+			[nextCell.lengthLabel setText:nil];
+			[nextCell.imageView setImage:nil];
+			
+			// Video info exists
+			if (nextVideo.imageURL && nextVideo.title && nextVideo.length && ![nextVideo.title isEqualToString:@"(null)"]){
+				[nextCell.titleLabel setText:[nextVideo.title isEqualToString:@"(null)"] ? nil : nextVideo.title];
+				[nextCell.lengthLabel setText:[Tools formattedStringForLength:nextVideo.length.integerValue]];
+				
+				// Download thumbnail
+				[nextCell.activityIndicator startAnimating];
+				__weak VideoCollectionCell *cellReference = nextCell;
+				[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.imageURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+					[cellReference.activityIndicator stopAnimating];
+					[cellReference.imageView setImage:image];
+					[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
+				} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+					[cellReference.activityIndicator stopAnimating];
+				}];
+			}
+			else{
+				// Download video info
+				NSURLRequest *request = [Networking requestForVideoWithIdentifier:nextVideo.identifier fields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image"];
+				NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+					if (error){
+						if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Video", self, (long)((NSHTTPURLResponse *)response).statusCode);
+					}
+					else{
+						NSLog(@"Success in %@ - Status code: %ld - Video - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+						//					NSLog(@"%@", responseObject);
+						
+						// Object not found
+						if ([responseObject[@"status_code"] isEqualToNumber:@(101)])
+							return;
+						
+						[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+						
+						// Update video
+						NSDictionary *results = responseObject[@"results"];
+						[nextVideo setType:[Tools stringFromSourceIfNotNull:results[@"video_type"]]];
+						[nextVideo setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
+						[nextVideo setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
+						[nextVideo setLength:[Tools integerNumberFromSourceIfNotNull:results[@"length_seconds"]]];
+						[nextVideo setPublishDate:[[Tools dateFormatter] dateFromString:results[@"publish_date"]]];
+						[nextVideo setHighQualityURL:[Tools stringFromSourceIfNotNull:results[@"high_url"]]];
+						[nextVideo setLowQualityURL:[Tools stringFromSourceIfNotNull:results[@"low_url"]]];
+						[nextVideo setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]]];
+						[_context MR_saveToPersistentStoreAndWait];
+						
+						// Update cell
+						[nextCell.titleLabel setText:[nextVideo.title isEqualToString:@"(null)"] ? nil : nextVideo.title];
+						[nextCell.lengthLabel setText:[Tools formattedStringForLength:nextVideo.length.integerValue]];
+						
+						// Download thumbnail
+						[nextCell.activityIndicator startAnimating];
+						__weak VideoCollectionCell *cellReference = nextCell;
+						[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.imageURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+							[cellReference.activityIndicator stopAnimating];
+							[cellReference.imageView setImage:image];
+							[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
+						} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+							[cellReference.activityIndicator stopAnimating];
+						}];
+					}
+				}];
+				[dataTask resume];
+			}
+		}
+		
+		Video *video = _videos[indexPath.item];
+		
+		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+		[cell.titleLabel setText:nil];
+		[cell.lengthLabel setText:nil];
+		[cell.imageView setImage:nil];
+		
+		// Video info exists
+		if (video.imageURL && video.title && video.length && ![video.title isEqualToString:@"(null)"]){
+			[cell.titleLabel setText:[video.title isEqualToString:@"(null)"] ? nil : video.title];
+			[cell.lengthLabel setText:[Tools formattedStringForLength:video.length.integerValue]];
 			
 			// Download thumbnail
-			[nextCell.activityIndicator startAnimating];
-			__weak VideoCollectionCell *cellReference = nextCell;
-			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.imageURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+			[cell.activityIndicator startAnimating];
+			__weak VideoCollectionCell *cellReference = cell;
+			[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:video.imageURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
 				[cellReference.activityIndicator stopAnimating];
 				[cellReference.imageView setImage:image];
 				[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
@@ -512,22 +608,53 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				[cellReference.activityIndicator stopAnimating];
 			}];
 		}
-		
-		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
-		Video *video = _videos[indexPath.item];
-		[cell.titleLabel setText:video.title];
-		[cell.lengthLabel setText:[Tools formattedStringForDuration:video.length.integerValue]];
-		
-		// Download thumbnail
-		[cell.activityIndicator startAnimating];
-		__weak VideoCollectionCell *cellReference = cell;
-		[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:video.imageURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-			[cellReference.activityIndicator stopAnimating];
-			[cellReference.imageView setImage:image];
-			[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
-		} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-			[cellReference.activityIndicator stopAnimating];
-		}];
+		else{
+			// Download video info
+			NSURLRequest *request = [Networking requestForVideoWithIdentifier:video.identifier fields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image"];
+			NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+				if (error){
+					if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Video", self, (long)((NSHTTPURLResponse *)response).statusCode);
+				}
+				else{
+					NSLog(@"Success in %@ - Status code: %ld - Video - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//					NSLog(@"%@", responseObject);
+					
+					// Object not found
+					if ([responseObject[@"status_code"] isEqualToNumber:@(101)])
+						return;
+					
+					[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+					
+					// Update video
+					NSDictionary *results = responseObject[@"results"];
+					[video setType:[Tools stringFromSourceIfNotNull:results[@"video_type"]]];
+					[video setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
+					[video setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
+					[video setLength:[Tools integerNumberFromSourceIfNotNull:results[@"length_seconds"]]];
+					[video setPublishDate:[[Tools dateFormatter] dateFromString:results[@"publish_date"]]];
+					[video setHighQualityURL:[Tools stringFromSourceIfNotNull:results[@"high_url"]]];
+					[video setLowQualityURL:[Tools stringFromSourceIfNotNull:results[@"low_url"]]];
+					[video setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]]];
+					[_context MR_saveToPersistentStoreAndWait];
+					
+					// Update cell
+					[cell.titleLabel setText:[video.title isEqualToString:@"(null)"] ? nil : video.title];
+					[cell.lengthLabel setText:[Tools formattedStringForLength:video.length.integerValue]];
+					
+					// Download thumbnail
+					[cell.activityIndicator startAnimating];
+					__weak VideoCollectionCell *cellReference = cell;
+					[cell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:video.imageURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+						[cellReference.activityIndicator stopAnimating];
+						[cellReference.imageView setImage:image];
+						[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
+					} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+						[cellReference.activityIndicator stopAnimating];
+					}];
+				}
+			}];
+			[dataTask resume];
+		}
 		
 		return cell;
 	}
@@ -573,7 +700,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
 	[self.refreshControl beginRefreshing];
 	
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -594,8 +721,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				// Refresh UI
 				[self refreshAnimated:NO];
 				[self.tableView reloadData];
-				[_platformsCollectionView reloadData];
-				[_similarGamesCollectionView reloadData];
 				
 				// Cover image download
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
@@ -604,27 +729,16 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					[self downloadCoverImageWithURL:coverImageURL];
 				}
 				
+				// Download releases
 				[self requestReleasesForGame:_game];
 				
-				[self requestMediaForGame:_game];
-				
+				// Download Metascore
 				if (_game.selectedMetascore){
 					[self requestMetascoreForGame:_game platform:_game.selectedMetascore.platform];
 				}
 				else if ([_game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
 					[self requestMetascoreForGame:_game platform:_selectablePlatforms.firstObject];
 				}
-				
-				for (SimilarGame *similarGame in _game.similarGames){
-					[self requestImageForSimilarGame:similarGame];
-				}
-				
-//				if (
-				
-				// If game is released and has at least one platform, request metascore
-//				if (([_game.releasePeriod.identifier isEqualToNumber:@(1)] || [_game.releasePeriod.identifier isEqualToNumber:@(2)]) && _selectablePlatforms.count > 0){
-//					[self requestMetascoreForGameWithTitle:_game.title platform:_platforms.firstObject];
-//				}
 			}];
 		}
 		
@@ -673,7 +787,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			NSLog(@"%@", responseObject);
+//			NSLog(@"%@", responseObject);
 			
 			[game setReleases:nil];
 			
@@ -737,171 +851,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionDetails] withRowAnimation:UITableViewRowAnimationAutomatic];
 				[self.tableView beginUpdates];
 				[self.tableView endUpdates];
-			}];
-		}
-	}];
-	[dataTask resume];
-}
-
-- (void)requestImageForSimilarGame:(SimilarGame *)similarGame{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:similarGame.identifier fields:@"image"];
-	
-	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Similar Game Image", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];
-		}
-		else{
-			NSLog(@"Success in %@ - Status code: %ld - Similar Game Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//		NSLog(@"%@", JSON);
-			
-			NSDictionary *results = responseObject[@"results"];
-			
-			if (results[@"image"] != [NSNull null])
-				[similarGame setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
-			
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[_similarGamesCollectionView reloadData];
-			}];
-		}
-	}];
-	[dataTask resume];
-}
-
-- (void)requestMediaForGame:(Game *)game{
-	[_imagesStatusView setStatus:ContentStatusLoading];
-	[_videosStatusView setStatus:ContentStatusLoading];
-	
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"images,videos"];
-	
-	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];
-		}
-		else{
-			NSLog(@"Success in %@ - Status code: %ld - Media - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//		NSLog(@"%@", JSON);
-			
-			[_game setImages:nil];
-			[_game setVideos:nil];
-			
-			NSDictionary *results = responseObject[@"results"];
-			
-			// Images
-			if (results[@"images"] != [NSNull null]){
-				NSInteger index = 0;
-				for (NSDictionary *dictionary in results[@"images"]){
-					NSString *stringURL = [Tools stringFromSourceIfNotNull:dictionary[@"super_url"]];
-					Image *image = [Image MR_findFirstByAttribute:@"thumbnailURL" withValue:stringURL inContext:_context];
-					if (!image){
-						image = [Image MR_createInContext:_context];
-						
-						[image setThumbnailURL:stringURL];
-						[image setOriginalURL:[stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"]];
-					}
-					
-					[image setIndex:@(index)];
-					[game addImagesObject:image];
-					
-					index++;
-				}
-				
-				_images = [self orderedImagesFromGame:game];
-				
-				// No images available
-				if (index == 0){
-					[_imagesStatusView setStatus:ContentStatusUnavailable];
-				}
-				[_imagesStatusView setHidden:(index == 0) ? NO : YES];
-			}
-			
-			// Videos
-			if (results[@"videos"] != [NSNull null]){
-				NSInteger index = 0;
-				for (NSDictionary *dictionary in results[@"videos"]){
-					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
-					Video *video = [Video MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
-					if (!video){
-						video = [Video MR_createInContext:_context];
-						[video setIdentifier:identifier];
-					}
-					
-					[video setIndex:@(index)];
-					[video setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
-					[game addVideosObject:video];
-					
-					[self requestInformationForVideo:video];
-					
-					index++;
-				}
-				
-				_videos = [self orderedVideosFromGame:game];
-				
-				// No videos available
-				if (index == 0)
-					[_videosStatusView setStatus:ContentStatusUnavailable];
-			}
-			
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
-				
-				[_imagesCollectionView reloadData];
-			}];
-		}
-	}];
-	[dataTask resume];
-}
-
-- (void)requestInformationForVideo:(Video *)video{
-	NSURLRequest *request = [Networking requestForVideoWithIdentifier:video.identifier fields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image"];
-	
-	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-		if (error){
-			NSLog(@"Failure in %@ - Status code: %ld - Video", self, (long)((NSHTTPURLResponse *)response).statusCode);
-		}
-		else{
-//			NSLog(@"Success in %@ - Status code: %d - Video - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-//			NSLog(@"%@", JSON);
-			
-			[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-			
-			if ([responseObject[@"status_code"] isEqualToNumber:@(101)]){
-				[video MR_deleteEntity];
-				[_context MR_saveToPersistentStoreAndWait];
-				return;
-			}
-			
-			NSDictionary *results = responseObject[@"results"];
-			
-			NSString *type = [Tools stringFromSourceIfNotNull:results[@"video_type"]];
-			if ([type isEqualToString:@"Trailers"]){
-				[video setType:type];
-				[video setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
-				[video setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
-				[video setLength:[Tools integerNumberFromSourceIfNotNull:results[@"length_seconds"]]];
-				[video setPublishDate:[[Tools dateFormatter] dateFromString:results[@"publish_date"]]];
-				[video setHighQualityURL:[Tools stringFromSourceIfNotNull:results[@"high_url"]]];
-				[video setLowQualityURL:[Tools stringFromSourceIfNotNull:results[@"low_url"]]];
-				[video setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]]];
-				NSLog(@"%@", video.imageURL);
-			}
-			else
-				[video MR_deleteEntity];
-			
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				_videos = [self orderedVideosFromGame:_game];
-				
-				if (_videos.count == 0){
-					[_videosStatusView setStatus:ContentStatusUnavailable];
-					[_videosStatusView setHidden:NO];
-				}
-				else{
-					[_videosCollectionView reloadData];
-					[_videosStatusView setHidden:YES];
-				}
 			}];
 		}
 	}];
@@ -997,6 +946,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	
 	[self refreshAddButtonsAnimated:animated];
 	
+	[_platformsCollectionView reloadData];
+	[_similarGamesCollectionView reloadData];
+	
 	// Set status switches' position
 	[_preorderedSwitch setOn:_game.preordered.boolValue animated:animated];
 	[_finishedSwitch setOn:_game.finished.boolValue animated:animated];
@@ -1031,23 +983,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[self refreshMetascore];
 	}
 	
-//	if (_game.metascore.length > 0){
-//		[_metascoreButton setBackgroundColor:[Networking colorForMetascore:_game.metascore]];
-//		[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:30]];
-//		[_metascoreButton setTitle:_game.metascore forState:UIControlStateNormal];
-//		[_metascorePlatformLabel setText:_game.metascorePlatform.name];
-//	}
-//	else if (_game.metacriticURL.length > 0){
-//		[_metascoreButton setBackgroundColor:[UIColor darkGrayColor]];
-//		[_metascoreButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
-//		[_metascoreButton setTitle:@"Metacritic" forState:UIControlStateNormal];
-//		[_metascorePlatformLabel setHidden:YES];
-//	}
-//	else{
-//		[_metascoreButton setHidden:YES];
-//		[_metascorePlatformLabel setHidden:YES];
-//	}
-	
+	// Details
 	[_descriptionTextView setText:_game.overview];
 	[_genreFirstLabel setText:(_game.genres.count > 0) ? [_game.genres.allObjects.firstObject name] : @"Not available"];
 	[_genreSecondLabel setText:(_game.genres.count > 1) ? [_game.genres.allObjects[1] name] : @""];
@@ -1067,6 +1003,16 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[_franchiseTitleLabel setHidden:NO];
 		[_franchiseTitleLabel setText:[_game.franchises.allObjects.firstObject name]];
 	}
+	
+	// Media
+	_images = [self orderedImagesFromGame:_game];
+	_videos = [self orderedVideosFromGame:_game];
+	
+	[_imagesCollectionView reloadData];
+	[_videosCollectionView reloadData];
+	
+	(_images.count == 0) ? [_imagesStatusView setStatus:ContentStatusUnavailable] : [_imagesStatusView setHidden:YES];
+	(_videos.count == 0) ? [_videosStatusView setStatus:ContentStatusUnavailable] : [_videosStatusView setHidden:YES];
 }
 
 - (void)refreshMetascore{
@@ -1377,16 +1323,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_context MR_saveToPersistentStoreAndWait];
 }
 
-- (IBAction)metascoreButtonAction:(UIButton *)sender{
-	[self performSegueWithIdentifier:@"MetacriticSegue" sender:nil];
-}
-
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	[sender setEnabled:NO];
 	[self requestGameWithIdentifier:_game.identifier];
 }
 
 - (IBAction)refreshControlValueChangedAction:(UIRefreshControl *)sender{
+	NSLog(@"REFRESH");
 	[self requestGameWithIdentifier:_game.identifier];
 }
 

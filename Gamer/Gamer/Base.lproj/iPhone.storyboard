@@ -178,7 +178,7 @@
             <objects>
                 <tableViewController id="daZ-J4-g3E" customClass="GameController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="07E-YJ-8ul">
-                        <rect key="frame" x="0.0" y="64" width="320" height="2287"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="455"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -1091,12 +1091,11 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Info" id="bdX-97-Kle"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="2400"/>
-                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="SoL-Oj-I9h">
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="XPr-2Z-0SH">
                         <autoresizingMask key="autoresizingMask"/>
                         <connections>
-                            <action selector="refreshControlValueChangedAction:" destination="daZ-J4-g3E" eventType="valueChanged" id="E0R-mD-0Sg"/>
+                            <action selector="refreshControlValueChangedAction:" destination="daZ-J4-g3E" eventType="valueChanged" id="iWP-ke-ZgN"/>
                         </connections>
                     </refreshControl>
                     <connections>

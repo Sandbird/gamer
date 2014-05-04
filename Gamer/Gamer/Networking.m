@@ -109,6 +109,8 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	[game setFranchises:nil];
 	[game setSimilarGames:nil];
 	[game setThemes:nil];
+	[game setImages:nil];
+	[game setVideos:nil];
 	
 	NSDictionary *results = JSON[@"results"];
 	
@@ -198,6 +200,38 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 			[game addThemesObject:theme];
+		}
+	}
+	
+	// Images
+	if (results[@"images"] != [NSNull null]){
+		NSInteger index = 0;
+		for (NSDictionary *dictionary in results[@"images"]){
+			NSString *stringURL = [Tools stringFromSourceIfNotNull:dictionary[@"super_url"]];
+			Image *image = [Image MR_findFirstByAttribute:@"thumbnailURL" withValue:stringURL inContext:context];
+			if (!image) image = [Image MR_createInContext:context];
+			[image setThumbnailURL:stringURL];
+			[image setOriginalURL:[stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"]];
+			[image setIndex:@(index)];
+			[game addImagesObject:image];
+			
+			index++;
+		}
+	}
+	
+	// Videos
+	if (results[@"videos"] != [NSNull null]){
+		NSInteger index = 0;
+		for (NSDictionary *dictionary in results[@"videos"]){
+			NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+			Video *video = [Video MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:context];
+			if (!video) video = [Video MR_createInContext:context];
+			[video setIdentifier:identifier];
+			[video setIndex:@(index)];
+			[video setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
+			[game addVideosObject:video];
+			
+			index++;
 		}
 	}
 	

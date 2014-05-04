@@ -91,7 +91,7 @@
 	return [NSString stringWithFormat:@"%@:%@", ([time componentsSeparatedByString:@":"]).firstObject, ([time componentsSeparatedByString:@":"])[1]];
 }
 
-+ (NSString *)formattedStringForDuration:(NSTimeInterval)duration{
++ (NSString *)formattedStringForLength:(NSTimeInterval)duration{
 	NSInteger minutes = floor(duration/60);
 	NSInteger seconds = round(duration - minutes * 60);
 	return [NSString stringWithFormat:@"%ld:%02ld", (long)minutes, (long)seconds];
