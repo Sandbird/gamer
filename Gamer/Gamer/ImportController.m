@@ -55,7 +55,8 @@
 			[game setLocation:[Tools integerNumberFromSourceIfNotNull:dictionary[@"location"]]];
 			[game setBorrowed:[Tools integerNumberFromSourceIfNotNull:dictionary[@"borrowed"]]];
 			[game setPersonalRating:[Tools integerNumberFromSourceIfNotNull:dictionary[@"personalRating"]]];
-			[game setNotes:[Tools stringFromSourceIfNotNull:dictionary[@"notes"]]]; if (!game.notes) [game setNotes:@""];
+			[game setNotes:[Tools stringFromSourceIfNotNull:dictionary[@"notes"]]];
+			if ([game.notes isEqualToString:@"(null)"]) [game setNotes:nil];
 			
 			if ([game.location isEqualToNumber:@(GameLocationWishlist)])
 				[_importedWishlistGames addObject:game];

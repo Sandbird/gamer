@@ -184,7 +184,6 @@
 		});
 	}
 	
-//	[customCell.titleLabel setText:(game.identifier) ? game.title : nil];
 	[customCell.titleLabel setText:game.title];
 	[customCell.dateLabel setText:game.selectedRelease ? game.selectedRelease.releaseDateText : game.releaseDateText];
 	[customCell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];

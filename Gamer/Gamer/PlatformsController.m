@@ -35,6 +35,9 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
+	if ([Tools deviceIsiPad])
+		[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
+	
 	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	_eighthGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(0)] inContext:_context].mutableCopy;

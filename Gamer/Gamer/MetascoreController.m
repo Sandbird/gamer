@@ -67,6 +67,10 @@
 	return cell;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	if ([tableView cellForRowAtIndexPath:indexPath].selectionStyle != UITableViewCellSelectionStyleNone){
 		Metascore *metascore = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -117,11 +121,14 @@
 			[game addMetascoresObject:metascore];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.tableView reloadData];
+				[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:metascore]] withRowAnimation:UITableViewRowAnimationAutomatic];
+				[self.tableView beginUpdates];
+				[self.tableView endUpdates];
 			}];
 		}
 		
 		[self.refreshControl endRefreshing];
+		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
 	[dataTask resume];
 }
@@ -129,6 +136,14 @@
 #pragma mark - Actions
 
 - (IBAction)refreshControlValueChangedAction:(UIRefreshControl *)sender{
+	for (Platform *platform in _game.platforms){
+		[self requestMetascoreForGame:_game platform:platform];
+	}
+}
+
+- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
+	[self.navigationItem.rightBarButtonItem setEnabled:NO];
+	
 	for (Platform *platform in _game.platforms){
 		[self requestMetascoreForGame:_game platform:platform];
 	}

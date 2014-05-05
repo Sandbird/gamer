@@ -38,6 +38,9 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
+	if ([Tools deviceIsiPad])
+		[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
+	
 	_context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	if (![Session gamer].librarySize){
@@ -78,7 +81,10 @@ typedef NS_ENUM(NSInteger, Section){
 			else{
 				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
 				PlatformsController *platformsController = [storyboard instantiateViewControllerWithIdentifier:@"PlatformsController"];
-				[self.splitViewController setViewControllers:@[self.navigationController, platformsController]];
+				
+				UINavigationController *detailController = self.splitViewController.viewControllers[1];
+				[detailController setViewControllers:@[platformsController]];
+				
 				[tableView deselectRowAtIndexPath:indexPath animated:NO];
 			}
 			break;
@@ -90,7 +96,10 @@ typedef NS_ENUM(NSInteger, Section){
 			else{
 				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
 				RegionsController *regionsController = [storyboard instantiateViewControllerWithIdentifier:@"RegionsController"];
-				[self.splitViewController setViewControllers:@[self.navigationController, regionsController]];
+				
+				UINavigationController *detailController = self.splitViewController.viewControllers[1];
+				[detailController setViewControllers:@[regionsController]];
+				
 				[tableView deselectRowAtIndexPath:indexPath animated:NO];
 			}
 			break;
@@ -104,8 +113,11 @@ typedef NS_ENUM(NSInteger, Section){
 			}
 			else{
 				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
-				AboutController *AboutController = [storyboard instantiateViewControllerWithIdentifier:@"AboutController"];
-				[self.splitViewController setViewControllers:@[self.navigationController, AboutController]];
+				AboutController *aboutController = [storyboard instantiateViewControllerWithIdentifier:@"AboutController"];
+				
+				UINavigationController *detailController = self.splitViewController.viewControllers[1];
+				[detailController setViewControllers:@[aboutController]];
+				
 				[tableView deselectRowAtIndexPath:indexPath animated:NO];
 			}
 			break;
@@ -157,7 +169,7 @@ typedef NS_ENUM(NSInteger, Section){
 										 @"preordered":game.preordered ? game.preordered : @(0),
 										 @"borrowed":game.borrowed ? game.borrowed : @(0),
 										 @"personalRating":game.personalRating ? game.personalRating : @(0),
-										 @"notes":game.notes ? game.notes : @"",
+										 @"notes":game.notes.length > 0 ? game.notes : @"",
 										 @"selectedRelease":game.selectedRelease ? game.selectedRelease.identifier : [NSNull null]};
 		
 		[gameDictionaries addObject:gameDictionary];

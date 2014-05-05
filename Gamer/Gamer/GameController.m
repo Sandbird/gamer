@@ -237,11 +237,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				return 0;
 			break;
 		case SectionDetails:
-//			if ([Tools deviceIsiPhone]){
-				return (_game.metascores.count > 0) + (_game.platforms.count > 0) + (_game.similarGames.count > 0) + 2;
-//			}
-//			else if (_game.similarGames.count == 0)
-//				return 3;
+			return (_game.metascores.count > 0) + (_game.platforms.count > 0) + (_game.similarGames.count > 0) + 2;
 			break;
 		default:
 			break;
@@ -662,7 +658,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == _imagesCollectionView){
 		Image *image = _images[indexPath.item];
-		[self performSegueWithIdentifier:@"ViewerSegue" sender:image];
+		[self performSegueWithIdentifier:@"ImageViewerSegue" sender:image];
 	}
 	else if (collectionView == _similarGamesCollectionView){
 		SimilarGame *similarGame = _similarGames[indexPath.item];
@@ -735,7 +731,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 				if (_game.selectedMetascore){
 					[self requestMetascoreForGame:_game platform:_game.selectedMetascore.platform];
 				}
-				else if ([_game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
+				else if (_selectablePlatforms.count > 0 && [_game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
 					[self requestMetascoreForGame:_game platform:_selectablePlatforms.firstObject];
 				}
 			}];
@@ -1361,7 +1357,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		[destination setGame:_game];
 		[destination setDelegate:self];
 	}
-	else if ([segue.identifier isEqualToString:@"ViewerSegue"]){
+	else if ([segue.identifier isEqualToString:@"ImageViewerSegue"]){
 		Image *image = sender;
 		
 		ImageViewerController *destination = segue.destinationViewController;
