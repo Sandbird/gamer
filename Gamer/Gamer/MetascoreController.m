@@ -75,6 +75,7 @@
 	if ([tableView cellForRowAtIndexPath:indexPath].selectionStyle != UITableViewCellSelectionStyleNone){
 		Metascore *metascore = [self.fetchedResultsController objectAtIndexPath:indexPath];
 		[self.delegate metascoreController:self didSelectMetascore:metascore];
+		[self.tableView reloadData];
 	}
 }
 

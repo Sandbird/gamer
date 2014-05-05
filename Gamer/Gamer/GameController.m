@@ -165,6 +165,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 
 - (void)viewWillAppear:(BOOL)animated{
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+	
+	[_wishlistButton setHighlighted:NO];
+	[_libraryButton setHighlighted:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -870,11 +873,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 	}
 	
-//	dispatch_async(dispatch_get_main_queue(), ^{
-//		[_wishlistButton setHighlighted:NO];
-//		[_libraryButton setHighlighted:NO];
-//	});
-	
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -885,7 +883,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[_releaseDateLabel setText:_game.selectedRelease ? _game.selectedRelease.releaseDateText : _game.releaseDateText];
-		[self.navigationController popViewControllerAnimated:YES];
 	}];
 }
 
@@ -895,14 +892,13 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	[_game setSelectedMetascore:metascore];
 	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[self refreshMetascore];
-		[self.navigationController popViewControllerAnimated:YES];
 	}];
 }
 
 #pragma mark - Custom
 
 - (void)displayCoverImage{
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 		UIImage *image = [UIImage imageWithContentsOfFile:_game.imagePath];
 		
 		CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:_coverImageView.frame.size.width] : [Tools sizeOfImage:image aspectFitToHeight:_coverImageView.frame.size.height];
@@ -1009,10 +1005,14 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 }
 
 - (void)refreshMetascore{
+	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:NO];
+	
 	[_criticScoreLabel setText:[_game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? @"?" : [NSString stringWithFormat:@"%@", _game.selectedMetascore.criticScore]];
 	[_criticScoreLabel setBackgroundColor:[_game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? [UIColor lightGrayColor] : [Networking colorForMetascore:_criticScoreLabel.text]];
+	
 	[_userScoreLabel setText:[_game.selectedMetascore.userScore isEqual:[NSDecimalNumber zero]] ? @"?" : [NSString stringWithFormat:@"%.1f", _game.selectedMetascore.userScore.floatValue]];
 	[_userScoreLabel setBackgroundColor:[_game.selectedMetascore.userScore isEqual:[NSDecimalNumber zero]] ? [UIColor lightGrayColor] : [Networking colorForMetascore:[_userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
+	
 	[_metascorePlatformLabel setText:_game.selectedMetascore.platform.abbreviation];
 	[_metascorePlatformLabel setBackgroundColor:_game.selectedMetascore.platform.color];
 }

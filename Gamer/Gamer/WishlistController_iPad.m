@@ -101,7 +101,7 @@
 
 - (NSFetchedResultsController *)fetchData{
 	if (!_fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND hidden = %@", @(GameLocationWishlist), @(NO)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
 		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES];
 	}
 	return _fetchedResultsController;

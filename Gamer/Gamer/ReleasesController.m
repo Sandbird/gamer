@@ -84,6 +84,7 @@
 	if ([tableView cellForRowAtIndexPath:indexPath].selectionStyle != UITableViewCellSelectionStyleNone){
 		Release *release = _dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
 		[self.delegate releasesController:self didSelectRelease:release == _game.selectedRelease ? nil : release];
+		[self.tableView reloadData];
 	}
 }
 

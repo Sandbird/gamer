@@ -8,7 +8,7 @@
         <scene sceneID="PFM-Rc-xWf">
             <objects>
                 <tabBarController definesPresentationContext="YES" id="aKN-3I-5o3" customClass="iPadTabBarController" sceneMemberID="viewController">
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" id="2te-pV-wJw">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -331,7 +331,7 @@
                                                         <outlet property="delegate" destination="3iO-2E-Tja" id="1Hu-qB-n6o"/>
                                                     </connections>
                                                 </collectionView>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SFW-3L-6Z2">
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SFW-3L-6Z2">
                                                     <rect key="frame" x="168" y="14" width="132" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -1037,7 +1037,7 @@
                         <segue destination="5j4-JL-rvG" kind="push" identifier="ReleasesSegue" id="AOe-zt-o4r"/>
                         <segue destination="dVh-Oi-d2Z" kind="push" identifier="MetascoreSegue" id="xHu-dr-TGW"/>
                         <segue destination="H48-w4-3wg" kind="push" identifier="NotesSegue" id="hjj-Ky-C7x"/>
-                        <segue destination="2Em-l4-DK5" kind="push" identifier="PlatformPickerSegue" id="EAm-Bd-0KS"/>
+                        <segue destination="2Em-l4-DK5" kind="modal" identifier="PlatformPickerSegue" id="EAm-Bd-0KS"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gEM-zq-gcH" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2074,22 +2074,22 @@
                                             <rect key="frame" x="10" y="10" width="60" height="60"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </imageView>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Dynasty Warriors 8 Xtreme Legends Complete Edition" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="193" translatesAutoresizingMaskIntoConstraints="NO" id="ceW-or-auS">
-                                            <rect key="frame" x="78" y="10" width="193" height="42"/>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Dynasty Warriors 8 Xtreme Legends Complete Edition" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="403" translatesAutoresizingMaskIntoConstraints="NO" id="ceW-or-auS">
+                                            <rect key="frame" x="78" y="10" width="403" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="22 November 2014" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="665-Lo-oTC">
-                                            <rect key="frame" x="78" y="56" width="145" height="14"/>
+                                            <rect key="frame" x="78" y="39" width="145" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oJS-hz-t8e">
-                                            <rect key="frame" x="241" y="49" width="30" height="21"/>
+                                            <rect key="frame" x="231" y="35" width="30" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
                                     </subviews>
