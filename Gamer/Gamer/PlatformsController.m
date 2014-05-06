@@ -17,9 +17,7 @@ typedef NS_ENUM(NSInteger, Section){
 	Section5thGen
 };
 
-@interface PlatformsController () <UISplitViewControllerDelegate>
-
-@property (nonatomic, strong) UIPopoverController *menuPopoverController;
+@interface PlatformsController ()
 
 @property (nonatomic, strong) NSMutableArray *eighthGenPlatforms;
 @property (nonatomic, strong) NSMutableArray *seventhGenPlatforms;
@@ -46,22 +44,10 @@ typedef NS_ENUM(NSInteger, Section){
 	_fifthGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(3)] inContext:_context].mutableCopy;
 	
 	[self.tableView setEditing:YES animated:NO];
-	
-	[self.splitViewController setDelegate:self];
 }
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
-}
-
-#pragma mark - SplitViewController
-
-- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc{
-	_menuPopoverController = pc;
-}
-
-- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem{
-	_menuPopoverController = nil;
 }
 
 #pragma mark - TableView

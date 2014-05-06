@@ -45,12 +45,7 @@ typedef NS_ENUM(NSInteger, Section){
 	SectionVideos
 };
 
-typedef NS_ENUM(NSInteger, ActionSheetTag){
-	ActionSheetTagWishlist,
-	ActionSheetTagLibrary
-};
-
-@interface GameController () <UITextViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate, ReleasesControllerDelegate, MetascoreControllerDelegate>
+@interface GameController () <UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate, ReleasesControllerDelegate, MetascoreControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
@@ -462,11 +457,12 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 					NSLog(@"Success in %@ - Status code: %ld - Similar Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 					
 					NSDictionary *results = responseObject[@"results"];
-					if (results[@"image"] != [NSNull null])
+					if (results[@"image"] != [NSNull null]){
 						[similarGame setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
-					[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						[cell.coverImageView setImageWithURL:[NSURL URLWithString:similarGame.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
-					}];
+						[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+							[cell.coverImageView setImageWithURL:[NSURL URLWithString:similarGame.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
+						}];
+					}
 				}
 			}];
 			[dataTask resume];
@@ -683,16 +679,6 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 	}
 }
 
-#pragma mark - TextView
-
-- (void)textViewDidChange:(UITextView *)textView{
-	[self.tableView beginUpdates];
-	[self.tableView endUpdates];
-	
-	[_game setNotes:textView.text];
-	[_context MR_saveToPersistentStoreAndWait];
-}
-
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
@@ -741,6 +727,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		}
 		
 		[self.refreshControl endRefreshing];
+		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
 	[dataTask resume];
 }
@@ -792,8 +779,10 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				NSLog(@"%@", game.selectedRelease);
 				if (!game.selectedRelease){
 					for (Release *release in game.releases){
+						// If game not added, release region is selected region, release platform is in selectable platforms
 						if ([game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
 							[game setSelectedRelease:release];
 							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
@@ -898,9 +887,9 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 #pragma mark - Custom
 
 - (void)displayCoverImage{
+	__block UIImage *image = [UIImage imageWithContentsOfFile:_game.imagePath];
+	
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-		UIImage *image = [UIImage imageWithContentsOfFile:_game.imagePath];
-		
 		CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:_coverImageView.frame.size.width] : [Tools sizeOfImage:image aspectFitToHeight:_coverImageView.frame.size.height];
 		
 		UIGraphicsBeginImageContext(imageSize);
@@ -909,7 +898,7 @@ typedef NS_ENUM(NSInteger, ActionSheetTag){
 		UIGraphicsEndImageContext();
 		
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[_coverImageView setImage:[UIImage imageWithContentsOfFile:_game.imagePath]];
+			[_coverImageView setImage:image];
 			[_coverImageView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 			[Tools addDropShadowToView:_coverImageView color:[UIColor blackColor] opacity:1 radius:10 offset:CGSizeMake(0, 5) bounds:[Tools frameForImageInImageView:_coverImageView]];
 		});

@@ -9,9 +9,7 @@
 #import "AboutController.h"
 #import "AboutCell.h"
 
-@interface AboutController () <UISplitViewControllerDelegate>
-
-@property (nonatomic, strong) UIPopoverController *menuPopoverController;
+@interface AboutController ()
 
 @end
 
@@ -19,22 +17,10 @@
 
 - (void)viewDidLoad{
 	[super viewDidLoad];
-	
-	[self.splitViewController setDelegate:self];
 }
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
-}
-
-#pragma mark - SplitViewController
-
-- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc{
-	_menuPopoverController = pc;
-}
-
-- (void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem{
-	_menuPopoverController = nil;
 }
 
 #pragma mark - TableView

@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, Section){
 	SectionFeedback
 };
 
-@interface MoreController () <MFMailComposeViewControllerDelegate>
+@interface MoreController () <MFMailComposeViewControllerDelegate, UISplitViewControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UISegmentedControl *librarySizeSegmentedControl;
 
@@ -37,6 +37,8 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+	
+	[self.splitViewController setDelegate:self];
 	
 	if ([Tools deviceIsiPad])
 		[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
@@ -64,6 +66,12 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - SplitViewController
+
+- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation{
+	return NO;
 }
 
 #pragma mark - TableView

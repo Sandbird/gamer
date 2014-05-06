@@ -68,8 +68,7 @@
 	ReleaseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:release.title];
 	[cell.dateLabel setText:release.releaseDateText];
-	[cell.coverImageView setImageWithURL:[NSURL URLWithString:release.imageURL]];
-	[cell.coverImageView setBackgroundColor:release.imageURL ? [UIColor clearColor] : [UIColor darkGrayColor]];
+	[cell.coverImageView setImageWithURL:[NSURL URLWithString:release.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
 	[cell.regionImageView setImage:[UIImage imageNamed:release.region.imageName]];
 	[cell setAccessoryType:release == _game.selectedRelease ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
 	[cell setSelectionStyle:[[Session gamer].platforms containsObject:release.platform] ? UITableViewCellSelectionStyleBlue : UITableViewCellSelectionStyleNone];
