@@ -163,7 +163,15 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
 	[_guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)]] == 0) ? NO : YES];
 	
-	return (_sortOrFilter == LibrarySortPlatform) ? _dataSource.count : _sortFilterDataSource.sections.count;
+	if (_sortOrFilter == LibrarySortPlatform){
+		return _dataSource.count;
+	}
+	else if (_sortFilterDataSource.fetchedObjects.count > 0){
+		return _sortFilterDataSource.sections.count;
+	}
+	else{
+		return 0;
+	}
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
@@ -174,7 +182,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		return headerView;
 	}
 	else{
-		
 		NSString *sectionName = [_sortFilterDataSource.sections[indexPath.section] name];
 		
 		Game *game = [_sortFilterDataSource objectAtIndexPath:indexPath];
