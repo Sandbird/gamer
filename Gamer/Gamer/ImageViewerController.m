@@ -37,23 +37,21 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+	
 	[self downloadImageWithImageObject:_image];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
+	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+	
 	[_runningTask cancel];
 }
 
 - (void)didReceiveMemoryWarning{
-    [super didReceiveMemoryWarning];
+	[super didReceiveMemoryWarning];
 	
-	_image = nil;
-	_imageView = nil;
 	[self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (BOOL)prefersStatusBarHidden{
-	return YES;
 }
 
 - (void)viewDidLayoutSubviews{
