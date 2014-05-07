@@ -135,9 +135,9 @@
 		[cell.coverImageView setImage:nil];
 		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-			
+		__block UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 			CGSize imageSize = [Tools sizeOfImage:image aspectFitToWidth:cell.coverImageView.frame.size.width];
 			
 			UIGraphicsBeginImageContext(imageSize);
@@ -272,6 +272,17 @@
 			
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
 			
+			if (!game.selectedRelease){
+				Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
+				for (Release *release in game.releases){
+					// If game not added, release region is selected region, release platform is in selectable platforms
+					if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
+						[game setSelectedRelease:release];
+						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
+					}
+				}
+			}
+			
 			if (_numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 			}
@@ -279,6 +290,14 @@
 	}];
 	[dataTask resume];
 	_numberOfRunningTasks++;
+}
+
+#pragma mark - Custom
+
+- (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
+	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 #pragma mark - Actions

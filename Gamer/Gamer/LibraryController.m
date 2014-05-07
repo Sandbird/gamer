@@ -243,9 +243,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[cell.coverImageView setImage:nil];
 		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
 		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-			
+		__block UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 			CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
 			
 			CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
@@ -531,11 +531,11 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	}
 	
 	// Cache images
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		for (NSDictionary *dictionary in _dataSource){
-			for (Game *game in dictionary[@"platform"][@"games"]){
-				UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-				
+	for (NSDictionary *dictionary in _dataSource){
+		for (Game *game in dictionary[@"platform"][@"games"]){
+			__block UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+			
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 				CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
 				
 				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
@@ -548,9 +548,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 				if (image){
 					[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
 				}
-			}
+			});
 		}
-	});
+	}
 }
 
 - (void)fetchGameswithSortOrFilter:(NSInteger)filter group:(NSString *)group predicate:(NSPredicate *)predicate sort:(NSString *)sort ascending:(BOOL)ascending{
