@@ -510,7 +510,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[_filterView.filterButton setHighlighted:NO];
 	});
 
-	[self.navigationController.navigationBar setUserInteractionEnabled:YES];
+	[self enableNavigationBarItems];
 }
 
 #pragma mark - Custom
@@ -587,7 +587,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	else
 		[actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItems.firstObject animated:YES];
 	
-	[self.navigationController.navigationBar setUserInteractionEnabled:NO];
+	[self disableNavigationBarItems];
 }
 
 - (void)showFilterOptions{
@@ -599,13 +599,29 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	else
 		[actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItems[1] animated:YES];
 	
-	[self.navigationController.navigationBar setUserInteractionEnabled:NO];
+	[self disableNavigationBarItems];
 }
 
 - (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
 	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
 	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
 	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+}
+
+- (void)disableNavigationBarItems{
+	[_sortBarButton setEnabled:NO];
+	[_filterBarButton setEnabled:NO];
+	[_cancelBarButton setEnabled:NO];
+	[_refreshBarButton setEnabled:NO];
+	[_searchBarItem setEnabled:NO];
+}
+
+- (void)enableNavigationBarItems{
+	[_sortBarButton setEnabled:YES];
+	[_filterBarButton setEnabled:YES];
+	[_cancelBarButton setEnabled:YES];
+	[_refreshBarButton setEnabled:YES];
+	[_searchBarItem setEnabled:YES];
 }
 
 #pragma mark - Actions
