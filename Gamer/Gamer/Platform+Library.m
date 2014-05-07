@@ -25,11 +25,8 @@
 - (NSArray *)sortedLibraryGames{
 	NSArray *libraryGames = [self.addedGames.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)]];
 	
-	return [libraryGames sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Game *game1 = (Game *)obj1;
-		Game *game2 = (Game *)obj2;
-		return [game1.title compare:game2.title] == NSOrderedDescending;
-	}];
+	NSSortDescriptor *titleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+	return [libraryGames sortedArrayUsingDescriptors:@[titleSortDescriptor]];
 }
 
 - (BOOL)containsReleasesWithGame:(Game *)game{
@@ -45,11 +42,8 @@
 - (NSArray *)sortedReleasesWithGame:(Game *)game{
 	NSArray *gameReleases = [self.releases.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"game = %@", game]];
 	
-	return [gameReleases sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Release *release1 = (Release *)obj1;
-		Release *release2 = (Release *)obj2;
-		return [release1.releaseDate compare:release2.releaseDate] == NSOrderedAscending;
-	}];
+	NSSortDescriptor *releaseDateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"releaseDate" ascending:YES];
+	return [gameReleases sortedArrayUsingDescriptors:@[releaseDateSortDescriptor]];
 }
 
 - (Metascore *)metascoreWithGame:(Game *)game{

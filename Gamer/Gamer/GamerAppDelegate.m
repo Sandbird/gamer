@@ -165,19 +165,11 @@
 					[self requestMetascoreForGame:game platform:game.selectedMetascore.platform context:context completionHandler:completionHandler];
 				}
 				else{
-					NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-						Platform *platform1 = (Platform *)obj1;
-						Platform *platform2 = (Platform *)obj2;
-						return [platform1.group compare:platform2.group] == NSOrderedDescending;
-					}];
+					NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+					NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+					NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 					
-					NSArray *platformsOrderedByIndex = [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-						Platform *platform1 = (Platform *)obj1;
-						Platform *platform2 = (Platform *)obj2;
-						return [platform1.index compare:platform2.index] == NSOrderedDescending;
-					}];
-					
-					[self requestMetascoreForGame:game platform:platformsOrderedByIndex.firstObject context:context completionHandler:completionHandler];
+					[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject context:context completionHandler:completionHandler];
 				}
 			}
 		}

@@ -253,19 +253,11 @@
 					[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
 				}
 				else{
-					NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-						Platform *platform1 = (Platform *)obj1;
-						Platform *platform2 = (Platform *)obj2;
-						return [platform1.group compare:platform2.group] == NSOrderedDescending;
-					}];
+					NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+					NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+					NSArray *orderedPlatforms = [game.selectedPlatforms sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 					
-					NSArray *platformsOrderedByIndex = [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-						Platform *platform1 = (Platform *)obj1;
-						Platform *platform2 = (Platform *)obj2;
-						return [platform1.index compare:platform2.index] == NSOrderedDescending;
-					}];
-					
-					[self requestMetascoreForGame:game platform:platformsOrderedByIndex.firstObject];
+					[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
 				}
 			}
 		}
@@ -319,7 +311,22 @@
 			
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
 			
-			[_context MR_saveToPersistentStoreAndWait];
+			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				if (!game.selectedRelease){
+					Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
+					for (Release *release in game.releases){
+						// If game not added, release region is selected region, release platform is in selectable platforms
+						if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
+							[game setSelectedRelease:release];
+							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
+							
+							[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+								[self updateGameReleasePeriods];
+							}];
+						}
+					}
+				}
+			}];
 		}
 		
 		_numberOfRunningTasks--;
@@ -371,6 +378,12 @@
 }
 
 #pragma mark - Custom
+
+- (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
+	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+}
 
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist

@@ -779,11 +779,12 @@ typedef NS_ENUM(NSInteger, Section){
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
 			
 			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				NSLog(@"%@", game.selectedRelease);
 				if (!game.selectedRelease){
 					for (Release *release in game.releases){
+						NSArray *reversedIndexSelectablePlatforms = [[_selectablePlatforms reverseObjectEnumerator] allObjects];
+						
 						// If game not added, release region is selected region, release platform is in selectable platforms
-						if ([game.location isEqualToNumber:@(GameLocationNone)] && release.region == [Session gamer].region && [[[_selectablePlatforms reverseObjectEnumerator] allObjects] containsObject:release.platform]){
+						if (release.region == [Session gamer].region && [reversedIndexSelectablePlatforms containsObject:release.platform]){
 							[game setSelectedRelease:release];
 							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
 							
@@ -1026,78 +1027,38 @@ typedef NS_ENUM(NSInteger, Section){
 }
 
 - (NSArray *)orderedPlatformsFromGame:(Game *)game{
-	NSArray *platformsOrderedByGroup = [game.platforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Platform *platform1 = (Platform *)obj1;
-		Platform *platform2 = (Platform *)obj2;
-		return [platform1.group compare:platform2.group] == NSOrderedDescending;
-	}];
-	
-	return [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Platform *platform1 = (Platform *)obj1;
-		Platform *platform2 = (Platform *)obj2;
-		return [platform1.index compare:platform2.index] == NSOrderedDescending;
-	}];
+	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	return [game.platforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 - (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
-	NSArray *platformsOrderedByGroup = [game.selectedPlatforms.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Platform *platform1 = (Platform *)obj1;
-		Platform *platform2 = (Platform *)obj2;
-		return [platform1.group compare:platform2.group] == NSOrderedDescending;
-	}];
-	
-	return [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Platform *platform1 = (Platform *)obj1;
-		Platform *platform2 = (Platform *)obj2;
-		return [platform1.index compare:platform2.index] == NSOrderedDescending;
-	}];
+	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 - (NSArray *)selectablePlatformsFromGame:(Game *)game{
-	NSMutableArray *selectablePlatforms = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
-	NSArray *platformIdentifiers = [[Session gamer].platforms valueForKey:@"identifier"];
+	NSArray *selectablePlatforms = [game.platforms.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF IN %@", [Session gamer].platforms.allObjects]];
 	
-	for (Platform *platform in _game.platforms){
-		if ([platformIdentifiers containsObject:platform.identifier]){
-			[selectablePlatforms addObject:platform];
-		}
-	}
-	
-	NSArray *platformsOrderedByGroup = [selectablePlatforms sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Platform *platform1 = (Platform *)obj1;
-		Platform *platform2 = (Platform *)obj2;
-		return [platform1.group compare:platform2.group] == NSOrderedDescending;
-	}];
-	
-	return [platformsOrderedByGroup sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Platform *platform1 = (Platform *)obj1;
-		Platform *platform2 = (Platform *)obj2;
-		return [platform1.index compare:platform2.index] == NSOrderedDescending;
-	}];
+	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	return [selectablePlatforms sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 - (NSArray *)orderedSimilarGamesFromGame:(Game *)game{
-	return [game.similarGames.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		SimilarGame *similarGame1 = (SimilarGame *)obj1;
-		SimilarGame *similarGame2 = (SimilarGame *)obj2;
-		return [similarGame1.title compare:similarGame2.title] == NSOrderedAscending;
-	}];
+	NSSortDescriptor *titleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+	return [game.similarGames.allObjects sortedArrayUsingDescriptors:@[titleSortDescriptor]];
 }
 
 - (NSArray *)orderedImagesFromGame:(Game *)game{
-	return [game.images.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Image *image1 = (Image *)obj1;
-		Image *image2 = (Image *)obj2;
-		return [image1.index compare:image2.index] == NSOrderedDescending;
-	}];
+	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	return [game.images.allObjects sortedArrayUsingDescriptors:@[indexSortDescriptor]];
 }
 
 - (NSArray *)orderedVideosFromGame:(Game *)game{
-	return [game.videos.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-		Video *video1 = (Video *)obj1;
-		Video *video2 = (Video *)obj2;
-		return [video1.index compare:video2.index] == NSOrderedDescending;
-	}];
+	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	return [game.videos.allObjects sortedArrayUsingDescriptors:@[indexSortDescriptor]];
 }
 
 - (void)addGameToWishlistWithPlatforms:(NSArray *)platforms{
