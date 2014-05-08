@@ -18,19 +18,19 @@ PODS:
   - AFNetworking/UIKit (2.2.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - MACircleProgressIndicator (1.0.0)
+  - DACircularProgress (2.2.0)
   - MagicalRecord (2.2):
     - MagicalRecord/Core
   - MagicalRecord/Core (2.2)
 
 DEPENDENCIES:
   - AFNetworking
-  - MACircleProgressIndicator
+  - DACircularProgress
   - MagicalRecord
 
 SPEC CHECKSUMS:
   AFNetworking: ae513199cca79e9d7af2708ccabe2ed075550c42
-  MACircleProgressIndicator: dc497a2c68dd930d4aea837b1a732a56ce4bd6d8
+  DACircularProgress: 659d6fd11b5fc099c13ba9350239d9dca324916a
   MagicalRecord: 95d49d74ef752cd52f6ad87bcb474817fc3978cf
 
 COCOAPODS: 0.32.1

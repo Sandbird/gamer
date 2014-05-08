@@ -48,11 +48,11 @@
 #define COCOAPODS_VERSION_MINOR_AFNetworking_UIKit 2
 #define COCOAPODS_VERSION_PATCH_AFNetworking_UIKit 3
 
-// MACircleProgressIndicator
-#define COCOAPODS_POD_AVAILABLE_MACircleProgressIndicator
-#define COCOAPODS_VERSION_MAJOR_MACircleProgressIndicator 1
-#define COCOAPODS_VERSION_MINOR_MACircleProgressIndicator 0
-#define COCOAPODS_VERSION_PATCH_MACircleProgressIndicator 0
+// DACircularProgress
+#define COCOAPODS_POD_AVAILABLE_DACircularProgress
+#define COCOAPODS_VERSION_MAJOR_DACircularProgress 2
+#define COCOAPODS_VERSION_MINOR_DACircularProgress 2
+#define COCOAPODS_VERSION_PATCH_DACircularProgress 0
 
 // MagicalRecord
 #define COCOAPODS_POD_AVAILABLE_MagicalRecord

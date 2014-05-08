@@ -7,13 +7,14 @@
 //
 
 #import "ImageViewerController.h"
-#import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 #import <AFNetworking/AFNetworking.h>
+#import <AFNetworking/UIProgressView+AFNetworking.h>
+#import "DACircularProgressView+AFNetworking.h"
 
 @interface ImageViewerController () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
-@property (nonatomic, strong) IBOutlet MACircleProgressIndicator *progressIndicator;
+@property (nonatomic, strong) IBOutlet DACircularProgressView *progressView;
 
 @property (nonatomic, strong) IBOutlet UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) IBOutlet UITapGestureRecognizer *doubleTapGestureRecognizer;
@@ -31,9 +32,11 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[_progressIndicator setColor:[UIColor whiteColor]];
-	
 	[_singleTapGestureRecognizer requireGestureRecognizerToFail:_doubleTapGestureRecognizer];
+	
+	[_progressView setTrackTintColor:[UIColor clearColor]];
+	[_progressView setProgressTintColor:[UIColor lightGrayColor]];
+	[_progressView setThicknessRatio:0.2];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -81,13 +84,9 @@
 #pragma mark - Networking
 
 - (void)downloadImageWithImageObject:(Image *)imageObject{
-	[_progressIndicator setValue:0];
-	
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageObject.originalURL]];
 	
-	NSProgress *progress;
-	
-	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:&progress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
 		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/original_%@", NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject, request.URL.lastPathComponent]];
 		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
@@ -95,25 +94,12 @@
 		
 		_imageSize = downloadedImage.size;
 		[self initializeImageViewWithImage:downloadedImage animated:YES];
-		
-		[progress removeObserver:self forKeyPath:@"fractionCompleted" context:(__bridge void *)(self)];
+		[_progressView setHidden:YES];
+		[_progressView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 	}];
+	[_progressView setProgressWithDownloadProgressOfTask:downloadTask animated:YES];
 	[downloadTask resume];
 	_runningTask = downloadTask;
-	
-	[progress addObserver:self forKeyPath:@"fractionCompleted" options:NSKeyValueObservingOptionNew context:(__bridge void *)(self)];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-	dispatch_async(dispatch_get_main_queue(), ^{
-		if (context == (__bridge void *)(self)){
-			NSProgress *progress = (NSProgress *)object;
-			[_progressIndicator setValue:progress.fractionCompleted];
-		}
-		else{
-			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-		}
-	});
 }
 
 #pragma mark - Custom

@@ -30,6 +30,7 @@
 		25348F9518D4A40200F5A76D /* AboutCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9418D4A40100F5A76D /* AboutCell.m */; };
 		253B475318FF702100CC4140 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 253B475218FF702100CC4140 /* Platform.m */; };
 		253B57F21834536B00617E3B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 253B57F11834536B00617E3B /* MessageUI.framework */; };
+		2544F7C0191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 2544F7BF191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
 		255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA78179B566E009B42BF /* AdSupport.framework */; };
 		25704026176CB12800642430 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25704025176CB12800642430 /* Foundation.framework */; };
@@ -151,6 +152,8 @@
 		253B475218FF702100CC4140 /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
 		253B57DC182B159400617E3B /* 1.1.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.3.xcdatamodel; sourceTree = "<group>"; };
 		253B57F11834536B00617E3B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		2544F7BE191AFDC600E022C4 /* DACircularProgressView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DACircularProgressView+AFNetworking.h"; sourceTree = "<group>"; };
+		2544F7BF191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DACircularProgressView+AFNetworking.m"; sourceTree = "<group>"; };
 		2555469F17DFF9430069F8A5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		255BAA76179B55E4009B42BF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		255BAA78179B566E009B42BF /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -617,6 +620,8 @@
 				259DBBAE18958D0700B274F4 /* NSString+FetchedGroupByString.m */,
 				25112F5118F8E6DA001B93EB /* Platform+Library.h */,
 				25112F5218F8E6DA001B93EB /* Platform+Library.m */,
+				2544F7BE191AFDC600E022C4 /* DACircularProgressView+AFNetworking.h */,
+				2544F7BF191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -863,6 +868,7 @@
 				25C5880718F6DCDF002A2EF4 /* StarRatingControl.m in Sources */,
 				259E4A401808ACAB00C1AC99 /* SimilarGameCollectionCell.m in Sources */,
 				25112F5318F8E6DA001B93EB /* Platform+Library.m in Sources */,
+				2544F7C0191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m in Sources */,
 				25D4E68F18F3419600D93F80 /* Publisher.m in Sources */,
 				25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */,
 				25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */,

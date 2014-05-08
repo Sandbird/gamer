@@ -23,7 +23,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "ImageCollectionCell.h"
 #import "VideoCollectionCell.h"
-#import <MACircleProgressIndicator/MACircleProgressIndicator.h>
 #import "ImageViewerController.h"
 #import "PlatformCollectionCell.h"
 #import "ContentStatusView.h"
@@ -36,6 +35,7 @@
 #import "StarRatingControl.h"
 #import "MetascoreController.h"
 #import "NotesController.h"
+#import "DACircularProgressView+AFNetworking.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	SectionCover,
@@ -49,6 +49,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
+@property (nonatomic, strong) IBOutlet DACircularProgressView *progressView;
 
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 
@@ -126,6 +127,10 @@ typedef NS_ENUM(NSInteger, Section){
 	[_libraryButton setBackgroundImage:[Tools imageWithColor:_libraryButton.tintColor] forState:UIControlStateHighlighted];
 	
 	[_userScoreLabel.layer setCornerRadius:60/2];
+	
+	[_progressView setTrackTintColor:[UIColor clearColor]];
+	[_progressView setProgressTintColor:[UIColor lightGrayColor]];
+	[_progressView setThicknessRatio:0.2];
 	
 	[self setupRatingControl];
 	
@@ -759,7 +764,11 @@ typedef NS_ENUM(NSInteger, Section){
 				[self displayCoverImage];
 			}];
 		}
+		
+		[_progressView setHidden:YES];
+		[_progressView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 	}];
+	[_progressView setProgressWithDownloadProgressOfTask:downloadTask animated:YES];
 	[downloadTask resume];
 }
 

@@ -178,10 +178,11 @@
                                             <rect key="frame" x="0.0" y="0.0" width="540" height="440"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="WS5-P2-fCq">
-                                                    <rect key="frame" x="260" y="200" width="20" height="20"/>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZR6-YI-Yay" customClass="DACircularProgressView">
+                                                    <rect key="frame" x="255" y="195" width="30" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </activityIndicatorView>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                </view>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DwU-TC-GxR">
                                                     <rect key="frame" x="60" y="60" width="420" height="300"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1001,7 +1002,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="activityIndicator" destination="WS5-P2-fCq" id="dhQ-wy-ayx"/>
                         <outlet property="coverImageView" destination="DwU-TC-GxR" id="0S2-yY-uWc"/>
                         <outlet property="criticScoreLabel" destination="n5N-7m-B0k" id="zDw-Yh-gcF"/>
                         <outlet property="descriptionTextView" destination="Yld-uO-4o7" id="eIS-PE-tZF"/>
@@ -1053,20 +1053,20 @@
                         <viewControllerLayoutGuide type="bottom" id="zhs-nA-fQq"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="NgI-xo-xjh">
-                        <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="30g-Mo-7qs" customClass="MACircleProgressIndicator">
-                                <rect key="frame" x="248" y="288" width="44" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aOd-LD-FSm" customClass="DACircularProgressView">
+                                <rect key="frame" x="364" y="492" width="40" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="44" id="ahI-L2-Tv8"/>
-                                    <constraint firstAttribute="height" constant="44" id="tHQ-pX-n3a"/>
+                                    <constraint firstAttribute="height" constant="40" id="NCW-o0-dcz"/>
+                                    <constraint firstAttribute="width" constant="40" id="vvf-yt-TKB"/>
                                 </constraints>
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" maximumZoomScale="2" translatesAutoresizingMaskIntoConstraints="NO" id="HFj-hm-bel">
-                                <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="i5m-R1-ipb" id="zbu-vU-9jS"/>
@@ -1077,8 +1077,8 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="HFj-hm-bel" firstAttribute="centerY" secondItem="30g-Mo-7qs" secondAttribute="centerY" id="EX0-AC-9dL"/>
-                            <constraint firstItem="30g-Mo-7qs" firstAttribute="centerX" secondItem="HFj-hm-bel" secondAttribute="centerX" id="EZi-62-y82"/>
+                            <constraint firstAttribute="centerY" secondItem="aOd-LD-FSm" secondAttribute="centerY" id="3rb-Wz-DQL"/>
+                            <constraint firstAttribute="centerX" secondItem="aOd-LD-FSm" secondAttribute="centerX" id="HYR-4b-FA8"/>
                             <constraint firstItem="HFj-hm-bel" firstAttribute="top" secondItem="NgI-xo-xjh" secondAttribute="top" id="JZM-BT-xVn"/>
                             <constraint firstAttribute="trailing" secondItem="HFj-hm-bel" secondAttribute="trailing" id="ch2-2Q-CmT"/>
                             <constraint firstItem="HFj-hm-bel" firstAttribute="leading" secondItem="NgI-xo-xjh" secondAttribute="leading" id="n9V-9W-ePh"/>
@@ -1086,9 +1086,10 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="sw6-Mq-R6u"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="doubleTapGestureRecognizer" destination="Bnm-Oi-vo4" id="NVC-AH-h6L"/>
-                        <outlet property="progressIndicator" destination="30g-Mo-7qs" id="TFp-xy-JrB"/>
+                        <outlet property="progressView" destination="aOd-LD-FSm" id="YjT-ut-nKU"/>
                         <outlet property="scrollView" destination="HFj-hm-bel" id="VGD-4B-y3e"/>
                         <outlet property="singleTapGestureRecognizer" destination="etv-27-uRh" id="5iY-bu-GWl"/>
                     </connections>

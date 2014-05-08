@@ -194,10 +194,11 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="279"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Aub-c2-LhF">
-                                                    <rect key="frame" x="150" y="110" width="20" height="20"/>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tod-ja-dMp" customClass="DACircularProgressView">
+                                                    <rect key="frame" x="145" y="105" width="30" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </activityIndicatorView>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                </view>
                                                 <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ivh-Tr-p21" userLabel="Cover Image View">
                                                     <rect key="frame" x="20" y="20" width="280" height="200"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1075,7 +1076,6 @@
                         </connections>
                     </refreshControl>
                     <connections>
-                        <outlet property="activityIndicator" destination="Aub-c2-LhF" id="PSF-2P-MH8"/>
                         <outlet property="coverImageView" destination="ivh-Tr-p21" id="THA-ol-Mkp"/>
                         <outlet property="criticScoreLabel" destination="ddK-CD-bab" id="wDV-qk-rxF"/>
                         <outlet property="descriptionTextView" destination="LmU-26-hGZ" id="njo-lM-UYA"/>
@@ -1093,6 +1093,7 @@
                         <outlet property="metascorePlatformLabel" destination="adD-Aa-Nmg" id="cyB-ZK-gne"/>
                         <outlet property="platformsCollectionView" destination="1Q9-oo-3iz" id="g8f-G5-Wki"/>
                         <outlet property="preorderedSwitch" destination="Mzt-6A-Xm3" id="VNB-c3-U23"/>
+                        <outlet property="progressView" destination="tod-ja-dMp" id="iVE-r9-tKu"/>
                         <outlet property="publisherFirstLabel" destination="Gva-cv-pHu" id="jvm-C7-7xc"/>
                         <outlet property="publisherSecondLabel" destination="RdQ-fe-psz" id="4gV-vo-9kl"/>
                         <outlet property="ratingView" destination="RTh-fB-SLY" id="Nub-j6-sPB"/>
@@ -1107,7 +1108,7 @@
                         <outlet property="userScoreLabel" destination="Ttr-hs-6az" id="Qcd-jO-KQW"/>
                         <outlet property="videosCollectionView" destination="PtU-8u-YEg" id="dRH-0j-f0X"/>
                         <outlet property="wishlistButton" destination="aGi-nA-yvy" id="jE1-CR-5Tm"/>
-                        <segue destination="d8G-2S-1tf" kind="modal" identifier="ViewerSegue" id="zqi-V3-AY3"/>
+                        <segue destination="d8G-2S-1tf" kind="modal" identifier="ImageViewerSegue" id="zqi-V3-AY3"/>
                         <segue destination="fcH-XE-pDY" kind="modal" identifier="PlatformPickerSegue" id="ixn-MJ-1nJ"/>
                         <segue destination="GPq-cA-Ftn" kind="push" identifier="ReleasesSegue" id="Giz-Bw-s6d"/>
                         <segue destination="OVJ-Tx-P6P" kind="push" identifier="MetascoreSegue" id="vfT-Cs-gob"/>
@@ -1170,13 +1171,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Afl-Ih-deV" customClass="MACircleProgressIndicator">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ba1-0u-XKO" customClass="DACircularProgressView">
                                 <rect key="frame" x="145" y="269" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="2E7-hC-wOE"/>
-                                    <constraint firstAttribute="width" constant="30" id="nJj-tP-XUB"/>
+                                    <constraint firstAttribute="height" constant="30" id="1Uf-rn-eFn"/>
+                                    <constraint firstAttribute="width" constant="30" id="kFy-n0-iHr"/>
                                 </constraints>
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" maximumZoomScale="2" translatesAutoresizingMaskIntoConstraints="NO" id="M43-zG-daH">
@@ -1192,9 +1193,9 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="M43-zG-daH" firstAttribute="centerY" secondItem="Afl-Ih-deV" secondAttribute="centerY" id="0gP-E2-NYd"/>
                             <constraint firstItem="M43-zG-daH" firstAttribute="top" secondItem="rS6-1p-NtK" secondAttribute="top" id="32m-Wj-JXF"/>
-                            <constraint firstItem="M43-zG-daH" firstAttribute="centerX" secondItem="Afl-Ih-deV" secondAttribute="centerX" id="UvQ-bg-qD2"/>
+                            <constraint firstItem="ba1-0u-XKO" firstAttribute="centerX" secondItem="M43-zG-daH" secondAttribute="centerX" id="BOK-YI-2C1"/>
+                            <constraint firstItem="ba1-0u-XKO" firstAttribute="centerY" secondItem="M43-zG-daH" secondAttribute="centerY" id="c9A-9z-oGc"/>
                             <constraint firstAttribute="trailing" secondItem="M43-zG-daH" secondAttribute="trailing" id="fSP-QO-dKe"/>
                             <constraint firstAttribute="bottom" secondItem="M43-zG-daH" secondAttribute="bottom" id="t1p-Z0-sBF"/>
                             <constraint firstItem="M43-zG-daH" firstAttribute="leading" secondItem="rS6-1p-NtK" secondAttribute="leading" id="url-tg-Wyw"/>
@@ -1203,7 +1204,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="doubleTapGestureRecognizer" destination="phs-gP-aIa" id="W2A-ZD-6Xe"/>
-                        <outlet property="progressIndicator" destination="Afl-Ih-deV" id="Euh-9R-8BV"/>
+                        <outlet property="progressView" destination="ba1-0u-XKO" id="xYA-eg-gzK"/>
                         <outlet property="scrollView" destination="M43-zG-daH" id="WFD-82-0lk"/>
                         <outlet property="singleTapGestureRecognizer" destination="Y03-Tc-2y8" id="Q6W-dx-GNX"/>
                     </connections>
