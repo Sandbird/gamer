@@ -47,7 +47,6 @@ typedef NS_ENUM(NSInteger, Section){
 
 @interface GameController () <UICollectionViewDataSource, UICollectionViewDelegate, PlatformPickerControllerDelegate, ReleasesControllerDelegate, MetascoreControllerDelegate>
 
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UIImageView *coverImageView;
 @property (nonatomic, strong) IBOutlet DACircularProgressView *progressView;
 
@@ -114,8 +113,6 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
-	[self setEdgesForExtendedLayout:UIRectEdgeAll];
-	
 	[_wishlistButton.layer setBorderWidth:1];
 	[_wishlistButton.layer setBorderColor:_wishlistButton.tintColor.CGColor];
 	[_wishlistButton.layer setCornerRadius:4];
@@ -128,8 +125,8 @@ typedef NS_ENUM(NSInteger, Section){
 	
 	[_userScoreLabel.layer setCornerRadius:60/2];
 	
-	[_progressView setTrackTintColor:[UIColor clearColor]];
-	[_progressView setProgressTintColor:[UIColor lightGrayColor]];
+	[_progressView setTrackTintColor:[UIColor darkGrayColor]];
+	[_progressView setProgressTintColor:[UIColor whiteColor]];
 	[_progressView setThicknessRatio:0.2];
 	
 	[self setupRatingControl];
@@ -687,8 +684,6 @@ typedef NS_ENUM(NSInteger, Section){
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
-	[self.refreshControl beginRefreshing];
-	
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
@@ -740,16 +735,12 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)downloadCoverImageWithURL:(NSString *)URLString{
 	if (!URLString) return;
 	
-	[_activityIndicator startAnimating];
-	
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLString]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
 		NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
 		return fileURL;
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-		[_activityIndicator stopAnimating];
-		
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Cover Image", self, (long)((NSHTTPURLResponse *)response).statusCode);
 		}

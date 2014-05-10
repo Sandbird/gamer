@@ -107,7 +107,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	[game setDevelopers:nil];
 	[game setPublishers:nil];
 	[game setFranchises:nil];
-	[game setSimilarGames:nil];
 	[game setThemes:nil];
 	[game setImages:nil];
 	[game setVideos:nil];

@@ -34,8 +34,8 @@
 	
 	[_singleTapGestureRecognizer requireGestureRecognizerToFail:_doubleTapGestureRecognizer];
 	
-	[_progressView setTrackTintColor:[UIColor clearColor]];
-	[_progressView setProgressTintColor:[UIColor lightGrayColor]];
+	[_progressView setTrackTintColor:[UIColor darkGrayColor]];
+	[_progressView setProgressTintColor:[UIColor whiteColor]];
 	[_progressView setThicknessRatio:0.2];
 }
 

@@ -19,8 +19,6 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[self setEdgesForExtendedLayout:UIRectEdgeAll];
-	
 	[_webView loadRequest:[NSURLRequest requestWithURL:_URL]];
 }
 
