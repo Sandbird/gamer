@@ -252,11 +252,18 @@ typedef NS_ENUM(NSInteger, Section){
 			if (indexPath.row == 2){
 				if (self.game.releases.count > 0)
 					return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-				else
-					return 20 + 17 + 13 + ((self.selectedPlatforms.count/5 + 1) * 31) + 20;
+				else{
+					if ([Tools deviceIsiPhone])
+						return 20 + 17 + 8 + (ceil((double)self.selectedPlatforms.count/4) * 31) + 20;
+					else
+						return 20 + 17 + 8 + (ceil((double)self.selectedPlatforms.count/8) * 31) + 20;
+				}
 			}
 			else if (indexPath.row == 3){
-				return 20 + 17 + 13 + (ceil((double)self.selectedPlatforms.count/4) * 31) + 20;
+				if ([Tools deviceIsiPhone])
+					return 20 + 17 + 8 + (ceil((double)self.selectedPlatforms.count/4) * 31) + 20;
+				else
+					return 20 + 17 + 8 + (ceil((double)self.selectedPlatforms.count/8) * 31) + 20;
 			}
 			break;
 		case SectionStatus:
@@ -317,10 +324,11 @@ typedef NS_ENUM(NSInteger, Section){
 						return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
 					}
 					// Platforms row
-					else{
-						if ([Tools deviceIsiPhone] && self.platforms.count > 0){
-							return 20 + 17 + 13 + (ceil((double)self.platforms.count/4) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
-						}
+					else if (self.platforms.count > 0){
+						if ([Tools deviceIsiPhone])
+							return 20 + 17 + 8 + (ceil((double)self.platforms.count/4) * 31) + 20; // Top padding + label height + spacing + platforms collection height + bottom padding
+						else
+							return 20 + 17 + 8 + (ceil((double)self.platforms.count/8) * 31) + 20;
 					}
 					break;
 				case 3:

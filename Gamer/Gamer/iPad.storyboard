@@ -1038,7 +1038,7 @@
                         <segue destination="5j4-JL-rvG" kind="push" identifier="ReleasesSegue" id="AOe-zt-o4r"/>
                         <segue destination="dVh-Oi-d2Z" kind="push" identifier="MetascoreSegue" id="xHu-dr-TGW"/>
                         <segue destination="H48-w4-3wg" kind="push" identifier="NotesSegue" id="hjj-Ky-C7x"/>
-                        <segue destination="2Em-l4-DK5" kind="modal" identifier="PlatformPickerSegue" id="EAm-Bd-0KS"/>
+                        <segue destination="2Em-l4-DK5" kind="modal" identifier="PlatformPickerSegue" modalPresentationStyle="currentContext" id="EAm-Bd-0KS"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gEM-zq-gcH" userLabel="First Responder" sceneMemberID="firstResponder"/>
