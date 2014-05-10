@@ -21,27 +21,27 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
-	[_textView setKeyboardAppearance:UIKeyboardAppearanceDark];
-	[_textView setTextContainerInset:UIEdgeInsetsMake(15, 15, 15, 15)];
+	[self.textView setKeyboardAppearance:UIKeyboardAppearanceDark];
+	[self.textView setTextContainerInset:UIEdgeInsetsMake(15, 15, 15, 15)];
 	
-	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	if ([_game.notes isEqualToString:@"(null)"]){
-		[_game setNotes:@""];
+	if ([self.game.notes isEqualToString:@"(null)"]){
+		[self.game setNotes:@""];
 	}
 	
-	[_textView setText:_game.notes];
+	[self.textView setText:self.game.notes];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-	if (_textView.text.length == 0){
-		[_textView becomeFirstResponder];
+	if (self.textView.text.length == 0){
+		[self.textView becomeFirstResponder];
 	}
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
-	[_game setNotes:_textView.text];
-	[_context MR_saveToPersistentStoreAndWait];
+	[self.game setNotes:self.textView.text];
+	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 - (void)didReceiveMemoryWarning{

@@ -32,23 +32,23 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[_singleTapGestureRecognizer requireGestureRecognizerToFail:_doubleTapGestureRecognizer];
+	[self.singleTapGestureRecognizer requireGestureRecognizerToFail:self.doubleTapGestureRecognizer];
 	
-	[_progressView setTrackTintColor:[UIColor darkGrayColor]];
-	[_progressView setProgressTintColor:[UIColor whiteColor]];
-	[_progressView setThicknessRatio:0.2];
+	[self.progressView setTrackTintColor:[UIColor darkGrayColor]];
+	[self.progressView setProgressTintColor:[UIColor whiteColor]];
+	[self.progressView setThicknessRatio:0.2];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	
-	[self downloadImageWithImageObject:_image];
+	[self downloadImageWithImageObject:self.image];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 	
-	[_runningTask cancel];
+	[self.runningTask cancel];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -60,21 +60,21 @@
 - (void)viewDidLayoutSubviews{
 	[self centerImageView];
 	
-	CGFloat imageAspectRatio = _imageSize.width/_imageSize.height;
+	CGFloat imageAspectRatio = self.imageSize.width/self.imageSize.height;
 	CGFloat screenAspectRatio = self.view.bounds.size.width/self.view.bounds.size.height;
 	
 	if (imageAspectRatio > screenAspectRatio)
-		[_scrollView setMinimumZoomScale:self.view.bounds.size.width/_imageSize.width];
+		[self.scrollView setMinimumZoomScale:self.view.bounds.size.width/self.imageSize.width];
 	else
-		[_scrollView setMinimumZoomScale:self.view.bounds.size.height/_imageSize.height];
+		[self.scrollView setMinimumZoomScale:self.view.bounds.size.height/self.imageSize.height];
 	
-	[_scrollView setZoomScale:_scrollView.minimumZoomScale];
+	[self.scrollView setZoomScale:self.scrollView.minimumZoomScale];
 }
 
 #pragma mark - ScrollView
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{
-	return _imageView;
+	return self.imageView;
 }
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView{
@@ -92,68 +92,68 @@
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		UIImage *downloadedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:filePath]];
 		
-		_imageSize = downloadedImage.size;
+		self.imageSize = downloadedImage.size;
 		[self initializeImageViewWithImage:downloadedImage animated:YES];
-		[_progressView setHidden:YES];
-		[_progressView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+		[self.progressView setHidden:YES];
+		[self.progressView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 	}];
-	[_progressView setProgressWithDownloadProgressOfTask:downloadTask animated:YES];
+	[self.progressView setProgressWithDownloadProgressOfTask:downloadTask animated:YES];
 	[downloadTask resume];
-	_runningTask = downloadTask;
+	self.runningTask = downloadTask;
 }
 
 #pragma mark - Custom
 
 - (void)initializeImageViewWithImage:(UIImage *)image animated:(BOOL)animated{
-	_imageView = [[UIImageView alloc] initWithImage:image];
-	[_scrollView setContentSize:CGSizeMake(_imageView.frame.size.width, _imageView.frame.size.height)];
+	self.imageView = [[UIImageView alloc] initWithImage:image];
+	[self.scrollView setContentSize:CGSizeMake(self.imageView.frame.size.width, self.imageView.frame.size.height)];
 	
-	[_scrollView addSubview:_imageView];
-	if (animated) [_scrollView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+	[self.scrollView addSubview:self.imageView];
+	if (animated) [self.scrollView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 	
-	CGFloat imageAspectRatio = _imageSize.width/_imageSize.height;
+	CGFloat imageAspectRatio = self.imageSize.width/self.imageSize.height;
 	CGFloat screenAspectRatio = self.view.bounds.size.width/self.view.bounds.size.height;
 	
 	if (imageAspectRatio > screenAspectRatio)
-		[_scrollView setMinimumZoomScale:self.view.bounds.size.width/_imageSize.width];
+		[self.scrollView setMinimumZoomScale:self.view.bounds.size.width/self.imageSize.width];
 	else
-		[_scrollView setMinimumZoomScale:self.view.bounds.size.height/_imageSize.height];
+		[self.scrollView setMinimumZoomScale:self.view.bounds.size.height/self.imageSize.height];
 	
-	[_scrollView setZoomScale:_scrollView.minimumZoomScale];
+	[self.scrollView setZoomScale:self.scrollView.minimumZoomScale];
 }
 
 - (void)centerImageView{
-	CGRect contentFrame = _imageView.frame;
+	CGRect contentFrame = self.imageView.frame;
 	
-	if (_imageView.frame.size.width < _scrollView.bounds.size.width)
-		contentFrame.origin.x = (_scrollView.bounds.size.width - _imageView.frame.size.width)/2;
+	if (self.imageView.frame.size.width < self.scrollView.bounds.size.width)
+		contentFrame.origin.x = (self.scrollView.bounds.size.width - self.imageView.frame.size.width)/2;
 	else
 		contentFrame.origin.x = 0;
 	
-	if (contentFrame.size.height < _scrollView.bounds.size.height)
-		contentFrame.origin.y = (_scrollView.bounds.size.height - contentFrame.size.height)/2;
+	if (contentFrame.size.height < self.scrollView.bounds.size.height)
+		contentFrame.origin.y = (self.scrollView.bounds.size.height - contentFrame.size.height)/2;
 	else
 		contentFrame.origin.y = 0;
 	
-	_imageView.frame = contentFrame;
+	self.imageView.frame = contentFrame;
 }
 
 #pragma mark - Actions
 
 - (IBAction)doubleTapGestureRecognizerAction:(UITapGestureRecognizer *)sender{
-	CGFloat imageAspectRatio = _imageSize.width/_imageSize.height;
+	CGFloat imageAspectRatio = self.imageSize.width/self.imageSize.height;
 	CGFloat screenAspectRatio = self.view.bounds.size.width/self.view.bounds.size.height;
 	
-	if ((imageAspectRatio > screenAspectRatio && _imageSize.width > self.view.bounds.size.width) || (imageAspectRatio < screenAspectRatio && _imageSize.height > self.view.bounds.size.height)){
-		CGPoint touchLocation = [sender locationInView:_imageView];
-		CGFloat zoomScale = (_scrollView.zoomScale < 1) ? 1 : _scrollView.minimumZoomScale;
+	if ((imageAspectRatio > screenAspectRatio && self.imageSize.width > self.view.bounds.size.width) || (imageAspectRatio < screenAspectRatio && self.imageSize.height > self.view.bounds.size.height)){
+		CGPoint touchLocation = [sender locationInView:self.imageView];
+		CGFloat zoomScale = (self.scrollView.zoomScale < 1) ? 1 : self.scrollView.minimumZoomScale;
 		CGFloat width = self.view.bounds.size.width/zoomScale;
 		CGFloat height = self.view.bounds.size.height/zoomScale;
 		CGFloat x = touchLocation.x - width;
 		CGFloat y = touchLocation.y - height;
 		CGRect zoomRect = CGRectMake(x, y, (width), (height));
 		
-		if (zoomScale >= _scrollView.minimumZoomScale && zoomScale != _scrollView.zoomScale) [_scrollView zoomToRect:zoomRect animated:YES];
+		if (zoomScale >= self.scrollView.minimumZoomScale && zoomScale != self.scrollView.zoomScale) [self.scrollView zoomToRect:zoomRect animated:YES];
 	}
 }
 

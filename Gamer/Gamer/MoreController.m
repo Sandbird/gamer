@@ -43,16 +43,16 @@ typedef NS_ENUM(NSInteger, Section){
 	if ([Tools deviceIsiPad])
 		[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
 	
-	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	if (![Session gamer].librarySize){
 		[[Session gamer] setLibrarySize:@(LibrarySizeMedium)];
-		[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		}];
 	}
 	else{
-		[_librarySizeSegmentedControl setSelectedSegmentIndex:[Session gamer].librarySize.integerValue];
+		[self.librarySizeSegmentedControl setSelectedSegmentIndex:[Session gamer].librarySize.integerValue];
 	}
 }
 
@@ -157,7 +157,7 @@ typedef NS_ENUM(NSInteger, Section){
 #pragma mark - Export
 
 - (void)exportGames{
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location != %@", @(GameLocationNone)] inContext:_context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location != %@", @(GameLocationNone)] inContext:self.context];
 	
 	NSMutableArray *gameDictionaries = [[NSMutableArray alloc] initWithCapacity:games.count];
 	
@@ -230,7 +230,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (IBAction)segmentedControlValueChangedAction:(UISegmentedControl *)sender{
 	[[Session gamer] setLibrarySize:@(sender.selectedSegmentIndex)];
-	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];
 }

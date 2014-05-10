@@ -27,17 +27,17 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
-	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_dataSource = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
+	self.dataSource = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
 	
-	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:nil inContext:_context];
+	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:nil inContext:self.context];
 	
 	for (Platform *platform in platforms){
-		if ([platform containsReleasesWithGame:_game]){
-			NSArray *releases = [platform sortedReleasesWithGame:_game];
+		if ([platform containsReleasesWithGame:self.game]){
+			NSArray *releases = [platform sortedReleasesWithGame:self.game];
 			
-			[_dataSource addObject:@{@"platform":@{@"id":platform.identifier,
+			[self.dataSource addObject:@{@"platform":@{@"id":platform.identifier,
 												   @"name":platform.name,
 												   @"releases":releases}}];
 		}
@@ -51,26 +51,26 @@
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-	return _dataSource.count;
+	return self.dataSource.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-	return _dataSource[section][@"platform"][@"name"];
+	return self.dataSource[section][@"platform"][@"name"];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return [_dataSource[section][@"platform"][@"releases"] count];
+	return [self.dataSource[section][@"platform"][@"releases"] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	Release *release = _dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
+	Release *release = self.dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
 	
 	ReleaseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:release.title];
 	[cell.dateLabel setText:release.releaseDateText];
 	[cell.coverImageView setImageWithURL:[NSURL URLWithString:release.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
 	[cell.regionImageView setImage:[UIImage imageNamed:release.region.imageName]];
-	[cell setAccessoryType:release == _game.selectedRelease ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+	[cell setAccessoryType:release == self.game.selectedRelease ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
 	[cell setSelectionStyle:[[Session gamer].platforms containsObject:release.platform] ? UITableViewCellSelectionStyleBlue : UITableViewCellSelectionStyleNone];
 	return cell;
 }
@@ -81,8 +81,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	if ([tableView cellForRowAtIndexPath:indexPath].selectionStyle != UITableViewCellSelectionStyleNone){
-		Release *release = _dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
-		[self.delegate releasesController:self didSelectRelease:release == _game.selectedRelease ? nil : release];
+		Release *release = self.dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
+		[self.delegate releasesController:self didSelectRelease:release == self.game.selectedRelease ? nil : release];
 		[self.tableView reloadData];
 	}
 }

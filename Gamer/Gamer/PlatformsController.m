@@ -36,12 +36,12 @@ typedef NS_ENUM(NSInteger, Section){
 	if ([Tools deviceIsiPad])
 		[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:.125490196 green:.125490196 blue:.125490196 alpha:1]];
 	
-	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_eighthGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(0)] inContext:_context].mutableCopy;
-	_seventhGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(1)] inContext:_context].mutableCopy;
-	_sixthGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(2)] inContext:_context].mutableCopy;
-	_fifthGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(3)] inContext:_context].mutableCopy;
+	self.eighthGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(0)] inContext:self.context].mutableCopy;
+	self.seventhGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(1)] inContext:self.context].mutableCopy;
+	self.sixthGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(2)] inContext:self.context].mutableCopy;
+	self.fifthGenPlatforms = [Platform MR_findAllSortedBy:@"index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"group = %@", @(3)] inContext:self.context].mutableCopy;
 	
 	[self.tableView setEditing:YES animated:NO];
 }
@@ -68,10 +68,10 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
-		case Section8thGen: return _eighthGenPlatforms.count;
-		case Section7thGen: return _seventhGenPlatforms.count;
-		case Section6thGen: return _sixthGenPlatforms.count;
-		case Section5thGen: return _fifthGenPlatforms.count;
+		case Section8thGen: return self.eighthGenPlatforms.count;
+		case Section7thGen: return self.seventhGenPlatforms.count;
+		case Section6thGen: return self.sixthGenPlatforms.count;
+		case Section5thGen: return self.fifthGenPlatforms.count;
 		default: return 0;
 	}
 }
@@ -80,10 +80,10 @@ typedef NS_ENUM(NSInteger, Section){
 	Platform *platform;
 	
 	switch (indexPath.section) {
-		case Section8thGen: platform = _eighthGenPlatforms[indexPath.row]; break;
-		case Section7thGen: platform = _seventhGenPlatforms[indexPath.row]; break;
-		case Section6thGen: platform = _sixthGenPlatforms[indexPath.row]; break;
-		case Section5thGen: platform = _fifthGenPlatforms[indexPath.row]; break;
+		case Section8thGen: platform = self.eighthGenPlatforms[indexPath.row]; break;
+		case Section7thGen: platform = self.seventhGenPlatforms[indexPath.row]; break;
+		case Section6thGen: platform = self.sixthGenPlatforms[indexPath.row]; break;
+		case Section5thGen: platform = self.fifthGenPlatforms[indexPath.row]; break;
 		default: break;
 	}
 	
@@ -126,13 +126,13 @@ typedef NS_ENUM(NSInteger, Section){
 	// Set platform indexes accordingly
 	switch (sourceIndexPath.section) {
 		case Section8thGen:{
-			Platform *platform = _eighthGenPlatforms[sourceIndexPath.row];
+			Platform *platform = self.eighthGenPlatforms[sourceIndexPath.row];
 			
-			[_eighthGenPlatforms removeObject:platform];
-			[_eighthGenPlatforms insertObject:platform atIndex:destinationIndexPath.row];
+			[self.eighthGenPlatforms removeObject:platform];
+			[self.eighthGenPlatforms insertObject:platform atIndex:destinationIndexPath.row];
 			
-			for (Platform *platform in _eighthGenPlatforms){
-				NSInteger index = [_eighthGenPlatforms indexOfObject:platform];
+			for (Platform *platform in self.eighthGenPlatforms){
+				NSInteger index = [self.eighthGenPlatforms indexOfObject:platform];
 				
 				[platform setIndex:@(index)];
 				
@@ -142,13 +142,13 @@ typedef NS_ENUM(NSInteger, Section){
 			break;
 		}
 		case Section7thGen:{
-			Platform *platform = _seventhGenPlatforms[sourceIndexPath.row];
+			Platform *platform = self.seventhGenPlatforms[sourceIndexPath.row];
 			
-			[_seventhGenPlatforms removeObject:platform];
-			[_seventhGenPlatforms insertObject:platform atIndex:destinationIndexPath.row];
+			[self.seventhGenPlatforms removeObject:platform];
+			[self.seventhGenPlatforms insertObject:platform atIndex:destinationIndexPath.row];
 			
-			for (Platform *platform in _seventhGenPlatforms){
-				NSInteger index = [_seventhGenPlatforms indexOfObject:platform];
+			for (Platform *platform in self.seventhGenPlatforms){
+				NSInteger index = [self.seventhGenPlatforms indexOfObject:platform];
 				
 				[platform setIndex:@(index)];
 				
@@ -158,13 +158,13 @@ typedef NS_ENUM(NSInteger, Section){
 			break;
 		}
 		case Section6thGen:{
-			Platform *platform = _sixthGenPlatforms[sourceIndexPath.row];
+			Platform *platform = self.sixthGenPlatforms[sourceIndexPath.row];
 			
-			[_sixthGenPlatforms removeObject:platform];
-			[_sixthGenPlatforms insertObject:platform atIndex:destinationIndexPath.row];
+			[self.sixthGenPlatforms removeObject:platform];
+			[self.sixthGenPlatforms insertObject:platform atIndex:destinationIndexPath.row];
 			
-			for (Platform *platform in _sixthGenPlatforms){
-				NSInteger index = [_sixthGenPlatforms indexOfObject:platform];
+			for (Platform *platform in self.sixthGenPlatforms){
+				NSInteger index = [self.sixthGenPlatforms indexOfObject:platform];
 				
 				[platform setIndex:@(index)];
 				
@@ -174,13 +174,13 @@ typedef NS_ENUM(NSInteger, Section){
 			break;
 		}
 		case Section5thGen:{
-			Platform *platform = _fifthGenPlatforms[sourceIndexPath.row];
+			Platform *platform = self.fifthGenPlatforms[sourceIndexPath.row];
 			
-			[_fifthGenPlatforms removeObject:platform];
-			[_fifthGenPlatforms insertObject:platform atIndex:destinationIndexPath.row];
+			[self.fifthGenPlatforms removeObject:platform];
+			[self.fifthGenPlatforms insertObject:platform atIndex:destinationIndexPath.row];
 			
-			for (Platform *platform in _fifthGenPlatforms){
-				NSInteger index = [_fifthGenPlatforms indexOfObject:platform];
+			for (Platform *platform in self.fifthGenPlatforms){
+				NSInteger index = [self.fifthGenPlatforms indexOfObject:platform];
 				
 				[platform setIndex:@(index)];
 				
@@ -193,7 +193,7 @@ typedef NS_ENUM(NSInteger, Section){
 			break;
 	}
 	
-	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 	}];
 }
@@ -207,16 +207,16 @@ typedef NS_ENUM(NSInteger, Section){
 	Platform *platform;
 	
 	switch (indexPath.section) {
-		case Section8thGen: platform = _eighthGenPlatforms[indexPath.row]; break;
-		case Section7thGen: platform = _seventhGenPlatforms[indexPath.row]; break;
-		case Section6thGen: platform = _sixthGenPlatforms[indexPath.row]; break;
-		case Section5thGen: platform = _fifthGenPlatforms[indexPath.row]; break;
+		case Section8thGen: platform = self.eighthGenPlatforms[indexPath.row]; break;
+		case Section7thGen: platform = self.seventhGenPlatforms[indexPath.row]; break;
+		case Section6thGen: platform = self.sixthGenPlatforms[indexPath.row]; break;
+		case Section5thGen: platform = self.fifthGenPlatforms[indexPath.row]; break;
 		default: break;
 	}
 	
 	sender.isOn ? [[Session gamer] addPlatformsObject:platform] : [[Session gamer] removePlatformsObject:platform];
 	
-	[_context MR_saveToPersistentStoreAndWait];
+	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 @end

@@ -25,13 +25,13 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
-	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	self.fetchedResultsController = [self fetchData];
 	
-	if (self.fetchedResultsController.fetchedObjects.count == 1 && _game.platforms.count > 1){
-		for (Platform *platform in _game.platforms){
-			[self requestMetascoreForGame:_game platform:platform];
+	if (self.fetchedResultsController.fetchedObjects.count == 1 && self.game.platforms.count > 1){
+		for (Platform *platform in self.game.platforms){
+			[self requestMetascoreForGame:self.game platform:platform];
 		}
 	}
 }
@@ -48,8 +48,8 @@
 
 - (NSFetchedResultsController *)fetchData{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"game = %@", _game];
-		self.fetchedResultsController = [Metascore MR_fetchAllSortedBy:@"platform.group,platform.index" ascending:YES withPredicate:predicate groupBy:nil delegate:self inContext:_context];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"game = %@", self.game];
+		self.fetchedResultsController = [Metascore MR_fetchAllSortedBy:@"platform.group,platform.index" ascending:YES withPredicate:predicate groupBy:nil delegate:self inContext:self.context];
 	}
 	
 	return self.fetchedResultsController;
@@ -89,7 +89,7 @@
 	[customCell.userScoreLabel setTextColor:[metascore.userScore isEqual:[NSDecimalNumber zero]] ? [UIColor lightGrayColor] : [Networking colorForMetascore:[customCell.userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];
 	[customCell.platformLabel setText:metascore.platform.abbreviation];
 	[customCell.platformLabel setBackgroundColor:metascore.platform.color];
-	[customCell setAccessoryType:metascore == _game.selectedMetascore ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+	[customCell setAccessoryType:metascore == self.game.selectedMetascore ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
 	[customCell setSelectionStyle:[[Session gamer].platforms containsObject:metascore.platform] ? UITableViewCellSelectionStyleBlue : UITableViewCellSelectionStyleNone];
 }
 
@@ -113,15 +113,15 @@
 			
 			NSString *metacriticURL = [Tools stringFromSourceIfNotNull:results[@"url"]];
 			
-			Metascore *metascore = [Metascore MR_findFirstByAttribute:@"metacriticURL" withValue:metacriticURL inContext:_context];
-			if (!metascore) metascore = [Metascore MR_createInContext:_context];
+			Metascore *metascore = [Metascore MR_findFirstByAttribute:@"metacriticURL" withValue:metacriticURL inContext:self.context];
+			if (!metascore) metascore = [Metascore MR_createInContext:self.context];
 			[metascore setCriticScore:[Tools integerNumberFromSourceIfNotNull:results[@"score"]]];
 			[metascore setUserScore:[Tools decimalNumberFromSourceIfNotNull:results[@"userscore"]]];
 			[metascore setMetacriticURL:metacriticURL];
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
 			
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:metascore]] withRowAnimation:UITableViewRowAnimationAutomatic];
 				[self.tableView beginUpdates];
 				[self.tableView endUpdates];
@@ -137,16 +137,16 @@
 #pragma mark - Actions
 
 - (IBAction)refreshControlValueChangedAction:(UIRefreshControl *)sender{
-	for (Platform *platform in _game.platforms){
-		[self requestMetascoreForGame:_game platform:platform];
+	for (Platform *platform in self.game.platforms){
+		[self requestMetascoreForGame:self.game platform:platform];
 	}
 }
 
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
 	[self.navigationItem.rightBarButtonItem setEnabled:NO];
 	
-	for (Platform *platform in _game.platforms){
-		[self requestMetascoreForGame:_game platform:platform];
+	for (Platform *platform in self.game.platforms){
+		[self requestMetascoreForGame:self.game platform:platform];
 	}
 }
 
@@ -156,7 +156,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	MetacriticController *destination = segue.destinationViewController;
-	[destination setURL:[NSURL URLWithString:_game.selectedMetascore.metacriticURL]];
+	[destination setURL:[NSURL URLWithString:self.game.selectedMetascore.metacriticURL]];
 }
 
 @end

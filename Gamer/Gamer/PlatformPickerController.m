@@ -27,17 +27,17 @@
 #pragma mark - TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return _selectablePlatforms.count;
+	return self.selectablePlatforms.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	Platform *platform = _selectablePlatforms[indexPath.row];
+	Platform *platform = self.selectablePlatforms[indexPath.row];
 	
 	PlatformPickerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:platform.name];
 	[cell.abbreviationLabel setText:platform.abbreviation];
 	[cell.abbreviationLabel setBackgroundColor:platform.color];
-	[cell setAccessoryType:[_selectedPlatforms containsObject:_selectablePlatforms[indexPath.row]] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+	[cell setAccessoryType:[self.selectedPlatforms containsObject:self.selectablePlatforms[indexPath.row]] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
 	return cell;
 }
 
@@ -52,18 +52,18 @@
 	
 	if (cell.accessoryType == UITableViewCellAccessoryCheckmark){
 		[cell setAccessoryType:UITableViewCellAccessoryNone];
-		[_selectedPlatforms removeObject:_selectablePlatforms[indexPath.row]];
+		[self.selectedPlatforms removeObject:self.selectablePlatforms[indexPath.row]];
 	}
 	else{
 		[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-		[_selectedPlatforms addObject:_selectablePlatforms[indexPath.row]];
+		[self.selectedPlatforms addObject:self.selectablePlatforms[indexPath.row]];
 	}
 }
 
 #pragma mark - Actions
 
 - (IBAction)doneBarButtonAction:(UIBarButtonItem *)sender{
-	[self.delegate platformPicker:self didSelectPlatforms:_selectedPlatforms];
+	[self.delegate platformPicker:self didSelectPlatforms:self.selectedPlatforms];
 }
 
 - (IBAction)cancelBarButtonAction:(UIBarButtonItem *)sender{

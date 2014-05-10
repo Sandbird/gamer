@@ -31,22 +31,22 @@
 #pragma mark - Custom
 
 - (void)showStatusWithTitle:(NSString *)title animated:(BOOL)animated{
-	[_sortButton setHidden:YES];
-	[_filterButton setHidden:YES];
+	[self.sortButton setHidden:YES];
+	[self.filterButton setHidden:YES];
 	
-	[_titleLabel setHidden:NO];
-	[_cancelButton setHidden:NO];
-	[_titleLabel setText:title];
+	[self.titleLabel setHidden:NO];
+	[self.cancelButton setHidden:NO];
+	[self.titleLabel setText:title];
 	
 	if (animated) [self.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 }
 
 - (void)resetAnimated:(BOOL)animated{
-	[_sortButton setHidden:NO];
-	[_filterButton setHidden:NO];
+	[self.sortButton setHidden:NO];
+	[self.filterButton setHidden:NO];
 	
-	[_titleLabel setHidden:YES];
-	[_cancelButton setHidden:YES];
+	[self.titleLabel setHidden:YES];
+	[self.cancelButton setHidden:YES];
 	
 	if (animated) [self.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 }
@@ -71,8 +71,8 @@
 
 - (IBAction)cancelButtonAction:(UIButton *)sender{
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[_sortButton setHighlighted:NO];
-		[_filterButton setHighlighted:NO];
+		[self.sortButton setHighlighted:NO];
+		[self.filterButton setHighlighted:NO];
 	});
 	
 	[self.delegate librarySortFilterView:self didPressCancelButton:sender];

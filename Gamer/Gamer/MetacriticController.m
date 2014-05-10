@@ -19,11 +19,11 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	[_webView loadRequest:[NSURLRequest requestWithURL:_URL]];
+	[self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
-	[_webView stopLoading];
+	[self.webView stopLoading];
 }
 
 - (void)didReceiveMemoryWarning{

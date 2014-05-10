@@ -31,49 +31,49 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
-	[_searchBar setPlaceholder:@"Find Games"];
-	[_searchBar setDelegate:self];
-	UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:_searchBar];
+	self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
+	[self.searchBar setPlaceholder:@"Find Games"];
+	[self.searchBar setDelegate:self];
+	UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.searchBar];
 	
 	[self.navigationItem setRightBarButtonItem:searchBarItem];
 	
 	[self.navigationItem setHidesBackButton:YES animated:NO];
 	
-	[_searchBar setText:[Session searchQuery]];
+	[self.searchBar setText:[Session searchQuery]];
 	
 	if ([Session searchResults])
-		_results = [Session searchResults].mutableCopy;
+		self.results = [Session searchResults].mutableCopy;
 	else
-		_results = [[NSMutableArray alloc] initWithCapacity:100];
+		self.results = [[NSMutableArray alloc] initWithCapacity:100];
 	
 	// Add guide view to the view
-	_guideView = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][2];
-	[self.view insertSubview:_guideView aboveSubview:_collectionView];
-	[_guideView setFrame:self.view.frame];
-	[_guideView setHidden:YES];
+	self.guideView = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][2];
+	[self.view insertSubview:self.guideView aboveSubview:self.collectionView];
+	[self.guideView setFrame:self.view.frame];
+	[self.guideView setHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
 	if ([Session gamer].platforms.count == 0){
-		[_guideView setHidden:NO];
-		[_searchBar setUserInteractionEnabled:NO];
+		[self.guideView setHidden:NO];
+		[self.searchBar setUserInteractionEnabled:NO];
 	}
 	else{
-		[_guideView setHidden:YES];
-		[_searchBar setUserInteractionEnabled:YES];
+		[self.guideView setHidden:YES];
+		[self.searchBar setUserInteractionEnabled:YES];
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[_searchBar becomeFirstResponder];
+			[self.searchBar becomeFirstResponder];
 		});
 	}
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
-	[_runningTask cancel];
+	[self.runningTask cancel];
 }
 
 - (void)viewDidLayoutSubviews{
-	[_guideView setCenter:self.view.center];
+	[self.guideView setCenter:self.view.center];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -87,11 +87,11 @@
 #pragma mark - SearchBar
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
-	[_searchBar setShowsSearchResultsButton:YES];
+	[self.searchBar setShowsSearchResultsButton:YES];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-	[_runningTask cancel];
+	[self.runningTask cancel];
 	
 	[Session setSearchQuery:searchText];
 	
@@ -105,7 +105,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 	[searchBar resignFirstResponder];
 	
-	[_runningTask cancel];
+	[self.runningTask cancel];
 	
 	[Session setSearchQuery:searchBar.text];
 	
@@ -115,7 +115,7 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-	[_runningTask cancel];
+	[self.runningTask cancel];
 }
 
 - (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar{
@@ -123,13 +123,13 @@
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
-	[_searchBar setShowsSearchResultsButton:NO];
+	[self.searchBar setShowsSearchResultsButton:NO];
 }
 
 #pragma mark - CollectionView
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	return _results.count;
+	return self.results.count;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout  *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -137,7 +137,7 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-	SearchResult *result = _results[indexPath.row];
+	SearchResult *result = self.results[indexPath.row];
 	
 	SearchCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:result.title];
@@ -147,9 +147,9 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-	[_searchBar resignFirstResponder];
+	[self.searchBar resignFirstResponder];
 	
-	SearchResult *result = _results[indexPath.row];
+	SearchResult *result = self.results[indexPath.row];
 	[self performSegueWithIdentifier:@"GameSegue" sender:result.identifier];
 }
 
@@ -166,23 +166,23 @@
 //			NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			[_results removeAllObjects];
+			[self.results removeAllObjects];
 			
 			for (NSDictionary *dictionary in responseObject[@"results"]){
 				SearchResult *result = [SearchResult new];
 				[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"thumb_url"]]];
-				[_results addObject:result];
+				[self.results addObject:result];
 			}
 			
-			[Session setSearchResults:_results];
+			[Session setSearchResults:self.results];
 			
-			[_collectionView reloadData];
+			[self.collectionView reloadData];
 		}
 	}];
 	[dataTask resume];
-	_runningTask = dataTask;
+	self.runningTask = dataTask;
 }
 
 #pragma mark - Actions

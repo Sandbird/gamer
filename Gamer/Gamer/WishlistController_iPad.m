@@ -48,33 +48,33 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
-	_refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshWishlistGames)];
+	self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshWishlistGames)];
 	
 	UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
 	[searchBar setPlaceholder:@"Find Games"];
 	[searchBar setDelegate:self];
-	_searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
+	self.searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
 	
-	[self.navigationItem setRightBarButtonItems:@[_searchBarItem, _refreshButton] animated:NO];
+	[self.navigationItem setRightBarButtonItems:@[self.searchBarItem, self.refreshButton] animated:NO];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlist" object:nil];
 	
-	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_fetchedResultsController = [self fetchData];
+	self.fetchedResultsController = [self fetchData];
 	
-	_imageCache = [NSCache new];
+	self.imageCache = [NSCache new];
 	
 	// Add guide view to the view
-	_guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil].firstObject;
-	[self.view insertSubview:_guideView aboveSubview:_collectionView];
+	self.guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil].firstObject;
+	[self.view insertSubview:_guideView aboveSubview:self.collectionView];
 	[_guideView setFrame:self.view.frame];
 	[_guideView setHidden:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-	[(UISearchBar *)_searchBarItem.customView setText:[Session searchQuery]];
+	[(UISearchBar *)self.searchBarItem.customView setText:[Session searchQuery]];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -100,24 +100,24 @@
 #pragma mark - FetchedResultsController
 
 - (NSFetchedResultsController *)fetchData{
-	if (!_fetchedResultsController){
+	if (!self.fetchedResultsController){
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
 		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES];
 	}
-	return _fetchedResultsController;
+	return self.fetchedResultsController;
 }
 
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-	[_guideView setHidden:(_fetchedResultsController.sections.count == 0) ? NO : YES];
+	[_guideView setHidden:(self.fetchedResultsController.sections.count == 0) ? NO : YES];
 	
-    return _fetchedResultsController.sections.count;
+    return self.fetchedResultsController.sections.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-	NSString *sectionName = [_fetchedResultsController.sections[indexPath.section] name];
-	ReleasePeriod *releasePeriod = [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue) inContext:_context];
+	NSString *sectionName = [self.fetchedResultsController.sections[indexPath.section] name];
+	ReleasePeriod *releasePeriod = [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue) inContext:self.context];
 	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 	[headerView.titleLabel setText:releasePeriod.name];
@@ -126,15 +126,15 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-	return [_fetchedResultsController.sections[section] numberOfObjects];
+	return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-	Game *game = [_fetchedResultsController objectAtIndexPath:indexPath];
+	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	
 	WishlistCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 	
-	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	UIImage *image = [self.imageCache objectForKey:game.imagePath.lastPathComponent];
 	
 	if (image){
 		[cell.coverImageView setImage:image];
@@ -160,7 +160,7 @@
 			});
 			
 			if (image){
-				[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+				[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
 			}
 		});
 	}
@@ -208,7 +208,7 @@
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			[Networking updateGameInfoWithGame:game JSON:responseObject context:_context];
+			[Networking updateGameInfoWithGame:game JSON:responseObject context:self.context];
 			
 			if (responseObject[@"results"] != [NSNull null]){
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
@@ -236,15 +236,15 @@
 			}
 		}
 		
-		_numberOfRunningTasks--;
+		self.numberOfRunningTasks--;
 		
-		if (_numberOfRunningTasks == 0){
-			[_refreshButton setEnabled:YES];
+		if (self.numberOfRunningTasks == 0){
+			[self.refreshButton setEnabled:YES];
 			[self updateGameReleasePeriods];
 		}
 	}];
 	[dataTask resume];
-	_numberOfRunningTasks++;
+	self.numberOfRunningTasks++;
 }
 
 - (void)downloadCoverImageWithURL:(NSString *)URLString game:(Game *)game{
@@ -264,8 +264,8 @@
 			
 			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
 			[game setImageURL:URLString];
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.collectionView reloadItemsAtIndexPaths:@[[_fetchedResultsController indexPathForObject:game]]];
+			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[self.collectionView reloadItemsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:game]]];
 			}];
 		}
 	}];
@@ -284,17 +284,17 @@
 //			NSLog(@"%@", responseObject);
 			
 			[game setReleases:nil];
-			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
-			[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[Networking updateGameReleasesWithGame:game JSON:responseObject context:self.context];
+			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 				if (!game.selectedRelease){
 					Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
 					for (Release *release in game.releases){
 						// If game not added, release region is selected region, release platform is in selectable platforms
 						if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
 							[game setSelectedRelease:release];
-							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
+							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
 							
-							[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+							[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 								[self updateGameReleasePeriods];
 							}];
 						}
@@ -324,8 +324,8 @@
 			
 			NSString *metacriticURL = [Tools stringFromSourceIfNotNull:results[@"url"]];
 			
-			Metascore *metascore = [Metascore MR_findFirstByAttribute:@"metacriticURL" withValue:metacriticURL inContext:_context];
-			if (!metascore) metascore = [Metascore MR_createInContext:_context];
+			Metascore *metascore = [Metascore MR_findFirstByAttribute:@"metacriticURL" withValue:metacriticURL inContext:self.context];
+			if (!metascore) metascore = [Metascore MR_createInContext:self.context];
 			[metascore setCriticScore:[Tools integerNumberFromSourceIfNotNull:results[@"score"]]];
 			[metascore setUserScore:[Tools decimalNumberFromSourceIfNotNull:results[@"userscore"]]];
 			[metascore setMetacriticURL:metacriticURL];
@@ -333,7 +333,7 @@
 			[game addMetascoresObject:metascore];
 			[game setSelectedMetascore:metascore];
 			
-			[_context MR_saveToPersistentStoreAndWait];
+			[self.context MR_saveToPersistentStoreAndWait];
 		}
 	}];
 	[dataTask resume];
@@ -343,14 +343,14 @@
 
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)] inContext:_context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)] inContext:self.context];
 	for (Game *game in games){
-		[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:(game.selectedRelease ? game.selectedRelease : game) context:_context]];
+		[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:(game.selectedRelease ? game.selectedRelease : game) context:self.context]];
 	}
 	
-	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		// Show section if it has  any games
-		NSArray *releasePeriods = [ReleasePeriod MR_findAllInContext:_context];
+		NSArray *releasePeriods = [ReleasePeriod MR_findAllInContext:self.context];
 		
 		for (ReleasePeriod *releasePeriod in releasePeriods){
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@ AND identifier != nil", releasePeriod, @(GameLocationWishlist)];
@@ -358,9 +358,9 @@
 			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
 		}
 		
-		[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			_fetchedResultsController = nil;
-			_fetchedResultsController = [self fetchData];
+		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			self.fetchedResultsController = nil;
+			self.fetchedResultsController = [self fetchData];
 			[self.collectionView reloadData];
 		}];
 	}];
@@ -368,18 +368,18 @@
 
 - (void)refreshWishlistGames{
 	[Game MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location = %@", @(GameLocationNone)]];
-	[_context MR_saveToPersistentStoreAndWait];
+	[self.context MR_saveToPersistentStoreAndWait];
 	
-	if (_fetchedResultsController.fetchedObjects.count > 0){
-		[_refreshButton setEnabled:NO];
+	if (self.fetchedResultsController.fetchedObjects.count > 0){
+		[self.refreshButton setEnabled:NO];
 	}
 	
-	_numberOfRunningTasks = 0;
+	self.numberOfRunningTasks = 0;
 	
 	// Request info for all games in the Wishlist
-	for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++)
-		for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++)
-			[self requestInformationForGame:[_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
+		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects]); row++)
+			[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
 }
 
 - (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
@@ -391,7 +391,7 @@
 #pragma mark - Actions
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
-	[_collectionView reloadData];
+	[self.collectionView reloadData];
 }
 
 - (void)refreshWishlistNotification:(NSNotification *)notification{
@@ -402,7 +402,7 @@
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
 		UINavigationController *navigationController = segue.destinationViewController;
 		GameController *destination = (GameController *)navigationController.topViewController;
-		[destination setGame:[_fetchedResultsController objectAtIndexPath:sender]];
+		[destination setGame:[self.fetchedResultsController objectAtIndexPath:sender]];
 	}
 }
 

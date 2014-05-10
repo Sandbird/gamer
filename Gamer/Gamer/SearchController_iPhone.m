@@ -27,31 +27,31 @@
     [super viewDidLoad];
 	
 	// Search bar setup
-	_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
-	[_searchBar setPlaceholder:@"Find Games"];
-	[_searchBar setDelegate:self];
+	self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
+	[self.searchBar setPlaceholder:@"Find Games"];
+	[self.searchBar setDelegate:self];
 	
-	[self.navigationItem setTitleView:_searchBar];
+	[self.navigationItem setTitleView:self.searchBar];
 	
 	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
-	_results = [[NSMutableArray alloc] initWithCapacity:100];
+	self.results = [[NSMutableArray alloc] initWithCapacity:100];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	
-	[_searchBar setText:@""];
+	[self.searchBar setText:@""];
 	
 	// Show guide view if no platform is selected
-	if (_results.count == 0 && [Session gamer].platforms.count == 0){
+	if (self.results.count == 0 && [Session gamer].platforms.count == 0){
 		UIView *view = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][2];
 		[self.tableView setBackgroundView:view];
-		[_searchBar setUserInteractionEnabled:NO];
+		[self.searchBar setUserInteractionEnabled:NO];
 	}
 	else{
 		[self.tableView setBackgroundView:nil];
-		[_searchBar setUserInteractionEnabled:YES];
+		[self.searchBar setUserInteractionEnabled:YES];
 	}
 }
 
@@ -60,7 +60,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
-	[_runningTask cancel];
+	[self.runningTask cancel];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -70,11 +70,11 @@
 #pragma mark - SearchBar
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
-	[_searchBar setShowsSearchResultsButton:YES];
+	[self.searchBar setShowsSearchResultsButton:YES];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-	[_runningTask cancel];
+	[self.runningTask cancel];
 	
 	if (searchText.length > 0){
 		NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
@@ -86,7 +86,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 	[searchBar resignFirstResponder];
 	
-	[_runningTask cancel];
+	[self.runningTask cancel];
 	
 	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
 	NSString *query = [[searchBar.text componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
@@ -94,7 +94,7 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-	[_runningTask cancel];
+	[self.runningTask cancel];
 }
 
 - (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar{
@@ -102,19 +102,19 @@
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
-	[_searchBar setShowsSearchResultsButton:NO];
+	[self.searchBar setShowsSearchResultsButton:NO];
 }
 
 #pragma mark - TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return _results.count;
+    return self.results.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	BOOL lastRow = (indexPath.row == ([tableView numberOfRowsInSection:indexPath.section] - 1)) ? YES : NO;
 	
-	SearchResult *result = _results[indexPath.row];
+	SearchResult *result = self.results[indexPath.row];
 	
 	SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:result.title];
@@ -142,21 +142,21 @@
 //			NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			[_results removeAllObjects];
+			[self.results removeAllObjects];
 			
 			for (NSDictionary *dictionary in responseObject[@"results"]){
 				SearchResult *result = [SearchResult new];
 				[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 				[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
 				if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"icon_url"]]];
-				[_results addObject:result];
+				[self.results addObject:result];
 			}
 			
 			[self.tableView reloadData];
 		}
 	}];
 	[dataTask resume];
-	_runningTask = dataTask;
+	self.runningTask = dataTask;
 }
 
 #pragma mark - Actions
@@ -166,7 +166,7 @@
 		if ([Tools deviceIsiPad]){
 			UINavigationController *navigationController = segue.destinationViewController;
 			GameController *destination = (GameController *)navigationController.topViewController;
-			Game *game = _results[self.tableView.indexPathForSelectedRow.row];
+			Game *game = self.results[self.tableView.indexPathForSelectedRow.row];
 			[destination setGameIdentifier:game.identifier];
 		}
 		else{
@@ -176,7 +176,7 @@
 			}
 			
 			GameController *destination = segue.destinationViewController;
-			Game *game = _results[self.tableView.indexPathForSelectedRow.row];
+			Game *game = self.results[self.tableView.indexPathForSelectedRow.row];
 			[destination setGameIdentifier:game.identifier];
 		}
 	}

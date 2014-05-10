@@ -106,7 +106,7 @@
 	
 //	_numberOfReleasedGamesToRefreshMetascore = [games filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"released = %@", @(YES)]].count;
 	
-	_numberOfRunningTasks = 0;
+	self.numberOfRunningTasks = 0;
 	
 	for (Game *game in games){
 		[self requestInformationForGame:game context:context completionHandler:completionHandler];
@@ -174,15 +174,15 @@
 			}
 		}
 		
-		_numberOfRunningTasks--;
+		self.numberOfRunningTasks--;
 		
-		if (_numberOfRunningTasks == 0){
+		if (self.numberOfRunningTasks == 0){
 			completionHandler(UIBackgroundFetchResultNewData);
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		}
 	}];
 	[dataTask resume];
-	_numberOfRunningTasks++;
+	self.numberOfRunningTasks++;
 }
 
 - (void)requestReleasesForGame:(Game *)game context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
@@ -201,15 +201,15 @@
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:context];
 		}
 		
-		_numberOfRunningTasks--;
+		self.numberOfRunningTasks--;
 		
-		if (_numberOfRunningTasks == 0){
+		if (self.numberOfRunningTasks == 0){
 			completionHandler(UIBackgroundFetchResultNewData);
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		}
 	}];
 	[dataTask resume];
-	_numberOfRunningTasks++;
+	self.numberOfRunningTasks++;
 }
 
 - (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
@@ -239,15 +239,15 @@
 			[game addMetascoresObject:metascore];
 		}
 		
-		_numberOfRunningTasks--;
+		self.numberOfRunningTasks--;
 		
-		if (_numberOfRunningTasks == 0){
+		if (self.numberOfRunningTasks == 0){
 			completionHandler(UIBackgroundFetchResultNewData);
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		}
 	}];
 	[dataTask resume];
-	_numberOfRunningTasks++;
+	self.numberOfRunningTasks++;
 }
 
 @end

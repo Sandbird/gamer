@@ -31,18 +31,18 @@
 - (IBAction)tapGestureRecognizerAction:(UITapGestureRecognizer *)gestureRecognizer{
 	CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
 	[animation setDelegate:self];
-	[animation setFromValue:@(_hidden ? 0 : M_PI/2)];
-	[animation setToValue:@(_hidden ? M_PI/2 : 0)];
+	[animation setFromValue:@(self.hidden ? 0 : M_PI/2)];
+	[animation setToValue:@(self.hidden ? M_PI/2 : 0)];
 	[animation setDuration:0.3];
 	[animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]];
-	[_hideIndicator.layer addAnimation:animation forKey:@"rotation"];
+	[self.hideIndicator.layer addAnimation:animation forKey:@"rotation"];
 	
-	[self.delegate wishlistSectionHeaderView:self didTapReleasePeriod:_releasePeriod];
+	[self.delegate wishlistSectionHeaderView:self didTapReleasePeriod:self.releasePeriod];
 }
 
 - (void)animationDidStart:(CAAnimation *)anim{
-	[_hideIndicator setTransform:CGAffineTransformMakeRotation(_hidden ? M_PI/2 : 0)];
-	_hidden = !_hidden;
+	[self.hideIndicator setTransform:CGAffineTransformMakeRotation(self.hidden ? M_PI/2 : 0)];
+	self.hidden = !self.hidden;
 }
 
 @end

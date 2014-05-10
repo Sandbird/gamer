@@ -21,18 +21,18 @@
 - (void)setStatus:(ContentStatus)contentStatus{
 	switch (contentStatus) {
 		case ContentStatusUnavailable:
-			[_statusLabel setHidden:NO];
-			[_activityIndicator stopAnimating];
+			[self.statusLabel setHidden:NO];
+			[self.activityIndicator stopAnimating];
 			break;
 		case ContentStatusLoading:
-			[_statusLabel setHidden:YES];
-			[_activityIndicator startAnimating];
+			[self.statusLabel setHidden:YES];
+			[self.activityIndicator startAnimating];
 			break;
 		default:
 			break;
 	}
 	
-	[_statusLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+	[self.statusLabel.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 }
 
 @end

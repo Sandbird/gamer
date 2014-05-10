@@ -14,7 +14,4 @@
 @property (nonatomic, strong) Game *game;
 @property (nonatomic, strong) NSNumber *gameIdentifier;
 
-- (IBAction)addButtonPressAction:(UIButton *)sender;
-- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender;
-
 @end

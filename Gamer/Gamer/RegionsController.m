@@ -23,9 +23,9 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
-	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_regions = [Region MR_findAllSortedBy:@"identifier" ascending:YES inContext:_context];
+	self.regions = [Region MR_findAllSortedBy:@"identifier" ascending:YES inContext:self.context];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -35,11 +35,11 @@
 #pragma mark - TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return _regions.count;
+	return self.regions.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	Region *region = _regions[indexPath.row];
+	Region *region = self.regions[indexPath.row];
 	
 	RegionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.flagImageView setImage:[UIImage imageNamed:region.imageName]];
@@ -55,10 +55,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	[[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[_regions indexOfObject:[Session gamer].region] inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+	[[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[self.regions indexOfObject:[Session gamer].region] inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
 	
-	[[Session gamer] setRegion:_regions[indexPath.row]];
-	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[[Session gamer] setRegion:self.regions[indexPath.row]];
+	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
 	}];
 }

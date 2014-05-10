@@ -31,21 +31,21 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
-	_context = [NSManagedObjectContext MR_contextForCurrentThread];
+	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	_imageCache = [NSCache new];
+	self.imageCache = [NSCache new];
 	
-	NSDictionary *importedDictionary = [NSJSONSerialization JSONObjectWithData:_backupData options:0 error:nil];
+	NSDictionary *importedDictionary = [NSJSONSerialization JSONObjectWithData:self.backupData options:0 error:nil];
 	NSLog(@"%@", importedDictionary);
 	
 	if (importedDictionary[@"games"] != [NSNull null]){
-		_importedWishlistGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
-		_importedLibraryGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
+		self.importedWishlistGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
+		self.importedLibraryGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
 		
 		for (NSDictionary *dictionary in importedDictionary[@"games"]){
 			NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
-			Game *game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:_context];
-			if (!game) game = [Game MR_createInContext:_context];
+			Game *game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:self.context];
+			if (!game) game = [Game MR_createInContext:self.context];
 			[game setIdentifier:identifier];
 			[game setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
 			[game setFinished:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"finished"] withDefault:NO]];
@@ -59,14 +59,14 @@
 			if ([game.notes isEqualToString:@"(null)"]) [game setNotes:nil];
 			
 			if ([game.location isEqualToNumber:@(GameLocationWishlist)])
-				[_importedWishlistGames addObject:game];
+				[self.importedWishlistGames addObject:game];
 			else if ([game.location isEqualToNumber:@(GameLocationLibrary)])
-				[_importedLibraryGames addObject:game];
+				[self.importedLibraryGames addObject:game];
 			
 			if (dictionary[@"selectedPlatforms"] != [NSNull null]){
 				NSMutableArray *selectedPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"selectedPlatforms"] count]];
 				for (NSDictionary *platformDictionary in dictionary[@"selectedPlatforms"]){
-					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:_context];
+					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:self.context];
 					[selectedPlatforms addObject:platform];
 				}
 				
@@ -74,8 +74,8 @@
 			}
 			
 			NSNumber *releaseIdentifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"selectedRelease"]];
-			Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:releaseIdentifier inContext:_context];
-			if (!release) release = [Release MR_createInContext:_context];
+			Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:releaseIdentifier inContext:self.context];
+			if (!release) release = [Release MR_createInContext:self.context];
 			[release setIdentifier:releaseIdentifier];
 			
 			[game setSelectedRelease:release];
@@ -86,8 +86,8 @@
 		}
 		
 		NSSortDescriptor *titleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-		_importedWishlistGames = [_importedWishlistGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
-		_importedLibraryGames = [_importedLibraryGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
+		self.importedWishlistGames = [self.importedWishlistGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
+		self.importedLibraryGames = [self.importedLibraryGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
 	}
 	
 //	[self.tableView reloadData];
@@ -113,19 +113,19 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
-		case 0: return _importedWishlistGames.count;
-		case 1: return _importedLibraryGames.count;
+		case 0: return self.importedWishlistGames.count;
+		case 1: return self.importedLibraryGames.count;
 		default: return 0;
 	}
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	Game *game = indexPath.section == 0 ? _importedWishlistGames[indexPath.row] : _importedLibraryGames[indexPath.row];
+	Game *game = indexPath.section == 0 ? self.importedWishlistGames[indexPath.row] : self.importedLibraryGames[indexPath.row];
 	
 	ImportCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
 	
-	UIImage *image = [_imageCache objectForKey:game.imagePath.lastPathComponent];
+	UIImage *image = [self.imageCache objectForKey:game.imagePath.lastPathComponent];
 	
 	if (image){
 		[cell.coverImageView setImage:image];
@@ -151,7 +151,7 @@
 			});
 			
 			if (image){
-				[_imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+				[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
 			}
 		});
 	}
@@ -171,9 +171,9 @@
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
 			
-			_numberOfRunningTasks--;
+			self.numberOfRunningTasks--;
 			
-			if (_numberOfRunningTasks == 0){
+			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				
 				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -183,9 +183,9 @@
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			_numberOfRunningTasks--;
+			self.numberOfRunningTasks--;
 			
-			[Networking updateGameInfoWithGame:game JSON:responseObject context:_context];
+			[Networking updateGameInfoWithGame:game JSON:responseObject context:self.context];
 			
 			NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 			
@@ -197,13 +197,13 @@
 			
 			[self requestReleasesForGame:game];
 			
-			if (_numberOfRunningTasks == 0){
+			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 			}
 		}
 	}];
 	[dataTask resume];
-	_numberOfRunningTasks++;
+	self.numberOfRunningTasks++;
 }
 
 - (void)downloadCoverImageWithURL:(NSString *)URLString game:(Game *)game{
@@ -218,9 +218,9 @@
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Cover Image", self, (long)((NSHTTPURLResponse *)response).statusCode);
 			
-			_numberOfRunningTasks--;
+			self.numberOfRunningTasks--;
 			
-			if (_numberOfRunningTasks == 0){
+			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				
 				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -230,20 +230,20 @@
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			_numberOfRunningTasks--;
+			self.numberOfRunningTasks--;
 			
 			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
 			[game setImageURL:URLString];
 			
 			[self.tableView reloadData];
 			
-			if (_numberOfRunningTasks == 0){
+			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 			}
 		}
 	}];
 	[downloadTask resume];
-	_numberOfRunningTasks++;
+	self.numberOfRunningTasks++;
 }
 
 - (void)requestReleasesForGame:(Game *)game{
@@ -253,9 +253,9 @@
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
 			
-			_numberOfRunningTasks--;
+			self.numberOfRunningTasks--;
 			
-			if (_numberOfRunningTasks == 0){
+			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				
 				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -266,11 +266,11 @@
 			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			_numberOfRunningTasks--;
+			self.numberOfRunningTasks--;
 			
 			[game setReleases:nil];
 			
-			[Networking updateGameReleasesWithGame:game JSON:responseObject context:_context];
+			[Networking updateGameReleasesWithGame:game JSON:responseObject context:self.context];
 			
 			if (!game.selectedRelease){
 				Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
@@ -278,18 +278,18 @@
 					// If game not added, release region is selected region, release platform is in selectable platforms
 					if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
 						[game setSelectedRelease:release];
-						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:_context]];
+						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
 					}
 				}
 			}
 			
-			if (_numberOfRunningTasks == 0){
+			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 			}
 		}
 	}];
 	[dataTask resume];
-	_numberOfRunningTasks++;
+	self.numberOfRunningTasks++;
 }
 
 #pragma mark - Custom
@@ -303,13 +303,13 @@
 #pragma mark - Actions
 
 - (IBAction)cancelBarButtonAction:(UIBarButtonItem *)sender{
-	[_context rollback];
+	[self.context rollback];
 	
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)saveBarButtonAction:(UIBarButtonItem *)sender{
-	[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		[self dismissViewControllerAnimated:YES completion:nil];
