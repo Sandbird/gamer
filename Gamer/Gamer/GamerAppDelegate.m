@@ -50,11 +50,6 @@
 	
 	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
 	
-	UIView *cellBackgroundView = [UIView new];
-	[cellBackgroundView setBackgroundColor:[UIColor darkGrayColor]];
-	[cellBackgroundView.layer setMasksToBounds:YES];
-	[[UITableViewCell appearance] setSelectedBackgroundView:cellBackgroundView];
-	
 	// Stuff
 	[application setMinimumBackgroundFetchInterval:86400];
 	
@@ -104,8 +99,6 @@
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
 	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:context];
 	
-//	_numberOfReleasedGamesToRefreshMetascore = [games filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"released = %@", @(YES)]].count;
-	
 	self.numberOfRunningTasks = 0;
 	
 	for (Game *game in games){
@@ -148,7 +141,7 @@
 #pragma mark - Custom
 
 - (void)requestInformationForGame:(Game *)game context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){

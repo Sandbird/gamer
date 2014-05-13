@@ -30,6 +30,7 @@
 		25348F9518D4A40200F5A76D /* AboutCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25348F9418D4A40100F5A76D /* AboutCell.m */; };
 		253B475318FF702100CC4140 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = 253B475218FF702100CC4140 /* Platform.m */; };
 		253B57F21834536B00617E3B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 253B57F11834536B00617E3B /* MessageUI.framework */; };
+		253F8B6B19218C2100B5A357 /* CustomSelectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 253F8B6A19218C2100B5A357 /* CustomSelectionCell.m */; };
 		2544F7C0191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 2544F7BF191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m */; };
 		255593223FA84C439B281EF6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBC96E4CE0C44DF858F57A6 /* libPods.a */; };
 		255BAA79179B566E009B42BF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 255BAA78179B566E009B42BF /* AdSupport.framework */; };
@@ -62,7 +63,6 @@
 		25AC85A218F031A800919A15 /* RegionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A118F031A800919A15 /* RegionCell.m */; };
 		25AC85A518F031B200919A15 /* MetascoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A418F031B200919A15 /* MetascoreCell.m */; };
 		25AC85A818F031BC00919A15 /* ReleaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A718F031BC00919A15 /* ReleaseCell.m */; };
-		25AC85AE18F0575B00919A15 /* PlatformPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85AD18F0575B00919A15 /* PlatformPickerCell.m */; };
 		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
 		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
 		25B6274E1916AA9D0053329D /* NotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B6274D1916AA9D0053329D /* NotesController.m */; };
@@ -152,6 +152,8 @@
 		253B475218FF702100CC4140 /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
 		253B57DC182B159400617E3B /* 1.1.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.3.xcdatamodel; sourceTree = "<group>"; };
 		253B57F11834536B00617E3B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		253F8B6919218C2100B5A357 /* CustomSelectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomSelectionCell.h; sourceTree = "<group>"; };
+		253F8B6A19218C2100B5A357 /* CustomSelectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomSelectionCell.m; sourceTree = "<group>"; };
 		2544F7BE191AFDC600E022C4 /* DACircularProgressView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DACircularProgressView+AFNetworking.h"; sourceTree = "<group>"; };
 		2544F7BF191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DACircularProgressView+AFNetworking.m"; sourceTree = "<group>"; };
 		2555469F17DFF9430069F8A5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -207,8 +209,6 @@
 		25AC85A418F031B200919A15 /* MetascoreCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetascoreCell.m; sourceTree = "<group>"; };
 		25AC85A618F031BC00919A15 /* ReleaseCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseCell.h; sourceTree = "<group>"; };
 		25AC85A718F031BC00919A15 /* ReleaseCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseCell.m; sourceTree = "<group>"; };
-		25AC85AC18F0575B00919A15 /* PlatformPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformPickerCell.h; sourceTree = "<group>"; };
-		25AC85AD18F0575B00919A15 /* PlatformPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformPickerCell.m; sourceTree = "<group>"; };
 		25B094031824882E003A0365 /* SearchCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCollectionCell.h; sourceTree = "<group>"; };
 		25B094041824882E003A0365 /* SearchCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCollectionCell.m; sourceTree = "<group>"; };
 		25B094061829BFA4003A0365 /* iPadTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadTabBarController.h; sourceTree = "<group>"; };
@@ -336,40 +336,8 @@
 		2506A16D176CD2F10010E61D /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				2506A173176CD4160010E61D /* WishlistCell.h */,
-				2506A174176CD4160010E61D /* WishlistCell.m */,
-				25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */,
-				25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */,
-				25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */,
-				25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */,
-				257880561794EF70004C28E3 /* PlatformCollectionCell.h */,
-				257880571794EF70004C28E3 /* PlatformCollectionCell.m */,
-				259E4A3E1808ACAB00C1AC99 /* SimilarGameCollectionCell.h */,
-				259E4A3F1808ACAB00C1AC99 /* SimilarGameCollectionCell.m */,
-				25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */,
-				25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */,
-				25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */,
-				25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */,
-				259DD14417ADBE8600FAD645 /* SearchCell.h */,
-				259DD14517ADBE8600FAD645 /* SearchCell.m */,
-				25B094031824882E003A0365 /* SearchCollectionCell.h */,
-				25B094041824882E003A0365 /* SearchCollectionCell.m */,
-				251DEA40178CF3EA0094A6CB /* PlatformCell.h */,
-				251DEA41178CF3EA0094A6CB /* PlatformCell.m */,
-				250B37DD1808613B009EB170 /* SegmentedControlCell.h */,
-				250B37DE1808613B009EB170 /* SegmentedControlCell.m */,
-				25BE541D18BED3FA00BCBAFB /* ImportCell.h */,
-				25BE541E18BED3FA00BCBAFB /* ImportCell.m */,
-				25348F9318D4A40100F5A76D /* AboutCell.h */,
-				25348F9418D4A40100F5A76D /* AboutCell.m */,
-				25AC85A018F031A800919A15 /* RegionCell.h */,
-				25AC85A118F031A800919A15 /* RegionCell.m */,
-				25AC85A318F031B200919A15 /* MetascoreCell.h */,
-				25AC85A418F031B200919A15 /* MetascoreCell.m */,
-				25AC85A618F031BC00919A15 /* ReleaseCell.h */,
-				25AC85A718F031BC00919A15 /* ReleaseCell.m */,
-				25AC85AC18F0575B00919A15 /* PlatformPickerCell.h */,
-				25AC85AD18F0575B00919A15 /* PlatformPickerCell.m */,
+				253F8B681921800F00B5A357 /* Table */,
+				253F8B6719217FF500B5A357 /* Collection */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -398,6 +366,54 @@
 				25C9FE3817CC4C4500CCDD59 /* WishlistController_iPad.m */,
 			);
 			name = Wishlist;
+			sourceTree = "<group>";
+		};
+		253F8B6719217FF500B5A357 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				25C9FE2E17CBFF8800CCDD59 /* WishlistCollectionCell.h */,
+				25C9FE2F17CBFF8800CCDD59 /* WishlistCollectionCell.m */,
+				25B9E9C117A0B79000881089 /* LibraryCollectionCell.h */,
+				25B9E9C217A0B79000881089 /* LibraryCollectionCell.m */,
+				257880561794EF70004C28E3 /* PlatformCollectionCell.h */,
+				257880571794EF70004C28E3 /* PlatformCollectionCell.m */,
+				259E4A3E1808ACAB00C1AC99 /* SimilarGameCollectionCell.h */,
+				259E4A3F1808ACAB00C1AC99 /* SimilarGameCollectionCell.m */,
+				25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */,
+				25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */,
+				25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */,
+				25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */,
+				25B094031824882E003A0365 /* SearchCollectionCell.h */,
+				25B094041824882E003A0365 /* SearchCollectionCell.m */,
+			);
+			name = Collection;
+			sourceTree = "<group>";
+		};
+		253F8B681921800F00B5A357 /* Table */ = {
+			isa = PBXGroup;
+			children = (
+				2506A173176CD4160010E61D /* WishlistCell.h */,
+				2506A174176CD4160010E61D /* WishlistCell.m */,
+				259DD14417ADBE8600FAD645 /* SearchCell.h */,
+				259DD14517ADBE8600FAD645 /* SearchCell.m */,
+				251DEA40178CF3EA0094A6CB /* PlatformCell.h */,
+				251DEA41178CF3EA0094A6CB /* PlatformCell.m */,
+				250B37DD1808613B009EB170 /* SegmentedControlCell.h */,
+				250B37DE1808613B009EB170 /* SegmentedControlCell.m */,
+				25BE541D18BED3FA00BCBAFB /* ImportCell.h */,
+				25BE541E18BED3FA00BCBAFB /* ImportCell.m */,
+				25348F9318D4A40100F5A76D /* AboutCell.h */,
+				25348F9418D4A40100F5A76D /* AboutCell.m */,
+				25AC85A018F031A800919A15 /* RegionCell.h */,
+				25AC85A118F031A800919A15 /* RegionCell.m */,
+				25AC85A318F031B200919A15 /* MetascoreCell.h */,
+				25AC85A418F031B200919A15 /* MetascoreCell.m */,
+				25AC85A618F031BC00919A15 /* ReleaseCell.h */,
+				25AC85A718F031BC00919A15 /* ReleaseCell.m */,
+				253F8B6919218C2100B5A357 /* CustomSelectionCell.h */,
+				253F8B6A19218C2100B5A357 /* CustomSelectionCell.m */,
+			);
+			name = Table;
 			sourceTree = "<group>";
 		};
 		25704019176CB12800642430 = {
@@ -821,6 +837,7 @@
 				2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */,
 				25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */,
 				253B475318FF702100CC4140 /* Platform.m in Sources */,
+				253F8B6B19218C2100B5A357 /* CustomSelectionCell.m in Sources */,
 				2531E856176CDBDD005881A4 /* Tools.m in Sources */,
 				2531E857176CDBDD005881A4 /* Session.m in Sources */,
 				25AC859918EE63A100919A15 /* PlatformPickerController.m in Sources */,
@@ -854,7 +871,6 @@
 				25D4E69B18F3419600D93F80 /* Video.m in Sources */,
 				25D4E6B618F5C8A900D93F80 /* Release.m in Sources */,
 				2531E841176CDB60005881A4 /* WishlistCell.m in Sources */,
-				25AC85AE18F0575B00919A15 /* PlatformPickerCell.m in Sources */,
 				25D2E601178BB22900C7EDDB /* ImageViewerController.m in Sources */,
 				25CF6AE9180B697B000E51B2 /* Networking.m in Sources */,
 				25348F9218D4A37400F5A76D /* AboutController.m in Sources */,

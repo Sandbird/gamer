@@ -692,7 +692,7 @@ typedef NS_ENUM(NSInteger, Section){
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similarself.games,themes,images,videos"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -1006,7 +1006,7 @@ typedef NS_ENUM(NSInteger, Section){
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:NO];
 	
 	[self.criticScoreLabel setText:[self.game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? @"?" : [NSString stringWithFormat:@"%@", self.game.selectedMetascore.criticScore]];
-	[_criticScoreLabel setBackgroundColor:[self.game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? [UIColor lightGrayColor] : [Networking colorForMetascore:_criticScoreLabel.text]];
+	[self.criticScoreLabel setBackgroundColor:[self.game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? [UIColor lightGrayColor] : [Networking colorForMetascore:self.criticScoreLabel.text]];
 	
 	[self.userScoreLabel setText:[self.game.selectedMetascore.userScore isEqual:[NSDecimalNumber zero]] ? @"?" : [NSString stringWithFormat:@"%.1f", self.game.selectedMetascore.userScore.floatValue]];
 	[self.userScoreLabel setBackgroundColor:[self.game.selectedMetascore.userScore isEqual:[NSDecimalNumber zero]] ? [UIColor lightGrayColor] : [Networking colorForMetascore:[self.userScoreLabel.text stringByReplacingOccurrencesOfString:@"." withString:@""]]];

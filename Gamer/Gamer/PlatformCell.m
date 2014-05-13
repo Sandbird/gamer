@@ -10,20 +10,31 @@
 
 @implementation PlatformCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (void)awakeFromNib{
+	[super awakeFromNib];
+	
+	UIView *cellBackgroundView = [UIView new];
+	[cellBackgroundView setBackgroundColor:[UIColor darkGrayColor]];
+	[cellBackgroundView.layer setMasksToBounds:YES];
+	[self setSelectedBackgroundView:cellBackgroundView];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated{
+	UIColor *platformColor = self.abbreviationLabel.backgroundColor;
+	
     [super setSelected:selected animated:animated];
+	
+	[self.abbreviationLabel setBackgroundColor:platformColor];
+}
 
-    // Configure the view for the selected state
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated{
+	UIColor *platformColor = self.abbreviationLabel.backgroundColor;
+	
+	[super setHighlighted:highlighted animated:animated];
+	
+	if (highlighted){
+		[self.abbreviationLabel setBackgroundColor:platformColor];
+	}
 }
 
 @end

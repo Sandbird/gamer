@@ -10,22 +10,16 @@
 
 @implementation VideoCollectionCell
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (void)setHighlighted:(BOOL)highlighted{
+	[super setHighlighted:highlighted];
+	
+	if (highlighted){
+		[self.playImageView setAlpha:0.5];
+	}
+	else{
+		[self.playImageView setAlpha:1];
+		[self.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+	}
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 @end

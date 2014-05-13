@@ -1,14 +1,14 @@
 //
-//  RegionCell.m
+//  CustomSelectionCell.m
 //  Gamer
 //
-//  Created by Caio Mello on 05/04/2014.
+//  Created by Caio Mello on 12/05/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
-#import "RegionCell.h"
+#import "CustomSelectionCell.h"
 
-@implementation RegionCell
+@implementation CustomSelectionCell
 
 - (void)awakeFromNib{
 	[super awakeFromNib];

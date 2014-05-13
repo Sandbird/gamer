@@ -271,7 +271,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="44" id="1Iw-V6-QMl">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="44" id="1Iw-V6-QMl" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="370" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Iw-V6-QMl" id="yU7-6E-OJr">
@@ -503,7 +503,7 @@
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="9rq-0P-Txv">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="9rq-0P-Txv" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="779" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9rq-0P-Txv" id="aiI-uN-aSz">
@@ -780,7 +780,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="160" id="8xQ-2E-LO4">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="160" id="8xQ-2E-LO4" customClass="MetascoreCell">
                                         <rect key="frame" x="0.0" y="1435" width="320" height="160"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8xQ-2E-LO4" id="3Iq-mz-HiT">
@@ -835,6 +835,11 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <outlet property="criticScoreLabel" destination="ddK-CD-bab" id="rMu-DH-fgg"/>
+                                            <outlet property="platformLabel" destination="adD-Aa-Nmg" id="C1L-EU-Jb7"/>
+                                            <outlet property="userScoreLabel" destination="Ttr-hs-6az" id="pXV-TI-cwh"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="150" id="t9A-Qj-exR">
                                         <rect key="frame" x="0.0" y="1595" width="320" height="150"/>
@@ -1038,6 +1043,7 @@
                                                                 <outlet property="activityIndicator" destination="uBq-Pa-coy" id="LQU-Ee-ToH"/>
                                                                 <outlet property="imageView" destination="UuP-cM-mPG" id="sYW-wj-pwB"/>
                                                                 <outlet property="lengthLabel" destination="ncV-VH-qyd" id="ppf-pS-7Sa"/>
+                                                                <outlet property="playImageView" destination="cvK-Yy-cF3" id="DHo-GJ-eKG"/>
                                                                 <outlet property="titleLabel" destination="Fp8-EM-Ncv" id="6ZW-UM-VEz"/>
                                                             </connections>
                                                         </collectionViewCell>
@@ -1122,7 +1128,6 @@
         <!--Metacritic Controller - Metacritic-->
         <scene sceneID="Mon-6m-G5W">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ovR-ds-Aku" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="RIK-5J-QeC" customClass="MetacriticController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9nI-Uh-jPu"/>
@@ -1155,6 +1160,7 @@
                         <outlet property="webView" destination="FPL-kM-GuL" id="FQf-3d-g2K"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ovR-ds-Aku" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2918" y="1469"/>
         </scene>
@@ -1438,7 +1444,7 @@
                         <sections>
                             <tableViewSection headerTitle="Settings" footerTitle="Select your platforms. This affects search results. Reordering affects the Library and the game screen." id="Fex-lK-uad">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="cf2-7H-VTZ" style="IBUITableViewCellStyleDefault" id="J2F-ol-Xmm" userLabel="Button Cell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="cf2-7H-VTZ" style="IBUITableViewCellStyleDefault" id="J2F-ol-Xmm" userLabel="Button Cell" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="119" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="J2F-ol-Xmm" id="6b6-34-Rlj">
@@ -1460,7 +1466,7 @@
                             </tableViewSection>
                             <tableViewSection footerTitle="Select your region. This will change the primary release that shows on the game screen." id="YPZ-ua-MWR">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="DcG-O8-UTe" style="IBUITableViewCellStyleDefault" id="48n-gf-BiP" userLabel="Button Cell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="DcG-O8-UTe" style="IBUITableViewCellStyleDefault" id="48n-gf-BiP" userLabel="Button Cell" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="248" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="48n-gf-BiP" id="bYW-1t-fjS">
@@ -1517,7 +1523,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Even More" footerTitle="Save all your games to a backup file. To import just open the file in your iOS device. More info in the FAQ." id="hnJ-qJ-GDh">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hUq-ZC-ZMC" style="IBUITableViewCellStyleDefault" id="RhF-Mx-C7w" userLabel="Button Cell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hUq-ZC-ZMC" style="IBUITableViewCellStyleDefault" id="RhF-Mx-C7w" userLabel="Button Cell" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="496" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RhF-Mx-C7w" id="YQ9-a9-R6V">
@@ -1539,7 +1545,7 @@
                             </tableViewSection>
                             <tableViewSection footerTitle="Some details about how various parts of this app work." id="B2W-h2-jr6">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="oIO-5O-nvz" style="IBUITableViewCellStyleDefault" id="Op7-hm-Fyl" userLabel="Button Cell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="oIO-5O-nvz" style="IBUITableViewCellStyleDefault" id="Op7-hm-Fyl" userLabel="Button Cell" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="625" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Op7-hm-Fyl" id="c7a-GK-2Nt">
@@ -1561,7 +1567,7 @@
                             </tableViewSection>
                             <tableViewSection footerTitle="Tell me about bugs, ask for a feature you would like, give me some suggestions!" id="PdQ-RX-X8A">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="0qu-iQ-XQ4" style="IBUITableViewCellStyleDefault" id="bP2-eK-5jh" userLabel="Button Cell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="0qu-iQ-XQ4" style="IBUITableViewCellStyleDefault" id="bP2-eK-5jh" userLabel="Button Cell" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="738" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bP2-eK-5jh" id="5da-DB-6q0">
