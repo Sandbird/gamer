@@ -280,6 +280,32 @@
 				<key>platform</key>
 				<dict>
 					<key>identifier</key>
+					<integer>17</integer>
+					<key>name</key>
+					<string>Mac</string>
+					<key>abbreviation</key>
+					<string>MAC</string>
+					<key>color</key>
+					<dict>
+						<key>red</key>
+						<real>0.392156863</real>
+						<key>green</key>
+						<real>0.392156863</real>
+						<key>blue</key>
+						<real>0.392156863</real>
+					</dict>
+					<key>index</key>
+					<integer>1</integer>
+					<key>group</key>
+					<integer>0</integer>
+					<key>metacritic_identifier</key>
+					<integer>3</integer>
+				</dict>
+			</dict>
+			<dict>
+				<key>platform</key>
+				<dict>
+					<key>identifier</key>
 					<integer>146</integer>
 					<key>name</key>
 					<string>PlayStation 4</string>
@@ -295,7 +321,7 @@
 						<real>0.603921569</real>
 					</dict>
 					<key>index</key>
-					<integer>1</integer>
+					<integer>2</integer>
 					<key>group</key>
 					<integer>0</integer>
 					<key>metacritic_identifier</key>
@@ -321,7 +347,7 @@
 						<integer>0</integer>
 					</dict>
 					<key>index</key>
-					<integer>2</integer>
+					<integer>3</integer>
 					<key>group</key>
 					<integer>0</integer>
 					<key>metacritic_identifier</key>
@@ -347,7 +373,7 @@
 						<real>0.749019608</real>
 					</dict>
 					<key>index</key>
-					<integer>3</integer>
+					<integer>4</integer>
 					<key>group</key>
 					<integer>0</integer>
 					<key>metacritic_identifier</key>
@@ -373,7 +399,7 @@
 						<real>0.058823529</real>
 					</dict>
 					<key>index</key>
-					<integer>4</integer>
+					<integer>5</integer>
 					<key>group</key>
 					<integer>0</integer>
 					<key>metacritic_identifier</key>
@@ -399,7 +425,7 @@
 						<real>0.592156863</real>
 					</dict>
 					<key>index</key>
-					<integer>5</integer>
+					<integer>6</integer>
 					<key>group</key>
 					<integer>0</integer>
 					<key>metacritic_identifier</key>
