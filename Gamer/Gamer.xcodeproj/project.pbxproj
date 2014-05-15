@@ -64,7 +64,6 @@
 		25AC85A518F031B200919A15 /* MetascoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A418F031B200919A15 /* MetascoreCell.m */; };
 		25AC85A818F031BC00919A15 /* ReleaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AC85A718F031BC00919A15 /* ReleaseCell.m */; };
 		25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094041824882E003A0365 /* SearchCollectionCell.m */; };
-		25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B094071829BFA4003A0365 /* iPadTabBarController.m */; };
 		25B6274E1916AA9D0053329D /* NotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B6274D1916AA9D0053329D /* NotesController.m */; };
 		25B7997318CD5AEA00B9B7C9 /* PlatformsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B7997218CD5AEA00B9B7C9 /* PlatformsController.m */; };
 		25B9E9C017A0B70200881089 /* LibraryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25B9E9BF17A0B70200881089 /* LibraryController.m */; };
@@ -72,6 +71,7 @@
 		25BE541F18BED3FA00BCBAFB /* ImportCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE541E18BED3FA00BCBAFB /* ImportCell.m */; };
 		25BE542218BED50200BCBAFB /* ImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE542118BED50200BCBAFB /* ImportController.m */; };
 		25BE617A17EFC4D3008F5AB8 /* RotationLockedTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */; };
+		25C44D1E1924690B008CBFE0 /* RotationLockedNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C44D1D1924690B008CBFE0 /* RotationLockedNavigationController.m */; };
 		25C5880718F6DCDF002A2EF4 /* StarRatingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C5880618F6DCDE002A2EF4 /* StarRatingControl.m */; };
 		25C6CB75190D808E0056DB54 /* Metascore.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C6CB74190D808E0056DB54 /* Metascore.m */; };
 		25C6CB78190D808E0056DB54 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C6CB77190D808E0056DB54 /* Game.m */; };
@@ -211,8 +211,6 @@
 		25AC85A718F031BC00919A15 /* ReleaseCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseCell.m; sourceTree = "<group>"; };
 		25B094031824882E003A0365 /* SearchCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCollectionCell.h; sourceTree = "<group>"; };
 		25B094041824882E003A0365 /* SearchCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCollectionCell.m; sourceTree = "<group>"; };
-		25B094061829BFA4003A0365 /* iPadTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPadTabBarController.h; sourceTree = "<group>"; };
-		25B094071829BFA4003A0365 /* iPadTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iPadTabBarController.m; sourceTree = "<group>"; };
 		25B6274C1916AA9D0053329D /* NotesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotesController.h; sourceTree = "<group>"; };
 		25B6274D1916AA9D0053329D /* NotesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotesController.m; sourceTree = "<group>"; };
 		25B7997118CD5AEA00B9B7C9 /* PlatformsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformsController.h; sourceTree = "<group>"; };
@@ -227,6 +225,8 @@
 		25BE542118BED50200BCBAFB /* ImportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImportController.m; sourceTree = "<group>"; };
 		25BE617817EFC4D3008F5AB8 /* RotationLockedTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotationLockedTabBarController.h; sourceTree = "<group>"; };
 		25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotationLockedTabBarController.m; sourceTree = "<group>"; };
+		25C44D1C1924690B008CBFE0 /* RotationLockedNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotationLockedNavigationController.h; sourceTree = "<group>"; };
+		25C44D1D1924690B008CBFE0 /* RotationLockedNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotationLockedNavigationController.m; sourceTree = "<group>"; };
 		25C5880518F6DCD5002A2EF4 /* StarRatingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarRatingControl.h; sourceTree = "<group>"; };
 		25C5880618F6DCDE002A2EF4 /* StarRatingControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarRatingControl.m; sourceTree = "<group>"; };
 		25C6CB73190D808E0056DB54 /* Metascore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Metascore.h; sourceTree = "<group>"; };
@@ -323,8 +323,8 @@
 				2506A18A176CD5B80010E61D /* FetchedTableViewController.m */,
 				25BE617817EFC4D3008F5AB8 /* RotationLockedTabBarController.h */,
 				25BE617917EFC4D3008F5AB8 /* RotationLockedTabBarController.m */,
-				25B094061829BFA4003A0365 /* iPadTabBarController.h */,
-				25B094071829BFA4003A0365 /* iPadTabBarController.m */,
+				25C44D1C1924690B008CBFE0 /* RotationLockedNavigationController.h */,
+				25C44D1D1924690B008CBFE0 /* RotationLockedNavigationController.m */,
 				2506A16E176CD3190010E61D /* Views */,
 				2506A16D176CD2F10010E61D /* Cells */,
 				259DBBAC18958B7500B274F4 /* Categories */,
@@ -837,6 +837,7 @@
 				2531E858176CDBEF005881A4 /* Model.xcdatamodeld in Sources */,
 				25B9E9C317A0B79000881089 /* LibraryCollectionCell.m in Sources */,
 				253B475318FF702100CC4140 /* Platform.m in Sources */,
+				25C44D1E1924690B008CBFE0 /* RotationLockedNavigationController.m in Sources */,
 				253F8B6B19218C2100B5A357 /* CustomSelectionCell.m in Sources */,
 				2531E856176CDBDD005881A4 /* Tools.m in Sources */,
 				2531E857176CDBDD005881A4 /* Session.m in Sources */,
@@ -898,7 +899,6 @@
 				25AC857F18EE3AFF00919A15 /* ReleasesController.m in Sources */,
 				25704036176CB12800642430 /* GamerAppDelegate.m in Sources */,
 				25D4E69818F3419600D93F80 /* Region.m in Sources */,
-				25B094081829BFA4003A0365 /* iPadTabBarController.m in Sources */,
 				25D4E69518F3419600D93F80 /* Developer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -2117,10 +2117,10 @@
             </objects>
             <point key="canvasLocation" x="2918" y="-617"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Rotation Locked Navigation Controller-->
         <scene sceneID="3fE-0S-6F6">
             <objects>
-                <navigationController id="fcH-XE-pDY" sceneMemberID="viewController">
+                <navigationController id="fcH-XE-pDY" customClass="RotationLockedNavigationController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="kjs-9d-qUh">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
