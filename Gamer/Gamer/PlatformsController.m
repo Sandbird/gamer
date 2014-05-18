@@ -58,7 +58,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
 	switch (section) {
-		case Section8thGen: return @"8th Generation";
+		case Section8thGen: return @"Current Generation";
 		case Section7thGen: return @"7th Generation";
 		case Section6thGen: return @"6th Generation";
 		case Section5thGen: return @"5th Generation";

@@ -113,6 +113,8 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
+	[self setEdgesForExtendedLayout:UIRectEdgeAll];
+	
 	[self.wishlistButton.layer setBorderWidth:1];
 	[self.wishlistButton.layer setBorderColor:self.wishlistButton.tintColor.CGColor];
 	[self.wishlistButton.layer setCornerRadius:4];
