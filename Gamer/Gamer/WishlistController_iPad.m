@@ -165,18 +165,20 @@
 		});
 	}
 	
-	[cell.titleLabel setText:game.title];
-	[cell.dateLabel setText:game.selectedRelease ? game.selectedRelease.releaseDateText : game.releaseDateText];
 	[cell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];
 	
 	if (game.selectedRelease){
 		[cell.platformLabel setText:game.selectedRelease.platform.abbreviation];
 		[cell.platformLabel setBackgroundColor:game.selectedRelease.platform.color];
+		[cell.titleLabel setText:game.selectedRelease.title];
+		[cell.dateLabel setText:game.selectedRelease.releaseDateText];
 	}
 	else{
 		Platform *platform = game.selectedPlatforms.allObjects.firstObject;
 		[cell.platformLabel setText:platform.abbreviation];
 		[cell.platformLabel setBackgroundColor:platform.color];
+		[cell.titleLabel setText:game.title];
+		[cell.dateLabel setText:game.releaseDateText];
 	}
 	
 	if (game.selectedMetascore){
