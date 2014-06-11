@@ -151,18 +151,20 @@
 			NSLog(@"Success in %@ - Status code: %ld - Background (Game) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			[Networking updateGameInfoWithGame:game JSON:responseObject context:context];
-			
-			if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
-				if (game.selectedMetascore){
-					[self requestMetascoreForGame:game platform:game.selectedMetascore.platform context:context completionHandler:completionHandler];
-				}
-				else{
-					NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-					NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-					NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-					
-					[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject context:context completionHandler:completionHandler];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[Networking updateGameInfoWithGame:game JSON:responseObject context:context];
+				
+				if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
+					if (game.selectedMetascore){
+						[self requestMetascoreForGame:game platform:game.selectedMetascore.platform context:context completionHandler:completionHandler];
+					}
+					else{
+						NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+						NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+						NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+						
+						[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject context:context completionHandler:completionHandler];
+					}
 				}
 			}
 		}

@@ -139,8 +139,8 @@
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Error: %@", self, (long)((NSHTTPURLResponse *)response).statusCode, error);
 		}
 		else{
-//			NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, response.statusCode, response.expectedContentLength);
-//			NSLog(@"%@", responseObject);
+			NSLog(@"Success in %@ - Status code: %ld - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"%@", responseObject);
 			
 			[self.results removeAllObjects];
 			

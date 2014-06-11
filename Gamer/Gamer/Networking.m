@@ -97,10 +97,6 @@ static NSMutableURLRequest *SEARCHREQUEST;
 }
 
 + (void)updateGameInfoWithGame:(Game *)game JSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context{
-//	NSLog(@"%@", JSON);
-	
-	if ([JSON[@"status_code"] isEqualToNumber:@(101)]) return;
-	
 	// Reset collections
 	[game setPlatforms:nil];
 	[game setGenres:nil];

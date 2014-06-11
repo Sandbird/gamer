@@ -706,34 +706,36 @@ typedef NS_ENUM(NSInteger, Section){
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			self.game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:self.context];
-			if (!self.game) self.game = [Game MR_createInContext:self.context];
-			
-			[Networking updateGameInfoWithGame:self.game JSON:responseObject context:self.context];
-			
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				// Refresh UI
-				[self refreshAnimated:NO];
-				[self.tableView reloadData];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				self.game = [Game MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:self.context];
+				if (!self.game) self.game = [Game MR_createInContext:self.context];
 				
-				// Cover image download
-				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-				UIImage *coverImage = [UIImage imageWithContentsOfFile:self.game.imagePath];
-				if (!coverImage || !self.game.imagePath || ![self.game.imageURL isEqualToString:coverImageURL]){
-					[self downloadCoverImageWithURL:coverImageURL];
-				}
+				[Networking updateGameInfoWithGame:self.game JSON:responseObject context:self.context];
 				
-				// Download releases
-				[self requestReleasesForGame:self.game];
-				
-				// Download Metascore
-				if (self.game.selectedMetascore){
-					[self requestMetascoreForGame:self.game platform:self.game.selectedMetascore.platform];
-				}
-				else if (self.selectablePlatforms.count > 0 && [self.game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
-					[self requestMetascoreForGame:self.game platform:self.selectablePlatforms.firstObject];
-				}
-			}];
+				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					// Refresh UI
+					[self refreshAnimated:NO];
+					[self.tableView reloadData];
+					
+					// Cover image download
+					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+					UIImage *coverImage = [UIImage imageWithContentsOfFile:self.game.imagePath];
+					if (!coverImage || !self.game.imagePath || ![self.game.imageURL isEqualToString:coverImageURL]){
+						[self downloadCoverImageWithURL:coverImageURL];
+					}
+					
+					// Download releases
+					[self requestReleasesForGame:self.game];
+					
+					// Download Metascore
+					if (self.game.selectedMetascore){
+						[self requestMetascoreForGame:self.game platform:self.game.selectedMetascore.platform];
+					}
+					else if (self.selectablePlatforms.count > 0 && [self.game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
+						[self requestMetascoreForGame:self.game platform:self.selectablePlatforms.firstObject];
+					}
+				}];
+			}
 		}
 		
 		[self.refreshControl endRefreshing];

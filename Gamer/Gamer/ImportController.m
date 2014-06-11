@@ -185,17 +185,19 @@
 			
 			self.numberOfRunningTasks--;
 			
-			[Networking updateGameInfoWithGame:game JSON:responseObject context:self.context];
-			
-			NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-			
-			UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
-			
-			if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
-				[self downloadCoverImageWithURL:coverImageURL game:game];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[Networking updateGameInfoWithGame:game JSON:responseObject context:self.context];
+				
+				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+				
+				UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
+				
+				if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
+					[self downloadCoverImageWithURL:coverImageURL game:game];
+				}
+				
+				[self requestReleasesForGame:game];
 			}
-			
-			[self requestReleasesForGame:game];
 			
 			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];

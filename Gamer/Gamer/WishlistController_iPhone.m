@@ -236,9 +236,9 @@
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			[Networking updateGameInfoWithGame:game JSON:responseObject context:self.context];
-			
-			if (responseObject[@"results"] != [NSNull null]){
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[Networking updateGameInfoWithGame:game JSON:responseObject context:self.context];
+				
 				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
 				
 				UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
@@ -246,20 +246,20 @@
 				if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
 					[self downloadCoverImageWithURL:coverImageURL game:game];
 				}
-			}
-			
-			[self requestReleasesForGame:game];
-			
-			if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
-				if (game.selectedMetascore){
-					[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
-				}
-				else{
-					NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-					NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-					NSArray *orderedPlatforms = [game.selectedPlatforms sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-					
-					[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
+				
+				[self requestReleasesForGame:game];
+				
+				if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
+					if (game.selectedMetascore){
+						[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
+					}
+					else{
+						NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+						NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+						NSArray *orderedPlatforms = [game.selectedPlatforms sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+						
+						[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
+					}
 				}
 			}
 		}
