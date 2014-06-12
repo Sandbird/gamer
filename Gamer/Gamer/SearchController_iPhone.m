@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) NSMutableArray *results;
+@property (nonatomic, strong) NSTimer *searchTimer;
 @property (nonatomic, strong) NSURLSessionDataTask *runningTask;
 
 @end
@@ -76,10 +77,10 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
 	[self.runningTask cancel];
 	
-	if (searchText.length > 0){
-		NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
-		NSString *query = [[searchText componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
-		[self requestGamesWithTitlesContainingQuery:query];
+	[self.searchTimer invalidate];
+	
+	if (searchText.length > 1){
+		self.searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(delayedSearchWithTimer:) userInfo:searchText repeats:NO];
 	}
 }
 
@@ -88,9 +89,7 @@
 	
 	[self.runningTask cancel];
 	
-	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
-	NSString *query = [[searchBar.text componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
-	[self requestGamesWithTitlesContainingQuery:query];
+	[self searchGamesWithTitle:searchBar.text];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
@@ -140,7 +139,7 @@
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			NSLog(@"%@", responseObject);
+//			NSLog(@"%@", responseObject);
 			
 			[self.results removeAllObjects];
 			
@@ -157,6 +156,18 @@
 	}];
 	[dataTask resume];
 	self.runningTask = dataTask;
+}
+
+#pragma mark - Custom
+
+- (void)searchGamesWithTitle:(NSString *)title{
+	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
+	NSString *query = [[title componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
+	[self requestGamesWithTitlesContainingQuery:query];
+}
+
+- (void)delayedSearchWithTimer:(NSTimer *)timer{
+	[self searchGamesWithTitle:timer.userInfo];
 }
 
 #pragma mark - Actions
