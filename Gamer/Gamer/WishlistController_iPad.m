@@ -376,12 +376,20 @@
 		[self.refreshButton setEnabled:NO];
 	}
 	
-	self.numberOfRunningTasks = 0;
-	
-	// Request info for all games in the Wishlist
-	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
-		for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects]); row++)
-			[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+	if ([Session lastRefreshWasNotToday]){
+		[[Session gamer] setLastRefresh:[NSDate date]];
+		[self.context MR_saveToPersistentStoreAndWait];
+		
+		self.numberOfRunningTasks = 0;
+		
+		// Request info for all games in the Wishlist
+		for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
+			for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects]); row++)
+				[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+	}
+	else{
+		[self.refreshButton setEnabled:YES];
+	}
 }
 
 - (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{

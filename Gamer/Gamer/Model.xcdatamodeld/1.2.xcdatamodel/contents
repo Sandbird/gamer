@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13C1021" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Developer" representedClassName="Developer" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -51,6 +51,7 @@
         <relationship name="videos" optional="YES" toMany="YES" maxCount="30" deletionRule="Cascade" destinationEntity="Video" inverseName="game" inverseEntity="Video" syncable="YES"/>
     </entity>
     <entity name="Gamer" representedClassName="Gamer" syncable="YES">
+        <attribute name="lastRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="librarySize" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="2" defaultValueString="1" syncable="YES"/>
         <relationship name="platforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="gamer" inverseEntity="Platform" syncable="YES"/>
         <relationship name="region" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Region" inverseName="gamer" inverseEntity="Region" syncable="YES"/>
@@ -152,7 +153,7 @@
         <element name="Developer" positionX="106" positionY="-124" width="128" height="88"/>
         <element name="Franchise" positionX="106" positionY="126" width="128" height="88"/>
         <element name="Game" positionX="-110" positionY="-243" width="128" height="613"/>
-        <element name="Gamer" positionX="-486" positionY="-243" width="128" height="88"/>
+        <element name="Gamer" positionX="-486" positionY="-243" width="128" height="103"/>
         <element name="Genre" positionX="106" positionY="-243" width="128" height="88"/>
         <element name="Image" positionX="286" positionY="-241" width="128" height="103"/>
         <element name="Metascore" positionX="-108" positionY="416" width="128" height="133"/>

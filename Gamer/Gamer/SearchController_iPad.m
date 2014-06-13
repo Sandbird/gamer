@@ -22,6 +22,8 @@
 @property (nonatomic, strong) UIView *guideView;
 
 @property (nonatomic, strong) NSMutableArray *results;
+@property (nonatomic, strong) NSTimer *searchTimer;
+
 @property (nonatomic, strong) NSURLSessionDataTask *runningTask;
 
 @end
@@ -95,10 +97,10 @@
 	
 	[Session setSearchQuery:searchText];
 	
-	if (searchText.length > 0){
-		NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
-		NSString *query = [[searchText componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
-		[self requestGamesWithTitlesContainingQuery:query];
+	[self.searchTimer invalidate];
+	
+	if (searchText.length > 1){
+		self.searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(delayedSearchWithTimer:) userInfo:searchText repeats:NO];
 	}
 }
 
@@ -109,9 +111,7 @@
 	
 	[Session setSearchQuery:searchBar.text];
 	
-	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
-	NSString *query = [[searchBar.text componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
-	[self requestGamesWithTitlesContainingQuery:query];
+	[self searchGamesWithTitle:searchBar.text];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
@@ -183,6 +183,18 @@
 	}];
 	[dataTask resume];
 	self.runningTask = dataTask;
+}
+
+#pragma mark - Custom
+
+- (void)searchGamesWithTitle:(NSString *)title{
+	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
+	NSString *query = [[title componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
+	[self requestGamesWithTitlesContainingQuery:query];
+}
+
+- (void)delayedSearchWithTimer:(NSTimer *)timer{
+	[self searchGamesWithTitle:timer.userInfo];
 }
 
 #pragma mark - Actions

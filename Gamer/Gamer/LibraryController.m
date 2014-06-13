@@ -565,13 +565,22 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 //		[self.refreshBarButton setEnabled:NO];
 //	}
 	
-	self.numberOfRunningTasks = 0;
-	
-	// Request info for all games in the Wishlist
-	for (NSDictionary *dictionary in self.dataSource){
-		for (Game *game in dictionary[@"platform"][@"games"]){
-			[self requestGame:game];
+	if ([Session lastRefreshWasNotToday]){
+		[[Session gamer] setLastRefresh:[NSDate date]];
+		[self.context MR_saveToPersistentStoreAndWait];
+		
+		self.numberOfRunningTasks = 0;
+		
+		// Request info for all games in the Wishlist
+		for (NSDictionary *dictionary in self.dataSource){
+			for (Game *game in dictionary[@"platform"][@"games"]){
+				[self requestGame:game];
+			}
 		}
+	}
+	else{
+		[self.refreshBarButton setEnabled:YES];
+		[self.refreshControl endRefreshing];
 	}
 }
 

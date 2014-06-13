@@ -96,13 +96,18 @@
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
-	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:context];
-	
-	self.numberOfRunningTasks = 0;
-	
-	for (Game *game in games){
-		[self requestInformationForGame:game context:context completionHandler:completionHandler];
+	if ([Session lastRefreshWasNotToday]){
+		[[Session gamer] setLastRefresh:[NSDate date]];
+		[context MR_saveToPersistentStoreAndWait];
+		
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
+		NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:context];
+		
+		self.numberOfRunningTasks = 0;
+		
+		for (Game *game in games){
+			[self requestInformationForGame:game context:context completionHandler:completionHandler];
+		}
 	}
 }
 

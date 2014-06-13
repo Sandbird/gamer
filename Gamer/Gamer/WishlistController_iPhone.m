@@ -408,14 +408,22 @@
 		[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
 	}
 	
-	self.numberOfRunningTasks = 0;
-	
-	// Request info for all games in the Wishlist
-	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++){
-		for (NSInteger row = 0; row < [self.fetchedResultsController.sections[section] numberOfObjects]; row++){
-			Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
-			if (game.identifier) [self requestGame:game];
+	if ([Session lastRefreshWasNotToday]){
+		[[Session gamer] setLastRefresh:[NSDate date]];
+		[self.context MR_saveToPersistentStoreAndWait];
+		
+		self.numberOfRunningTasks = 0;
+		
+		// Request info for all games in the Wishlist
+		for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++){
+			for (NSInteger row = 0; row < [self.fetchedResultsController.sections[section] numberOfObjects]; row++){
+				Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+				if (game.identifier) [self requestGame:game];
+			}
 		}
+	}
+	else{
+		[self.refreshControl endRefreshing];
 	}
 }
 
