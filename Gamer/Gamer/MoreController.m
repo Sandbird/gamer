@@ -177,8 +177,7 @@ typedef NS_ENUM(NSInteger, Section){
 										 @"preordered":game.preordered ? game.preordered : @(0),
 										 @"borrowed":game.borrowed ? game.borrowed : @(0),
 										 @"personalRating":game.personalRating ? game.personalRating : @(0),
-										 @"notes":game.notes.length > 0 ? game.notes : @"",
-										 @"selectedRelease":game.selectedRelease ? game.selectedRelease.identifier : [NSNull null]};
+										 @"notes":game.notes.length > 0 ? game.notes : @""};
 		
 		[gameDictionaries addObject:gameDictionary];
 	}

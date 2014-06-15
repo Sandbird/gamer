@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSMutableArray *importedLibraryGames;
 
 @property (nonatomic, assign) NSInteger numberOfRunningTasks;
+@property (nonatomic, assign) NSInteger numberOfFailedRequests;
 
 @property (nonatomic, strong) NSCache *imageCache;
 
@@ -73,13 +74,6 @@
 				[game setSelectedPlatforms:[NSSet setWithArray:selectedPlatforms]];
 			}
 			
-			NSNumber *releaseIdentifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"selectedRelease"]];
-			Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:releaseIdentifier inContext:self.context];
-			if (!release) release = [Release MR_createInContext:self.context];
-			[release setIdentifier:releaseIdentifier];
-			
-			[game setSelectedRelease:release];
-			
 			// If game not in database, download
 			if (!game.releaseDate)
 				[self requestGame:game];
@@ -89,8 +83,6 @@
 		self.importedWishlistGames = [self.importedWishlistGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
 		self.importedLibraryGames = [self.importedLibraryGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
 	}
-	
-//	[self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -172,13 +164,7 @@
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
 			
 			self.numberOfRunningTasks--;
-			
-			if (self.numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
-				
-				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-				[alertView show];
-			}
+			self.numberOfFailedRequests++;
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
@@ -198,9 +184,17 @@
 				
 				[self requestReleasesForGame:game];
 			}
+			else{
+				self.numberOfFailedRequests++;
+			}
+		}
+		
+		if (self.numberOfRunningTasks == 0){
+			[self.navigationItem.rightBarButtonItem setEnabled:YES];
 			
-			if (self.numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			if (self.numberOfFailedRequests > 0){
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your games later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
 			}
 		}
 	}];
@@ -225,7 +219,7 @@
 			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				
-				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your games later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 				[alertView show];
 			}
 		}
@@ -260,7 +254,7 @@
 			if (self.numberOfRunningTasks == 0){
 				[self.navigationItem.rightBarButtonItem setEnabled:YES];
 				
-				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your wishlist or library later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your games later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 				[alertView show];
 			}
 		}
@@ -305,6 +299,8 @@
 #pragma mark - Actions
 
 - (IBAction)cancelBarButtonAction:(UIBarButtonItem *)sender{
+	[[Networking manager] invalidateSessionCancelingTasks:YES]; // crashing subsequent requests
+	
 	[self.context rollback];
 	
 	[self dismissViewControllerAnimated:YES completion:nil];
