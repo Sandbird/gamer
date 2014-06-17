@@ -747,6 +747,9 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)downloadCoverImageWithURL:(NSString *)URLString{
 	if (!URLString) return;
 	
+	[self.progressView setHidden:NO];
+	[self.progressView.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
+	
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLString]];
 	
 	NSURLSessionDownloadTask *downloadTask = [[Networking manager] downloadTaskWithRequest:request progress:nil destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
