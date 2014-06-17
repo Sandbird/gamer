@@ -1080,13 +1080,6 @@ typedef NS_ENUM(NSInteger, Section){
 	[self.game setSelectedPlatforms:[NSSet setWithArray:platforms]];
 	[self.game setLocation:@(GameLocationWishlist)];
 	
-	// If release period is collapsed, set game to hidden
-	if ([self.game.releasePeriod.placeholderGame.hidden isEqualToNumber:@(NO)]){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND (hidden = %@ AND location = %@)", self.game.releasePeriod, @(NO), @(GameLocationWishlist)];
-		NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
-		[self.game setHidden:(gamesCount == 0) ? @(YES) : @(NO)];
-	}
-	
 	[self.game setPreordered:@(NO)];
 	[self.game setFinished:@(NO)];
 	[self.game setDigital:@(NO)];

@@ -2,7 +2,7 @@
 //  ReleasePeriod.h
 //  Gamer
 //
-//  Created by Caio Mello on 09/04/2014.
+//  Created by Caio Mello on 17/06/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -16,7 +16,6 @@
 @property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSSet *games;
-@property (nonatomic, retain) Game *placeholderGame;
 @end
 
 @interface ReleasePeriod (CoreDataGeneratedAccessors)

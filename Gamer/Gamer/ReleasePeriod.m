@@ -2,7 +2,7 @@
 //  ReleasePeriod.m
 //  Gamer
 //
-//  Created by Caio Mello on 09/04/2014.
+//  Created by Caio Mello on 17/06/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -15,6 +15,5 @@
 @dynamic identifier;
 @dynamic name;
 @dynamic games;
-@dynamic placeholderGame;
 
 @end

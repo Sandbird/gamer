@@ -84,15 +84,6 @@ static NSArray *SEARCHRESULTS;
 		if (!releasePeriod) releasePeriod = [ReleasePeriod MR_createInContext:context];
 		[releasePeriod setIdentifier:releasePeriodDictionary[@"release_period"][@"identifier"]];
 		[releasePeriod setName:releasePeriodDictionary[@"release_period"][@"name"]];
-		
-		Game *placeholderGame = releasePeriod.placeholderGame;
-		if (!placeholderGame) placeholderGame = [Game MR_createInContext:context];
-		[placeholderGame setTitle:releasePeriodDictionary[@"release_period"][@"placeholder"][@"title"]];
-		[placeholderGame setReleaseDate:releasePeriodDictionary[@"release_period"][@"placeholder"][@"release_date"]];
-		[placeholderGame setLocation:@(GameLocationWishlist)];
-		[placeholderGame setReleasePeriod:releasePeriod];
-		
-		[releasePeriod setPlaceholderGame:placeholderGame];
 	}
 	
 	for (NSDictionary *regionDictionary in initialDataDictionary[@"initial_data"][@"regions"]){

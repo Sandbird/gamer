@@ -16,5 +16,6 @@
 @property (nonatomic, strong) IBOutlet UILabel *metascoreLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *preorderedIcon;
 @property (nonatomic, strong) IBOutlet UILabel *platformLabel;
+@property (nonatomic, strong) IBOutlet UIView *separatorView;
 
 @end

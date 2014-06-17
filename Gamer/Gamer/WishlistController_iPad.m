@@ -351,20 +351,9 @@
 	}
 	
 	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		// Show section if it has  any games
-		NSArray *releasePeriods = [ReleasePeriod MR_findAllInContext:self.context];
-		
-		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@ AND identifier != nil", releasePeriod, @(GameLocationWishlist)];
-			NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
-			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
-		}
-		
-		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			self.fetchedResultsController = nil;
-			self.fetchedResultsController = [self fetchData];
-			[self.collectionView reloadData];
-		}];
+		self.fetchedResultsController = nil;
+		self.fetchedResultsController = [self fetchData];
+		[self.collectionView reloadData];
 	}];
 }
 

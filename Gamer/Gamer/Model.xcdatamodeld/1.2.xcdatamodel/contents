@@ -14,7 +14,6 @@
         <attribute name="borrowed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="digital" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="finished" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="imagePath" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
@@ -38,7 +37,6 @@
         <relationship name="genres" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Genre" inverseName="games" inverseEntity="Genre" syncable="YES"/>
         <relationship name="images" optional="YES" toMany="YES" maxCount="30" deletionRule="Cascade" destinationEntity="Image" inverseName="game" inverseEntity="Image" syncable="YES"/>
         <relationship name="metascores" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Metascore" inverseName="game" inverseEntity="Metascore" syncable="YES"/>
-        <relationship name="placeholderPeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="placeholderGame" inverseEntity="ReleasePeriod" syncable="YES"/>
         <relationship name="platforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="games" inverseEntity="Platform" syncable="YES"/>
         <relationship name="publishers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Publisher" inverseName="games" inverseEntity="Publisher" syncable="YES"/>
         <relationship name="releasePeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReleasePeriod" inverseName="games" inverseEntity="ReleasePeriod" syncable="YES"/>
@@ -123,7 +121,6 @@
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="games" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="releasePeriod" inverseEntity="Game" syncable="YES"/>
-        <relationship name="placeholderGame" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Game" inverseName="placeholderPeriod" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="SimilarGame" representedClassName="SimilarGame" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>
@@ -152,7 +149,7 @@
     <elements>
         <element name="Developer" positionX="106" positionY="-124" width="128" height="88"/>
         <element name="Franchise" positionX="106" positionY="126" width="128" height="88"/>
-        <element name="Game" positionX="-110" positionY="-243" width="128" height="613"/>
+        <element name="Game" positionX="-110" positionY="-243" width="128" height="583"/>
         <element name="Gamer" positionX="-486" positionY="-243" width="128" height="103"/>
         <element name="Genre" positionX="106" positionY="-243" width="128" height="88"/>
         <element name="Image" positionX="286" positionY="-241" width="128" height="103"/>
@@ -161,7 +158,7 @@
         <element name="Publisher" positionX="106" positionY="2" width="128" height="88"/>
         <element name="Region" positionX="-488" positionY="245" width="128" height="133"/>
         <element name="Release" positionX="-288" positionY="207" width="128" height="268"/>
-        <element name="ReleasePeriod" positionX="-299" positionY="5" width="128" height="103"/>
+        <element name="ReleasePeriod" positionX="-299" positionY="5" width="128" height="88"/>
         <element name="SimilarGame" positionX="106" positionY="387" width="128" height="103"/>
         <element name="Theme" positionX="106" positionY="263" width="128" height="88"/>
         <element name="Video" positionX="286" positionY="-54" width="128" height="208"/>

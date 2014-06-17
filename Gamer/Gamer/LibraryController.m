@@ -209,7 +209,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		
 		HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 		[headerView.titleLabel setText:headerTitle];
-		[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
+//		[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
 		return headerView;
 	}
 }

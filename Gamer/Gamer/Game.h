@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 27/04/2014.
+//  Created by Caio Mello on 17/06/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -16,7 +16,6 @@
 @property (nonatomic, retain) NSNumber * borrowed;
 @property (nonatomic, retain) NSNumber * digital;
 @property (nonatomic, retain) NSNumber * finished;
-@property (nonatomic, retain) NSNumber * hidden;
 @property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) NSString * imagePath;
 @property (nonatomic, retain) NSString * imageURL;
@@ -40,17 +39,16 @@
 @property (nonatomic, retain) NSSet *genres;
 @property (nonatomic, retain) NSSet *images;
 @property (nonatomic, retain) NSSet *metascores;
-@property (nonatomic, retain) ReleasePeriod *placeholderPeriod;
 @property (nonatomic, retain) NSSet *platforms;
 @property (nonatomic, retain) NSSet *publishers;
 @property (nonatomic, retain) ReleasePeriod *releasePeriod;
 @property (nonatomic, retain) NSSet *releases;
+@property (nonatomic, retain) Metascore *selectedMetascore;
 @property (nonatomic, retain) NSSet *selectedPlatforms;
 @property (nonatomic, retain) Release *selectedRelease;
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
-@property (nonatomic, retain) Metascore *selectedMetascore;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)

@@ -24,7 +24,7 @@
 #import "WishlistSectionHeaderView.h"
 #import <AFNetworking/AFNetworking.h>
 
-@interface WishlistController_iPhone () <FetchedTableViewDelegate, WishlistSectionHeaderViewDelegate>
+@interface WishlistController_iPhone () <FetchedTableViewDelegate>
 
 @property (nonatomic, strong) NSCache *imageCache;
 
@@ -44,7 +44,7 @@
 	
 	[self.refreshControl setTintColor:[UIColor lightGrayColor]];
 	
-	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+//	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
 	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
@@ -73,7 +73,7 @@
 
 - (NSFetchedResultsController *)fetchData{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND hidden = %@", @(GameLocationWishlist), @(NO)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@", @(GameLocationWishlist), @(NO)];
 		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES delegate:self];
 	}
 	
@@ -98,8 +98,6 @@
 	NSString *sectionName = [self.fetchedResultsController.sections[section] name];
 	ReleasePeriod *releasePeriod = [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue) inContext:self.context];
 	WishlistSectionHeaderView *headerView = [[WishlistSectionHeaderView alloc] initWithReleasePeriod:releasePeriod];
-	[headerView setDelegate:self];
-	
 	return headerView;
 }
 
@@ -107,21 +105,10 @@
 	return [self.fetchedResultsController.sections[section] numberOfObjects];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	return (game.identifier) ? tableView.rowHeight : 0;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	WishlistCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[self configureCell:cell atIndexPath:indexPath];
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-	// Set correct separator inset
-	BOOL lastRow = (indexPath.row >= ([tableView numberOfRowsInSection:indexPath.section] - 2)) ? YES : NO;
-	[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? (tableView.frame.size.width * 2) : 68), 0, 0)];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -136,13 +123,6 @@
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[game setLocation:@(GameLocationNone)];
 	[game setSelectedPlatforms:nil];
-	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@", game.releasePeriod, @(GameLocationWishlist)];
-	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:self.context];
-	
-	// If no more games in section, hide placeholder so section is removed
-	if (games.count == 0) [game.releasePeriod.placeholderGame setHidden:@(YES)];
-	
 	[self.context MR_saveToPersistentStoreAndWait];
 }
 
@@ -208,19 +188,10 @@
 		[customCell.metascoreLabel setText:nil];
 		[customCell.metascoreLabel setTextColor:[UIColor clearColor]];
 	}
-}
-
-#pragma mark - HidingSectionView
-
-- (void)wishlistSectionHeaderView:(WishlistSectionHeaderView *)headerView didTapReleasePeriod:(ReleasePeriod *)releasePeriod{
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@ AND identifier != nil", releasePeriod, @(GameLocationWishlist)];
-	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:self.context];
 	
-	// Switch hidden property of all games in section
-	for (Game *game in games)
-		[game setHidden:@(!headerView.hidden)];
-	
-	[self.context MR_saveToPersistentStoreAndWait];
+	// Hide/show cell separator
+	BOOL lastRow = (indexPath.row >= ([self.tableView numberOfRowsInSection:indexPath.section] - 1)) ? YES : NO;
+	[customCell.separatorView setBackgroundColor:lastRow ? [UIColor clearColor] : [UIColor darkGrayColor]];
 }
 
 #pragma mark - Networking
@@ -388,18 +359,7 @@
 		[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:(game.selectedRelease ? game.selectedRelease : game) context:self.context]];
 	}
 	
-	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		// Show section if it has  any games
-		NSArray *releasePeriods = [ReleasePeriod MR_findAllInContext:self.context];
-		
-		for (ReleasePeriod *releasePeriod in releasePeriods){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"releasePeriod = %@ AND location = %@ AND identifier != nil", releasePeriod, @(GameLocationWishlist)];
-			NSInteger gamesCount = [Game MR_countOfEntitiesWithPredicate:predicate];
-			[releasePeriod.placeholderGame setHidden:(gamesCount > 0) ? @(NO) : @(YES)];
-		}
-		
-		[self.context MR_saveToPersistentStoreAndWait];
-	}];
+	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 - (void)refreshWishlist{
@@ -418,7 +378,7 @@
 		for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++){
 			for (NSInteger row = 0; row < [self.fetchedResultsController.sections[section] numberOfObjects]; row++){
 				Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
-				if (game.identifier) [self requestGame:game];
+				[self requestGame:game];
 			}
 		}
 	}
