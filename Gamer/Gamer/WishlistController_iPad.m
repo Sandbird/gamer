@@ -121,7 +121,6 @@
 	
 	HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 	[headerView.titleLabel setText:releasePeriod.name];
-	[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
 	return headerView;
 }
 

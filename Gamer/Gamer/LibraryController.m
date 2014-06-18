@@ -28,21 +28,21 @@
 #import "Platform+Library.h"
 
 typedef NS_ENUM(NSInteger, LibrarySort){
-	LibrarySortTitle,
-	LibrarySortReleaseYear,
-	LibrarySortRating,
-	LibrarySortMetascore,
-	LibrarySortPlatform
+	LibrarySortTitle = 0,
+	LibrarySortReleaseYear = 1,
+	LibrarySortRating = 2,
+	LibrarySortMetascore = 3,
+	LibrarySortPlatform = 4
 };
 
 typedef NS_ENUM(NSInteger, LibraryFilter){
-	LibraryFilterFinished,
-	LibraryFilterUnfinished,
-	LibraryFilterRetail,
-	LibraryFilterDigital,
-	LibraryFilterLent,
-	LibraryFilterBorrowed,
-	LibraryFilterNone
+	LibraryFilterFinished = 5,
+	LibraryFilterUnfinished = 6,
+	LibraryFilterRetail = 7,
+	LibraryFilterDigital = 8,
+	LibraryFilterLent = 9,
+	LibraryFilterBorrowed = 10,
+	LibraryFilterNone = 11
 };
 
 @interface LibraryController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, UIActionSheetDelegate, LibrarySortFilterViewDelegate>
@@ -158,6 +158,17 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	return NO;
 }
 
+#pragma mark - CollectionViewLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+	switch ([Session gamer].librarySize.integerValue) {
+		case LibrarySizeSmall: return [Tools deviceIsiPhone] ? CGSizeMake(40, 50) : CGSizeMake(83, 91);
+		case LibrarySizeMedium: return [Tools deviceIsiPhone] ? CGSizeMake(50, 63) : CGSizeMake(115, 127);
+		case LibrarySizeLarge: return [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
+		default: return CGSizeZero;
+	}
+}
+
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -175,10 +186,12 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
+	NSInteger gameCount = (self.sortOrFilter == LibrarySortPlatform) ? [self.dataSource[indexPath.section][@"platform"][@"games"] count] : [self.sortFilterDataSource.sections[indexPath.section] numberOfObjects];
+	
 	if (self.sortOrFilter == LibrarySortPlatform){
 		HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 		[headerView.titleLabel setText:self.dataSource[indexPath.section][@"platform"][@"name"]];
-		[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
+		[headerView.countLabel setText:[NSString stringWithFormat:gameCount > 1 ? @"%ld games" : @"%ld game", (long)gameCount]];
 		return headerView;
 	}
 	else{
@@ -204,27 +217,24 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 				break;
 			}
 			case LibrarySortMetascore: headerTitle = (!game.selectedMetascore || [game.selectedMetascore.criticScore isEqualToNumber:@(0)]) ? @"Unavailable" : [NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]; break;
+			case LibraryFilterFinished: headerTitle = @"Finished"; break;
+			case LibraryFilterUnfinished: headerTitle = @"Unfinished"; break;
+			case LibraryFilterRetail: headerTitle = @"Retail"; break;
+			case LibraryFilterDigital: headerTitle = @"Digital"; break;
+			case LibraryFilterLent: headerTitle = @"Lent"; break;
+			case LibraryFilterBorrowed: headerTitle = @"Borrowed"; break;
 			default: break;
 		}
 		
 		HeaderCollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
 		[headerView.titleLabel setText:headerTitle];
-//		[headerView.separator setHidden:indexPath.section == 0 ? YES : NO];
+		[headerView.countLabel setText:[NSString stringWithFormat:gameCount > 1 ? @"%ld games" : @"%ld game", (long)gameCount]];
 		return headerView;
 	}
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
 	return (self.sortOrFilter == LibrarySortPlatform) ? [self.dataSource[section][@"platform"][@"games"] count] : [self.sortFilterDataSource.sections[section] numberOfObjects];
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-	switch ([Session gamer].librarySize.integerValue) {
-		case LibrarySizeSmall: return [Tools deviceIsiPhone] ? CGSizeMake(40, 50) : CGSizeMake(83, 91);
-		case LibrarySizeMedium: return [Tools deviceIsiPhone] ? CGSizeMake(50, 63) : CGSizeMake(115, 127);
-		case LibrarySizeLarge: return [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
-		default: return CGSizeZero;
-	}
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -470,29 +480,29 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		}
 		else{
 			// Filter
-			switch (buttonIndex) {
+			switch (buttonIndex + 5) {
 				case LibraryFilterFinished:
-					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterFinished group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing finished games" animated:YES];
 					break;
 				case LibraryFilterUnfinished:
-					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterUnfinished group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing unfinished games" animated:YES];
 					break;
 				case LibraryFilterRetail:
-					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterRetail group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing retail games" animated:YES];
 					break;
 				case LibraryFilterDigital:
-					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterDigital group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing digital games" animated:YES];
 					break;
 				case LibraryFilterLent:
-					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND lent = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterLent group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND lent = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing lent games" animated:YES];
 					break;
 				case LibraryFilterBorrowed:
-					[self fetchGameswithSortOrFilter:LibraryFilterNone group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND borrowed = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterBorrowed group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND borrowed = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing borrowed games" animated:YES];
 					break;
 				default:

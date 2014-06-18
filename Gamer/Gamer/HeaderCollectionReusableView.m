@@ -10,4 +10,10 @@
 
 @implementation HeaderCollectionReusableView
 
+//- (void)awakeFromNib{
+//	UIToolbar *toolBar = [[UIToolbar alloc] initWithFrame:self.frame];
+//	[toolBar setBarStyle:UIBarStyleBlackTranslucent];
+//	[self insertSubview:toolBar atIndex:0];
+//}
+
 @end
