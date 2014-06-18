@@ -29,9 +29,9 @@
 	
 	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	self.dataSource = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
-	
 	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:nil inContext:self.context];
+	
+	self.dataSource = [[NSMutableArray alloc] initWithCapacity:platforms.count];
 	
 	for (Platform *platform in platforms){
 		if ([platform containsReleasesWithGame:self.game]){

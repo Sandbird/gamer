@@ -526,9 +526,9 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 #pragma mark - Custom
 
 - (void)loadDataSource{
-	self.dataSource = [[NSMutableArray alloc] initWithCapacity:[Session gamer].platforms.count];
+	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:nil inContext:self.context];
 	
-	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:[NSPredicate predicateWithFormat:@"self IN %@", [Session gamer].platforms] inContext:self.context];
+	self.dataSource = [[NSMutableArray alloc] initWithCapacity:platforms.count];
 	
 	for (Platform *platform in platforms){
 		if (platform.containsLibraryGames){
