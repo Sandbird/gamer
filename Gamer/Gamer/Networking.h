@@ -23,7 +23,8 @@ typedef NS_ENUM(NSInteger, ReleasePeriodIdentifier){
 	ReleasePeriodIdentifierThisYear = 9,
 	ReleasePeriodIdentifierNextYear = 10,
 	ReleasePeriodIdentifierLater = 11,
-	ReleasePeriodIdentifierTBA = 12
+	ReleasePeriodIdentifierTBA = 12,
+	ReleasePeriodIdentifierUnknown = 13
 };
 
 @interface Networking : NSObject

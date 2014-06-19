@@ -415,7 +415,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	next.year++;
 	
 	NSInteger period = ReleasePeriodIdentifierNone;
-	if ([[object releaseDate] compare:[calendar dateFromComponents:threeMonthsAgo]] <= NSOrderedSame)
+	if (![object releaseDate])
+		period = ReleasePeriodIdentifierUnknown;
+	else if ([[object releaseDate] compare:[calendar dateFromComponents:threeMonthsAgo]] <= NSOrderedSame)
 		period = ReleasePeriodIdentifierReleased;
 	else if ([[object releaseDate] compare:[calendar dateFromComponents:current]] <= NSOrderedSame)
 		period = ReleasePeriodIdentifierRecentlyReleased;

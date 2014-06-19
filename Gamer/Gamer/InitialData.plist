@@ -114,6 +114,15 @@
 					<string>To Be Announced</string>
 				</dict>
 			</dict>
+			<dict>
+				<key>release_period</key>
+				<dict>
+					<key>identifier</key>
+					<integer>13</integer>
+					<key>name</key>
+					<string>Unknown</string>
+				</dict>
+			</dict>
 		</array>
 		<key>regions</key>
 		<array>
