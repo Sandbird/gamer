@@ -483,23 +483,6 @@ typedef NS_ENUM(NSInteger, Section){
 		return cell;
 	}
 	else if (collectionView == self.imagesCollectionView){
-		// If before last cell, download image for next cell
-		if (self.images.count > (indexPath.item + 1)){
-			Image *nextImage = self.images[indexPath.item + 1];
-			ImageCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
-			
-			// Download thumbnail
-			[nextCell.activityIndicator startAnimating];
-			__weak ImageCollectionCell *cellReference = nextCell;
-			[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextImage.thumbnailURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-				[cellReference.activityIndicator stopAnimating];
-				[cellReference.imageView setImage:image];
-				[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
-			} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-				[cellReference.activityIndicator stopAnimating];
-			}];
-		}
-		
 		ImageCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		Image *image = self.images[indexPath.item];
 		
@@ -517,80 +500,6 @@ typedef NS_ENUM(NSInteger, Section){
 		return cell;
 	}
 	else{
-		// If before last cell, download image for next cell
-		if (self.videos.count > (indexPath.item + 1)){
-			Video *nextVideo = self.videos[indexPath.item + 1];
-			
-			VideoCollectionCell *nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:[NSIndexPath indexPathForItem:indexPath.item + 1 inSection:0]];
-			[nextCell.titleLabel setText:nil];
-			[nextCell.lengthLabel setText:nil];
-			[nextCell.imageView setImage:nil];
-			
-			// Video info exists
-			if (nextVideo.imageURL && nextVideo.title && nextVideo.length && ![nextVideo.title isEqualToString:@"(null)"]){
-				[nextCell.titleLabel setText:[nextVideo.title isEqualToString:@"(null)"] ? nil : nextVideo.title];
-				[nextCell.lengthLabel setText:[Tools formattedStringForLength:nextVideo.length.integerValue]];
-				
-				// Download thumbnail
-				[nextCell.activityIndicator startAnimating];
-				__weak VideoCollectionCell *cellReference = nextCell;
-				[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.imageURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-					[cellReference.activityIndicator stopAnimating];
-					[cellReference.imageView setImage:image];
-					[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
-				} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-					[cellReference.activityIndicator stopAnimating];
-				}];
-			}
-			else{
-				// Download video info
-				NSURLRequest *request = [Networking requestForVideoWithIdentifier:nextVideo.identifier fields:@"id,name,deck,video_type,length_seconds,publish_date,high_url,low_url,image"];
-				NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-					if (error){
-						if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Video", self, (long)((NSHTTPURLResponse *)response).statusCode);
-					}
-					else{
-						NSLog(@"Success in %@ - Status code: %ld - Video - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-						//					NSLog(@"%@", responseObject);
-						
-						// Object not found
-						if ([responseObject[@"status_code"] isEqualToNumber:@(101)])
-							return;
-						
-						[[Tools dateFormatter] setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-						
-						// Update video
-						NSDictionary *results = responseObject[@"results"];
-						[nextVideo setType:[Tools stringFromSourceIfNotNull:results[@"video_type"]]];
-						[nextVideo setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
-						[nextVideo setOverview:[Tools stringFromSourceIfNotNull:results[@"deck"]]];
-						[nextVideo setLength:[Tools integerNumberFromSourceIfNotNull:results[@"length_seconds"]]];
-						[nextVideo setPublishDate:[[Tools dateFormatter] dateFromString:results[@"publish_date"]]];
-						[nextVideo setHighQualityURL:[Tools stringFromSourceIfNotNull:results[@"high_url"]]];
-						[nextVideo setLowQualityURL:[Tools stringFromSourceIfNotNull:results[@"low_url"]]];
-						[nextVideo setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"super_url"]]];
-						[self.context MR_saveToPersistentStoreAndWait];
-						
-						// Update cell
-						[nextCell.titleLabel setText:[nextVideo.title isEqualToString:@"(null)"] ? nil : nextVideo.title];
-						[nextCell.lengthLabel setText:[Tools formattedStringForLength:nextVideo.length.integerValue]];
-						
-						// Download thumbnail
-						[nextCell.activityIndicator startAnimating];
-						__weak VideoCollectionCell *cellReference = nextCell;
-						[nextCell.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:nextVideo.imageURL]] placeholderImage:[Tools imageWithColor:[UIColor blackColor]] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-							[cellReference.activityIndicator stopAnimating];
-							[cellReference.imageView setImage:image];
-							[cellReference.imageView.layer addAnimation:[Tools transitionWithType:kCATransitionFade duration:0.2 timingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]] forKey:nil];
-						} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-							[cellReference.activityIndicator stopAnimating];
-						}];
-					}
-				}];
-				[dataTask resume];
-			}
-		}
-		
 		Video *video = self.videos[indexPath.item];
 		
 		VideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
@@ -943,6 +852,8 @@ typedef NS_ENUM(NSInteger, Section){
 	[self refreshAddButtonsAnimated:animated];
 	
 	[self.platformsCollectionView reloadData];
+	
+	[self.similarGamesCollectionView setContentOffset:CGPointZero animated:NO];
 	[self.similarGamesCollectionView reloadData];
 	
 	// Set status switches' position
@@ -1002,7 +913,10 @@ typedef NS_ENUM(NSInteger, Section){
 	self.images = [self orderedImagesFromGame:self.game];
 	self.videos = [self orderedVideosFromGame:self.game];
 	
+	[self.imagesCollectionView setContentOffset:CGPointZero animated:NO];
 	[self.imagesCollectionView reloadData];
+	
+	[self.videosCollectionView setContentOffset:CGPointZero animated:NO];
 	[self.videosCollectionView reloadData];
 	
 	(self.images.count == 0) ? [self.imagesStatusView setStatus:ContentStatusUnavailable] : [self.imagesStatusView setHidden:YES];

@@ -583,7 +583,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 //		[self.refreshBarButton setEnabled:NO];
 //	}
 	
-	if ([Session lastRefreshWasNotToday]){
+//	if ([Session lastRefreshWasNotToday]){
 		[[Session gamer] setLastRefresh:[NSDate date]];
 		[self.context MR_saveToPersistentStoreAndWait];
 		
@@ -595,11 +595,11 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 				[self requestGame:game];
 			}
 		}
-	}
-	else{
+//	}
+//	else{
 		[self.refreshBarButton setEnabled:YES];
 		[self.refreshControl endRefreshing];
-	}
+//	}
 }
 
 - (void)showSortOptions{

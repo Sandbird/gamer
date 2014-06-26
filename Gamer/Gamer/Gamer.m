@@ -2,7 +2,7 @@
 //  Gamer.m
 //  Gamer
 //
-//  Created by Caio Mello on 12/06/2014.
+//  Created by Caio Mello on 26/06/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -13,8 +13,8 @@
 
 @implementation Gamer
 
-@dynamic librarySize;
 @dynamic lastRefresh;
+@dynamic librarySize;
 @dynamic platforms;
 @dynamic region;
 

@@ -2,7 +2,7 @@
 //  Metascore.h
 //  Gamer
 //
-//  Created by Caio Mello on 27/04/2014.
+//  Created by Caio Mello on 26/06/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -14,8 +14,8 @@
 @interface Metascore : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * criticScore;
-@property (nonatomic, retain) NSDecimalNumber * userScore;
 @property (nonatomic, retain) NSString * metacriticURL;
+@property (nonatomic, retain) NSDecimalNumber * userScore;
 @property (nonatomic, retain) Game *game;
 @property (nonatomic, retain) Platform *platform;
 @property (nonatomic, retain) Game *selectedGame;
