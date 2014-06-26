@@ -319,10 +319,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 					
 					[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
 				}
-				
-				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[self.collectionView reloadData];
-				}];
 			}
 		}
 		
@@ -331,6 +327,10 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		if (self.numberOfRunningTasks == 0){
 			[self.refreshBarButton setEnabled:YES];
 			[self.refreshControl endRefreshing];
+			
+			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[self.collectionView reloadData];
+			}];
 		}
 	}];
 	[dataTask resume];
@@ -378,23 +378,31 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:self.context];
 			
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				if (!game.selectedRelease){
-					Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
-					for (Release *release in game.releases){
-						// If game not added, release region is selected region, release platform is in selectable platforms
-						if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
-							[game setSelectedRelease:release];
-							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-							
-							[self.context MR_saveToPersistentStoreAndWait];
-						}
+			if (!game.selectedRelease){
+				Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
+				for (Release *release in game.releases){
+					// If game not added, release region is selected region, release platform is in selectable platforms
+					if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
+						[game setSelectedRelease:release];
+						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
 					}
 				}
-			}];
+			}
+			
+			self.numberOfRunningTasks--;
+			
+			if (self.numberOfRunningTasks == 0){
+				[self.refreshBarButton setEnabled:YES];
+				[self.refreshControl endRefreshing];
+				
+				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					[self.collectionView reloadData];
+				}];
+			}
 		}
 	}];
 	[dataTask resume];
+	self.numberOfRunningTasks++;
 }
 
 - (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform{

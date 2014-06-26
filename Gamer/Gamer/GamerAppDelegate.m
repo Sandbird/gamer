@@ -93,6 +93,8 @@
 	[MagicalRecord cleanUp];
 }
 
+// Background fetch
+
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
@@ -110,6 +112,8 @@
 		}
 	}
 }
+
+// Open .gamer file
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
 	// If import controller isn't being displayed

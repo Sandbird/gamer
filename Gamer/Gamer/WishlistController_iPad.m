@@ -241,7 +241,9 @@
 		
 		if (self.numberOfRunningTasks == 0){
 			[self.refreshButton setEnabled:YES];
-			[self updateGameReleasePeriods];
+			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+				[self updateGameReleasePeriods];
+			}];
 		}
 	}];
 	[dataTask resume];
@@ -286,25 +288,30 @@
 			
 			[game setReleases:nil];
 			[Networking updateGameReleasesWithGame:game JSON:responseObject context:self.context];
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				if (!game.selectedRelease){
-					Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
-					for (Release *release in game.releases){
-						// If game not added, release region is selected region, release platform is in selectable platforms
-						if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
-							[game setSelectedRelease:release];
-							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-							
-							[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-								[self updateGameReleasePeriods];
-							}];
-						}
+			
+			if (!game.selectedRelease){
+				Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
+				for (Release *release in game.releases){
+					// If game not added, release region is selected region, release platform is in selectable platforms
+					if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
+						[game setSelectedRelease:release];
+						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
 					}
 				}
-			}];
+			}
+			
+			self.numberOfRunningTasks--;
+			
+			if (self.numberOfRunningTasks == 0){
+				[self.refreshButton setEnabled:YES];
+				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					[self updateGameReleasePeriods];
+				}];
+			}
 		}
 	}];
 	[dataTask resume];
+	self.numberOfRunningTasks++;
 }
 
 - (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform{
