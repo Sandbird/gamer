@@ -20,7 +20,7 @@ Gamer is a tool for exploring, organizing and keeping track of all our games.
 Support
 =====
 
-To report bugs, request features, make suggestions, etc., please send an email to [gamer.app@icloud.com](mailto:gamer.app@icloud.com) or contact [@GamerForiOS](https://twitter.com/GamerForiOS).
+To report bugs, request features, make suggestions, etc., please send an email to [gamer.app@icloud.com](mailto:gamer.app@icloud.com) or contact [@GamerForiOS](https://twitter.com/GamerForiOS) on Twitter.
 
 If you're a developer, open a new [issue](https://github.com/caiomello/gamer/issues) with the appropriate labels.
 
