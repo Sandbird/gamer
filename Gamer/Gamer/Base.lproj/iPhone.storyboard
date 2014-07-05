@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="OaV-q1-8Jh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="OaV-q1-8Jh">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -1454,7 +1454,8 @@
                         <color key="backgroundColor" red="0.12549019607843137" green="0.12549019607843137" blue="0.12549019607843137" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <sections>
-                            <tableViewSection headerTitle="Settings" footerTitle="Select your platforms. This affects search results. Reordering affects the Library and the game screen." id="Fex-lK-uad">
+                            <tableViewSection headerTitle="Settings" id="Fex-lK-uad">
+                                <string key="footerTitle">Select your platforms. This affects search results. Reordering affects the Library, the game screen and the auto-selection of releases.</string>
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="cf2-7H-VTZ" style="IBUITableViewCellStyleDefault" id="J2F-ol-Xmm" userLabel="Button Cell" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="119" width="320" height="44"/>
@@ -1476,10 +1477,10 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="Select your region. This will change the primary release that shows on the game screen." id="YPZ-ua-MWR">
+                            <tableViewSection footerTitle="Select your region. This affects the auto-selection of releases." id="YPZ-ua-MWR">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="DcG-O8-UTe" style="IBUITableViewCellStyleDefault" id="48n-gf-BiP" userLabel="Button Cell" customClass="CustomSelectionCell">
-                                        <rect key="frame" x="0.0" y="248" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="265" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="48n-gf-BiP" id="bYW-1t-fjS">
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
@@ -1501,7 +1502,7 @@
                             <tableViewSection footerTitle="Library game size." id="jhM-XO-Cyi">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="nAd-nG-9T0" userLabel="Slider Cell" customClass="SegmentedControlCell">
-                                        <rect key="frame" x="0.0" y="377" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="378" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nAd-nG-9T0" id="dhZ-0x-cIa">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1533,32 +1534,10 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="Save all your games to a backup file. To import just open the file in your iOS device. More info in the FAQ." id="hnJ-qJ-GDh">
-                                <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hUq-ZC-ZMC" style="IBUITableViewCellStyleDefault" id="RhF-Mx-C7w" userLabel="Button Cell" customClass="CustomSelectionCell">
-                                        <rect key="frame" x="0.0" y="473" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RhF-Mx-C7w" id="YQ9-a9-R6V">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Export Games" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hUq-ZC-ZMC">
-                                                    <rect key="frame" x="15" y="0.0" width="290" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <color key="textColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
-                            <tableViewSection footerTitle="Tell me about bugs, ask for a feature you would like, give me some suggestions!" id="PdQ-RX-X8A">
+                            <tableViewSection headerTitle="Other Stuff" footerTitle="Tell me about bugs, ask for a feature you would like, or give me some suggestions!" id="PdQ-RX-X8A">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="0qu-iQ-XQ4" style="IBUITableViewCellStyleDefault" id="bP2-eK-5jh" userLabel="Button Cell" customClass="CustomSelectionCell">
-                                        <rect key="frame" x="0.0" y="602" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="497" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bP2-eK-5jh" id="5da-DB-6q0">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -1577,10 +1556,32 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="Some details about how various parts of this app work." id="B2W-h2-jr6">
+                            <tableViewSection footerTitle="Save all your games to a backup file. To import just open the file in your iOS device. More info in the About screen." id="hnJ-qJ-GDh">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="hUq-ZC-ZMC" style="IBUITableViewCellStyleDefault" id="RhF-Mx-C7w" userLabel="Button Cell" customClass="CustomSelectionCell">
+                                        <rect key="frame" x="0.0" y="610" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RhF-Mx-C7w" id="YQ9-a9-R6V">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Export Games" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hUq-ZC-ZMC">
+                                                    <rect key="frame" x="15" y="0.0" width="290" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <color key="textColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection footerTitle="Some details on how some parts of the app work." id="B2W-h2-jr6">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="oIO-5O-nvz" style="IBUITableViewCellStyleDefault" id="Op7-hm-Fyl" userLabel="Button Cell" customClass="CustomSelectionCell">
-                                        <rect key="frame" x="0.0" y="715" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="739" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Op7-hm-Fyl" id="c7a-GK-2Nt">
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
@@ -1638,6 +1639,9 @@
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="How does it work?" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="DqE-Bu-pXL">
                                             <rect key="frame" x="20" y="20" width="280" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="21" id="AZr-jt-xON"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
@@ -1652,12 +1656,12 @@
                                         </textView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="bV0-kI-QV0" firstAttribute="top" secondItem="DqE-Bu-pXL" secondAttribute="bottom" id="95o-cH-ZNK"/>
                                         <constraint firstItem="bV0-kI-QV0" firstAttribute="leading" secondItem="ZIs-dk-tAx" secondAttribute="leading" constant="15" id="AbQ-ZS-gKb"/>
                                         <constraint firstAttribute="bottom" secondItem="bV0-kI-QV0" secondAttribute="bottom" constant="20" symbolic="YES" id="TiA-mI-Wgz"/>
+                                        <constraint firstItem="bV0-kI-QV0" firstAttribute="top" secondItem="ZIs-dk-tAx" secondAttribute="top" constant="41" id="YEJ-e9-mhq"/>
                                         <constraint firstAttribute="trailing" secondItem="DqE-Bu-pXL" secondAttribute="trailing" constant="20" symbolic="YES" id="azd-hO-WBZ"/>
                                         <constraint firstItem="DqE-Bu-pXL" firstAttribute="leading" secondItem="ZIs-dk-tAx" secondAttribute="leading" constant="20" symbolic="YES" id="bUD-H3-6TL"/>
-                                        <constraint firstItem="DqE-Bu-pXL" firstAttribute="centerX" secondItem="bV0-kI-QV0" secondAttribute="centerX" id="i1N-c5-0oA"/>
+                                        <constraint firstAttribute="trailing" secondItem="bV0-kI-QV0" secondAttribute="trailing" constant="15" id="gdm-LQ-I0V"/>
                                         <constraint firstItem="DqE-Bu-pXL" firstAttribute="top" secondItem="ZIs-dk-tAx" secondAttribute="top" constant="20" symbolic="YES" id="jgL-o9-lCu"/>
                                     </constraints>
                                 </tableViewCellContentView>

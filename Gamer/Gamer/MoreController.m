@@ -20,9 +20,9 @@ typedef NS_ENUM(NSInteger, Section){
 	SectionPlatforms,
 	SectionRegions,
 	SectionLibrarySize,
+	SectionFeedback,
 	SectionExport,
-	SectionAbout,
-	SectionFeedback
+	SectionAbout
 };
 
 @interface MoreController () <MFMailComposeViewControllerDelegate, UISplitViewControllerDelegate>
@@ -112,23 +112,6 @@ typedef NS_ENUM(NSInteger, Section){
 			}
 			break;
 		}
-		case SectionExport:
-			[self exportGames];
-			break;
-		case SectionAbout:
-			if ([Tools deviceIsiPhone]){
-				[self performSegueWithIdentifier:@"AboutSegue" sender:nil];
-			}
-			else{
-				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
-				AboutController *aboutController = [storyboard instantiateViewControllerWithIdentifier:@"AboutController"];
-				
-				UINavigationController *detailController = self.splitViewController.viewControllers[1];
-				[detailController setViewControllers:@[aboutController]];
-				
-				[tableView deselectRowAtIndexPath:indexPath animated:NO];
-			}
-			break;
 		case SectionFeedback:{
 			MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
 			if (mailComposeViewController){
@@ -149,6 +132,23 @@ typedef NS_ENUM(NSInteger, Section){
 			
 			break;
 		}
+		case SectionExport:
+			[self exportGames];
+			break;
+		case SectionAbout:
+			if ([Tools deviceIsiPhone]){
+				[self performSegueWithIdentifier:@"AboutSegue" sender:nil];
+			}
+			else{
+				UIStoryboard *storyboard = [UIApplication sharedApplication].delegate.window.rootViewController.storyboard;
+				AboutController *aboutController = [storyboard instantiateViewControllerWithIdentifier:@"AboutController"];
+				
+				UINavigationController *detailController = self.splitViewController.viewControllers[1];
+				[detailController setViewControllers:@[aboutController]];
+				
+				[tableView deselectRowAtIndexPath:indexPath animated:NO];
+			}
+			break;
 		default:
 			break;
 	}
