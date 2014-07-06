@@ -36,9 +36,8 @@
 
 @property (nonatomic, strong) NSCache *imageCache;
 
-@property (nonatomic, assign) NSInteger numberOfRunningTasks;
-
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
+
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
 @end
@@ -198,8 +197,10 @@
 
 #pragma mark - Networking
 
-- (void)requestInformationForGame:(Game *)game{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos"];
+- (void)requestGames:(NSArray *)games{
+	NSArray *identifiers = [games valueForKey:@"identifier"];
+	
+	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos,releases"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -210,44 +211,43 @@
 //			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
-				[Networking updateGameInfoWithGame:game JSON:responseObject context:self.context];
-				
-				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-				
-				UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
-				
-				if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
-					[self downloadCoverImageWithURL:coverImageURL game:game];
-				}
-				
-				[self requestReleasesForGame:game];
-				
-				if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
-					if (game.selectedMetascore){
-						[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
+				for (NSDictionary *dictionary in responseObject[@"results"]){
+					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+					Game *game = [games filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
+					
+					[Networking updateGame:game withResults:dictionary context:self.context];
+					
+					NSString *coverImageURL = (dictionary[@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:dictionary[@"image"][@"super_url"]] : nil;
+					
+					UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
+					
+					if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
+						[self downloadCoverImageWithURL:coverImageURL game:game];
 					}
-					else{
-						NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-						NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-						NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-						
-						[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
+					
+					if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
+						if (game.selectedMetascore){
+							[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
+						}
+						else{
+							NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+							NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+							NSArray *orderedPlatforms = [game.selectedPlatforms sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+							
+							[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
+						}
 					}
 				}
 			}
 		}
 		
-		self.numberOfRunningTasks--;
-		
-		if (self.numberOfRunningTasks == 0){
-			[self.refreshButton setEnabled:YES];
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self updateGameReleasePeriods];
-			}];
-		}
+		[self.refreshButton setEnabled:YES];
+		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[self updateGameReleasePeriods];
+			[self refreshWishlistSelectedReleases];
+		}];
 	}];
 	[dataTask resume];
-	self.numberOfRunningTasks++;
 }
 
 - (void)downloadCoverImageWithURL:(NSString *)URLString game:(Game *)game{
@@ -275,8 +275,10 @@
 	[downloadTask resume];
 }
 
-- (void)requestReleasesForGame:(Game *)game{
-	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+- (void)requestReleases:(NSArray *)releases{
+	NSArray *identifiers = [releases valueForKey:@"identifier"];
+	
+	NSURLRequest *request = [Networking requestForReleasesWithIdentifiers:identifiers fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -286,32 +288,35 @@
 			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			[game setReleases:nil];
-			[Networking updateGameReleasesWithGame:game JSON:responseObject context:self.context];
-			
-			if (!game.selectedRelease){
-				Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
-				for (Release *release in game.releases){
-					// If game not added, release region is selected region, release platform is in selectable platforms
-					if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
-						[game setSelectedRelease:release];
-						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				for (NSDictionary *dictionary in responseObject[@"results"]){
+					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+					Release *release = [releases filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
+					
+					[Networking updateRelease:release withResults:dictionary context:self.context];
+					
+					Game *game = release.game;
+					
+					if (!game.selectedRelease){
+						Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
+						for (Release *release in game.releases){
+							// If game not added, release region is selected region, release platform is in selectable platforms
+							if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
+								[game setSelectedRelease:release];
+								[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
+							}
+						}
 					}
 				}
 			}
-			
-			self.numberOfRunningTasks--;
-			
-			if (self.numberOfRunningTasks == 0){
-				[self.refreshButton setEnabled:YES];
-				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[self updateGameReleasePeriods];
-				}];
-			}
 		}
+		
+		[self.refreshButton setEnabled:YES];
+		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[self updateGameReleasePeriods];
+		}];
 	}];
 	[dataTask resume];
-	self.numberOfRunningTasks++;
 }
 
 - (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform{
@@ -364,27 +369,34 @@
 }
 
 - (void)refreshWishlistGames{
-	[Game MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location = %@", @(GameLocationNone)]];
-	[self.context MR_saveToPersistentStoreAndWait];
-	
 	if (self.fetchedResultsController.fetchedObjects.count > 0){
 		[self.refreshButton setEnabled:NO];
 	}
 	
-	if ([Session lastRefreshWasNotToday]){
-		[[Session gamer] setLastRefresh:[NSDate date]];
-		[self.context MR_saveToPersistentStoreAndWait];
-		
-		self.numberOfRunningTasks = 0;
-		
-		// Request info for all games in the Wishlist
-		for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++)
-			for (NSInteger row = 0; row < ([self.fetchedResultsController.sections[section] numberOfObjects]); row++)
-				[self requestInformationForGame:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]]];
+	//	if ([Session lastRefreshWasNotToday]){
+	//		[[Session gamer] setLastRefresh:[NSDate date]];
+	//		[self.context MR_saveToPersistentStoreAndWait];
+	//
+	[self requestGames:self.fetchedResultsController.fetchedObjects];
+	//	}
+	//	else{
+	//		[self.refreshControl endRefreshing];
+	//	}
+}
+
+- (void)refreshWishlistSelectedReleases{
+	NSMutableArray *selectedReleases = [[NSMutableArray alloc] initWithCapacity:self.fetchedResultsController.fetchedObjects.count];
+	
+	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++){
+		for (NSInteger row = 0; row < [self.fetchedResultsController.sections[section] numberOfObjects]; row++){
+			Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+			
+			if (game.selectedRelease)
+				[selectedReleases addObject:game.selectedRelease];
+		}
 	}
-	else{
-		[self.refreshButton setEnabled:YES];
-	}
+	
+	[self requestReleases:selectedReleases];
 }
 
 - (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{

@@ -1578,7 +1578,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="Some details on how some parts of the app work." id="B2W-h2-jr6">
+                            <tableViewSection footerTitle="A few details on how some parts of the app work." id="B2W-h2-jr6">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="oIO-5O-nvz" style="IBUITableViewCellStyleDefault" id="Op7-hm-Fyl" userLabel="Button Cell" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="739" width="320" height="44"/>

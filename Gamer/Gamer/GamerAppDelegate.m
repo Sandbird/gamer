@@ -17,8 +17,6 @@
 
 @interface GamerAppDelegate ()
 
-@property (nonatomic, assign) NSInteger numberOfRunningTasks;
-
 @end
 
 @implementation GamerAppDelegate
@@ -105,11 +103,7 @@
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
 		NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:context];
 		
-		self.numberOfRunningTasks = 0;
-		
-		for (Game *game in games){
-			[self requestInformationForGame:game context:context completionHandler:completionHandler];
-		}
+		[self requestGames:games context:context completionHandler:completionHandler];
 	}
 }
 
@@ -149,71 +143,81 @@
 
 #pragma mark - Custom
 
-- (void)requestInformationForGame:(Game *)game context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos"];
+- (void)requestGames:(NSArray *)games context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+	NSArray *identifiers = [games valueForKey:@"identifier"];
+	
+	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos,releases"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			NSLog(@"Failure in %@ - Status code: %ld - Background (Game)", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			completionHandler(UIBackgroundFetchResultFailed);
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Background (Game) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
-				[Networking updateGameInfoWithGame:game JSON:responseObject context:context];
-				
-				if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
-					if (game.selectedMetascore){
-						[self requestMetascoreForGame:game platform:game.selectedMetascore.platform context:context completionHandler:completionHandler];
-					}
-					else{
-						NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-						NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-						NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-						
-						[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject context:context completionHandler:completionHandler];
+				for (NSDictionary *dictionary in responseObject[@"results"]){
+					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+					Game *game = [games filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
+					
+					[Networking updateGame:game withResults:dictionary context:context];
+					
+					if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
+						if (game.selectedMetascore){
+							[self requestMetascoreForGame:game platform:game.selectedMetascore.platform context:context completionHandler:completionHandler];
+						}
+						else{
+							NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+							NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+							NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+							
+							[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject context:context completionHandler:completionHandler];
+						}
 					}
 				}
 			}
-		}
-		
-		self.numberOfRunningTasks--;
-		
-		if (self.numberOfRunningTasks == 0){
-			completionHandler(UIBackgroundFetchResultNewData);
+			
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+			
+			NSArray *selectedReleases = [games valueForKey:@"selectedRelease"];
+			[self requestReleases:selectedReleases context:context completionHandler:completionHandler];
 		}
 	}];
 	[dataTask resume];
-	self.numberOfRunningTasks++;
 }
 
-- (void)requestReleasesForGame:(Game *)game context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+- (void)requestReleases:(NSArray *)releases context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+	NSArray *identifiers = [releases valueForKey:@"identifier"];
+	
+	NSURLRequest *request = [Networking requestForReleasesWithIdentifiers:identifiers fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Background (Releases)", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			completionHandler(UIBackgroundFetchResultFailed);
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Background (Releases) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			[game setReleases:nil];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				for (NSDictionary *dictionary in responseObject[@"results"]){
+					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+					Release *release = [releases filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
+					
+					[Networking updateRelease:release withResults:dictionary context:context];
+				}
+			}
 			
-			[Networking updateGameReleasesWithGame:game JSON:responseObject context:context];
-		}
-		
-		self.numberOfRunningTasks--;
-		
-		if (self.numberOfRunningTasks == 0){
 			completionHandler(UIBackgroundFetchResultNewData);
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		}
+		
+		
 	}];
 	[dataTask resume];
-	self.numberOfRunningTasks++;
 }
 
 - (void)requestMetascoreForGame:(Game *)game platform:(Platform *)platform context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
@@ -222,6 +226,7 @@
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Background (Metascore)", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			completionHandler(UIBackgroundFetchResultFailed);
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Background (Metascore) - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
@@ -241,17 +246,12 @@
 			[metascore setMetacriticURL:metacriticURL];
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
-		}
-		
-		self.numberOfRunningTasks--;
-		
-		if (self.numberOfRunningTasks == 0){
+			
 			completionHandler(UIBackgroundFetchResultNewData);
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		}
 	}];
 	[dataTask resume];
-	self.numberOfRunningTasks++;
 }
 
 @end

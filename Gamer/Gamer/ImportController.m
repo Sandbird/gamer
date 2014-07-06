@@ -18,9 +18,6 @@
 @property (nonatomic, strong) NSMutableArray *importedWishlistGames;
 @property (nonatomic, strong) NSMutableArray *importedLibraryGames;
 
-@property (nonatomic, assign) NSInteger numberOfRunningTasks;
-@property (nonatomic, assign) NSInteger numberOfFailedRequests;
-
 @property (nonatomic, strong) NSCache *imageCache;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
@@ -73,15 +70,14 @@
 				
 				[game setSelectedPlatforms:[NSSet setWithArray:selectedPlatforms]];
 			}
-			
-			// If game not in database, download
-			if (!game.releaseDate)
-				[self requestGame:game];
 		}
 		
 		NSSortDescriptor *titleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
 		self.importedWishlistGames = [self.importedWishlistGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
 		self.importedLibraryGames = [self.importedLibraryGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
+		
+		NSArray *games = [self.importedWishlistGames arrayByAddingObjectsFromArray:self.importedLibraryGames];
+		[self requestGames:games];
 	}
 }
 
@@ -156,50 +152,39 @@
 
 #pragma mark - Networking
 
-- (void)requestGame:(Game *)game{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos"];
+- (void)requestGames:(NSArray *)games{
+	NSArray *identifiers = [games valueForKey:@"identifier"];
+	
+	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos,releases"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			self.numberOfRunningTasks--;
-			self.numberOfFailedRequests++;
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			self.numberOfRunningTasks--;
-			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
-				[Networking updateGameInfoWithGame:game JSON:responseObject context:self.context];
-				
-				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-				
-				UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
-				
-				if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
-					[self downloadCoverImageWithURL:coverImageURL game:game];
+				for (NSDictionary *dictionary in responseObject[@"results"]){
+					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+					Game *game = [games filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
+					
+					[Networking updateGame:game withResults:dictionary context:self.context];
+					
+					NSString *coverImageURL = (dictionary[@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:dictionary[@"image"][@"super_url"]] : nil;
+					
+					UIImage *coverImage = [UIImage imageWithContentsOfFile:game.imagePath];
+					
+					if (!coverImage || !game.imagePath || ![game.imageURL isEqualToString:coverImageURL]){
+						[self downloadCoverImageWithURL:coverImageURL game:game];
+					}
 				}
-				
-				[self requestReleasesForGame:game];
-			}
-			else{
-				self.numberOfFailedRequests++;
 			}
 		}
 		
-		if (self.numberOfRunningTasks == 0){
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];
-			
-			if (self.numberOfFailedRequests > 0){
-				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your games later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-				[alertView show];
-			}
-		}
+		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 	}];
 	[dataTask resume];
-	self.numberOfRunningTasks++;
 }
 
 - (void)downloadCoverImageWithURL:(NSString *)URLString game:(Game *)game{
@@ -213,79 +198,17 @@
 	} completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
 		if (error){
 			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Cover Image", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			self.numberOfRunningTasks--;
-			
-			if (self.numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
-				
-				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your games later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-				[alertView show];
-			}
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			
-			self.numberOfRunningTasks--;
 			
 			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
 			[game setImageURL:URLString];
 			
 			[self.tableView reloadData];
-			
-			if (self.numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
-			}
 		}
 	}];
 	[downloadTask resume];
-	self.numberOfRunningTasks++;
-}
-
-- (void)requestReleasesForGame:(Game *)game{
-	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
-	
-	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
-			
-			self.numberOfRunningTasks--;
-			
-			if (self.numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
-				
-				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some games might not have downloaded properly" message:@"You can save the import and just refresh your games later to complete the download" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-				[alertView show];
-			}
-		}
-		else{
-			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-//			NSLog(@"%@", responseObject);
-			
-			self.numberOfRunningTasks--;
-			
-			[game setReleases:nil];
-			
-			[Networking updateGameReleasesWithGame:game JSON:responseObject context:self.context];
-			
-			if (!game.selectedRelease){
-				Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
-				for (Release *release in game.releases){
-					// If game not added, release region is selected region, release platform is in selectable platforms
-					if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
-						[game setSelectedRelease:release];
-						[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-					}
-				}
-			}
-			
-			if (self.numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
-			}
-		}
-	}];
-	[dataTask resume];
-	self.numberOfRunningTasks++;
 }
 
 #pragma mark - Custom

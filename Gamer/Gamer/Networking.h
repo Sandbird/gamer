@@ -32,13 +32,16 @@ typedef NS_ENUM(NSInteger, ReleasePeriodIdentifier){
 + (AFURLSessionManager *)manager;
 
 + (NSURLRequest *)requestForGamesWithTitle:(NSString *)title fields:(NSString *)fields platforms:(NSArray *)platforms;
++ (NSURLRequest *)requestForGamesWithIdentifiers:(NSArray *)identifiers fields:(NSString *)fields;
 + (NSURLRequest *)requestForGameWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
-+ (NSURLRequest *)requestForVideoWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
++ (NSURLRequest *)requestForReleasesWithIdentifiers:(NSArray *)identifiers fields:(NSString *)fields;
 + (NSURLRequest *)requestForReleasesWithGameIdentifier:(NSNumber *)gameIdentifier fields:(NSString *)fields;
++ (NSURLRequest *)requestForVideosWithIdentifiers:(NSArray *)identifiers fields:(NSString *)fields;
++ (NSURLRequest *)requestForVideoWithIdentifier:(NSNumber *)identifier fields:(NSString *)fields;
 + (NSURLRequest *)requestForMetascoreWithGame:(Game *)game platform:(Platform *)platform;
 
-+ (void)updateGameInfoWithGame:(Game *)game JSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context;
-+ (void)updateGameReleasesWithGame:(Game *)game JSON:(NSDictionary *)JSON context:(NSManagedObjectContext *)context;
++ (void)updateGame:(Game *)game withResults:(NSDictionary *)results context:(NSManagedObjectContext *)context;
++ (void)updateRelease:(Release *)release withResults:(NSDictionary *)results context:(NSManagedObjectContext *)context;
 
 + (void)setReleaseDateForGameOrRelease:(id)object dateString:(NSString *)date expectedReleaseDay:(NSInteger)day expectedReleaseMonth:(NSInteger)month expectedReleaseQuarter:(NSInteger)quarter expectedReleaseYear:(NSInteger)year;
 + (NSInteger)quarterForMonth:(NSInteger)month;
