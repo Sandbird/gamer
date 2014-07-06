@@ -394,9 +394,12 @@ typedef NS_ENUM(NSInteger, Section){
 	if (indexPath.section == SectionVideos) [cell setSeparatorInset:UIEdgeInsetsMake(0, self.tableView.frame.size.width * 2, 0, 0)];
 	
 	if (indexPath.section == SectionImages){
-		if (self.game.images.count == 0 || self.game.videos.count == 0){
-			[self requestSimilarGamesWithGame:self.game];
+		if (self.game.images.count == 0 && self.game.videos.count == 0){
 			[self requestMediaWithGame:self.game];
+			
+			if (self.game.similarGames.count == 0){
+				[self requestSimilarGamesWithGame:self.game];
+			}
 		}
 	}
 }
