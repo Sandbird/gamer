@@ -392,6 +392,13 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	if (indexPath.section == SectionVideos) [cell setSeparatorInset:UIEdgeInsetsMake(0, self.tableView.frame.size.width * 2, 0, 0)];
+	
+	if (indexPath.section == SectionImages){
+		if (self.game.images.count == 0 || self.game.videos.count == 0){
+			[self requestSimilarGamesWithGame:self.game];
+			[self requestMediaWithGame:self.game];
+		}
+	}
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -649,16 +656,16 @@ typedef NS_ENUM(NSInteger, Section){
 						}
 					}
 				}
-			}
-			
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
-				[self.releasesLabel setText:[NSString stringWithFormat:self.game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)self.game.releases.count]];
 				
-				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
-				[self.tableView beginUpdates];
-				[self.tableView endUpdates];
-			}];
+				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
+					[self.releasesLabel setText:[NSString stringWithFormat:self.game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)self.game.releases.count]];
+					
+					[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
+					[self.tableView beginUpdates];
+					[self.tableView endUpdates];
+				}];
+			}
 		}
 	}];
 	[dataTask resume];
@@ -689,6 +696,85 @@ typedef NS_ENUM(NSInteger, Section){
 					self.similarGames = [self orderedSimilarGamesFromGame:game];
 					[self.similarGamesCollectionView setContentOffset:CGPointZero animated:NO];
 					[self.similarGamesCollectionView reloadData];
+					
+					[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionDetails] withRowAnimation:UITableViewRowAnimationAutomatic];
+					[self.tableView beginUpdates];
+					[self.tableView endUpdates];
+				}];
+			}
+		}
+	}];
+	[dataTask resume];
+}
+
+- (void)requestMediaWithGame:(Game *)game{
+	[self.imagesStatusView setStatus:ContentStatusLoading];
+	[self.videosStatusView setStatus:ContentStatusLoading];
+	
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"similar_games,images,videos"];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Media", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Media - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			NSLog(@"%@", responseObject);
+			
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				NSDictionary *results = responseObject[@"results"];
+				
+				// Similar games
+				if (results[@"similar_games"] != [NSNull null]){
+					for (NSDictionary *dictionary in results[@"similar_games"]){
+						SimilarGame *similarGame = [SimilarGame MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:self.context];
+						if (!similarGame) similarGame = [SimilarGame MR_createInContext:self.context];
+						[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+						[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+						[game addSimilarGamesObject:similarGame];
+					}
+				}
+				
+				// Images
+				if (results[@"images"] != [NSNull null]){
+					NSInteger index = 0;
+					for (NSDictionary *dictionary in results[@"images"]){
+						NSString *stringURL = [Tools stringFromSourceIfNotNull:dictionary[@"super_url"]];
+						Image *image = [Image MR_findFirstByAttribute:@"thumbnailURL" withValue:stringURL inContext:self.context];
+						if (!image) image = [Image MR_createInContext:self.context];
+						[image setThumbnailURL:stringURL];
+						[image setOriginalURL:[stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"]];
+						[image setIndex:@(index)];
+						[game addImagesObject:image];
+						
+						index++;
+					}
+				}
+				
+				// Videos
+				if (results[@"videos"] != [NSNull null]){
+					NSInteger index = 0;
+					for (NSDictionary *dictionary in results[@"videos"]){
+						NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+						Video *video = [Video MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:self.context];
+						if (!video) video = [Video MR_createInContext:self.context];
+						[video setIdentifier:identifier];
+						[video setIndex:@(index)];
+						[video setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
+						[game addVideosObject:video];
+						
+						index++;
+					}
+				}
+				
+				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					self.images = [self orderedImagesFromGame:game];
+					[self.imagesCollectionView setContentOffset:CGPointZero animated:NO];
+					[self.imagesCollectionView reloadData];
+					(self.images.count == 0) ? [self.imagesStatusView setStatus:ContentStatusUnavailable] : [self.imagesStatusView setHidden:YES];
+					
+					[self requestSimilarGamesWithGame:game];
+					[self requestVideosWithGame:game];
 				}];
 			}
 		}
@@ -731,6 +817,7 @@ typedef NS_ENUM(NSInteger, Section){
 					self.videos = [self orderedVideosFromGame:game];
 					[self.videosCollectionView setContentOffset:CGPointZero animated:NO];
 					[self.videosCollectionView reloadData];
+					(self.videos.count == 0) ? [self.videosStatusView setStatus:ContentStatusUnavailable] : [self.videosStatusView setHidden:YES];
 				}];
 			}
 		}

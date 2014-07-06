@@ -98,6 +98,7 @@
 		25D2E601178BB22900C7EDDB /* ImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ImageViewerController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
 		25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */; };
+		25EC37111969CC20001ECE94 /* NSArray+Split.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EC37101969CC20001ECE94 /* NSArray+Split.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -276,6 +277,8 @@
 		25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionCell.m; sourceTree = "<group>"; };
 		25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCollectionCell.h; sourceTree = "<group>"; };
 		25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCollectionCell.m; sourceTree = "<group>"; };
+		25EC370F1969CC20001ECE94 /* NSArray+Split.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Split.h"; sourceTree = "<group>"; };
+		25EC37101969CC20001ECE94 /* NSArray+Split.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Split.m"; sourceTree = "<group>"; };
 		25EE8CD218AAE828003E979E /* 1.1.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 1.1.6.xcdatamodel; sourceTree = "<group>"; };
 		25F4588D179DFB2C008C15B3 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		3636943419C34655B50F4EDC /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
@@ -638,6 +641,8 @@
 				25112F5218F8E6DA001B93EB /* Platform+Library.m */,
 				2544F7BE191AFDC600E022C4 /* DACircularProgressView+AFNetworking.h */,
 				2544F7BF191AFDC600E022C4 /* DACircularProgressView+AFNetworking.m */,
+				25EC370F1969CC20001ECE94 /* NSArray+Split.h */,
+				25EC37101969CC20001ECE94 /* NSArray+Split.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -845,6 +850,7 @@
 				25AC859918EE63A100919A15 /* PlatformPickerController.m in Sources */,
 				2574E555195C6378009107EB /* Gamer.m in Sources */,
 				259DD14617ADBE8600FAD645 /* SearchCell.m in Sources */,
+				25EC37111969CC20001ECE94 /* NSArray+Split.m in Sources */,
 				2574E561195C6378009107EB /* Franchise.m in Sources */,
 				25AC85A818F031BC00919A15 /* ReleaseCell.m in Sources */,
 				2593051717C90017001DC04B /* MetacriticController.m in Sources */,

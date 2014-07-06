@@ -204,10 +204,10 @@
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Games", self, (long)((NSHTTPURLResponse *)response).statusCode);
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Games - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
@@ -225,18 +225,18 @@
 						[self downloadCoverImageWithURL:coverImageURL game:game];
 					}
 					
-					if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
-						if (game.selectedMetascore){
-							[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
-						}
-						else{
-							NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-							NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-							NSArray *orderedPlatforms = [game.selectedPlatforms sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-							
-							[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
-						}
-					}
+//					if ([game.releasePeriod.identifier compare:@(ReleasePeriodIdentifierThisWeek)] <= NSOrderedSame){
+//						if (game.selectedMetascore){
+//							[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
+//						}
+//						else{
+//							NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+//							NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+//							NSArray *orderedPlatforms = [game.selectedPlatforms sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+//							
+//							[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
+//						}
+//					}
 				}
 			}
 		}
@@ -268,7 +268,8 @@
 			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
 			[game setImageURL:URLString];
 			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.collectionView reloadItemsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:game]]];
+//				[self.collectionView reloadItemsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:game]]];
+				[self.collectionView reloadData];
 			}];
 		}
 	}];

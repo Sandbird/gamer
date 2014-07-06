@@ -26,6 +26,7 @@
 #import "SearchController_iPad.h"
 #import "LibrarySortFilterView.h"
 #import "Platform+Library.h"
+#import "NSArray+Split.h"
 
 typedef NS_ENUM(NSInteger, LibrarySort){
 	LibrarySortTitle = 0,
@@ -291,10 +292,11 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
-			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Game", self, (long)((NSHTTPURLResponse *)response).statusCode);
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Games", self, (long)((NSHTTPURLResponse *)response).statusCode);
 		}
 		else{
-			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			NSLog(@"Success in %@ - Status code: %ld - Games - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+//			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
 				for (NSDictionary *dictionary in responseObject[@"results"]){
@@ -311,16 +313,16 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 						[self downloadCoverImageWithURL:coverImageURL game:game];
 					}
 					
-					if (game.selectedMetascore){
-						[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
-					}
-					else{
-						NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-						NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-						NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-						
-						[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
-					}
+//					if (game.selectedMetascore){
+//						[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
+//					}
+//					else{
+//						NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+//						NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+//						NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+//						
+//						[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
+//					}
 				}
 			}
 		}
@@ -499,8 +501,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			NSArray *games = platform.sortedLibraryGames;
 			
 			[self.dataSource addObject:@{@"platform":@{@"id":platform.identifier,
-												   @"name":platform.name,
-												   @"games":games}}];
+													   @"name":platform.name,
+													   @"games":games}}];
 		}
 	}
 	
@@ -542,14 +544,20 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 //	if ([Session lastRefreshWasNotToday]){
 //		[[Session gamer] setLastRefresh:[NSDate date]];
 //		[self.context MR_saveToPersistentStoreAndWait];
-//
+//	
+	NSArray *platformGames = [self.dataSource valueForKeyPath:@"platform.games"];
+	
 	NSMutableArray *games = [[NSMutableArray alloc] init];
-	for (NSDictionary *dictionary in self.dataSource){
-		for (Game *game in dictionary[@"platform"][@"games"]){
-			[games addObject:game];
-		}
+	for (NSArray *array in platformGames){
+		[games addObjectsFromArray:array];
 	}
-	[self requestGames:games];
+	
+	NSArray *splitArray = [NSArray splitArray:games componentsPerSegment:100];
+	
+	for (NSArray *array in splitArray){
+		[self requestGames:array];
+	}
+	
 //	}
 //	else{
 //		[self.refreshBarButton setEnabled:YES];

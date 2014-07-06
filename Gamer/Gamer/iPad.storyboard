@@ -104,33 +104,21 @@
                                     <rect key="frame" x="0.0" y="64" width="768" height="36"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nGc-Ty-aP1" userLabel="Separator View">
-                                            <rect key="frame" x="20" y="0.0" width="748" height="1"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="0.19688760080000001" alpha="1" colorSpace="calibratedWhite"/>
-                                        </view>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Next Month" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="leb-AT-Mnd" userLabel="Period Label">
-                                            <rect key="frame" x="20" y="15" width="728" height="21"/>
+                                            <rect key="frame" x="20" y="7" width="728" height="21"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="21" id="b4U-2p-svJ"/>
-                                            </constraints>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="bottom" secondItem="leb-AT-Mnd" secondAttribute="bottom" id="2Xe-P0-JZx"/>
-                                        <constraint firstItem="nGc-Ty-aP1" firstAttribute="top" secondItem="5rf-W9-Blz" secondAttribute="top" id="Lig-Iz-Nsz"/>
-                                        <constraint firstItem="leb-AT-Mnd" firstAttribute="top" secondItem="nGc-Ty-aP1" secondAttribute="bottom" constant="14" id="Pdv-20-sTy"/>
-                                        <constraint firstAttribute="trailing" secondItem="nGc-Ty-aP1" secondAttribute="trailing" id="QzX-Gm-tfS"/>
-                                        <constraint firstItem="nGc-Ty-aP1" firstAttribute="leading" secondItem="5rf-W9-Blz" secondAttribute="leading" constant="20" symbolic="YES" id="Wnv-Sx-7zg"/>
-                                        <constraint firstItem="leb-AT-Mnd" firstAttribute="leading" secondItem="nGc-Ty-aP1" secondAttribute="leading" id="sSx-WD-kTv"/>
-                                        <constraint firstAttribute="trailing" secondItem="leb-AT-Mnd" secondAttribute="trailing" constant="20" symbolic="YES" id="yFz-6z-xY0"/>
+                                        <constraint firstItem="leb-AT-Mnd" firstAttribute="top" secondItem="5rf-W9-Blz" secondAttribute="top" constant="7" id="6AC-aY-dZu"/>
+                                        <constraint firstAttribute="bottom" secondItem="leb-AT-Mnd" secondAttribute="bottom" constant="8" id="RXO-ad-zpJ"/>
+                                        <constraint firstItem="leb-AT-Mnd" firstAttribute="leading" secondItem="5rf-W9-Blz" secondAttribute="leading" constant="20" symbolic="YES" id="j5r-Cx-wBP"/>
+                                        <constraint firstAttribute="trailing" secondItem="leb-AT-Mnd" secondAttribute="trailing" constant="20" symbolic="YES" id="qsx-Iw-D5v"/>
                                     </constraints>
                                     <connections>
-                                        <outlet property="separator" destination="nGc-Ty-aP1" id="FPf-vK-XOv"/>
                                         <outlet property="titleLabel" destination="leb-AT-Mnd" id="dgJ-vH-cAv"/>
                                     </connections>
                                 </collectionReusableView>
@@ -2230,6 +2218,6 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="Cb3-ZA-M1W"/>
-        <segue reference="S9N-47-GDG"/>
+        <segue reference="d00-8M-kLX"/>
     </inferredMetricsTieBreakers>
 </document>

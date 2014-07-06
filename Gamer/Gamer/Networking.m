@@ -149,99 +149,84 @@ static NSMutableURLRequest *SEARCHREQUEST;
 	
 	// Releases
 	if (results[@"releases"] != [NSNull null]){
-		NSMutableArray *releases = [[NSMutableArray alloc] initWithCapacity:[results[@"releases"] count]];
 		for (NSDictionary *dictionary in results[@"releases"]){
 			Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (!release) release = [Release MR_createInContext:context];
 			[release setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[release setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[releases addObject:release];
+			[game addReleasesObject:release];
 		}
-		[game setReleases:[NSSet setWithArray:releases]];
 	}
 	
 	// Genres
 	if (results[@"genres"] != [NSNull null]){
-		NSMutableArray *genres = [[NSMutableArray alloc] initWithCapacity:[results[@"genres"] count]];
 		for (NSDictionary *dictionary in results[@"genres"]){
 			Genre *genre = [Genre MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (!genre) genre = [Genre MR_createInContext:context];
 			[genre setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[genre setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[genres addObject:genre];
+			[game addGenresObject:genre];
 		}
-		[game setGenres:[NSSet setWithArray:genres]];
 	}
 	
 	// Developers
 	if (results[@"developers"] != [NSNull null]){
-		NSMutableArray *developers = [[NSMutableArray alloc] initWithCapacity:[results[@"developers"] count]];
 		for (NSDictionary *dictionary in results[@"developers"]){
 			Developer *developer = [Developer MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (!developer) developer = [Developer MR_createInContext:context];
 			[developer setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[developer setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[developers addObject:developer];
+			[game addDevelopersObject:developer];
 		}
-		[game setDevelopers:[NSSet setWithArray:developers]];
 	}
 	
 	// Publishers
 	if (results[@"publishers"] != [NSNull null]){
-		NSMutableArray *publishers = [[NSMutableArray alloc] initWithCapacity:[results[@"publishers"] count]];
 		for (NSDictionary *dictionary in results[@"publishers"]){
 			Publisher *publisher = [Publisher MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (!publisher) publisher = [Publisher MR_createInContext:context];
 			[publisher setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[publisher setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[publishers addObject:publisher];
+			[game addPublishersObject:publisher];
 		}
-		[game setPublishers:[NSSet setWithArray:publishers]];
 	}
 	
 	// Franchises
 	if (results[@"franchises"] != [NSNull null]){
-		NSMutableArray *franchises = [[NSMutableArray alloc] initWithCapacity:[results[@"franchises"] count]];
 		for (NSDictionary *dictionary in results[@"franchises"]){
 			Franchise *franchise = [Franchise MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (!franchise) franchise = [Franchise MR_createInContext:context];
 			[franchise setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[franchise setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[franchises addObject:franchise];
+			[game addFranchisesObject:franchise];
 		}
-		[game setFranchises:[NSSet setWithArray:franchises]];
 	}
 	
 	// Similar games
 	if (results[@"similar_games"] != [NSNull null]){
-		NSMutableArray *similarGames = [[NSMutableArray alloc] initWithCapacity:[results[@"similar_games"] count]];
 		for (NSDictionary *dictionary in results[@"similar_games"]){
 			SimilarGame *similarGame = [SimilarGame MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (!similarGame) similarGame = [SimilarGame MR_createInContext:context];
 			[similarGame setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[similarGame setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[similarGames addObject:similarGame];
+			[game addSimilarGamesObject:similarGame];
 		}
-		[game setSimilarGames:[NSSet setWithArray:similarGames]];
 	}
 	
 	// Themes
 	if (results[@"themes"] != [NSNull null]){
-		NSMutableArray *themes = [[NSMutableArray alloc] initWithCapacity:[results[@"themes"] count]];
 		for (NSDictionary *dictionary in results[@"themes"]){
 			Theme *theme = [Theme MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:context];
 			if (!theme) theme = [Theme MR_createInContext:context];
 			[theme setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
 			[theme setName:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-			[themes addObject:theme];
+			[game addThemesObject:theme];
 		}
-		[game setThemes:[NSSet setWithArray:themes]];
 	}
 	
 	// Images
 	if (results[@"images"] != [NSNull null]){
 		NSInteger index = 0;
-		NSMutableArray *images = [[NSMutableArray alloc] initWithCapacity:[results[@"images"] count]];
 		for (NSDictionary *dictionary in results[@"images"]){
 			NSString *stringURL = [Tools stringFromSourceIfNotNull:dictionary[@"super_url"]];
 			Image *image = [Image MR_findFirstByAttribute:@"thumbnailURL" withValue:stringURL inContext:context];
@@ -249,17 +234,15 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			[image setThumbnailURL:stringURL];
 			[image setOriginalURL:[stringURL stringByReplacingOccurrencesOfString:@"scale_large" withString:@"original"]];
 			[image setIndex:@(index)];
-			[images addObject:image];
+			[game addImagesObject:image];
 			
 			index++;
 		}
-		[game setImages:[NSSet setWithArray:images]];
 	}
 	
 	// Videos
 	if (results[@"videos"] != [NSNull null]){
 		NSInteger index = 0;
-		NSMutableArray *videos = [[NSMutableArray alloc] initWithCapacity:[results[@"videos"] count]];
 		for (NSDictionary *dictionary in results[@"videos"]){
 			NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
 			Video *video = [Video MR_findFirstByAttribute:@"identifier" withValue:identifier inContext:context];
@@ -267,11 +250,10 @@ static NSMutableURLRequest *SEARCHREQUEST;
 			[video setIdentifier:identifier];
 			[video setIndex:@(index)];
 			[video setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"title"]]];
-			[videos addObject:video];
+			[game addVideosObject:video];
 			
 			index++;
 		}
-		[game setVideos:[NSSet setWithArray:videos]];
 	}
 	
 	// Release date
