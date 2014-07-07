@@ -363,22 +363,25 @@ static NSMutableURLRequest *SEARCHREQUEST;
 }
 
 + (void)updateRelease:(Release *)release withResults:(NSDictionary *)results context:(NSManagedObjectContext *)context{
-//	Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:results[@"platform"][@"id"] inContext:context];
+	Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:results[@"platform"][@"id"] inContext:context];
 	
-	[release setIdentifier:[Tools integerNumberFromSourceIfNotNull:results[@"id"]]];
-	[release setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
-	[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:results[@"region"][@"id"]] inContext:context]];
-	
-	NSString *releaseDate = [Tools stringFromSourceIfNotNull:results[@"release_date"]];
-	NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
-	NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
-	NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
-	NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
-	
-	[Networking setReleaseDateForGameOrRelease:release dateString:releaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
-	
-	if (results[@"image"] != [NSNull null])
-		[release setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
+	if (platform) {
+		[release setIdentifier:[Tools integerNumberFromSourceIfNotNull:results[@"id"]]];
+		[release setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
+		[release setPlatform:platform];
+		[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:results[@"region"][@"id"]] inContext:context]];
+		
+		NSString *releaseDate = [Tools stringFromSourceIfNotNull:results[@"release_date"]];
+		NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
+		NSInteger expectedReleaseMonth = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_month"]].integerValue;
+		NSInteger expectedReleaseQuarter = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_quarter"]].integerValue;
+		NSInteger expectedReleaseYear = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_year"]].integerValue;
+		
+		[Networking setReleaseDateForGameOrRelease:release dateString:releaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
+		
+		if (results[@"image"] != [NSNull null])
+			[release setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
+	}
 }
 
 + (NSInteger)quarterForMonth:(NSInteger)month{

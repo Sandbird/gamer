@@ -646,16 +646,16 @@ typedef NS_ENUM(NSInteger, Section){
 					Release *release = [game.releases.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
 					
 					[Networking updateRelease:release withResults:dictionary context:self.context];
-					
-					if (!game.selectedRelease){
-						for (Release *release in game.releases){
-							NSArray *reversedIndexSelectablePlatforms = [[self.selectablePlatforms reverseObjectEnumerator] allObjects];
-							
-							// If game not added, release region is selected region, release platform is in selectable platforms
-							if (release.region == [Session gamer].region && [reversedIndexSelectablePlatforms containsObject:release.platform]){
-								[game setSelectedRelease:release];
-								[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-							}
+				}
+				
+				if (!game.selectedRelease){
+					for (Release *release in game.releases){
+						NSArray *reversedIndexSelectablePlatforms = [[self.selectablePlatforms reverseObjectEnumerator] allObjects];
+						
+						// If game not added, release region is selected region, release platform is in selectable platforms
+						if (release.region == [Session gamer].region && [reversedIndexSelectablePlatforms containsObject:release.platform]){
+							[game setSelectedRelease:release];
+							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
 						}
 					}
 				}

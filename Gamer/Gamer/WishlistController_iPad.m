@@ -295,19 +295,6 @@
 					Release *release = [releases filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
 					
 					[Networking updateRelease:release withResults:dictionary context:self.context];
-					
-					Game *game = release.game;
-					
-					if (!game.selectedRelease){
-						Platform *firstSelectedPlatform = [self orderedSelectedPlatformsFromGame:game].firstObject;
-						for (Release *release in game.releases){
-							// If game not added, release region is selected region, release platform is in selectable platforms
-							if (release.platform == firstSelectedPlatform && release.region == [Session gamer].region){
-								[game setSelectedRelease:release];
-								[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-							}
-						}
-					}
 				}
 			}
 		}
