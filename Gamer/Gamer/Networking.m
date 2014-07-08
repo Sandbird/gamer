@@ -369,7 +369,10 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		[release setIdentifier:[Tools integerNumberFromSourceIfNotNull:results[@"id"]]];
 		[release setTitle:[Tools stringFromSourceIfNotNull:results[@"name"]]];
 		[release setPlatform:platform];
-		[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:results[@"region"][@"id"]] inContext:context]];
+		
+		if (results[@"region"] != [NSNull null]){
+			[release setRegion:[Region MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:results[@"region"][@"id"]] inContext:context]];
+		}
 		
 		NSString *releaseDate = [Tools stringFromSourceIfNotNull:results[@"release_date"]];
 		NSInteger expectedReleaseDay = [Tools integerNumberFromSourceIfNotNull:results[@"expected_release_day"]].integerValue;
@@ -379,8 +382,9 @@ static NSMutableURLRequest *SEARCHREQUEST;
 		
 		[Networking setReleaseDateForGameOrRelease:release dateString:releaseDate expectedReleaseDay:expectedReleaseDay expectedReleaseMonth:expectedReleaseMonth expectedReleaseQuarter:expectedReleaseQuarter expectedReleaseYear:expectedReleaseYear];
 		
-		if (results[@"image"] != [NSNull null])
+		if (results[@"image"] != [NSNull null]){
 			[release setImageURL:[Tools stringFromSourceIfNotNull:results[@"image"][@"thumb_url"]]];
+		}
 	}
 }
 
