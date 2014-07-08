@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		250694E8196B8C32009656FC /* SeparatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 250694E7196B8C32009656FC /* SeparatorView.m */; };
 		250B37DF1808613B009EB170 /* SegmentedControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 250B37DE1808613B009EB170 /* SegmentedControlCell.m */; };
 		250D487817BFFFB1006B4C29 /* ContentStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 250D487717BFFFB1006B4C29 /* ContentStatusView.m */; };
 		25112F5318F8E6DA001B93EB /* Platform+Library.m in Sources */ = {isa = PBXBuildFile; fileRef = 25112F5218F8E6DA001B93EB /* Platform+Library.m */; };
@@ -112,6 +113,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		250694E6196B8C32009656FC /* SeparatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeparatorView.h; sourceTree = "<group>"; };
+		250694E7196B8C32009656FC /* SeparatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SeparatorView.m; sourceTree = "<group>"; };
 		2506A173176CD4160010E61D /* WishlistCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WishlistCell.h; sourceTree = "<group>"; };
 		2506A174176CD4160010E61D /* WishlistCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WishlistCell.m; sourceTree = "<group>"; };
 		2506A17B176CD4B30010E61D /* WishlistSectionHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WishlistSectionHeaderView.h; sourceTree = "<group>"; };
@@ -356,6 +359,8 @@
 				25C9FE4417CD729E00CCDD59 /* HeaderCollectionReusableView.m */,
 				259DBBB01895A79700B274F4 /* LibrarySortFilterView.h */,
 				259DBBB11895A79700B274F4 /* LibrarySortFilterView.m */,
+				250694E6196B8C32009656FC /* SeparatorView.h */,
+				250694E7196B8C32009656FC /* SeparatorView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -901,6 +906,7 @@
 				25C9FE3017CBFF8800CCDD59 /* WishlistCollectionCell.m in Sources */,
 				259DBBB21895A79700B274F4 /* LibrarySortFilterView.m in Sources */,
 				25348F9518D4A40200F5A76D /* AboutCell.m in Sources */,
+				250694E8196B8C32009656FC /* SeparatorView.m in Sources */,
 				25704032176CB12800642430 /* main.m in Sources */,
 				25AC85A218F031A800919A15 /* RegionCell.m in Sources */,
 				25AC857F18EE3AFF00919A15 /* ReleasesController.m in Sources */,

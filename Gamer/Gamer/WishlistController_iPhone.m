@@ -189,7 +189,7 @@
 	
 	// Hide/show cell separator
 	BOOL lastRow = (indexPath.row >= ([self.tableView numberOfRowsInSection:indexPath.section] - 1)) ? YES : NO;
-	[customCell.separatorView setBackgroundColor:lastRow ? [UIColor clearColor] : [UIColor darkGrayColor]];
+	[customCell.separatorView setHidden:lastRow];
 }
 
 #pragma mark - Networking
