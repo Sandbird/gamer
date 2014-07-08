@@ -74,16 +74,6 @@
 	[self.searchBar setShowsSearchResultsButton:YES];
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-	[self.runningTask cancel];
-	
-	[self.searchTimer invalidate];
-	
-	if (searchText.length > 1){
-		self.searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(delayedSearchWithTimer:) userInfo:searchText repeats:NO];
-	}
-}
-
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 	[searchBar resignFirstResponder];
 	
@@ -164,10 +154,6 @@
 	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
 	NSString *query = [[title componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
 	[self requestGamesWithTitlesContainingQuery:query];
-}
-
-- (void)delayedSearchWithTimer:(NSTimer *)timer{
-	[self searchGamesWithTitle:timer.userInfo];
 }
 
 #pragma mark - Actions
