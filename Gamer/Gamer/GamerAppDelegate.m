@@ -15,41 +15,16 @@
 #import <Crashlytics/Crashlytics.h>
 #import "ImportController.h"
 
-@interface GamerAppDelegate ()
-
-@end
-
 @implementation GamerAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
-	[MagicalRecord setupAutoMigratingCoreDataStack];
+	[self setupAppearance];
+	[self setupDatabase];
+	[self setupServices];
 	
 	[Session setupInitialData];
-	
-#if !(TARGET_IPHONE_SIMULATOR)
-	// Crashlytics
-	[Crashlytics startWithAPIKey:@"a807ed553e7fcb9b4a4202e44f5b25d260153417"];
-#endif
-	
-	// UI
-	[self.window setTintColor:[UIColor orangeColor]];
-	
-	[application setStatusBarStyle:UIStatusBarStyleLightContent];
-	
-	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-	UITabBarItem *wishlistTab = tabBarController.tabBar.items.firstObject;
-	[wishlistTab setImage:[UIImage imageNamed:@"WishlistTab"]];
-	[wishlistTab setSelectedImage:[UIImage imageNamed:@"WishlistTabSelected"]];
-	UITabBarItem *libraryTab = tabBarController.tabBar.items[1];
-	[libraryTab setImage:[UIImage imageNamed:@"LibraryTab"]];
-	[libraryTab setSelectedImage:[UIImage imageNamed:@"LibraryTabSelected"]];
-	
-	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
-	
-	// Stuff
-	[application setMinimumBackgroundFetchInterval:86400];
 	
     return YES;
 }
@@ -91,7 +66,39 @@
 	[MagicalRecord cleanUp];
 }
 
-// Background fetch
+#pragma mark - Setup
+
+- (void)setupAppearance{
+	[self.window setTintColor:[UIColor orangeColor]];
+	
+	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+	
+	UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+	
+	UITabBarItem *wishlistTab = tabBarController.tabBar.items.firstObject;
+	[wishlistTab setImage:[UIImage imageNamed:@"WishlistTab"]];
+	[wishlistTab setSelectedImage:[UIImage imageNamed:@"WishlistTabSelected"]];
+	
+	UITabBarItem *libraryTab = tabBarController.tabBar.items[1];
+	[libraryTab setImage:[UIImage imageNamed:@"LibraryTab"]];
+	[libraryTab setSelectedImage:[UIImage imageNamed:@"LibraryTabSelected"]];
+	
+	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+}
+
+- (void)setupDatabase{
+	[MagicalRecord setupAutoMigratingCoreDataStack];
+}
+
+- (void)setupServices{
+	[[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:86400];
+	
+#if !(TARGET_IPHONE_SIMULATOR)
+	[Crashlytics startWithAPIKey:@"a807ed553e7fcb9b4a4202e44f5b25d260153417"];
+#endif
+}
+
+#pragma mark - Background Fetch
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
@@ -107,7 +114,7 @@
 	}
 }
 
-// Open .gamer file
+#pragma mark - Import
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
 	// If import controller isn't being displayed
@@ -141,7 +148,7 @@
 	return YES;
 }
 
-#pragma mark - Custom
+#pragma mark - Networking
 
 - (void)requestGames:(NSArray *)games context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	NSArray *identifiers = [games valueForKey:@"identifier"];
