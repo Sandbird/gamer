@@ -21,8 +21,8 @@
 #import "Region.h"
 #import "Metascore.h"
 #import "GameController.h"
-#import "WishlistSectionHeaderView.h"
 #import <AFNetworking/AFNetworking.h>
+#import "BlurHeaderView.h"
 
 @interface WishlistController_iPhone () <FetchedTableViewDelegate>
 
@@ -95,7 +95,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
 	NSString *sectionName = [self.fetchedResultsController.sections[section] name];
 	ReleasePeriod *releasePeriod = [ReleasePeriod MR_findFirstByAttribute:@"identifier" withValue:@(sectionName.integerValue) inContext:self.context];
-	WishlistSectionHeaderView *headerView = [[WishlistSectionHeaderView alloc] initWithReleasePeriod:releasePeriod];
+	BlurHeaderView *headerView = [[BlurHeaderView alloc] initWithTitle:releasePeriod.name leftMargin:tableView.separatorInset.left];
 	return headerView;
 }
 

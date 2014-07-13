@@ -36,6 +36,7 @@
 #import "MetascoreController.h"
 #import "NotesController.h"
 #import "DACircularProgressView+AFNetworking.h"
+#import "BlurHeaderView.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	SectionCover,
@@ -207,6 +208,11 @@ typedef NS_ENUM(NSInteger, Section){
 	if (section == SectionStatus && [self.game.location isEqualToNumber:@(GameLocationNone)])
 		return 0;
 	return [super tableView:tableView heightForHeaderInSection:section];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+	BlurHeaderView *headerView = [[BlurHeaderView alloc] initWithTitle:[super tableView:tableView titleForHeaderInSection:section] leftMargin:tableView.separatorInset.left];
+	return headerView;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -391,7 +397,9 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
-	if (indexPath.section == SectionVideos) [cell setSeparatorInset:UIEdgeInsetsMake(0, self.tableView.frame.size.width * 2, 0, 0)];
+	
+	BOOL lastRow = (indexPath.row == ([tableView numberOfRowsInSection:indexPath.section] - 1)) ? YES : NO;
+	[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? tableView.frame.size.width * 2 : self.tableView.separatorInset.left), 0, 0)];
 	
 	if (indexPath.section == SectionImages){
 		if (self.game.images.count == 0 && self.game.videos.count == 0){

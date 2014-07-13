@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="14A283o" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -144,12 +144,12 @@
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
-        <view opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="cT5-Xf-okg" customClass="WishlistSectionHeaderView">
+        <view opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="cT5-Xf-okg" customClass="BlurHeaderView">
             <rect key="frame" x="0.0" y="0.0" width="320" height="30"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IG6-8G-XBs" userLabel="Title Label">
-                    <rect key="frame" x="10" y="4" width="300" height="21"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IG6-8G-XBs" userLabel="Title Label">
+                    <rect key="frame" x="10" y="5" width="300" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -157,8 +157,15 @@
                 </label>
             </subviews>
             <gestureRecognizers/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="IG6-8G-XBs" secondAttribute="trailing" constant="10" id="Ghg-ur-D6q"/>
+                <constraint firstAttribute="bottom" secondItem="IG6-8G-XBs" secondAttribute="bottom" constant="5" id="OIU-2Y-gXK"/>
+                <constraint firstItem="IG6-8G-XBs" firstAttribute="leading" secondItem="cT5-Xf-okg" secondAttribute="leading" constant="10" id="xQ2-fC-hOg"/>
+                <constraint firstItem="IG6-8G-XBs" firstAttribute="top" secondItem="cT5-Xf-okg" secondAttribute="top" constant="5" id="yP2-L7-L4b"/>
+            </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="leftMarginContraint" destination="xQ2-fC-hOg" id="d1F-pa-ffy"/>
                 <outlet property="titleLabel" destination="IG6-8G-XBs" id="fhu-UX-Hoj"/>
             </connections>
         </view>
