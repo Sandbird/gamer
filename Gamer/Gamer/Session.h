@@ -35,6 +35,4 @@ typedef NS_ENUM(NSInteger, LibrarySize){
 
 + (void)setupInitialData;
 
-+ (BOOL)lastRefreshWasNotToday;
-
 @end

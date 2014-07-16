@@ -361,15 +361,7 @@
 		[self.refreshButton setEnabled:NO];
 	}
 	
-	//	if ([Session lastRefreshWasNotToday]){
-	//		[[Session gamer] setLastRefresh:[NSDate date]];
-	//		[self.context MR_saveToPersistentStoreAndWait];
-	//
 	[self requestGames:self.fetchedResultsController.fetchedObjects];
-	//	}
-	//	else{
-	//		[self.refreshControl endRefreshing];
-	//	}
 }
 
 - (void)refreshWishlistSelectedReleases{

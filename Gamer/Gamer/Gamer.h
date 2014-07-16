@@ -2,7 +2,7 @@
 //  Gamer.h
 //  Gamer
 //
-//  Created by Caio Mello on 26/06/2014.
+//  Created by Caio Mello on 13/07/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -13,7 +13,6 @@
 
 @interface Gamer : NSManagedObject
 
-@property (nonatomic, retain) NSDate * lastRefresh;
 @property (nonatomic, retain) NSNumber * librarySize;
 @property (nonatomic, retain) NSSet *platforms;
 @property (nonatomic, retain) Region *region;

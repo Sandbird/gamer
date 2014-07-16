@@ -98,16 +98,4 @@ static NSArray *SEARCHRESULTS;
 	[context MR_saveToPersistentStoreAndWait];
 }
 
-+ (BOOL)lastRefreshWasNotToday{
-	NSCalendar *calendar = [NSCalendar currentCalendar];
-	
-	NSDateComponents *todayComponents = [calendar components:NSEraCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:[NSDate date]];
-	NSDateComponents *lastRefreshComponents = [calendar components:NSEraCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:[Session gamer].lastRefresh];
-	
-	NSDate *today = [calendar dateFromComponents:todayComponents];
-	NSDate *lastRefresh = [calendar dateFromComponents:lastRefreshComponents];
-	
-	return ![lastRefresh isEqualToDate:today];
-}
-
 @end

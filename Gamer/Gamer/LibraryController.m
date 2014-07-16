@@ -541,10 +541,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 //		[self.refreshBarButton setEnabled:NO];
 //	}
 	
-//	if ([Session lastRefreshWasNotToday]){
-//		[[Session gamer] setLastRefresh:[NSDate date]];
-//		[self.context MR_saveToPersistentStoreAndWait];
-//	
 	NSArray *platformGames = [self.dataSource valueForKeyPath:@"platform.games"];
 	
 	NSMutableArray *games = [[NSMutableArray alloc] init];
@@ -558,11 +554,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[self requestGames:array];
 	}
 	
-//	}
-//	else{
 //		[self.refreshBarButton setEnabled:YES];
 //		[self.refreshControl endRefreshing];
-//	}
 }
 
 - (void)showSortOptions{
