@@ -87,6 +87,29 @@
 }
 
 - (void)setupDatabase{
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	
+	NSString *currentVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+	NSString *previousVersion = [defaults objectForKey:@"AppVersion"];
+	
+	NSLog(@"PREVIOUS VERSION: %@", previousVersion);
+	NSLog(@"CURRENT VERSION:  %@", currentVersion);
+	
+	if (!previousVersion){
+		// First launch
+		NSLog(@"FIRST LAUNCH");
+		
+		[defaults setObject:currentVersion forKey:@"AppVersion"];
+		[defaults synchronize];
+	}
+	else if (![previousVersion isEqualToString:currentVersion]){
+		// Not current version
+		NSLog(@"NOT CURRENT VERSION");
+		
+		[defaults setObject:currentVersion forKey:@"AppVersion"];
+		[defaults synchronize];
+	}
+	
 	[MagicalRecord setupAutoMigratingCoreDataStack];
 }
 
