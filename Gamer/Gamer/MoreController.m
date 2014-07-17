@@ -157,25 +157,33 @@ typedef NS_ENUM(NSInteger, Section){
 #pragma mark - Export
 
 - (void)exportGames{
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND location != %@", @(GameLocationNone)] inContext:self.context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"identifier != nil AND (inWishlist = %@ OR inLibrary = %@)", @(YES), @(YES)] inContext:self.context];
 	
 	NSMutableArray *gameDictionaries = [[NSMutableArray alloc] initWithCapacity:games.count];
 	
 	for (Game *game in games){
-		NSMutableArray *platformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.selectedPlatforms.count];
-		for (Platform *platform in game.selectedPlatforms){
-			[platformDictionaries addObject:@{@"id":platform.identifier}];
+		NSMutableArray *wishlistPlatformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.wishlistPlatforms.count];
+		for (Platform *platform in game.wishlistPlatforms){
+			[wishlistPlatformDictionaries addObject:@{@"id":platform.identifier}];
+		}
+		
+		NSMutableArray *libraryPlatformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.libraryPlatforms.count];
+		for (Platform *platform in game.libraryPlatforms){
+			[libraryPlatformDictionaries addObject:@{@"id":platform.identifier}];
 		}
 		
 		NSDictionary *gameDictionary = @{@"id":game.identifier,
 										 @"title":game.title ? game.title : @"",
-										 @"location":game.location,
-										 @"selectedPlatforms":platformDictionaries ? platformDictionaries : [NSNull null],
+										 @"inWishlist":game.inWishlist,
+										 @"inLibrary":game.inLibrary,
+										 @"wishlistPlatforms":wishlistPlatformDictionaries ? wishlistPlatformDictionaries : [NSNull null],
+										 @"libraryPlatforms":libraryPlatformDictionaries ? libraryPlatformDictionaries : [NSNull null],
 										 @"finished":game.finished ? game.finished : @(0),
 										 @"digital":game.digital ? game.digital : @(0),
 										 @"lent":game.lent ? game.lent : @(0),
 										 @"preordered":game.preordered ? game.preordered : @(0),
 										 @"borrowed":game.borrowed ? game.borrowed : @(0),
+										 @"rented":game.rented ? game.rented : @(0),
 										 @"personalRating":game.personalRating ? game.personalRating : @(0),
 										 @"notes":game.notes.length > 0 ? game.notes : @""};
 		

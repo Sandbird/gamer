@@ -100,7 +100,7 @@
 
 - (NSFetchedResultsController *)fetchData{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inWishlist = %@ AND identifier != nil", @(YES)];
 		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES];
 	}
 	return self.fetchedResultsController;
@@ -172,7 +172,7 @@
 		[cell.dateLabel setText:game.selectedRelease.releaseDateText];
 	}
 	else{
-		Platform *platform = game.selectedPlatforms.allObjects.firstObject;
+		Platform *platform = game.wishlistPlatforms.allObjects.firstObject;
 		[cell.platformLabel setText:platform.abbreviation];
 		[cell.platformLabel setBackgroundColor:platform.color];
 		[cell.titleLabel setText:game.title];
@@ -344,7 +344,7 @@
 
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)] inContext:self.context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"inWishlist = %@ AND identifier != nil", @(YES)] inContext:self.context];
 	for (Game *game in games){
 		[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:(game.selectedRelease ? game.selectedRelease : game) context:self.context]];
 	}
@@ -377,12 +377,6 @@
 	}
 	
 	[self requestReleases:selectedReleases];
-}
-
-- (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
-	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 #pragma mark - Actions

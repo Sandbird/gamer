@@ -71,7 +71,7 @@
 
 - (NSFetchedResultsController *)fetchData{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@", @(GameLocationWishlist), @(NO)];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inWishlist = %@", @(YES), @(NO)];
 		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES delegate:self];
 	}
 	
@@ -119,8 +119,8 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	[game setLocation:@(GameLocationNone)];
-	[game setSelectedPlatforms:nil];
+	[game setInWishlist:@(NO)];
+	[game setWishlistPlatforms:nil];
 	[self.context MR_saveToPersistentStoreAndWait];
 }
 
@@ -171,7 +171,7 @@
 		[customCell.dateLabel setText:game.selectedRelease.releaseDateText];
 	}
 	else{
-		Platform *platform = game.selectedPlatforms.allObjects.firstObject;
+		Platform *platform = game.wishlistPlatforms.allObjects.firstObject;
 		[customCell.platformLabel setText:platform.abbreviation];
 		[customCell.platformLabel setBackgroundColor:platform.color];
 		[customCell.titleLabel setText:game.title];
@@ -342,7 +342,7 @@
 
 - (void)updateGameReleasePeriods{
 	// Set release period for all games in Wishlist
-	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)] inContext:self.context];
+	NSArray *games = [Game MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"inWishlist = %@ AND identifier != nil", @(YES)] inContext:self.context];
 	for (Game *game in games){
 		[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:(game.selectedRelease ? game.selectedRelease : game) context:self.context]];
 	}
@@ -375,12 +375,6 @@
 	
 	NSArray *selectedReleases = [self.fetchedResultsController.fetchedObjects valueForKey:@"selectedRelease"];
 	[self requestReleases:selectedReleases];
-}
-
-- (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
-	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 #pragma mark - Actions

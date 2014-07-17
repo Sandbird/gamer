@@ -13,8 +13,8 @@
 @implementation Platform (Library)
 
 - (BOOL)containsLibraryGames{
-	for (Game *game in self.addedGames){
-		if ([game.location isEqualToNumber:@(GameLocationLibrary)]){
+	for (Game *game in self.libraryGames){
+		if ([game.inLibrary isEqualToNumber:@(YES)]){
 			return YES;
 		}
 	}
@@ -23,7 +23,7 @@
 }
 
 - (NSArray *)sortedLibraryGames{
-	NSArray *libraryGames = [self.addedGames.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)]];
+	NSArray *libraryGames = [self.libraryGames.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"inLibrary = %@", @(YES)]];
 	
 	NSSortDescriptor *titleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
 	return [libraryGames sortedArrayUsingDescriptors:@[titleSortDescriptor]];

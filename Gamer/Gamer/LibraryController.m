@@ -171,7 +171,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 #pragma mark - CollectionView
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-	[self.guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)]] == 0) ? NO : YES];
+	[self.guideView setHidden:([Game MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"inLibrary = %@", @(YES)]] == 0) ? NO : YES];
 	
 	if (self.sortOrFilter == LibrarySortPlatform){
 		return self.dataSource.count;
@@ -420,7 +420,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex != actionSheet.cancelButtonIndex){
 		if (actionSheet.tag == 1){
-			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@", @(GameLocationLibrary)];
+			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inLibrary = %@", @(YES)];
 			
 			// Sort
 			switch (buttonIndex) {
@@ -448,27 +448,27 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			// Filter
 			switch (buttonIndex + 5) {
 				case LibraryFilterFinished:
-					[self fetchGameswithSortOrFilter:LibraryFilterFinished group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterFinished group:nil predicate:[NSPredicate predicateWithFormat:@"inLibrary = %@ AND finished = %@", @(YES), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing finished games" animated:YES];
 					break;
 				case LibraryFilterUnfinished:
-					[self fetchGameswithSortOrFilter:LibraryFilterUnfinished group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND finished = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterUnfinished group:nil predicate:[NSPredicate predicateWithFormat:@"inLibrary = %@ AND finished = %@", @(YES), @(NO)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing unfinished games" animated:YES];
 					break;
 				case LibraryFilterRetail:
-					[self fetchGameswithSortOrFilter:LibraryFilterRetail group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(NO)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterRetail group:nil predicate:[NSPredicate predicateWithFormat:@"inLibrary = %@ AND digital = %@", @(YES), @(NO)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing retail games" animated:YES];
 					break;
 				case LibraryFilterDigital:
-					[self fetchGameswithSortOrFilter:LibraryFilterDigital group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND digital = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterDigital group:nil predicate:[NSPredicate predicateWithFormat:@"inLibrary = %@ AND digital = %@", @(YES), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing digital games" animated:YES];
 					break;
 				case LibraryFilterLent:
-					[self fetchGameswithSortOrFilter:LibraryFilterLent group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND lent = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterLent group:nil predicate:[NSPredicate predicateWithFormat:@"inLibrary = %@ AND lent = %@", @(YES), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing lent games" animated:YES];
 					break;
 				case LibraryFilterBorrowed:
-					[self fetchGameswithSortOrFilter:LibraryFilterBorrowed group:nil predicate:[NSPredicate predicateWithFormat:@"location = %@ AND borrowed = %@", @(GameLocationLibrary), @(YES)] sort:@"title" ascending:YES];
+					[self fetchGameswithSortOrFilter:LibraryFilterBorrowed group:nil predicate:[NSPredicate predicateWithFormat:@"inLibrary = %@ AND borrowed = %@", @(YES), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing borrowed games" animated:YES];
 					break;
 				default:
@@ -582,12 +582,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		[actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItems[1] animated:YES];
 	
 	[self disableNavigationBarItems];
-}
-
-- (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
-	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 - (void)disableNavigationBarItems{

@@ -15,8 +15,7 @@
 
 @interface ImportController ()
 
-@property (nonatomic, strong) NSMutableArray *importedWishlistGames;
-@property (nonatomic, strong) NSMutableArray *importedLibraryGames;
+@property (nonatomic, strong) NSMutableArray *importedGames;
 
 @property (nonatomic, strong) NSCache *imageCache;
 
@@ -37,8 +36,7 @@
 	NSLog(@"%@", importedDictionary);
 	
 	if (importedDictionary[@"games"] != [NSNull null]){
-		self.importedWishlistGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
-		self.importedLibraryGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
+		self.importedGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
 		
 		for (NSDictionary *dictionary in importedDictionary[@"games"]){
 			NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
@@ -50,34 +48,61 @@
 			[game setDigital:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"digital"] withDefault:NO]];
 			[game setLent:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"lent"] withDefault:NO]];
 			[game setPreordered:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"preordered"] withDefault:NO]];
-			[game setLocation:[Tools integerNumberFromSourceIfNotNull:dictionary[@"location"]]];
-			[game setBorrowed:[Tools integerNumberFromSourceIfNotNull:dictionary[@"borrowed"]]];
+			[game setBorrowed:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"borrowed"] withDefault:NO]];
 			[game setPersonalRating:[Tools integerNumberFromSourceIfNotNull:dictionary[@"personalRating"]]];
 			[game setNotes:[Tools stringFromSourceIfNotNull:dictionary[@"notes"]]];
 			if ([game.notes isEqualToString:@"(null)"]) [game setNotes:nil];
+			[game setInWishlist:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"inWishlist"] withDefault:NO]];
+			[game setInLibrary:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"inLibrary"] withDefault:NO]];
 			
-			if ([game.location isEqualToNumber:@(GameLocationWishlist)])
-				[self.importedWishlistGames addObject:game];
-			else if ([game.location isEqualToNumber:@(GameLocationLibrary)])
-				[self.importedLibraryGames addObject:game];
-			
-			if (dictionary[@"selectedPlatforms"] != [NSNull null]){
-				NSMutableArray *selectedPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"selectedPlatforms"] count]];
-				for (NSDictionary *platformDictionary in dictionary[@"selectedPlatforms"]){
+			// Wishlist platforms
+			if (dictionary[@"wishlistPlatforms"] != [NSNull null]){
+				NSMutableArray *wishlistPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"wishlistPlatforms"] count]];
+				for (NSDictionary *platformDictionary in dictionary[@"wishlistPlatforms"]){
 					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:self.context];
-					[selectedPlatforms addObject:platform];
+					[wishlistPlatforms addObject:platform];
 				}
-				
-				[game setSelectedPlatforms:[NSSet setWithArray:selectedPlatforms]];
+				[game setWishlistPlatforms:[NSSet setWithArray:wishlistPlatforms]];
+			}
+			
+			// Library platforms
+			if (dictionary[@"libraryPlatforms"] != [NSNull null]){
+				NSMutableArray *libraryPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"libraryPlatforms"] count]];
+				for (NSDictionary *platformDictionary in dictionary[@"libraryPlatforms"]){
+					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:self.context];
+					[libraryPlatforms addObject:platform];
+				}
+				[game setLibraryPlatforms:[NSSet setWithArray:libraryPlatforms]];
+			}
+			
+			// If backup from older version, get wishlist and library attributes from location and selected platforms
+			NSNumber *location = [Tools integerNumberFromSourceIfNotNull:dictionary[@"location"]];
+			if (location){
+				if (dictionary[@"selectedPlatforms"] != [NSNull null]){
+					NSMutableArray *selectedPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"selectedPlatforms"] count]];
+					for (NSDictionary *platformDictionary in dictionary[@"selectedPlatforms"]){
+						Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:self.context];
+						[selectedPlatforms addObject:platform];
+					}
+					
+					if ([location isEqualToNumber:@(1)]){
+						[game setInWishlist:@(YES)];
+						[game setWishlistPlatforms:[NSSet setWithArray:selectedPlatforms]];
+					}
+					else{
+						[game setInLibrary:@(YES)];
+						[game setLibraryPlatforms:[NSSet setWithArray:selectedPlatforms]];
+					}
+				}
 			}
 		}
 		
+		// Sort imported games by title
 		NSSortDescriptor *titleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-		self.importedWishlistGames = [self.importedWishlistGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
-		self.importedLibraryGames = [self.importedLibraryGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
+		self.importedGames = [self.importedGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
 		
-		NSArray *games = [self.importedWishlistGames arrayByAddingObjectsFromArray:self.importedLibraryGames];
-		[self requestGames:games];
+		// Request games
+		[self requestGames:self.importedGames];
 	}
 }
 
@@ -87,28 +112,12 @@
 
 #pragma mark - TableView
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-	return 2;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-	switch (section) {
-		case 0: return @"Wishlist";
-		case 1: return @"Library";
-		default: return nil;
-	}
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	switch (section) {
-		case 0: return self.importedWishlistGames.count;
-		case 1: return self.importedLibraryGames.count;
-		default: return 0;
-	}
+	return self.importedGames.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	Game *game = indexPath.section == 0 ? self.importedWishlistGames[indexPath.row] : self.importedLibraryGames[indexPath.row];
+	Game *game = self.importedGames[indexPath.row];
 	
 	ImportCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
@@ -209,14 +218,6 @@
 		}
 	}];
 	[downloadTask resume];
-}
-
-#pragma mark - Custom
-
-- (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
-	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 #pragma mark - Actions

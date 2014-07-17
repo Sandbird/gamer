@@ -52,7 +52,7 @@
 	
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@", @(GameLocationNone)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inWishlist = %@ AND inLibrary = %@", @(NO), @(NO)];
 	
 	NSArray *nonAddedGames = [Game MR_findAllWithPredicate:predicate inContext:context];
 	
@@ -126,7 +126,7 @@
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	NSManagedObjectContext *context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location = %@ AND identifier != nil", @(GameLocationWishlist)];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inWishlist = %@ AND identifier != nil", @(YES)];
 	NSArray *games = [Game MR_findAllWithPredicate:predicate inContext:context];
 	
 	[self requestGames:games context:context completionHandler:completionHandler];
@@ -196,7 +196,7 @@
 						else{
 							NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
 							NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-							NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+							NSArray *orderedPlatforms = [game.wishlistPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 							
 							[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject context:context completionHandler:completionHandler];
 						}

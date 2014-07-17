@@ -98,7 +98,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
-@property (nonatomic, strong) NSArray *selectedPlatforms;
+@property (nonatomic, strong) NSArray *libraryPlatforms;
 @property (nonatomic, strong) NSArray *selectablePlatforms;
 @property (nonatomic, strong) NSArray *platforms;
 @property (nonatomic, strong) NSArray *similarGames;
@@ -205,7 +205,7 @@ typedef NS_ENUM(NSInteger, Section){
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-	if (section == SectionStatus && [self.game.location isEqualToNumber:@(GameLocationNone)])
+	if (section == SectionStatus && ([self.game.inWishlist isEqualToNumber:@(NO)] && [self.game.inLibrary isEqualToNumber:@(NO)]))
 		return 0;
 	return [super tableView:tableView heightForHeaderInSection:section];
 }
@@ -218,14 +218,14 @@ typedef NS_ENUM(NSInteger, Section){
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
 		case SectionCover:
-			if ([self.game.location isEqualToNumber:@(GameLocationNone)]){
+			if ([self.game.inWishlist isEqualToNumber:@(NO)] && [self.game.inLibrary isEqualToNumber:@(NO)]){
 				if (self.game.releases.count > 0){
 					return 3;
 				}
 				else
 					return 2;
 			}
-			else if (self.selectedPlatforms.count > 0){
+			else if (self.libraryPlatforms.count > 0){
 				if (self.game.releases.count > 0){
 					return 4;
 				}
@@ -236,14 +236,17 @@ typedef NS_ENUM(NSInteger, Section){
 				return 2;
 			}
 			break;
-		case SectionStatus:
-			if ([self.game.location isEqualToNumber:@(GameLocationWishlist)])
-				return [self.game.released isEqualToNumber:@(YES)] ? 1 : 2;
-			else if ([self.game.location isEqualToNumber:@(GameLocationLibrary)])
+		case SectionStatus:{
+			if ([self.game.inWishlist isEqualToNumber:@(YES)] && [self.game.inLibrary isEqualToNumber:@(YES)])
+				return 6;
+			else if ([self.game.inWishlist isEqualToNumber:@(YES)])
+				return 2;
+			else if ([self.game.inLibrary isEqualToNumber:@(YES)])
 				return 5;
 			else
 				return 0;
 			break;
+		}
 		case SectionDetails:
 			return (self.game.metascores.count > 0) + (self.game.platforms.count > 0) + (self.game.similarGames.count > 0) + 2;
 			break;
@@ -262,22 +265,16 @@ typedef NS_ENUM(NSInteger, Section){
 					return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 				else{
 					if ([Tools deviceIsiPhone])
-						return 20 + 17 + 8 + (ceil((double)self.selectedPlatforms.count/4) * 31) + 20;
+						return 20 + 17 + 8 + (ceil((double)self.libraryPlatforms.count/4) * 31) + 20;
 					else
-						return 20 + 17 + 8 + (ceil((double)self.selectedPlatforms.count/8) * 31) + 20;
+						return 20 + 17 + 8 + (ceil((double)self.libraryPlatforms.count/8) * 31) + 20;
 				}
 			}
 			else if (indexPath.row == 3){
 				if ([Tools deviceIsiPhone])
-					return 20 + 17 + 8 + (ceil((double)self.selectedPlatforms.count/4) * 31) + 20;
+					return 20 + 17 + 8 + (ceil((double)self.libraryPlatforms.count/4) * 31) + 20;
 				else
-					return 20 + 17 + 8 + (ceil((double)self.selectedPlatforms.count/8) * 31) + 20;
-			}
-			break;
-		case SectionStatus:
-			// Notes row
-			if (([self.game.location isEqualToNumber:@(GameLocationWishlist)] && [self.game.released isEqualToNumber:@(NO)] && indexPath.row == 1) || ([self.game.location isEqualToNumber:@(GameLocationWishlist)] && [self.game.released isEqualToNumber:@(YES)] && indexPath.row == 0) || ([self.game.location isEqualToNumber:@(GameLocationLibrary)] && indexPath.row == 4)){
-				return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionStatus]];
+					return 20 + 17 + 8 + (ceil((double)self.libraryPlatforms.count/8) * 31) + 20;
 			}
 			break;
 		case SectionDetails:{
@@ -359,15 +356,13 @@ typedef NS_ENUM(NSInteger, Section){
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
 		case SectionCover:
-			if (indexPath.row == 2 && self.game.releases.count == 0 && self.selectedPlatforms.count > 0)
+			if (indexPath.row == 2 && self.game.releases.count == 0 && self.libraryPlatforms.count > 0)
 				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionCover]];
 			break;
 		case SectionStatus:
-			if ([self.game.location isEqualToNumber:@(GameLocationWishlist)]){
-				if (([self.game.released isEqualToNumber:@(YES)] && indexPath.row == 0) || ([self.game.released isEqualToNumber:@(NO)] && indexPath.row == 1))
-					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionStatus]];
-			}
-			else
+			if (indexPath.row == 1 && [self.game.inWishlist isEqualToNumber:@(YES)] && [self.game.inLibrary isEqualToNumber:@(NO)])
+				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionStatus]];
+			else if ([self.game.inWishlist isEqualToNumber:@(NO)] && [self.game.inLibrary isEqualToNumber:@(YES)])
 				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:SectionStatus]];
 			break;
 		case SectionDetails:
@@ -440,7 +435,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
 	if (collectionView == self.selectedPlatformsCollectionView)
-		return self.selectedPlatforms.count;
+		return self.libraryPlatforms.count;
 	else if (collectionView == self.platformsCollectionView)
 		return self.platforms.count;
 	else if (collectionView == self.similarGamesCollectionView)
@@ -457,7 +452,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 	if (collectionView == self.selectedPlatformsCollectionView){
-		Platform *platform = self.selectedPlatforms[indexPath.item];
+		Platform *platform = self.libraryPlatforms[indexPath.item];
 		PlatformCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 		[cell.platformLabel setText:platform.abbreviation];
 		[cell.platformLabel setBackgroundColor:platform.color];
@@ -878,19 +873,20 @@ typedef NS_ENUM(NSInteger, Section){
 #pragma mark - PlatformPicker
 
 - (void)platformPicker:(PlatformPickerController *)picker didSelectPlatforms:(NSArray *)platforms{
-	if (!platforms || platforms.count == 0){
-		[self removeGameFromWishlistOrLibrary];
+	if (self.wishlistButton.isHighlighted){
+		if (!platforms || platforms.count == 0)
+			[self removeGameFromWishlist];
+		else
+			[self addGameToWishlistWithPlatforms:platforms];
+	}
+	else if (self.libraryButton.isHighlighted){
+		if (!platforms || platforms.count == 0)
+			[self removeGameFromLibrary];
+		else
+			[self addGameToLibraryWithPlatforms:platforms];
 	}
 	else{
-		if (self.wishlistButton.isHighlighted){
-			[self addGameToWishlistWithPlatforms:platforms];
-		}
-		else if (self.libraryButton.isHighlighted){
-			[self addGameToLibraryWithPlatforms:platforms];
-		}
-		else{
-			[self changeSelectedPlatformsToPlatforms:platforms];
-		}
+		[self changeLibraryPlatformsToPlatforms:platforms];
 	}
 	
 	[self dismissViewControllerAnimated:YES completion:nil];
@@ -947,13 +943,13 @@ typedef NS_ENUM(NSInteger, Section){
 	
 	self.selectablePlatforms = [self selectablePlatformsFromGame:self.game];
 	
-	self.selectedPlatforms = [self orderedSelectedPlatformsFromGame:self.game];
+	self.libraryPlatforms = [self orderedLibraryPlatformsFromGame:self.game];
 	
 	self.platforms = [self orderedPlatformsFromGame:self.game];
 	
 	self.similarGames = [self orderedSimilarGamesFromGame:self.game];
 	
-	[self.editPlatformsButton setHidden:([self.game.location isEqualToNumber:@(GameLocationNone)] || self.selectablePlatforms.count <= 1) ? YES : NO];
+//	[self.editPlatformsButton setHidden:([self.game.location isEqualToNumber:@(GameLocationNone)] || self.selectablePlatforms.count <= 1) ? YES : NO];
 	
 	[self refreshAddButtonsAnimated:animated];
 	
@@ -1045,15 +1041,15 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)refreshAddButtonsAnimated:(BOOL)animated{
 	if (self.selectablePlatforms.count > 0){
 		[self.wishlistButton setHidden:NO];
-		[self.libraryButton setHidden:([self.game.released isEqualToNumber:@(YES)] || [self.game.location isEqualToNumber:@(GameLocationLibrary)]) ? NO : YES];
+		[self.libraryButton setHidden:NO];
 	}
 	else{
-		[self.wishlistButton setHidden:[self.game.location isEqualToNumber:@(GameLocationWishlist)] ? NO : YES];
-		[self.libraryButton setHidden:[self.game.location isEqualToNumber:@(GameLocationLibrary)] ? NO : YES];
+		[self.wishlistButton setHidden:YES];
+		[self.libraryButton setHidden:YES];
 	}
 	
-	[self.wishlistButton setTitle:[self.game.location isEqualToNumber:@(GameLocationWishlist)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
-	[self.libraryButton setTitle:[self.game.location isEqualToNumber:@(GameLocationLibrary)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
+	[self.wishlistButton setTitle:[self.game.inWishlist isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
+	[self.libraryButton setTitle:[self.game.inLibrary isEqualToNumber:@(YES)] ? @"REMOVE FROM LIBRARY" : @"ADD TO LIBRARY" forState:UIControlStateNormal];
 	
 	if (animated){
 		[self.wishlistButton.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
@@ -1067,10 +1063,16 @@ typedef NS_ENUM(NSInteger, Section){
 	return [game.platforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
-- (NSArray *)orderedSelectedPlatformsFromGame:(Game *)game{
+- (NSArray *)orderedWishlistPlatformsFromGame:(Game *)game{
 	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
 	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-	return [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+	return [game.wishlistPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+}
+
+- (NSArray *)orderedLibraryPlatformsFromGame:(Game *)game{
+	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	return [game.libraryPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
 - (NSArray *)selectablePlatformsFromGame:(Game *)game{
@@ -1097,45 +1099,62 @@ typedef NS_ENUM(NSInteger, Section){
 }
 
 - (void)addGameToWishlistWithPlatforms:(NSArray *)platforms{
-	[self.game setSelectedPlatforms:[NSSet setWithArray:platforms]];
-	[self.game setLocation:@(GameLocationWishlist)];
+	[self.game setInWishlist:@(YES)];
+	[self.game setWishlistPlatforms:[NSSet setWithArray:platforms]];
 	
 	[self.game setPreordered:@(NO)];
 	[self.game setFinished:@(NO)];
 	[self.game setDigital:@(NO)];
 	[self.game setLent:@(NO)];
 	[self.game setBorrowed:@(NO)];
+	[self.game setRented:@(NO)];
 	
 	[self saveAndRefreshAfterLocationChange];
 }
 
 - (void)addGameToLibraryWithPlatforms:(NSArray *)platforms{
-	[self.game setSelectedPlatforms:[NSSet setWithArray:platforms]];
-	[self.game setLocation:@(GameLocationLibrary)];
+	[self.game setInLibrary:@(YES)];
+	[self.game setLibraryPlatforms:[NSSet setWithArray:platforms]];
 	
 	[self.game setPreordered:@(NO)];
 	[self.game setFinished:@(NO)];
 	[self.game setDigital:@(NO)];
 	[self.game setLent:@(NO)];
 	[self.game setBorrowed:@(NO)];
+	[self.game setRented:@(NO)];
 	
 	[self saveAndRefreshAfterLocationChange];
 }
 
-- (void)changeSelectedPlatformsToPlatforms:(NSArray *)platforms{
-	[self.game setSelectedPlatforms:[NSSet setWithArray:platforms]];
+- (void)changeLibraryPlatformsToPlatforms:(NSArray *)platforms{
+	[self.game setLibraryPlatforms:[NSSet setWithArray:platforms]];
 	[self saveAndRefreshAfterLocationChange];
 }
 
-- (void)removeGameFromWishlistOrLibrary{
-	[self.game setSelectedPlatforms:nil];
-	[self.game setLocation:@(GameLocationNone)];
+- (void)removeGameFromWishlist{
+	[self.game setInWishlist:@(NO)];
+	[self.game setWishlistPlatforms:nil];
 	
 	[self.game setPreordered:@(NO)];
 	[self.game setFinished:@(NO)];
 	[self.game setDigital:@(NO)];
 	[self.game setLent:@(NO)];
 	[self.game setBorrowed:@(NO)];
+	[self.game setRented:@(NO)];
+	
+	[self saveAndRefreshAfterLocationChange];
+}
+
+- (void)removeGameFromLibrary{
+	[self.game setInLibrary:@(NO)];
+	[self.game setLibraryPlatforms:nil];
+	
+	[self.game setPreordered:@(NO)];
+	[self.game setFinished:@(NO)];
+	[self.game setDigital:@(NO)];
+	[self.game setLent:@(NO)];
+	[self.game setBorrowed:@(NO)];
+	[self.game setRented:@(NO)];
 	
 	[self saveAndRefreshAfterLocationChange];
 }
@@ -1145,19 +1164,19 @@ typedef NS_ENUM(NSInteger, Section){
 		[self refreshAddButtonsAnimated:YES];
 		
 		// Update selected platforms
-		self.selectedPlatforms = [self orderedSelectedPlatformsFromGame:self.game];
+		self.libraryPlatforms = [self orderedLibraryPlatformsFromGame:self.game];
 		[self.selectedPlatformsCollectionView reloadData];
 		
 		// Hide platform change if game not added
-		[self.editPlatformsButton setHidden:([self.game.location isEqualToNumber:@(GameLocationNone)] || self.selectablePlatforms.count <= 1) ? YES : NO];
+//		[self.editPlatformsButton setHidden:([self.game.location isEqualToNumber:@(GameLocationNone)] || self.selectablePlatforms.count <= 1) ? YES : NO];
 		
 		// Auto-select release based on top selected platform and region
-		for (Release *release in self.game.releases){
-			if (release.platform == self.selectedPlatforms.firstObject && release.region == [Session gamer].region){
-				[self.game setSelectedRelease:release];
-				[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-			}
-		}
+//		for (Release *release in self.game.releases){
+//			if (release.platform == self.selectedPlatforms.firstObject && release.region == [Session gamer].region){
+//				[self.game setSelectedRelease:release];
+//				[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
+//			}
+//		}
 		
 		// Update release date
 		[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
@@ -1180,10 +1199,10 @@ typedef NS_ENUM(NSInteger, Section){
 		[self.wishlistButton setHighlighted:NO];
 		[self.libraryButton setHighlighted:NO];
 		
-		// Scroll to last row of status section if game added to library
-		if ([self.game.location isEqualToNumber:@(GameLocationLibrary)]){
-			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SectionStatus] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-		}
+		// Scroll to last row of status section if game added
+//		if ([self.game.inWishlist isEqualToNumber:@(YES)] || [self.game.inLibrary isEqualToNumber:@(YES)]){
+//			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SectionStatus] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+//		}
 		
 		if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
@@ -1219,8 +1238,11 @@ typedef NS_ENUM(NSInteger, Section){
 	});
 	
 	// Removing from wishlist or library
-	if ((sender == self.wishlistButton && [self.game.location isEqualToNumber:@(GameLocationWishlist)]) || (sender == self.libraryButton && [self.game.location isEqualToNumber:@(GameLocationLibrary)])){
-		[self removeGameFromWishlistOrLibrary];
+	if (sender == self.wishlistButton && [self.game.inWishlist isEqualToNumber:@(YES)]){
+		[self removeGameFromWishlist];
+	}
+	else if (sender == self.libraryButton && [self.game.inLibrary isEqualToNumber:@(YES)]){
+		[self removeGameFromLibrary];
 	}
 	else{
 		// Multiple platforms to select
@@ -1318,7 +1340,7 @@ typedef NS_ENUM(NSInteger, Section){
 		UINavigationController *navigationController = segue.destinationViewController;
 		PlatformPickerController *destination = (PlatformPickerController *)navigationController.topViewController;
 		[destination setSelectablePlatforms:self.selectablePlatforms];
-		[destination setSelectedPlatforms:self.game.selectedPlatforms.allObjects.mutableCopy];
+		[destination setSelectedPlatforms:self.game.libraryPlatforms.allObjects.mutableCopy];
 		[destination setDelegate:self];
 	}
 	else if ([segue.identifier isEqualToString:@"ReleasesSegue"]){

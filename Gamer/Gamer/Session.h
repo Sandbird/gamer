@@ -9,12 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "Gamer.h"
 
-typedef NS_ENUM(NSInteger, GameLocation){
-	GameLocationNone = 0,
-	GameLocationWishlist = 1,
-	GameLocationLibrary = 2
-};
-
 typedef NS_ENUM(NSInteger, LibrarySize){
 	LibrarySizeSmall = 0,
 	LibrarySizeMedium = 1,

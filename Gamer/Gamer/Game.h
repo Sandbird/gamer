@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 26/06/2014.
+//  Created by Caio Mello on 16/07/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -20,7 +20,6 @@
 @property (nonatomic, retain) NSString * imagePath;
 @property (nonatomic, retain) NSString * imageURL;
 @property (nonatomic, retain) NSNumber * lent;
-@property (nonatomic, retain) NSNumber * location;
 @property (nonatomic, retain) NSString * notes;
 @property (nonatomic, retain) NSString * overview;
 @property (nonatomic, retain) NSNumber * personalRating;
@@ -34,6 +33,9 @@
 @property (nonatomic, retain) NSNumber * releaseQuarter;
 @property (nonatomic, retain) NSNumber * releaseYear;
 @property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSNumber * inWishlist;
+@property (nonatomic, retain) NSNumber * inLibrary;
+@property (nonatomic, retain) NSNumber * rented;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
@@ -44,11 +46,12 @@
 @property (nonatomic, retain) ReleasePeriod *releasePeriod;
 @property (nonatomic, retain) NSSet *releases;
 @property (nonatomic, retain) Metascore *selectedMetascore;
-@property (nonatomic, retain) NSSet *selectedPlatforms;
 @property (nonatomic, retain) Release *selectedRelease;
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
+@property (nonatomic, retain) NSSet *wishlistPlatforms;
+@property (nonatomic, retain) NSSet *libraryPlatforms;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)
@@ -93,11 +96,6 @@
 - (void)addReleases:(NSSet *)values;
 - (void)removeReleases:(NSSet *)values;
 
-- (void)addSelectedPlatformsObject:(Platform *)value;
-- (void)removeSelectedPlatformsObject:(Platform *)value;
-- (void)addSelectedPlatforms:(NSSet *)values;
-- (void)removeSelectedPlatforms:(NSSet *)values;
-
 - (void)addSimilarGamesObject:(SimilarGame *)value;
 - (void)removeSimilarGamesObject:(SimilarGame *)value;
 - (void)addSimilarGames:(NSSet *)values;
@@ -112,5 +110,15 @@
 - (void)removeVideosObject:(Video *)value;
 - (void)addVideos:(NSSet *)values;
 - (void)removeVideos:(NSSet *)values;
+
+- (void)addWishlistPlatformsObject:(Platform *)value;
+- (void)removeWishlistPlatformsObject:(Platform *)value;
+- (void)addWishlistPlatforms:(NSSet *)values;
+- (void)removeWishlistPlatforms:(NSSet *)values;
+
+- (void)addLibraryPlatformsObject:(Platform *)value;
+- (void)removeLibraryPlatformsObject:(Platform *)value;
+- (void)addLibraryPlatforms:(NSSet *)values;
+- (void)removeLibraryPlatforms:(NSSet *)values;
 
 @end
