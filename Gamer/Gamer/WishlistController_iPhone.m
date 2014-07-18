@@ -364,21 +364,12 @@
 }
 
 - (void)refreshWishlistSelectedReleases{
-//	NSMutableArray *selectedReleases = [[NSMutableArray alloc] initWithCapacity:self.fetchedResultsController.fetchedObjects.count];
-//	
-//	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++){
-//		for (NSInteger row = 0; row < [self.fetchedResultsController.sections[section] numberOfObjects]; row++){
-//			Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
-//			
-//			if (game.selectedRelease)
-//				[selectedReleases addObject:game.selectedRelease];
-//		}
-//	}
-//	
-//	[self requestReleases:selectedReleases];
-	
 	NSArray *selectedReleases = [self.fetchedResultsController.fetchedObjects valueForKey:@"selectedRelease"];
-	[self requestReleases:selectedReleases];
+	
+	NSArray *splitReleases = [NSArray splitArray:selectedReleases componentsPerSegment:100];
+	for (NSArray *releases in splitReleases){
+		[self requestReleases:releases];
+	}
 }
 
 #pragma mark - Actions

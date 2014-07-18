@@ -57,6 +57,15 @@
 			[game setInWishlist:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"inWishlist"] withDefault:NO]];
 			[game setInLibrary:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"inLibrary"] withDefault:NO]];
 			
+			if (dictionary[@"selectedRelease"] != [NSNull null]){
+				if (dictionary[@"selectedRelease"][@"id"] != [NSNull null]){
+					Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"selectedRelease"][@"id"] inContext:self.context];
+					if (!release) [Release MR_createInContext:self.context];
+					[release setIdentifier:dictionary[@"selectedRelease"][@"id"]];
+					[game setSelectedRelease:release];
+				}
+			}
+			
 			// Wishlist platforms
 			if (dictionary[@"wishlistPlatform"] != [NSNull null]){
 				if (dictionary[@"wishlistPlatform"][@"id"] != [NSNull null]){
@@ -95,6 +104,8 @@
 					}
 				}
 			}
+			
+			[self.importedGames addObject:game];
 		}
 		
 		// Sort imported games by title
@@ -102,9 +113,17 @@
 		self.importedGames = [self.importedGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
 		
 		// Request games
-		NSArray *splitArray = [NSArray splitArray:self.importedGames componentsPerSegment:100];
-		for (NSArray *array in splitArray){
-			[self requestGames:array];
+		NSArray *splitGamesArray = [NSArray splitArray:self.importedGames componentsPerSegment:100];
+		for (NSArray *games in splitGamesArray){
+			[self requestGames:games];
+		}
+		
+		// Request releases
+		NSArray *releases = [self.importedGames valueForKey:@"selectedRelease"];
+		
+		NSArray *splitReleasesArray = [NSArray splitArray:releases componentsPerSegment:100];
+		for (NSArray *releases in splitReleasesArray){
+			[self requestReleases:releases];
 		}
 	}
 }
@@ -195,6 +214,32 @@
 		}
 		
 		[self.navigationItem.rightBarButtonItem setEnabled:YES];
+	}];
+	[dataTask resume];
+}
+
+- (void)requestReleases:(NSArray *)releases{
+	NSArray *identifiers = [releases valueForKey:@"identifier"];
+	
+	NSURLRequest *request = [Networking requestForReleasesWithIdentifiers:identifiers fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			//			NSLog(@"%@", responseObject);
+			
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				for (NSDictionary *dictionary in responseObject[@"results"]){
+					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
+					Release *release = [releases filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
+					
+					[Networking updateRelease:release withResults:dictionary context:self.context];
+				}
+			}
+		}
 	}];
 	[dataTask resume];
 }

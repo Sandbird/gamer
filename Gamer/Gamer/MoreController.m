@@ -173,6 +173,7 @@ typedef NS_ENUM(NSInteger, Section){
 										 @"inLibrary":game.inLibrary,
 										 @"wishlistPlatform":game.wishlistPlatform ? @{@"id":game.wishlistPlatform.identifier} : [NSNull null],
 										 @"libraryPlatforms":libraryPlatformDictionaries ? libraryPlatformDictionaries : [NSNull null],
+										 @"selectedRelease":game.selectedRelease ? @{@"id":game.selectedRelease.identifier} : [NSNull null],
 										 @"finished":game.finished ? game.finished : @(0),
 										 @"digital":game.digital ? game.digital : @(0),
 										 @"lent":game.lent ? game.lent : @(0),

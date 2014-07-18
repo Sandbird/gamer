@@ -380,6 +380,11 @@
 		}
 	}
 	
+	NSArray *splitReleases = [NSArray splitArray:selectedReleases componentsPerSegment:100];
+	for (NSArray *releases in splitReleases){
+		[self requestReleases:releases];
+	}
+	
 	[self requestReleases:selectedReleases];
 }
 
