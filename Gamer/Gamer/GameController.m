@@ -949,7 +949,7 @@ typedef NS_ENUM(NSInteger, Section){
 	
 	self.similarGames = [self orderedSimilarGamesFromGame:self.game];
 	
-//	[self.editPlatformsButton setHidden:([self.game.location isEqualToNumber:@(GameLocationNone)] || self.selectablePlatforms.count <= 1) ? YES : NO];
+	[self.editPlatformsButton setHidden:self.selectablePlatforms.count <= 1 ? YES : NO];
 	
 	[self refreshAddButtonsAnimated:animated];
 	
@@ -965,7 +965,6 @@ typedef NS_ENUM(NSInteger, Section){
 	// Set retailDigitalSegmentedControl selection
 	if ([self.game.digital isEqualToNumber:@(YES)]){
 		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:1];
-		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else{
 		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
@@ -974,15 +973,12 @@ typedef NS_ENUM(NSInteger, Section){
 	// Set lentBorrowedRentedSegmentedControl selection
 	if ([self.game.lent isEqualToNumber:@(YES)]){
 		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:1];
-		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else if ([self.game.borrowed isEqualToNumber:@(YES)]){
 		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:2];
-		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else if ([self.game.rented isEqualToNumber:@(YES)]){
 		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:3];
-		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else{
 		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
@@ -1134,7 +1130,7 @@ typedef NS_ENUM(NSInteger, Section){
 		[self.selectedPlatformsCollectionView reloadData];
 		
 		// Hide platform change if game not added
-//		[self.editPlatformsButton setHidden:([self.game.location isEqualToNumber:@(GameLocationNone)] || self.selectablePlatforms.count <= 1) ? YES : NO];
+		[self.editPlatformsButton setHidden:self.selectablePlatforms.count <= 1 ? YES : NO];
 		
 		// Auto-select release based on top selected platform and region
 		Platform *platform;
@@ -1252,9 +1248,6 @@ typedef NS_ENUM(NSInteger, Section){
 				break;
 			case 1:
 				[self.game setDigital:@(YES)];
-				[self.game setLent:@(NO)];
-				[self.game setBorrowed:@(NO)];
-				[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			default:
 				break;
@@ -1270,21 +1263,17 @@ typedef NS_ENUM(NSInteger, Section){
 			case 1:
 				[self.game setLent:@(YES)];
 				[self.game setBorrowed:@(NO)];
-				[self.game setDigital:@(NO)];
-				[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
+				[self.game setRented:@(NO)];
 				break;
 			case 2:
 				[self.game setLent:@(NO)];
 				[self.game setBorrowed:@(YES)];
-				[self.game setDigital:@(NO)];
-				[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
+				[self.game setRented:@(NO)];
 				break;
 			case 3:
 				[self.game setLent:@(NO)];
 				[self.game setBorrowed:@(NO)];
-				[self.game setDigital:@(NO)];
 				[self.game setRented:@(YES)];
-				[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			default:
 				break;
