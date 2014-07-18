@@ -234,8 +234,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="89"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Release" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hgp-fA-juX" userLabel="Release Label">
-                                                    <rect key="frame" x="20" y="23" width="70" height="14"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="First Release" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hgp-fA-juX" userLabel="Release Label">
+                                                    <rect key="frame" x="20" y="24" width="134" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -1118,6 +1118,7 @@
                         <outlet property="publisherSecondLabel" destination="RdQ-fe-psz" id="4gV-vo-9kl"/>
                         <outlet property="ratingView" destination="RTh-fB-SLY" id="Nub-j6-sPB"/>
                         <outlet property="releaseDateLabel" destination="SV0-L3-EX0" id="fxL-dE-Rsq"/>
+                        <outlet property="releaseDateTitleLabel" destination="Hgp-fA-juX" id="PzH-zH-qyz"/>
                         <outlet property="releasesLabel" destination="iwu-SH-4tS" id="f1x-fh-wIm"/>
                         <outlet property="retailDigitalSegmentedControl" destination="EuX-5e-v0Y" id="s8o-r6-yw7"/>
                         <outlet property="selectedPlatformsCollectionView" destination="2se-u2-mbb" id="3fw-zI-JO9"/>

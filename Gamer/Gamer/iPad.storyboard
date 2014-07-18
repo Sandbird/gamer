@@ -225,8 +225,8 @@
                                                         <action selector="addButtonPressAction:" destination="3iO-2E-Tja" eventType="touchUpInside" id="vyQ-xG-bFC"/>
                                                     </connections>
                                                 </button>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Release" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YFI-fd-FJ0" userLabel="Release Label">
-                                                    <rect key="frame" x="20" y="19" width="53" height="17"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="First Release" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YFI-fd-FJ0" userLabel="Release Label">
+                                                    <rect key="frame" x="20" y="19" width="180" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -1019,6 +1019,7 @@
                         <outlet property="publisherSecondLabel" destination="4Dy-za-yMA" id="C9u-cn-IOA"/>
                         <outlet property="ratingView" destination="8P6-qj-cUN" id="Rv3-DA-NHM"/>
                         <outlet property="releaseDateLabel" destination="MBO-XY-qsP" id="kRM-bu-jFG"/>
+                        <outlet property="releaseDateTitleLabel" destination="YFI-fd-FJ0" id="lJ2-KG-eRJ"/>
                         <outlet property="releasesLabel" destination="ice-3f-fqH" id="hP7-eI-es4"/>
                         <outlet property="retailDigitalSegmentedControl" destination="ajM-le-c3A" id="Bxh-35-pJf"/>
                         <outlet property="selectedPlatformsCollectionView" destination="pDY-Ls-v1z" id="nfm-FI-rKf"/>

@@ -53,6 +53,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 
+@property (nonatomic, strong) IBOutlet UILabel *releaseDateTitleLabel;
 @property (nonatomic, strong) IBOutlet UILabel *releaseDateLabel;
 @property (nonatomic, strong) IBOutlet UIButton *wishlistButton;
 @property (nonatomic, strong) IBOutlet UIButton *libraryButton;
@@ -218,22 +219,17 @@ typedef NS_ENUM(NSInteger, Section){
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
 	switch (section) {
 		case SectionCover:
-			if ([self.game.inWishlist isEqualToNumber:@(NO)] && [self.game.inLibrary isEqualToNumber:@(NO)]){
-				if (self.game.releases.count > 0){
-					return 3;
-				}
-				else
-					return 2;
-			}
-			else if (self.libraryPlatforms.count > 0){
-				if (self.game.releases.count > 0){
+			if ([self.game.inLibrary isEqualToNumber:@(YES)] && self.libraryPlatforms.count > 0){
+				if (self.game.releases.count > 0)
 					return 4;
-				}
 				else
 					return 3;
 			}
 			else{
-				return 2;
+				if (self.game.releases.count > 0)
+					return 3;
+				else
+					return 2;
 			}
 			break;
 		case SectionStatus:{
@@ -664,6 +660,7 @@ typedef NS_ENUM(NSInteger, Section){
 				}
 				
 				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+					[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
 					[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
 					[self.releasesLabel setText:[NSString stringWithFormat:self.game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)self.game.releases.count]];
 					
@@ -898,6 +895,7 @@ typedef NS_ENUM(NSInteger, Section){
 	[self.game setSelectedRelease:release];
 	[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
 	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
 		[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
 	}];
 }
@@ -937,6 +935,7 @@ typedef NS_ENUM(NSInteger, Section){
 	
 	[self.titleLabel setText:self.game.title];
 	
+	[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
 	[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
 	
 	[self.releasesLabel setText:[NSString stringWithFormat:self.game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)self.game.releases.count]];
@@ -1152,6 +1151,7 @@ typedef NS_ENUM(NSInteger, Section){
 		}
 		
 		// Update release date
+		[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
 		[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
 		
 		// Update statuses
