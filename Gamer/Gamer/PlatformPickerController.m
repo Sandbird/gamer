@@ -18,6 +18,10 @@
 
 - (void)viewDidLoad{
 	[super viewDidLoad];
+	
+	if (!self.selectedPlatforms){
+		self.selectedPlatforms = [[NSMutableArray alloc] initWithCapacity:self.selectablePlatforms.count];
+	}
 }
 
 - (void)didReceiveMemoryWarning{
@@ -46,18 +50,23 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	
 	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 	
 	if (cell.accessoryType == UITableViewCellAccessoryCheckmark){
-		[cell setAccessoryType:UITableViewCellAccessoryNone];
 		[self.selectedPlatforms removeObject:self.selectablePlatforms[indexPath.row]];
 	}
 	else{
-		[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+		if (self.mode == PlatformPickerModeWishlist){
+			[self.selectedPlatforms removeAllObjects];
+		}
+		
 		[self.selectedPlatforms addObject:self.selectablePlatforms[indexPath.row]];
 	}
+	
+	[self.tableView reloadData];
+	
+	[cell setSelected:YES];
+	[cell setSelected:NO animated:YES];
 }
 
 #pragma mark - Actions

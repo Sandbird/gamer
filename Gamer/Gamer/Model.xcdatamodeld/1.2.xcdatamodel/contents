@@ -49,7 +49,7 @@
         <relationship name="similarGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SimilarGame" inverseName="game" inverseEntity="SimilarGame" syncable="YES"/>
         <relationship name="themes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Theme" inverseName="games" inverseEntity="Theme" syncable="YES"/>
         <relationship name="videos" optional="YES" toMany="YES" maxCount="30" deletionRule="Nullify" destinationEntity="Video" inverseName="game" inverseEntity="Video" syncable="YES"/>
-        <relationship name="wishlistPlatforms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Platform" inverseName="wishlistGames" inverseEntity="Platform" syncable="YES"/>
+        <relationship name="wishlistPlatform" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Platform" inverseName="wishlistGames" inverseEntity="Platform" syncable="YES"/>
     </entity>
     <entity name="Gamer" representedClassName="Gamer" syncable="YES">
         <attribute name="librarySize" optional="YES" attributeType="Integer 16" minValueString="0" maxValueString="2" defaultValueString="1" syncable="YES"/>
@@ -88,7 +88,7 @@
         <relationship name="libraryGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="libraryPlatforms" inverseEntity="Game" syncable="YES"/>
         <relationship name="metascores" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Metascore" inverseName="platform" inverseEntity="Metascore" syncable="YES"/>
         <relationship name="releases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Release" inverseName="platform" inverseEntity="Release" syncable="YES"/>
-        <relationship name="wishlistGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="wishlistPlatforms" inverseEntity="Game" syncable="YES"/>
+        <relationship name="wishlistGames" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Game" inverseName="wishlistPlatform" inverseEntity="Game" syncable="YES"/>
     </entity>
     <entity name="Publisher" representedClassName="Publisher" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="Integer 32" syncable="YES"/>

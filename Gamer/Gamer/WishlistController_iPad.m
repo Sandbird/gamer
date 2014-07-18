@@ -172,7 +172,7 @@
 		[cell.dateLabel setText:game.selectedRelease.releaseDateText];
 	}
 	else{
-		Platform *platform = game.wishlistPlatforms.allObjects.firstObject;
+		Platform *platform = game.wishlistPlatform;
 		[cell.platformLabel setText:platform.abbreviation];
 		[cell.platformLabel setBackgroundColor:platform.color];
 		[cell.titleLabel setText:game.title];

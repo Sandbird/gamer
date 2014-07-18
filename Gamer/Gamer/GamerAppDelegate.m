@@ -194,11 +194,7 @@
 							[self requestMetascoreForGame:game platform:game.selectedMetascore.platform context:context completionHandler:completionHandler];
 						}
 						else{
-							NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-							NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-							NSArray *orderedPlatforms = [game.wishlistPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-							
-							[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject context:context completionHandler:completionHandler];
+							[self requestMetascoreForGame:game platform:game.wishlistPlatform context:context completionHandler:completionHandler];
 						}
 					}
 				}

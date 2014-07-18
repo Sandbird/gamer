@@ -2,7 +2,7 @@
 //  Game.h
 //  Gamer
 //
-//  Created by Caio Mello on 16/07/2014.
+//  Created by Caio Mello on 17/07/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -19,6 +19,8 @@
 @property (nonatomic, retain) NSNumber * identifier;
 @property (nonatomic, retain) NSString * imagePath;
 @property (nonatomic, retain) NSString * imageURL;
+@property (nonatomic, retain) NSNumber * inLibrary;
+@property (nonatomic, retain) NSNumber * inWishlist;
 @property (nonatomic, retain) NSNumber * lent;
 @property (nonatomic, retain) NSString * notes;
 @property (nonatomic, retain) NSString * overview;
@@ -32,14 +34,13 @@
 @property (nonatomic, retain) NSNumber * releaseMonth;
 @property (nonatomic, retain) NSNumber * releaseQuarter;
 @property (nonatomic, retain) NSNumber * releaseYear;
-@property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSNumber * inWishlist;
-@property (nonatomic, retain) NSNumber * inLibrary;
 @property (nonatomic, retain) NSNumber * rented;
+@property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSSet *developers;
 @property (nonatomic, retain) NSSet *franchises;
 @property (nonatomic, retain) NSSet *genres;
 @property (nonatomic, retain) NSSet *images;
+@property (nonatomic, retain) NSSet *libraryPlatforms;
 @property (nonatomic, retain) NSSet *metascores;
 @property (nonatomic, retain) NSSet *platforms;
 @property (nonatomic, retain) NSSet *publishers;
@@ -50,8 +51,7 @@
 @property (nonatomic, retain) NSSet *similarGames;
 @property (nonatomic, retain) NSSet *themes;
 @property (nonatomic, retain) NSSet *videos;
-@property (nonatomic, retain) NSSet *wishlistPlatforms;
-@property (nonatomic, retain) NSSet *libraryPlatforms;
+@property (nonatomic, retain) Platform *wishlistPlatform;
 @end
 
 @interface Game (CoreDataGeneratedAccessors)
@@ -75,6 +75,11 @@
 - (void)removeImagesObject:(Image *)value;
 - (void)addImages:(NSSet *)values;
 - (void)removeImages:(NSSet *)values;
+
+- (void)addLibraryPlatformsObject:(Platform *)value;
+- (void)removeLibraryPlatformsObject:(Platform *)value;
+- (void)addLibraryPlatforms:(NSSet *)values;
+- (void)removeLibraryPlatforms:(NSSet *)values;
 
 - (void)addMetascoresObject:(Metascore *)value;
 - (void)removeMetascoresObject:(Metascore *)value;
@@ -110,15 +115,5 @@
 - (void)removeVideosObject:(Video *)value;
 - (void)addVideos:(NSSet *)values;
 - (void)removeVideos:(NSSet *)values;
-
-- (void)addWishlistPlatformsObject:(Platform *)value;
-- (void)removeWishlistPlatformsObject:(Platform *)value;
-- (void)addWishlistPlatforms:(NSSet *)values;
-- (void)removeWishlistPlatforms:(NSSet *)values;
-
-- (void)addLibraryPlatformsObject:(Platform *)value;
-- (void)removeLibraryPlatformsObject:(Platform *)value;
-- (void)addLibraryPlatforms:(NSSet *)values;
-- (void)removeLibraryPlatforms:(NSSet *)values;
 
 @end

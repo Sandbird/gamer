@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, PlatformPickerMode){
+	PlatformPickerModeWishlist,
+	PlatformPickerModeLibrary
+};
+
 @class PlatformPickerController;
 
 @protocol PlatformPickerControllerDelegate <NSObject>
@@ -18,6 +23,7 @@
 
 @interface PlatformPickerController : UITableViewController
 
+@property (nonatomic, assign) NSInteger mode;
 @property (nonatomic, strong) NSArray *selectablePlatforms;
 @property (nonatomic, strong) NSMutableArray *selectedPlatforms;
 

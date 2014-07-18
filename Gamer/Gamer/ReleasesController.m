@@ -80,10 +80,16 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	if ([tableView cellForRowAtIndexPath:indexPath].selectionStyle != UITableViewCellSelectionStyleNone){
+	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+	
+	if (cell.selectionStyle != UITableViewCellSelectionStyleNone){
 		Release *release = self.dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
 		[self.delegate releasesController:self didSelectRelease:release == self.game.selectedRelease ? nil : release];
+		
 		[self.tableView reloadData];
+		
+		[cell setSelected:YES];
+		[cell setSelected:NO animated:YES];
 	}
 }
 

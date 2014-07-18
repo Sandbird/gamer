@@ -56,13 +56,11 @@
 			[game setInLibrary:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"inLibrary"] withDefault:NO]];
 			
 			// Wishlist platforms
-			if (dictionary[@"wishlistPlatforms"] != [NSNull null]){
-				NSMutableArray *wishlistPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"wishlistPlatforms"] count]];
-				for (NSDictionary *platformDictionary in dictionary[@"wishlistPlatforms"]){
-					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:self.context];
-					[wishlistPlatforms addObject:platform];
+			if (dictionary[@"wishlistPlatform"] != [NSNull null]){
+				if (dictionary[@"wishlistPlatform"][@"id"] != [NSNull null]){
+					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"wishlistPlatform"][@"id"] inContext:self.context];
+					[game setWishlistPlatform:platform];
 				}
-				[game setWishlistPlatforms:[NSSet setWithArray:wishlistPlatforms]];
 			}
 			
 			// Library platforms
@@ -87,7 +85,7 @@
 					
 					if ([location isEqualToNumber:@(1)]){
 						[game setInWishlist:@(YES)];
-						[game setWishlistPlatforms:[NSSet setWithArray:selectedPlatforms]];
+						[game setWishlistPlatform:selectedPlatforms.firstObject];
 					}
 					else{
 						[game setInLibrary:@(YES)];

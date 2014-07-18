@@ -2,7 +2,7 @@
 //  Platform.m
 //  Gamer
 //
-//  Created by Caio Mello on 16/07/2014.
+//  Created by Caio Mello on 17/07/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -24,9 +24,9 @@
 @dynamic name;
 @dynamic gamer;
 @dynamic games;
+@dynamic libraryGames;
 @dynamic metascores;
 @dynamic releases;
 @dynamic wishlistGames;
-@dynamic libraryGames;
 
 @end

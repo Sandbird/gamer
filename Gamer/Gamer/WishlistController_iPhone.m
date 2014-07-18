@@ -120,7 +120,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[game setInWishlist:@(NO)];
-	[game setWishlistPlatforms:nil];
+	[game setWishlistPlatform:nil];
 	[self.context MR_saveToPersistentStoreAndWait];
 }
 
@@ -171,7 +171,7 @@
 		[customCell.dateLabel setText:game.selectedRelease.releaseDateText];
 	}
 	else{
-		Platform *platform = game.wishlistPlatforms.allObjects.firstObject;
+		Platform *platform = game.wishlistPlatform;
 		[customCell.platformLabel setText:platform.abbreviation];
 		[customCell.platformLabel setBackgroundColor:platform.color];
 		[customCell.titleLabel setText:game.title];

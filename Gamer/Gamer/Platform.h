@@ -2,7 +2,7 @@
 //  Platform.h
 //  Gamer
 //
-//  Created by Caio Mello on 16/07/2014.
+//  Created by Caio Mello on 17/07/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
@@ -22,10 +22,10 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) Gamer *gamer;
 @property (nonatomic, retain) NSSet *games;
+@property (nonatomic, retain) NSSet *libraryGames;
 @property (nonatomic, retain) NSSet *metascores;
 @property (nonatomic, retain) NSSet *releases;
 @property (nonatomic, retain) NSSet *wishlistGames;
-@property (nonatomic, retain) NSSet *libraryGames;
 @end
 
 @interface Platform (CoreDataGeneratedAccessors)
@@ -34,6 +34,11 @@
 - (void)removeGamesObject:(Game *)value;
 - (void)addGames:(NSSet *)values;
 - (void)removeGames:(NSSet *)values;
+
+- (void)addLibraryGamesObject:(Game *)value;
+- (void)removeLibraryGamesObject:(Game *)value;
+- (void)addLibraryGames:(NSSet *)values;
+- (void)removeLibraryGames:(NSSet *)values;
 
 - (void)addMetascoresObject:(Metascore *)value;
 - (void)removeMetascoresObject:(Metascore *)value;
@@ -49,10 +54,5 @@
 - (void)removeWishlistGamesObject:(Game *)value;
 - (void)addWishlistGames:(NSSet *)values;
 - (void)removeWishlistGames:(NSSet *)values;
-
-- (void)addLibraryGamesObject:(Game *)value;
-- (void)removeLibraryGamesObject:(Game *)value;
-- (void)addLibraryGames:(NSSet *)values;
-- (void)removeLibraryGames:(NSSet *)values;
 
 @end

@@ -162,11 +162,6 @@ typedef NS_ENUM(NSInteger, Section){
 	NSMutableArray *gameDictionaries = [[NSMutableArray alloc] initWithCapacity:games.count];
 	
 	for (Game *game in games){
-		NSMutableArray *wishlistPlatformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.wishlistPlatforms.count];
-		for (Platform *platform in game.wishlistPlatforms){
-			[wishlistPlatformDictionaries addObject:@{@"id":platform.identifier}];
-		}
-		
 		NSMutableArray *libraryPlatformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.libraryPlatforms.count];
 		for (Platform *platform in game.libraryPlatforms){
 			[libraryPlatformDictionaries addObject:@{@"id":platform.identifier}];
@@ -176,7 +171,7 @@ typedef NS_ENUM(NSInteger, Section){
 										 @"title":game.title ? game.title : @"",
 										 @"inWishlist":game.inWishlist,
 										 @"inLibrary":game.inLibrary,
-										 @"wishlistPlatforms":wishlistPlatformDictionaries ? wishlistPlatformDictionaries : [NSNull null],
+										 @"wishlistPlatform":game.wishlistPlatform ? @{@"id":game.wishlistPlatform.identifier} : [NSNull null],
 										 @"libraryPlatforms":libraryPlatformDictionaries ? libraryPlatformDictionaries : [NSNull null],
 										 @"finished":game.finished ? game.finished : @(0),
 										 @"digital":game.digital ? game.digital : @(0),

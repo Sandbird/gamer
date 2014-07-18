@@ -877,7 +877,7 @@ typedef NS_ENUM(NSInteger, Section){
 		if (!platforms || platforms.count == 0)
 			[self removeGameFromWishlist];
 		else
-			[self addGameToWishlistWithPlatforms:platforms];
+			[self addGameToWishlistWithPlatform:platforms.firstObject];
 	}
 	else if (self.libraryButton.isHighlighted){
 		if (!platforms || platforms.count == 0)
@@ -1063,12 +1063,6 @@ typedef NS_ENUM(NSInteger, Section){
 	return [game.platforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
 }
 
-- (NSArray *)orderedWishlistPlatformsFromGame:(Game *)game{
-	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-	return [game.wishlistPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-}
-
 - (NSArray *)orderedLibraryPlatformsFromGame:(Game *)game{
 	NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
 	NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
@@ -1098,31 +1092,15 @@ typedef NS_ENUM(NSInteger, Section){
 	return [game.videos.allObjects sortedArrayUsingDescriptors:@[indexSortDescriptor]];
 }
 
-- (void)addGameToWishlistWithPlatforms:(NSArray *)platforms{
+- (void)addGameToWishlistWithPlatform:(Platform *)platform{
 	[self.game setInWishlist:@(YES)];
-	[self.game setWishlistPlatforms:[NSSet setWithArray:platforms]];
-	
-	[self.game setPreordered:@(NO)];
-	[self.game setFinished:@(NO)];
-	[self.game setDigital:@(NO)];
-	[self.game setLent:@(NO)];
-	[self.game setBorrowed:@(NO)];
-	[self.game setRented:@(NO)];
-	
+	[self.game setWishlistPlatform:platform];
 	[self saveAndRefreshAfterLocationChange];
 }
 
 - (void)addGameToLibraryWithPlatforms:(NSArray *)platforms{
 	[self.game setInLibrary:@(YES)];
 	[self.game setLibraryPlatforms:[NSSet setWithArray:platforms]];
-	
-	[self.game setPreordered:@(NO)];
-	[self.game setFinished:@(NO)];
-	[self.game setDigital:@(NO)];
-	[self.game setLent:@(NO)];
-	[self.game setBorrowed:@(NO)];
-	[self.game setRented:@(NO)];
-	
 	[self saveAndRefreshAfterLocationChange];
 }
 
@@ -1133,29 +1111,13 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (void)removeGameFromWishlist{
 	[self.game setInWishlist:@(NO)];
-	[self.game setWishlistPlatforms:nil];
-	
-	[self.game setPreordered:@(NO)];
-	[self.game setFinished:@(NO)];
-	[self.game setDigital:@(NO)];
-	[self.game setLent:@(NO)];
-	[self.game setBorrowed:@(NO)];
-	[self.game setRented:@(NO)];
-	
+	[self.game setWishlistPlatform:nil];
 	[self saveAndRefreshAfterLocationChange];
 }
 
 - (void)removeGameFromLibrary{
 	[self.game setInLibrary:@(NO)];
 	[self.game setLibraryPlatforms:nil];
-	
-	[self.game setPreordered:@(NO)];
-	[self.game setFinished:@(NO)];
-	[self.game setDigital:@(NO)];
-	[self.game setLent:@(NO)];
-	[self.game setBorrowed:@(NO)];
-	[self.game setRented:@(NO)];
-	
 	[self saveAndRefreshAfterLocationChange];
 }
 
@@ -1171,12 +1133,23 @@ typedef NS_ENUM(NSInteger, Section){
 //		[self.editPlatformsButton setHidden:([self.game.location isEqualToNumber:@(GameLocationNone)] || self.selectablePlatforms.count <= 1) ? YES : NO];
 		
 		// Auto-select release based on top selected platform and region
-//		for (Release *release in self.game.releases){
-//			if (release.platform == self.selectedPlatforms.firstObject && release.region == [Session gamer].region){
-//				[self.game setSelectedRelease:release];
-//				[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-//			}
-//		}
+		Platform *platform;
+		
+		if ([self.game.inWishlist isEqualToNumber:@(YES)]){
+			platform = self.game.wishlistPlatform;
+		}
+		else if ([self.game.inLibrary isEqualToNumber:@(YES)]){
+			platform = self.libraryPlatforms.firstObject;
+		}
+		
+		if (platform){
+			for (Release *release in self.game.releases){
+				if (release.platform == platform && release.region == [Session gamer].region){
+					[self.game setSelectedRelease:release];
+					[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
+				}
+			}
+		}
 		
 		// Update release date
 		[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
@@ -1199,7 +1172,7 @@ typedef NS_ENUM(NSInteger, Section){
 		[self.wishlistButton setHighlighted:NO];
 		[self.libraryButton setHighlighted:NO];
 		
-		// Scroll to last row of status section if game added
+//		// Scroll to last row of status section if game added
 //		if ([self.game.inWishlist isEqualToNumber:@(YES)] || [self.game.inLibrary isEqualToNumber:@(YES)]){
 //			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SectionStatus] atScrollPosition:UITableViewScrollPositionTop animated:YES];
 //		}
@@ -1247,12 +1220,12 @@ typedef NS_ENUM(NSInteger, Section){
 	else{
 		// Multiple platforms to select
 		if (self.selectablePlatforms.count > 1){
-			[self performSegueWithIdentifier:@"PlatformPickerSegue" sender:nil];
+			[self performSegueWithIdentifier:@"PlatformPickerSegue" sender:sender];
 		}
 		// Single platform
 		else{
 			if (sender == self.wishlistButton){
-				[self addGameToWishlistWithPlatforms:@[self.selectablePlatforms.firstObject]];
+				[self addGameToWishlistWithPlatform:self.selectablePlatforms.firstObject];
 			}
 			else{
 				[self addGameToLibraryWithPlatforms:@[self.selectablePlatforms.firstObject]];
@@ -1340,8 +1313,16 @@ typedef NS_ENUM(NSInteger, Section){
 		UINavigationController *navigationController = segue.destinationViewController;
 		PlatformPickerController *destination = (PlatformPickerController *)navigationController.topViewController;
 		[destination setSelectablePlatforms:self.selectablePlatforms];
-		[destination setSelectedPlatforms:self.game.libraryPlatforms.allObjects.mutableCopy];
 		[destination setDelegate:self];
+		
+		if (sender == self.wishlistButton){
+			[destination setMode:PlatformPickerModeWishlist];
+			if (self.game.wishlistPlatform) [destination setSelectedPlatforms:@[self.game.wishlistPlatform].mutableCopy];
+		}
+		else{
+			[destination setMode:PlatformPickerModeLibrary];
+			[destination setSelectedPlatforms:self.game.libraryPlatforms.allObjects.mutableCopy];
+		}
 	}
 	else if ([segue.identifier isEqualToString:@"ReleasesSegue"]){
 		ReleasesController *destination = segue.destinationViewController;
