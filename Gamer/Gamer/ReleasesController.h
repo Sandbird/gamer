@@ -13,12 +13,14 @@
 @protocol ReleasesControllerDelegate <NSObject>
 
 - (void)releasesController:(ReleasesController *)controller didSelectRelease:(Release *)release;
+- (void)releasesControllerDidDownloadReleases:(ReleasesController *)controller;
 
 @end
 
 @interface ReleasesController : UITableViewController
 
 @property (nonatomic, strong) Game *game;
+@property (nonatomic, strong) NSArray *selectablePlatforms;
 
 @property (nonatomic, weak) id<ReleasesControllerDelegate> delegate;
 

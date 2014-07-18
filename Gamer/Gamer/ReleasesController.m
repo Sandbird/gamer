@@ -27,20 +27,14 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
+	[self.refreshControl setTintColor:[UIColor lightGrayColor]];
+	
 	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
-	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:nil inContext:self.context];
+	[self loadDataSource];
 	
-	self.dataSource = [[NSMutableArray alloc] initWithCapacity:platforms.count];
-	
-	for (Platform *platform in platforms){
-		if ([platform containsReleasesWithGame:self.game]){
-			NSArray *releases = [platform sortedReleasesWithGame:self.game];
-			
-			[self.dataSource addObject:@{@"platform":@{@"id":platform.identifier,
-												   @"name":platform.name,
-												   @"releases":releases}}];
-		}
+	if (self.game.releases.count == 1){
+		[self requestReleasesWithGame:self.game];
 	}
 }
 
@@ -91,6 +85,85 @@
 		[cell setSelected:YES];
 		[cell setSelected:NO animated:YES];
 	}
+}
+
+#pragma mark - Networking
+
+- (void)requestReleasesWithGame:(Game *)game{
+	NSURLRequest *request = [Networking requestForReleasesWithGameIdentifier:game.identifier fields:@"id,name,platform,region,release_date,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,image"];
+	
+	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+		if (error){
+			if (((NSHTTPURLResponse *)response).statusCode != 0) NSLog(@"Failure in %@ - Status code: %ld - Releases", self, (long)((NSHTTPURLResponse *)response).statusCode);
+		}
+		else{
+			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
+			//			NSLog(@"%@", responseObject);
+			
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				for (NSDictionary *dictionary in responseObject[@"results"]){
+					Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:self.context];
+					if (!release) release = [Release MR_createInContext:self.context];
+					
+					[Networking updateRelease:release withResults:dictionary context:self.context];
+					
+					[game addReleasesObject:release];
+				}
+				
+				if (!game.selectedRelease){
+					NSArray *reversedIndexSelectablePlatforms = [[self.selectablePlatforms reverseObjectEnumerator] allObjects];
+					
+					for (Release *release in game.releases){
+						// If game not added, release region is selected region, release platform is in selectable platforms
+						if (release.region == [Session gamer].region && [reversedIndexSelectablePlatforms containsObject:release.platform]){
+							[game setSelectedRelease:release];
+							[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
+						}
+					}
+				}
+			}
+		}
+		
+		[self.refreshControl endRefreshing];
+		[self.navigationItem.rightBarButtonItem setEnabled:YES];
+		
+		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+			[self.delegate releasesControllerDidDownloadReleases:self];
+			
+			[self loadDataSource];
+			[self.tableView reloadData];
+		}];
+	}];
+	[dataTask resume];
+}
+
+#pragma mark - Custom
+
+- (void)loadDataSource{
+	NSArray *platforms = [Platform MR_findAllSortedBy:@"group,index" ascending:YES withPredicate:nil inContext:self.context];
+	
+	self.dataSource = [[NSMutableArray alloc] initWithCapacity:platforms.count];
+	
+	for (Platform *platform in platforms){
+		if ([platform containsReleasesWithGame:self.game]){
+			NSArray *releases = [platform sortedReleasesWithGame:self.game];
+			
+			[self.dataSource addObject:@{@"platform":@{@"id":platform.identifier,
+													   @"name":platform.name,
+													   @"releases":releases}}];
+		}
+	}
+}
+
+#pragma mark - Actions
+
+- (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
+	[sender setEnabled:NO];
+	[self requestReleasesWithGame:self.game];
+}
+
+- (IBAction)refreshControlValueChangedAction:(UIRefreshControl *)sender{
+	[self requestReleasesWithGame:self.game];
 }
 
 @end

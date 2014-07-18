@@ -648,9 +648,9 @@ typedef NS_ENUM(NSInteger, Section){
 				}
 				
 				if (!game.selectedRelease){
+					NSArray *reversedIndexSelectablePlatforms = [[self.selectablePlatforms reverseObjectEnumerator] allObjects];
+					
 					for (Release *release in game.releases){
-						NSArray *reversedIndexSelectablePlatforms = [[self.selectablePlatforms reverseObjectEnumerator] allObjects];
-						
 						// If game not added, release region is selected region, release platform is in selectable platforms
 						if (release.region == [Session gamer].region && [reversedIndexSelectablePlatforms containsObject:release.platform]){
 							[game setSelectedRelease:release];
@@ -898,6 +898,11 @@ typedef NS_ENUM(NSInteger, Section){
 		[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
 		[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
 	}];
+}
+
+- (void)releasesControllerDidDownloadReleases:(ReleasesController *)controller{
+	[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
+	[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
 }
 
 #pragma mark - MetascoreController
@@ -1330,6 +1335,7 @@ typedef NS_ENUM(NSInteger, Section){
 	else if ([segue.identifier isEqualToString:@"ReleasesSegue"]){
 		ReleasesController *destination = segue.destinationViewController;
 		[destination setGame:self.game];
+		[destination setSelectablePlatforms:self.selectablePlatforms];
 		[destination setDelegate:self];
 	}
 	else if ([segue.identifier isEqualToString:@"NotesSegue"]){

@@ -62,6 +62,7 @@
 					Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"selectedRelease"][@"id"] inContext:self.context];
 					if (!release) [Release MR_createInContext:self.context];
 					[release setIdentifier:dictionary[@"selectedRelease"][@"id"]];
+					[game addReleasesObject:release];
 					[game setSelectedRelease:release];
 				}
 			}

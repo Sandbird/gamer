@@ -2118,7 +2118,13 @@
                             <outlet property="delegate" destination="5j4-JL-rvG" id="suT-ma-aFU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Releases" id="kCW-43-Sgt"/>
+                    <navigationItem key="navigationItem" title="Releases" id="kCW-43-Sgt">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="VTA-XD-Wco">
+                            <connections>
+                                <action selector="refreshBarButtonAction:" destination="5j4-JL-rvG" id="cZo-EQ-iKZ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Yz1-X4-Its" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
