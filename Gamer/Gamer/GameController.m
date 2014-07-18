@@ -1199,11 +1199,6 @@ typedef NS_ENUM(NSInteger, Section){
 	__block Game *game = self.game;
 	__block NSManagedObjectContext *context = self.context;
 	
-	[self.ratingControl setEditingChangedBlock:^(NSUInteger rating){
-		[game setPersonalRating:@(rating)];
-		[context MR_saveToPersistentStoreAndWait];
-	}];
-	
 	[self.ratingControl setEditingDidEndBlock:^(NSUInteger rating){
 		[game setPersonalRating:@(rating)];
 		[context MR_saveToPersistentStoreAndWait];
