@@ -12,6 +12,7 @@
 #import "Platform.h"
 #import "Release.h"
 #import "Region.h"
+#import "NSArray+Split.h"
 
 @interface ImportController ()
 
@@ -101,7 +102,10 @@
 		self.importedGames = [self.importedGames sortedArrayUsingDescriptors:@[titleSortDescriptor]].mutableCopy;
 		
 		// Request games
-		[self requestGames:self.importedGames];
+		NSArray *splitArray = [NSArray splitArray:self.importedGames componentsPerSegment:100];
+		for (NSArray *array in splitArray){
+			[self requestGames:array];
+		}
 	}
 }
 

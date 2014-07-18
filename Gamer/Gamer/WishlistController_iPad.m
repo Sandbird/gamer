@@ -24,6 +24,7 @@
 #import "HeaderCollectionReusableView.h"
 #import <AFNetworking/AFNetworking.h>
 #import "SearchController_iPad.h"
+#import "NSArray+Split.h"
 
 @interface WishlistController_iPad () <UICollectionViewDataSource, UICollectionViewDelegate, UISearchBarDelegate>
 
@@ -361,7 +362,10 @@
 		[self.refreshButton setEnabled:NO];
 	}
 	
-	[self requestGames:self.fetchedResultsController.fetchedObjects];
+	NSArray *splitArray = [NSArray splitArray:self.fetchedResultsController.fetchedObjects componentsPerSegment:100];
+	for (NSArray *array in splitArray){
+		[self requestGames:array];
+	}
 }
 
 - (void)refreshWishlistSelectedReleases{

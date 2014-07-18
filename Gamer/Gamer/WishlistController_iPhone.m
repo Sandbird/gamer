@@ -23,6 +23,7 @@
 #import "GameController.h"
 #import <AFNetworking/AFNetworking.h>
 #import "BlurHeaderView.h"
+#import "NSArray+Split.h"
 
 @interface WishlistController_iPhone () <FetchedTableViewDelegate>
 
@@ -356,7 +357,10 @@
 		[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
 	}
 	
-	[self requestGames:self.fetchedResultsController.fetchedObjects];
+	NSArray *splitArray = [NSArray splitArray:self.fetchedResultsController.fetchedObjects componentsPerSegment:100];
+	for (NSArray *array in splitArray){
+		[self requestGames:array];
+	}
 }
 
 - (void)refreshWishlistSelectedReleases{
