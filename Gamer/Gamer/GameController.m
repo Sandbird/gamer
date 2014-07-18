@@ -65,7 +65,7 @@ typedef NS_ENUM(NSInteger, Section){
 @property (nonatomic, strong) IBOutlet UISwitch *preorderedSwitch;
 @property (nonatomic, strong) IBOutlet UISwitch *finishedSwitch;
 @property (nonatomic, strong) IBOutlet UISegmentedControl *retailDigitalSegmentedControl;
-@property (nonatomic, strong) IBOutlet UISegmentedControl *lentBorrowedSegmentedControl;
+@property (nonatomic, strong) IBOutlet UISegmentedControl *lentBorrowedRentedSegmentedControl;
 @property (nonatomic, strong) IBOutlet UIView *ratingView;
 @property (nonatomic, strong) StarRatingControl *ratingControl;
 
@@ -965,23 +965,27 @@ typedef NS_ENUM(NSInteger, Section){
 	// Set retailDigitalSegmentedControl selection
 	if ([self.game.digital isEqualToNumber:@(YES)]){
 		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:1];
-		[self.lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else{
 		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 	}
 	
-	// Set lentBorrowedSegmentedControl selection
+	// Set lentBorrowedRentedSegmentedControl selection
 	if ([self.game.lent isEqualToNumber:@(YES)]){
-		[self.lentBorrowedSegmentedControl setSelectedSegmentIndex:1];
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:1];
 		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else if ([self.game.borrowed isEqualToNumber:@(YES)]){
-		[self.lentBorrowedSegmentedControl setSelectedSegmentIndex:2];
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:2];
+		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
+	}
+	else if ([self.game.rented isEqualToNumber:@(YES)]){
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:3];
 		[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 	}
 	else{
-		[self.lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
 	}
 	
 	[self.ratingControl setRating:self.game.personalRating.floatValue];
@@ -1159,11 +1163,13 @@ typedef NS_ENUM(NSInteger, Section){
 		[self.finishedSwitch setOn:self.game.finished.boolValue animated:YES];
 		
 		if ([self.game.lent isEqualToNumber:@(YES)])
-			[self.lentBorrowedSegmentedControl setSelectedSegmentIndex:1];
+			[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:1];
 		else if ([self.game.borrowed isEqualToNumber:@(YES)])
-			[self.lentBorrowedSegmentedControl setSelectedSegmentIndex:2];
+			[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:2];
+		else if ([self.game.rented isEqualToNumber:@(YES)])
+			[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:3];
 		else
-			[self.lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
+			[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
 		
 		[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)] withRowAnimation:UITableViewRowAnimationAutomatic];
 		[self.tableView beginUpdates];
@@ -1248,7 +1254,7 @@ typedef NS_ENUM(NSInteger, Section){
 				[self.game setDigital:@(YES)];
 				[self.game setLent:@(NO)];
 				[self.game setBorrowed:@(NO)];
-				[self.lentBorrowedSegmentedControl setSelectedSegmentIndex:0];
+				[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			default:
 				break;
@@ -1259,6 +1265,7 @@ typedef NS_ENUM(NSInteger, Section){
 			case 0:
 				[self.game setLent:@(NO)];
 				[self.game setBorrowed:@(NO)];
+				[self.game setRented:@(NO)];
 				break;
 			case 1:
 				[self.game setLent:@(YES)];
@@ -1270,6 +1277,13 @@ typedef NS_ENUM(NSInteger, Section){
 				[self.game setLent:@(NO)];
 				[self.game setBorrowed:@(YES)];
 				[self.game setDigital:@(NO)];
+				[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
+				break;
+			case 3:
+				[self.game setLent:@(NO)];
+				[self.game setBorrowed:@(NO)];
+				[self.game setDigital:@(NO)];
+				[self.game setRented:@(YES)];
 				[self.retailDigitalSegmentedControl setSelectedSegmentIndex:0];
 				break;
 			default:

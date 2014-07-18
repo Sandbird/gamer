@@ -43,7 +43,8 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	LibraryFilterDigital = 8,
 	LibraryFilterLent = 9,
 	LibraryFilterBorrowed = 10,
-	LibraryFilterNone = 11
+	LibraryFilterRented = 11,
+	LibraryFilterNone = 12
 };
 
 @interface LibraryController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, UIActionSheetDelegate, LibrarySortFilterViewDelegate>
@@ -222,6 +223,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			case LibraryFilterDigital: headerTitle = @"Digital"; break;
 			case LibraryFilterLent: headerTitle = @"Lent"; break;
 			case LibraryFilterBorrowed: headerTitle = @"Borrowed"; break;
+			case LibraryFilterRented: headerTitle = @"Rented"; break;
 			default: break;
 		}
 		
@@ -471,6 +473,10 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 					[self fetchGameswithSortOrFilter:LibraryFilterBorrowed group:nil predicate:[NSPredicate predicateWithFormat:@"inLibrary = %@ AND borrowed = %@", @(YES), @(YES)] sort:@"title" ascending:YES];
 					[self.filterView showStatusWithTitle:@"Showing borrowed games" animated:YES];
 					break;
+				case LibraryFilterRented:
+					[self fetchGameswithSortOrFilter:LibraryFilterRented group:nil predicate:[NSPredicate predicateWithFormat:@"inLibrary = %@ AND rented = %@", @(YES), @(YES)] sort:@"title" ascending:YES];
+					[self.filterView showStatusWithTitle:@"Showing rented games" animated:YES];
+					break;
 				default:
 					break;
 			}
@@ -573,7 +579,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (void)showFilterOptions{
-	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Show only" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Finished", @"Unfinished", @"Retail", @"Digital", @"Lent", @"Borrowed", nil];
+	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Show only" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Finished", @"Unfinished", @"Retail", @"Digital", @"Lent", @"Borrowed", @"Rented", nil];
 	[actionSheet setTag:2];
 	
 	if ([Tools deviceIsiPhone])

@@ -434,6 +434,7 @@
                                                         <segment title="None"/>
                                                         <segment title="Lent"/>
                                                         <segment title="Borrowed"/>
+                                                        <segment title="Rented"/>
                                                     </segments>
                                                     <connections>
                                                         <action selector="segmentedControlValueChangedAction:" destination="3iO-2E-Tja" eventType="valueChanged" id="TVf-pz-Kfi"/>
@@ -1008,7 +1009,7 @@
                         <outlet property="genreFirstLabel" destination="7d3-nt-xDw" id="oUD-S5-GQP"/>
                         <outlet property="genreSecondLabel" destination="ys0-6L-6xX" id="9aF-Ap-qSV"/>
                         <outlet property="imagesCollectionView" destination="xbH-BN-l6K" id="Cft-bj-NOG"/>
-                        <outlet property="lentBorrowedSegmentedControl" destination="ksd-GU-lDk" id="S28-Ul-r6W"/>
+                        <outlet property="lentBorrowedRentedSegmentedControl" destination="ksd-GU-lDk" id="e4r-Pd-Iba"/>
                         <outlet property="libraryButton" destination="X8X-53-Q2r" id="umR-9Q-Fht"/>
                         <outlet property="metascorePlatformLabel" destination="xLb-Qi-Vru" id="dl8-e9-Nc5"/>
                         <outlet property="platformsCollectionView" destination="laf-zo-Npo" id="cjc-q2-8oq"/>

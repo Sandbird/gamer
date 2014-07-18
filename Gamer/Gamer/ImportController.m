@@ -49,6 +49,7 @@
 			[game setLent:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"lent"] withDefault:NO]];
 			[game setPreordered:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"preordered"] withDefault:NO]];
 			[game setBorrowed:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"borrowed"] withDefault:NO]];
+			[game setRented:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"rented"] withDefault:NO]];
 			[game setPersonalRating:[Tools integerNumberFromSourceIfNotNull:dictionary[@"personalRating"]]];
 			[game setNotes:[Tools stringFromSourceIfNotNull:dictionary[@"notes"]]];
 			if ([game.notes isEqualToString:@"(null)"]) [game setNotes:nil];
