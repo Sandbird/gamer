@@ -141,7 +141,7 @@
 	}
 	else{
 		[cell.coverImageView setImage:nil];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+		[cell.coverImageView setBackgroundColor:[UIColor darkGrayColor]];
 		
 		__block UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 		

@@ -252,7 +252,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	}
 	else{
 		[cell.coverImageView setImage:nil];
-		[cell.coverImageView setBackgroundColor:[UIColor clearColor]];
+		[cell.coverImageView setBackgroundColor:[UIColor darkGrayColor]];
 		
 		__block UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 		
@@ -512,26 +512,26 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		}
 	}
 	
-	// Cache images
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-		for (NSDictionary *dictionary in self.dataSource){
-			for (Game *game in dictionary[@"platform"][@"games"]){
-				UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-				CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
-				
-				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
-				
-				UIGraphicsBeginImageContext(imageSize);
-				[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
-				image = UIGraphicsGetImageFromCurrentImageContext();
-				UIGraphicsEndImageContext();
-				
-				if (image){
-					[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
-				}
-			}
-		}
-	});
+//	// Cache images
+//	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+//		for (NSDictionary *dictionary in self.dataSource){
+//			for (Game *game in dictionary[@"platform"][@"games"]){
+//				UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
+//				CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
+//				
+//				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
+//				
+//				UIGraphicsBeginImageContext(imageSize);
+//				[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
+//				image = UIGraphicsGetImageFromCurrentImageContext();
+//				UIGraphicsEndImageContext();
+//				
+//				if (image){
+//					[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+//				}
+//			}
+//		}
+//	});
 }
 
 - (void)fetchGameswithSortOrFilter:(NSInteger)filter group:(NSString *)group predicate:(NSPredicate *)predicate sort:(NSString *)sort ascending:(BOOL)ascending{

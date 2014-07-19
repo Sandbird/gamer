@@ -18,7 +18,6 @@
 	}
 	else{
 		[self.playImageView setAlpha:1];
-		[self.layer addAnimation:[Tools fadeTransitionWithDuration:0.2] forKey:nil];
 	}
 }
 
