@@ -140,7 +140,6 @@
 	}
 	else{
 		[customCell.coverImageView setImage:nil];
-		[customCell.coverImageView setBackgroundColor:[UIColor darkGrayColor]];
 		
 		__block UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 		
@@ -155,11 +154,11 @@
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[customCell.coverImageView setImage:image];
 				[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+				
+				if (image){
+					[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+				}
 			});
-			
-			if (image){
-				[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
-			}
 		});
 	}
 	
@@ -263,9 +262,32 @@
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
-			[game setImageURL:URLString];
-			[self.context MR_saveToPersistentStoreAndWait];
+			NSString *path = [NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent];
+			
+			__block UIImage *image = [UIImage imageWithContentsOfFile:path];
+			
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+				CGSize coverImageSize = [Tools deviceIsiPhone] ? CGSizeMake(280, 200) : CGSizeMake(420, 300);
+				
+				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:coverImageSize.width] : [Tools sizeOfImage:image aspectFitToHeight:coverImageSize.height];
+				
+				UIGraphicsBeginImageContext(imageSize);
+				[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
+				image = UIGraphicsGetImageFromCurrentImageContext();
+				UIGraphicsEndImageContext();
+				
+				NSData *imageData = UIImagePNGRepresentation(image);
+				
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[imageData writeToFile:path atomically:YES];
+					
+					[game setImagePath:path];
+					[game setImageURL:URLString];
+					[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+						[self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
+					}];
+				});
+			});
 		}
 	}];
 	[downloadTask resume];

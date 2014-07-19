@@ -242,7 +242,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	Game *game = (self.sortOrFilter == LibrarySortPlatform) ? self.dataSource[indexPath.section][@"platform"][@"games"][indexPath.row] : [self.sortFilterDataSource objectAtIndexPath:indexPath];
 	
 	LibraryCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
-	[cell.coverImageView setBackgroundColor:[UIColor darkGrayColor]];
 	
 	UIImage *image = [self.imageCache objectForKey:game.imagePath.lastPathComponent];
 	
@@ -252,7 +251,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	}
 	else{
 		[cell.coverImageView setImage:nil];
-		[cell.coverImageView setBackgroundColor:[UIColor darkGrayColor]];
 		
 		__block UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
 		
@@ -269,12 +267,11 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[cell.coverImageView setImage:image];
 				[cell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
+				
+				if (image){
+					[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
+				}
 			});
-			
-			if (image){
-				[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
-			}
-			
 		});
 	}
 	
@@ -354,12 +351,33 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			[game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
-			[game setImageURL:URLString];
+			NSString *path = [NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent];
 			
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.collectionView reloadData];
-			}];
+			__block UIImage *image = [UIImage imageWithContentsOfFile:path];
+			
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+				CGSize coverImageSize = [Tools deviceIsiPhone] ? CGSizeMake(280, 200) : CGSizeMake(420, 300);
+				
+				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:coverImageSize.width] : [Tools sizeOfImage:image aspectFitToHeight:coverImageSize.height];
+				
+				UIGraphicsBeginImageContext(imageSize);
+				[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
+				image = UIGraphicsGetImageFromCurrentImageContext();
+				UIGraphicsEndImageContext();
+				
+				NSData *imageData = UIImagePNGRepresentation(image);
+				
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[imageData writeToFile:path atomically:YES];
+					
+					[game setImagePath:path];
+					[game setImageURL:URLString];
+					
+					[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+						[self.collectionView reloadData];
+					}];
+				});
+			});
 		}
 	}];
 	[downloadTask resume];
@@ -511,27 +529,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 													   @"games":games}}];
 		}
 	}
-	
-//	// Cache images
-//	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-//		for (NSDictionary *dictionary in self.dataSource){
-//			for (Game *game in dictionary[@"platform"][@"games"]){
-//				UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-//				CGSize cellSize = [Tools deviceIsiPhone] ? CGSizeMake(66, 83) : CGSizeMake(140, 176);
-//				
-//				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:cellSize.width] : [Tools sizeOfImage:image aspectFitToHeight:cellSize.height];
-//				
-//				UIGraphicsBeginImageContext(imageSize);
-//				[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
-//				image = UIGraphicsGetImageFromCurrentImageContext();
-//				UIGraphicsEndImageContext();
-//				
-//				if (image){
-//					[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
-//				}
-//			}
-//		}
-//	});
 }
 
 - (void)fetchGameswithSortOrFilter:(NSInteger)filter group:(NSString *)group predicate:(NSPredicate *)predicate sort:(NSString *)sort ascending:(BOOL)ascending{

@@ -612,13 +612,34 @@ typedef NS_ENUM(NSInteger, Section){
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Cover Image - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			
-			[self.game setImagePath:[NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent]];
-			[self.game setImageURL:URLString];
+			NSString *path = [NSString stringWithFormat:@"%@/%@", [Tools imagesDirectory], request.URL.lastPathComponent];
 			
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
-				[self displayCoverImage];
-			}];
+			__block UIImage *image = [UIImage imageWithContentsOfFile:path];
+			
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+				CGSize coverImageSize = [Tools deviceIsiPhone] ? CGSizeMake(280, 200) : CGSizeMake(420, 300);
+				
+				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:coverImageSize.width] : [Tools sizeOfImage:image aspectFitToHeight:coverImageSize.height];
+				
+				UIGraphicsBeginImageContext(imageSize);
+				[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
+				image = UIGraphicsGetImageFromCurrentImageContext();
+				UIGraphicsEndImageContext();
+				
+				NSData *imageData = UIImagePNGRepresentation(image);
+				
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[imageData writeToFile:path atomically:YES];
+					
+					[self.game setImagePath:path];
+					[self.game setImageURL:URLString];
+					
+					[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+						[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
+						[self displayCoverImage];
+					}];
+				});
+			});
 		}
 		
 		[self.progressView setHidden:YES];
