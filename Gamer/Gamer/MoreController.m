@@ -123,13 +123,13 @@
 		[platformDictionaries addObject:@{@"id":game.wishlistPlatform ? game.wishlistPlatform.identifier : game.libraryPlatform.identifier}];
 		
 		NSDictionary *gameDictionary = @{@"id":game.identifier,
-										 @"title":game.title,
+										 @"title":game.title ? game.title : @"",
 										 @"location":[game.wanted isEqualToNumber:@(YES)] ? @(GameLocationWishlist) : @(GameLocationLibrary),
-										 @"selectedPlatforms":platformDictionaries,
-										 @"finished":game.completed,
-										 @"digital":game.digital,
-										 @"lent":game.loaned,
-										 @"preordered":game.preordered};
+										 @"selectedPlatforms":platformDictionaries ? platformDictionaries : [NSNull null],
+										 @"finished":game.completed ? game.completed : @(0),
+										 @"digital":game.digital ? game.digital : @(0),
+										 @"lent":game.loaned ? game.loaned : @(0),
+										 @"preordered":game.preordered ? game.preordered : @(0)};
 		
 		[gameDictionaries addObject:gameDictionary];
 	}
