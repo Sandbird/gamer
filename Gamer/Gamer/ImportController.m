@@ -207,23 +207,23 @@
 					
 					[game setImagePath:path];
 					[game setImageURL:URLString];
+					
+					self.numberOfImagesDownloaded++;
+					
+					if (self.numberOfImagesDownloaded == self.importedGames.count){
+						[self.progressLabel setText:@"All done!"];
+						[self.progressView setProgress:1.0 animated:YES];
+						
+						[self.tableView reloadData];
+					}
+					else if (self.progressView.progress >= 0.4){
+						[self.progressLabel setText:@"Downloading images..."];
+						
+						CGFloat progress = 0.4 + 0.6 * ((CGFloat)self.numberOfImagesDownloaded/(CGFloat)self.importedGames.count);
+						[self.progressView setProgress:progress animated:YES];
+					}
 				});
 			});
-		}
-		
-		self.numberOfImagesDownloaded++;
-		
-		if (self.numberOfImagesDownloaded == self.importedGames.count){
-			[self.progressLabel setText:@"All done!"];
-			[self.progressView setProgress:1.0 animated:YES];
-			
-			[self.tableView reloadData];
-		}
-		else if (self.progressView.progress >= 0.4){
-			[self.progressLabel setText:@"Downloading images..."];
-			
-			CGFloat progress = 0.4 + 0.6 * ((CGFloat)self.numberOfImagesDownloaded/(CGFloat)self.importedGames.count);
-			[self.progressView setProgress:progress animated:YES];
 		}
 	}];
 	[downloadTask resume];

@@ -1064,7 +1064,7 @@ typedef NS_ENUM(NSInteger, Section){
 }
 
 - (void)refreshAddButtonsAnimated:(BOOL)animated{
-	if (self.selectablePlatforms.count > 0){
+	if (self.platforms.count > 0){
 		[self.wishlistButton setHidden:NO];
 		[self.libraryButton setHidden:NO];
 	}
