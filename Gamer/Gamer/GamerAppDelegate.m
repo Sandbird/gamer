@@ -23,7 +23,7 @@
 @implementation GamerAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
-	[MagicalRecord setupAutoMigratingCoreDataStack];
+	[self setupDatabase];
 	
 	[[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
 	
@@ -123,6 +123,43 @@
 }
 
 #pragma mark - Custom
+
+- (void)setupDatabase{
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	
+	NSString *currentVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+	NSString *previousVersion = [defaults objectForKey:@"AppVersion"];
+	
+	NSLog(@"PREVIOUS VERSION: %@", previousVersion);
+	NSLog(@"CURRENT VERSION:  %@", currentVersion);
+	
+	if (!previousVersion){
+		// First launch
+		NSLog(@"FIRST LAUNCH");
+		
+		NSString *message = @"There's a big update coming with lots of changes under the hood. Incompatibility issues could happen, so please export your games and keep the backup file safe so you can get your games back in case anything goes wrong. To do so just go to More → Export Games";
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Hey There" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+		
+		[defaults setObject:currentVersion forKey:@"AppVersion"];
+		[defaults synchronize];
+	}
+	else if (![previousVersion isEqualToString:currentVersion]){
+		// Not current version
+		NSLog(@"NOT CURRENT VERSION");
+		
+		NSString *message = @"There's a big update coming with lots of changes under the hood. Incompatibility issues could happen, so please export your games and keep the backup file safe so you can get your games back in case anything goes wrong. To do so just go to More → Export Games";
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Hey There" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+		
+		[defaults setObject:currentVersion forKey:@"AppVersion"];
+		[defaults synchronize];
+	}
+	
+	[MagicalRecord setupAutoMigratingCoreDataStack];
+}
+
+#pragma mark - Networking
 
 - (void)requestInformationForGame:(Game *)game context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	NSURLRequest *request = [Networking requestForGameWithIdentifier:game.identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes"];
