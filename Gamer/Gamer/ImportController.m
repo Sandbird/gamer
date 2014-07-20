@@ -185,14 +185,16 @@
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			_numberOfRunningTasks--;
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
-			
-			[self.tableView reloadData];
-			
-			[self downloadCoverImageForGame:game];
-			
-			if (_numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+				
+				[self.tableView reloadData];
+				
+				[self downloadCoverImageForGame:game];
+				
+				if (_numberOfRunningTasks == 0){
+					[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				}
 			}
 		}
 	}];

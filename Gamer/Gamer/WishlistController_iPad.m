@@ -204,25 +204,27 @@
 			
 			_numberOfRunningTasks--;
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
-			
-			if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
-				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[Networking updateGame:game withDataFromJSON:responseObject context:_context];
 				
-				UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
-				CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
-				
-				if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
-					[self downloadCoverImageForGame:game];
+				if (![responseObject[@"status_code"] isEqualToNumber:@(101)]){
+					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+					
+					UIImage *thumbnail = [UIImage imageWithData:game.thumbnailWishlist];
+					CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeWishlist];
+					
+					if (!game.thumbnailWishlist || !game.thumbnailLibrary || !game.coverImage.data || ![game.coverImage.url isEqualToString:coverImageURL] || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
+						[self downloadCoverImageForGame:game];
+					}
 				}
-			}
-			
-			if ([game.released isEqualToNumber:@(YES)])
-				[self requestMetascoreForGame:game];
-			
-			if (_numberOfRunningTasks == 0){
-				[_refreshButton setEnabled:YES];
-				[self updateGameReleasePeriods];
+				
+				if ([game.released isEqualToNumber:@(YES)])
+					[self requestMetascoreForGame:game];
+				
+				if (_numberOfRunningTasks == 0){
+					[_refreshButton setEnabled:YES];
+					[self updateGameReleasePeriods];
+				}
 			}
 		}
 	}];

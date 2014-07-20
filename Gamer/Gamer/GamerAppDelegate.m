@@ -144,14 +144,16 @@
 			
 			_numberOfRunningTasks--;
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:context];
-			
-			if ([game.released isEqualToNumber:@(YES)])
-				[self requestMetascoreForGame:game context:context completionHandler:completionHandler];
-			
-			if (_numberOfRunningTasks == 0 && _numberOfReleasedGamesToRefreshMetascore == 0){
-				completionHandler(UIBackgroundFetchResultNewData);
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[Networking updateGame:game withDataFromJSON:responseObject context:context];
+				
+				if ([game.released isEqualToNumber:@(YES)])
+					[self requestMetascoreForGame:game context:context completionHandler:completionHandler];
+				
+				if (_numberOfRunningTasks == 0 && _numberOfReleasedGamesToRefreshMetascore == 0){
+					completionHandler(UIBackgroundFetchResultNewData);
+					[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+				}
 			}
 		}
 	}];
