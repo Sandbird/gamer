@@ -27,6 +27,8 @@ typedef NS_ENUM(NSInteger, LibrarySize){
 + (NSArray *)searchResults;
 + (void)setSearchResults:(NSArray *)results;
 
++ (CGSize)coverImageSize;
+
 + (void)setupInitialData;
 
 @end

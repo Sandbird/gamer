@@ -42,6 +42,10 @@ static NSArray *SEARCHRESULTS;
 	SEARCHRESULTS = results;
 }
 
++ (CGSize)coverImageSize{
+	return [Tools deviceIsiPhone] ? CGSizeMake(280, 200) : CGSizeMake(420, 300);
+}
+
 + (void)setupInitialData{
 	NSString *imagesDirectoryPath = [Tools imagesDirectory];
 	if (![[NSFileManager defaultManager] fileExistsAtPath:imagesDirectoryPath]){

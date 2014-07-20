@@ -267,7 +267,7 @@
 			__block UIImage *image = [UIImage imageWithContentsOfFile:path];
 			
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-				CGSize coverImageSize = [Tools deviceIsiPhone] ? CGSizeMake(280, 200) : CGSizeMake(420, 300);
+				CGSize coverImageSize = [Session coverImageSize];
 				
 				CGSize imageSize = image.size.width > image.size.height ? [Tools sizeOfImage:image aspectFitToWidth:coverImageSize.width] : [Tools sizeOfImage:image aspectFitToHeight:coverImageSize.height];
 				
