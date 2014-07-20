@@ -65,7 +65,7 @@
 	[cell.coverImageView setImageWithURL:[NSURL URLWithString:release.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
 	[cell.regionImageView setImage:[UIImage imageNamed:release.region.imageName]];
 	[cell setAccessoryType:release == self.game.selectedRelease ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
-	[cell setSelectionStyle:[[Session gamer].platforms containsObject:release.platform] ? UITableViewCellSelectionStyleBlue : UITableViewCellSelectionStyleNone];
+	[cell setSelectionStyle:[self.selectablePlatforms containsObject:release.platform] ? UITableViewCellSelectionStyleBlue : UITableViewCellSelectionStyleNone];
 	return cell;
 }
 
