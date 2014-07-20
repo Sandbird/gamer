@@ -1403,43 +1403,51 @@
         <scene sceneID="Px1-a2-4UN">
             <objects>
                 <tableViewController id="Kqb-yv-L4g" customClass="ImportController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="70" sectionHeaderHeight="10" sectionFooterHeight="10" id="YlT-oJ-P19">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="60" sectionHeaderHeight="10" sectionFooterHeight="10" id="YlT-oJ-P19">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <view key="tableHeaderView" appearanceType="aqua" contentMode="scaleToFill" id="QCT-JV-mEQ">
+                            <rect key="frame" x="0.0" y="64" width="540" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Downloading..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lDd-sT-fAS" userLabel="Progress Label">
+                                    <rect key="frame" x="130" y="7" width="280" height="20"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <progressView appearanceType="aqua" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ANb-AQ-v7H">
+                                    <rect key="frame" x="130" y="35" width="280" height="2"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="progressTintColor" red="1" green="0.48632645610000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="trackTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </progressView>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="kLK-5q-96l" userLabel="Wishlist Cell" customClass="ImportCell">
-                                <rect key="frame" x="0.0" y="119" width="768" height="70"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="kLK-5q-96l" userLabel="Wishlist Cell" customClass="ImportCell">
+                                <rect key="frame" x="0.0" y="163" width="540" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kLK-5q-96l" id="lfV-wr-vR1">
-                                    <rect key="frame" x="0.0" y="0.0" width="729" height="69"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="540" height="59"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iEM-gt-ofp" userLabel="Cover Image View">
-                                            <rect key="frame" x="10" y="10" width="50" height="50"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iEM-gt-ofp" userLabel="Cover Image View">
+                                            <rect key="frame" x="10" y="10" width="40" height="40"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="50" id="q5J-2I-bZ1"/>
-                                            </constraints>
                                         </imageView>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="641" translatesAutoresizingMaskIntoConstraints="NO" id="JfZ-X0-7pm" userLabel="Title Label">
-                                            <rect key="frame" x="68" y="14" width="641" height="42"/>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="462" translatesAutoresizingMaskIntoConstraints="NO" id="JfZ-X0-7pm" userLabel="Title Label">
+                                            <rect key="frame" x="58" y="10" width="462" height="40"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
-                                    <constraints>
-                                        <constraint firstItem="JfZ-X0-7pm" firstAttribute="centerY" secondItem="iEM-gt-ofp" secondAttribute="centerY" id="9yi-TA-Mg5"/>
-                                        <constraint firstItem="JfZ-X0-7pm" firstAttribute="top" secondItem="lfV-wr-vR1" secondAttribute="top" constant="14" id="Ioj-9w-nbQ"/>
-                                        <constraint firstItem="JfZ-X0-7pm" firstAttribute="leading" secondItem="iEM-gt-ofp" secondAttribute="trailing" constant="8" symbolic="YES" id="MQl-Xi-A2k"/>
-                                        <constraint firstAttribute="bottom" secondItem="iEM-gt-ofp" secondAttribute="bottom" constant="9" id="R2V-49-9sY"/>
-                                        <constraint firstItem="iEM-gt-ofp" firstAttribute="top" secondItem="lfV-wr-vR1" secondAttribute="top" constant="10" id="XGN-gy-Eqa"/>
-                                        <constraint firstItem="iEM-gt-ofp" firstAttribute="leading" secondItem="lfV-wr-vR1" secondAttribute="leading" constant="10" id="Yt0-bd-szc"/>
-                                        <constraint firstAttribute="trailing" secondItem="JfZ-X0-7pm" secondAttribute="trailing" constant="20" symbolic="YES" id="lr9-no-4lr"/>
-                                    </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                 <inset key="separatorInset" minX="68" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -1460,22 +1468,27 @@
                                 <action selector="cancelBarButtonAction:" destination="Kqb-yv-L4g" id="SVn-51-4Dd"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Save" id="6we-8E-mVi">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Save" style="done" id="6we-8E-mVi">
                             <connections>
                                 <action selector="saveBarButtonAction:" destination="Kqb-yv-L4g" id="f8s-Vu-OEM"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="progressLabel" destination="lDd-sT-fAS" id="ft5-qJ-9o6"/>
+                        <outlet property="progressView" destination="ANb-AQ-v7H" id="Tde-ma-ajf"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LBf-VX-esB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1184" y="5803"/>
+            <point key="canvasLocation" x="1298" y="5803"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="dBD-IN-Vbe">
             <objects>
-                <navigationController storyboardIdentifier="ImportController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6hH-fh-1Uo" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="ImportController" modalPresentationStyle="formSheet" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6hH-fh-1Uo" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="ulW-dP-490">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1487,7 +1500,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bMT-xr-1kA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="194" y="5803"/>
+            <point key="canvasLocation" x="308" y="5803"/>
         </scene>
         <!--Platforms Controller - Platforms-->
         <scene sceneID="m1R-DV-Gsp">
