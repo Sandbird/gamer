@@ -113,21 +113,33 @@ typedef NS_ENUM(NSInteger, Section){
 			break;
 		}
 		case SectionFeedback:{
-			MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
-			if (mailComposeViewController){
-				[mailComposeViewController setMailComposeDelegate:self];
-				[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
-				[mailComposeViewController setSubject:@"Feedback"];
-				[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
-				
-				[self presentViewController:mailComposeViewController animated:YES completion:^{
+			switch (indexPath.row) {
+				case 0:{
+					MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
+					if (mailComposeViewController){
+						[mailComposeViewController setMailComposeDelegate:self];
+						[mailComposeViewController setToRecipients:@[@"gamer.app@icloud.com"]];
+						[mailComposeViewController setSubject:@"Feedback"];
+						[mailComposeViewController setMessageBody:[NSString stringWithFormat:@"\n\n\n------\nGamer %@\n%@\niOS %@", [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"], [self device], [UIDevice currentDevice].systemVersion] isHTML:NO];
+						
+						[self presentViewController:mailComposeViewController animated:YES completion:^{
+							[tableView deselectRowAtIndexPath:indexPath animated:YES];
+						}];
+					}
+					else{
+						[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+						UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"This device cannot send email" message:@"You need to register an email account on this device to be able to send feedback"  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+						[alertView show];
+					}
+					
+					break;
+				}
+				case 1:
 					[tableView deselectRowAtIndexPath:indexPath animated:YES];
-				}];
-			}
-			else{
-				[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"This device cannot send email" message:@"You need to register an email account on this device to be able to send feedback"  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-				[alertView show];
+					[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/id683636311"]];
+					break;
+				default:
+					break;
 			}
 			
 			break;

@@ -1641,7 +1641,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="Library game size." id="mPS-xr-clG">
+                            <tableViewSection footerTitle="Select the size of games in your Library." id="mPS-xr-clG">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="hLX-R8-x4D" userLabel="Slider Cell" customClass="SegmentedControlCell">
                                         <rect key="frame" x="0.0" y="314" width="320" height="44"/>
@@ -1650,8 +1650,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="P2S-ai-VDF">
-                                                    <rect key="frame" x="20" y="8" width="280" height="29"/>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="P2S-ai-VDF">
+                                                    <rect key="frame" x="15" y="8" width="290" height="29"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <segments>
                                                         <segment title="Small"/>
@@ -1663,11 +1663,6 @@
                                                     </connections>
                                                 </segmentedControl>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="P2S-ai-VDF" firstAttribute="top" secondItem="iPa-Oh-KpW" secondAttribute="top" constant="8" id="ct2-ed-TwJ"/>
-                                                <constraint firstAttribute="trailing" secondItem="P2S-ai-VDF" secondAttribute="trailing" constant="20" symbolic="YES" id="mOC-wa-l40"/>
-                                                <constraint firstItem="P2S-ai-VDF" firstAttribute="leading" secondItem="iPa-Oh-KpW" secondAttribute="leading" constant="20" symbolic="YES" id="x3h-a8-vP8"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
@@ -1676,7 +1671,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Other Stuff" footerTitle="Tell me about bugs, ask for a feature you would like, or give me some suggestions!" id="y3v-25-mAk">
+                            <tableViewSection headerTitle="Feedback" id="y3v-25-mAk">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="ctl-tT-oXM" style="IBUITableViewCellStyleDefault" id="IYf-Eh-97e" userLabel="Button Cell" customClass="CustomSelectionCell">
                                         <rect key="frame" x="0.0" y="433" width="320" height="44"/>
@@ -1685,11 +1680,29 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Feedback" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ctl-tT-oXM">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Feedback" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ctl-tT-oXM">
                                                     <rect key="frame" x="15" y="0.0" width="290" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <color key="textColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="444-yj-XMn" style="IBUITableViewCellStyleDefault" id="VIJ-lw-zdL" userLabel="Button Cell" customClass="CustomSelectionCell">
+                                        <rect key="frame" x="0.0" y="477" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VIJ-lw-zdL" id="NL4-av-IuA">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Review Gamer on the App Store" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="444-yj-XMn">
+                                                    <rect key="frame" x="15" y="0.0" width="290" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -1698,20 +1711,20 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="Save all your games to a backup file. To import just open the file in your iOS device. More info in the About screen." id="0Cu-6b-VgQ">
+                            <tableViewSection headerTitle="Other Stuff" footerTitle="Save all your games to a backup file. To import just open the file in your iOS device. More info in the About screen." id="0Cu-6b-VgQ">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="vkm-e8-5g4" style="IBUITableViewCellStyleDefault" id="lzc-dF-UrU" userLabel="Button Cell" customClass="CustomSelectionCell">
-                                        <rect key="frame" x="0.0" y="546" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="581" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lzc-dF-UrU" id="Mw5-tJ-X8G">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Export Games" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="vkm-e8-5g4">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Export Games" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="vkm-e8-5g4">
                                                     <rect key="frame" x="15" y="0.0" width="290" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <color key="textColor" red="1" green="0.50196078430000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -1723,7 +1736,7 @@
                             <tableViewSection footerTitle="A few details on how some parts of the app work." id="ipi-94-SBu">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="daW-jS-ppu" style="IBUITableViewCellStyleDefault" id="qu2-3t-h7Y" userLabel="Button Cell" customClass="CustomSelectionCell">
-                                        <rect key="frame" x="0.0" y="675" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="710" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qu2-3t-h7Y" id="Z7p-8A-ug6">
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>

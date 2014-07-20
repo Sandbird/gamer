@@ -359,6 +359,7 @@
 - (IBAction)saveBarButtonAction:(UIBarButtonItem *)sender{
 	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 		[self dismissViewControllerAnimated:YES completion:nil];
 	}];
