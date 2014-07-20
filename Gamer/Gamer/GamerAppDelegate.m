@@ -101,6 +101,19 @@
 	else if (![previousVersion isEqualToString:currentVersion]){
 		// Not current version
 		
+		// Delete current store
+		NSError *error;
+		NSString *applicationSupportPath = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+		NSArray *applicationSupportContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:applicationSupportPath error:&error];
+		NSLog(@"%@", applicationSupportPath);
+		NSLog(@"%@", applicationSupportContents);
+		NSLog(@"%@", error);
+		if (!error){
+			for (NSString *path in applicationSupportContents){
+				[[NSFileManager defaultManager] removeItemAtPath:[applicationSupportPath stringByAppendingPathComponent:path] error:&error];
+			}
+		}
+		
 		[defaults setObject:currentVersion forKey:@"AppVersion"];
 		[defaults synchronize];
 	}
