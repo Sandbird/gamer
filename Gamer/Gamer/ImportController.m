@@ -107,7 +107,7 @@
 - (void)requestGames:(NSArray *)games{
 	NSArray *identifiers = [games valueForKey:@"identifier"];
 	
-	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos,releases"];
+	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,id,image,name,original_release_date,platforms"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -160,7 +160,13 @@
 					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
 					Release *release = [releases filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
 					
-					[Networking updateRelease:release withResults:dictionary context:self.context];
+					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"platform"][@"id"] inContext:self.context];
+					if (platform){
+						[Networking updateRelease:release withResults:dictionary context:self.context];
+					}
+					else{
+						[release MR_deleteInContext:self.context];
+					}
 				}
 			}
 		}

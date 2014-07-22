@@ -11,6 +11,7 @@
 #import "Metascore.h"
 #import "ReleasePeriod.h"
 #import "Platform.h"
+#import "Release.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <Crashlytics/Crashlytics.h>
 #import "ImportController.h"
@@ -177,7 +178,7 @@
 - (void)requestGames:(NSArray *)games context:(NSManagedObjectContext *)context completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	NSArray *identifiers = [games valueForKey:@"identifier"];
 	
-	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos,releases"];
+	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,id,image,name,original_release_date,platforms"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -234,7 +235,13 @@
 					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
 					Release *release = [releases filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
 					
-					[Networking updateRelease:release withResults:dictionary context:context];
+					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"platform"][@"id"] inContext:context];
+					if (platform){
+						[Networking updateRelease:release withResults:dictionary context:context];
+					}
+					else{
+						[release MR_deleteInContext:context];
+					}
 				}
 			}
 			

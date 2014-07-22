@@ -148,7 +148,7 @@ typedef NS_ENUM(NSInteger, Section){
 		self.game = [Game MR_findFirstByAttribute:@"identifier" withValue:self.gameIdentifier inContext:self.context];
 	
 	if (self.game){
-		[self refreshAnimated:NO];
+		[self refreshContent];
 	}
 	else{
 		[self requestGameWithIdentifier:self.gameIdentifier];
@@ -389,9 +389,6 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];
 	
-	BOOL lastRow = (indexPath.row == ([tableView numberOfRowsInSection:indexPath.section] - 1)) ? YES : NO;
-	[cell setSeparatorInset:UIEdgeInsetsMake(0, (lastRow ? tableView.frame.size.width * 2 : self.tableView.separatorInset.left), 0, 0)];
-	
 	if (indexPath.section == SectionImages){
 		if (self.game.images.count == 0 && self.game.videos.count == 0){
 			[self requestMediaWithGame:self.game];
@@ -538,7 +535,7 @@ typedef NS_ENUM(NSInteger, Section){
 #pragma mark - Networking
 
 - (void)requestGameWithIdentifier:(NSNumber *)identifier{
-	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos,releases"];
+	NSURLRequest *request = [Networking requestForGameWithIdentifier:identifier fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -558,7 +555,7 @@ typedef NS_ENUM(NSInteger, Section){
 				
 				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
 					// Refresh UI
-					[self refreshAnimated:NO];
+					[self refreshContent];
 					[self.tableView reloadData];
 					
 					// Cover image download
@@ -662,10 +659,17 @@ typedef NS_ENUM(NSInteger, Section){
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
 				for (NSDictionary *dictionary in responseObject[@"results"]){
-					NSNumber *identifier = [Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]];
-					Release *release = [game.releases.allObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier == %@", identifier]].firstObject;
+					Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:self.context];
+					if (!release) release = [Release MR_createInContext:self.context];
 					
-					[Networking updateRelease:release withResults:dictionary context:self.context];
+					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"platform"][@"id"] inContext:self.context];
+					if (platform){
+						[Networking updateRelease:release withResults:dictionary context:self.context];
+						[game addReleasesObject:release];
+					}
+					else{
+						[release MR_deleteInContext:self.context];
+					}
 				}
 				
 				if (!game.selectedRelease){
@@ -956,7 +960,7 @@ typedef NS_ENUM(NSInteger, Section){
 	});
 }
 
-- (void)refreshAnimated:(BOOL)animated{
+- (void)refreshContent{
 	[self displayCoverImage];
 	
 	[self.titleLabel setText:self.game.title];
@@ -976,7 +980,7 @@ typedef NS_ENUM(NSInteger, Section){
 	
 	[self.editPlatformsButton setHidden:self.selectablePlatforms.count <= 1 ? YES : NO];
 	
-	[self refreshAddButtonsAnimated:animated];
+	[self refreshAddButtonsAnimated:NO];
 	
 	[self.platformsCollectionView reloadData];
 	
@@ -984,8 +988,8 @@ typedef NS_ENUM(NSInteger, Section){
 	[self.similarGamesCollectionView reloadData];
 	
 	// Set status switches' position
-	[self.preorderedSwitch setOn:self.game.preordered.boolValue animated:animated];
-	[self.finishedSwitch setOn:self.game.finished.boolValue animated:animated];
+	[self.preorderedSwitch setOn:self.game.preordered.boolValue];
+	[self.finishedSwitch setOn:self.game.finished.boolValue];
 	
 	// Set retailDigitalSegmentedControl selection
 	if ([self.game.digital isEqualToNumber:@(YES)]){

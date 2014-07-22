@@ -287,7 +287,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 - (void)requestGames:(NSArray *)games{
 	NSArray *identifiers = [games valueForKey:@"identifier"];
 	
-	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,developers,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,franchises,genres,id,image,name,original_release_date,platforms,publishers,similar_games,themes,images,videos,releases"];
+	NSURLRequest *request = [Networking requestForGamesWithIdentifiers:identifiers fields:@"deck,expected_release_day,expected_release_month,expected_release_quarter,expected_release_year,id,image,name,original_release_date,platforms"];
 	
 	NSURLSessionDataTask *dataTask = [[Networking manager] dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
 		if (error){
@@ -312,16 +312,13 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 						[self downloadCoverImageWithURL:coverImageURL game:game];
 					}
 					
-//					if (game.selectedMetascore){
-//						[self requestMetascoreForGame:game platform:game.selectedMetascore.platform];
-//					}
-//					else{
-//						NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
-//						NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
-//						NSArray *orderedPlatforms = [game.selectedPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
-//						
-//						[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
-//					}
+					if (!game.selectedMetascore){
+						NSSortDescriptor *groupSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"group" ascending:YES];
+						NSSortDescriptor *indexSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+						NSArray *orderedPlatforms = [game.libraryPlatforms.allObjects sortedArrayUsingDescriptors:@[groupSortDescriptor, indexSortDescriptor]];
+						
+						[self requestMetascoreForGame:game platform:orderedPlatforms.firstObject];
+					}
 				}
 			}
 		}

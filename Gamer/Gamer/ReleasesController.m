@@ -38,6 +38,10 @@
 	}
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+	[self.refreshControl endRefreshing];
+}
+
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 }
@@ -98,16 +102,21 @@
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-			//			NSLog(@"%@", responseObject);
+//			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
 				for (NSDictionary *dictionary in responseObject[@"results"]){
 					Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]] inContext:self.context];
 					if (!release) release = [Release MR_createInContext:self.context];
 					
-					[Networking updateRelease:release withResults:dictionary context:self.context];
-					
-					[game addReleasesObject:release];
+					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"platform"][@"id"] inContext:self.context];
+					if (platform){
+						[Networking updateRelease:release withResults:dictionary context:self.context];
+						[game addReleasesObject:release];
+					}
+					else{
+						[release MR_deleteInContext:self.context];
+					}
 				}
 				
 				if (!game.selectedRelease){
