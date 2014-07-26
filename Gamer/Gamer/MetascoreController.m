@@ -37,7 +37,15 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	[self.refreshControl endRefreshing];
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	
+	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -121,11 +129,9 @@
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
 			
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:metascore]] withRowAnimation:UITableViewRowAnimationAutomatic];
-				[self.tableView beginUpdates];
-				[self.tableView endUpdates];
-			}];
+			[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:metascore]] withRowAnimation:UITableViewRowAnimationAutomatic];
+			[self.tableView beginUpdates];
+			[self.tableView endUpdates];
 		}
 		
 		[self.refreshControl endRefreshing];

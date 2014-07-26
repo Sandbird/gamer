@@ -17,7 +17,6 @@
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) NSMutableArray *results;
-@property (nonatomic, strong) NSTimer *searchTimer;
 @property (nonatomic, strong) NSURLSessionDataTask *runningTask;
 
 @end
@@ -40,6 +39,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	[super viewWillAppear:animated];
+	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	
 	[self.searchBar setText:@""];
@@ -57,10 +58,14 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
+	[super viewWillDisappear:animated];
+	
 	[self.runningTask cancel];
 }
 

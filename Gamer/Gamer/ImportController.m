@@ -216,7 +216,7 @@
 					
 					self.numberOfImagesDownloaded++;
 					
-					if (self.numberOfImagesDownloaded == self.importedGames.count){
+					if (self.progressView.progress >= 0.9){
 						[self.progressLabel setText:@"All done!"];
 						[self.progressView setProgress:1.0 animated:YES];
 						

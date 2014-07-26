@@ -40,12 +40,16 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	[super viewWillAppear:animated];
+	
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	
 	[self downloadImageWithImageObject:self.image];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
+	[super viewWillDisappear:animated];
+	
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 	
 	[self.runningTask cancel];
@@ -58,6 +62,8 @@
 }
 
 - (void)viewDidLayoutSubviews{
+	[super viewDidLayoutSubviews];
+	
 	[self centerImageView];
 	
 	CGFloat imageAspectRatio = self.imageSize.width/self.imageSize.height;

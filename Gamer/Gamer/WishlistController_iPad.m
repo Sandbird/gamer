@@ -74,14 +74,20 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	[super viewWillAppear:animated];
+	
 	[(UISearchBar *)self.searchBarItem.customView setText:[Session searchQuery]];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	[self updateGameReleasePeriods];
 }
 
 - (void)viewDidLayoutSubviews{
+	[super viewDidLayoutSubviews];
+	
 	[_guideView setCenter:self.view.center];
 }
 
@@ -238,10 +244,8 @@
 		}
 		
 		[self.refreshButton setEnabled:YES];
-		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self updateGameReleasePeriods];
-			[self refreshWishlistSelectedReleases];
-		}];
+		[self updateGameReleasePeriods];
+		[self refreshWishlistSelectedReleases];
 	}];
 	[dataTask resume];
 }
@@ -283,10 +287,7 @@
 					[game setImagePath:path];
 					[game setImageURL:URLString];
 					
-					[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-//						[self.collectionView reloadItemsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:game]]];
-						[self.collectionView reloadData];
-					}];
+					[self.collectionView reloadData];
 				});
 			});
 		}
@@ -324,9 +325,7 @@
 		}
 		
 		[self.refreshButton setEnabled:YES];
-		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self updateGameReleasePeriods];
-		}];
+		[self updateGameReleasePeriods];
 	}];
 	[dataTask resume];
 }
@@ -358,7 +357,7 @@
 			[game addMetascoresObject:metascore];
 			[game setSelectedMetascore:metascore];
 			
-			[self.context MR_saveToPersistentStoreAndWait];
+			[self.context MR_saveToPersistentStoreWithCompletion:nil];
 		}
 	}];
 	[dataTask resume];

@@ -46,6 +46,13 @@ typedef NS_ENUM(NSInteger, Section){
 	[self.tableView setEditing:YES animated:NO];
 }
 
+- (void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	
+	[self.context MR_saveToPersistentStoreAndWait];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
+}
+
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 }
@@ -192,10 +199,6 @@ typedef NS_ENUM(NSInteger, Section){
 		default:
 			break;
 	}
-	
-	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
-	}];
 }
 
 #pragma mark - Actions
@@ -215,8 +218,6 @@ typedef NS_ENUM(NSInteger, Section){
 	}
 	
 	sender.isOn ? [[Session gamer] addPlatformsObject:platform] : [[Session gamer] removePlatformsObject:platform];
-	
-	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 @end

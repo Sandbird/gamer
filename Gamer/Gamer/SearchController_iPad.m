@@ -22,7 +22,6 @@
 @property (nonatomic, strong) UIView *guideView;
 
 @property (nonatomic, strong) NSMutableArray *results;
-@property (nonatomic, strong) NSTimer *searchTimer;
 
 @property (nonatomic, strong) NSURLSessionDataTask *runningTask;
 
@@ -57,6 +56,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	if ([Session gamer].platforms.count == 0){
 		[self.guideView setHidden:NO];
 		[self.searchBar setUserInteractionEnabled:NO];
@@ -71,10 +72,14 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
+	[super viewWillDisappear:animated];
+	
 	[self.runningTask cancel];
 }
 
 - (void)viewDidLayoutSubviews{
+	[super viewDidLayoutSubviews];
+	
 	[self.guideView setCenter:self.view.center];
 }
 

@@ -133,15 +133,21 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	[super viewWillAppear:animated];
+	
 	if ([Tools deviceIsiPad])
 		[(UISearchBar *)self.searchBarItem.customView setText:[Session searchQuery]];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	[self.refreshControl endRefreshing];
 }
 
 - (void)viewDidLayoutSubviews{
+	[super viewDidLayoutSubviews];
+	
 	if ([Tools deviceIsiPad])
 		[self.guideView setCenter:self.view.center];
 }
@@ -370,9 +376,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 					[game setImagePath:path];
 					[game setImageURL:URLString];
 					
-					[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						[self.collectionView reloadData];
-					}];
+					[self.collectionView reloadData];
 				});
 			});
 		}
@@ -406,8 +410,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
 			[game setSelectedMetascore:metascore];
-			
-			[self.context MR_saveToPersistentStoreAndWait];
 		}
 	}];
 	[dataTask resume];

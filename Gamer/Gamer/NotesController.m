@@ -34,12 +34,16 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	if (self.textView.text.length == 0){
 		[self.textView becomeFirstResponder];
 	}
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	
 	[self.game setNotes:self.textView.text];
 	[self.context MR_saveToPersistentStoreAndWait];
 }

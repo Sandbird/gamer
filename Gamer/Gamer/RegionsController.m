@@ -28,6 +28,12 @@
 	self.regions = [Region MR_findAllSortedBy:@"identifier" ascending:YES inContext:self.context];
 }
 
+- (void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	
+	[self.context MR_saveToPersistentStoreAndWait];
+}
+
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 }
@@ -55,12 +61,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
-	[[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[self.regions indexOfObject:[Session gamer].region] inSection:0]] setAccessoryType:UITableViewCellAccessoryNone];
+	UITableViewCell *cell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[self.regions indexOfObject:[Session gamer].region] inSection:0]];
+	[cell setAccessoryType:UITableViewCellAccessoryNone];
 	
 	[[Session gamer] setRegion:self.regions[indexPath.row]];
-	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
-	}];
+	[[tableView cellForRowAtIndexPath:indexPath] setAccessoryType:UITableViewCellAccessoryCheckmark];
 }
 
 @end

@@ -53,10 +53,14 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	[super viewWillAppear:animated];
+	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	
 	[self updateGameReleasePeriods];
@@ -122,7 +126,7 @@
 	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[game setInWishlist:@(NO)];
 	[game setWishlistPlatform:nil];
-	[self.context MR_saveToPersistentStoreAndWait];
+	[self.context MR_saveToPersistentStoreWithCompletion:nil];
 }
 
 #pragma mark - FetchedTableView
@@ -235,10 +239,8 @@
 		}
 		
 		[self.refreshControl endRefreshing];
-		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self updateGameReleasePeriods];
-			[self refreshWishlistSelectedReleases];
-		}];
+		[self updateGameReleasePeriods];
+		[self refreshWishlistSelectedReleases];
 	}];
 	[dataTask resume];
 }
@@ -279,9 +281,7 @@
 					
 					[game setImagePath:path];
 					[game setImageURL:URLString];
-					[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						[self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
-					}];
+					[self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
 				});
 			});
 		}
@@ -319,9 +319,7 @@
 		}
 		
 		[self.refreshControl endRefreshing];
-		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self updateGameReleasePeriods];
-		}];
+		[self updateGameReleasePeriods];
 	}];
 	[dataTask resume];
 }
@@ -372,7 +370,7 @@
 		[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:(game.selectedRelease ? game.selectedRelease : game) context:self.context]];
 	}
 	
-	[self.context MR_saveToPersistentStoreAndWait];
+	[self.context MR_saveToPersistentStoreWithCompletion:nil];
 }
 
 - (void)refreshWishlistGames{

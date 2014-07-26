@@ -39,7 +39,15 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	[self.refreshControl endRefreshing];
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	
+	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -136,12 +144,10 @@
 		[self.refreshControl endRefreshing];
 		[self.navigationItem.rightBarButtonItem setEnabled:YES];
 		
-		[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-			[self.delegate releasesControllerDidDownloadReleases:self];
-			
-			[self loadDataSource];
-			[self.tableView reloadData];
-		}];
+		[self.delegate releasesControllerDidDownloadReleases:self];
+		
+		[self loadDataSource];
+		[self.tableView reloadData];
 	}];
 	[dataTask resume];
 }

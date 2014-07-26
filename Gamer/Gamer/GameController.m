@@ -160,18 +160,26 @@ typedef NS_ENUM(NSInteger, Section){
 }
 
 - (void)viewDidLayoutSubviews{
+	[super viewDidLayoutSubviews];
+	
 	[self.imagesStatusView setFrame:self.imagesCollectionView.frame];
 	[self.videosStatusView setFrame:self.videosCollectionView.frame];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+	[super viewWillAppear:animated];
+	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	
-	[self.wishlistButton setHighlighted:NO];
-	[self.libraryButton setHighlighted:NO];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[self.wishlistButton setHighlighted:NO];
+		[self.libraryButton setHighlighted:NO];
+	});
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
 	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
 	
 	if ([Tools deviceIsiPad]){
@@ -185,7 +193,15 @@ typedef NS_ENUM(NSInteger, Section){
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
+	[super viewWillDisappear:animated];
+	
 	[self.view.window removeGestureRecognizer:self.dismissTapGesture];
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	
+	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -233,12 +249,10 @@ typedef NS_ENUM(NSInteger, Section){
 			}
 			break;
 		case SectionStatus:{
-			if ([self.game.inWishlist isEqualToNumber:@(YES)] && [self.game.inLibrary isEqualToNumber:@(YES)])
+			if ([self.game.inLibrary isEqualToNumber:@(YES)])
 				return 6;
-			else if ([self.game.inWishlist isEqualToNumber:@(YES)])
+			else if ([self.game.inWishlist isEqualToNumber:@(YES)] && [self.game.inLibrary isEqualToNumber:@(NO)])
 				return 2;
-			else if ([self.game.inLibrary isEqualToNumber:@(YES)])
-				return 5;
 			else
 				return 0;
 			break;
@@ -356,10 +370,10 @@ typedef NS_ENUM(NSInteger, Section){
 				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionCover]];
 			break;
 		case SectionStatus:
+			if (indexPath.row == 4)
+				[self setupRatingControl];
 			if (indexPath.row == 1 && [self.game.inWishlist isEqualToNumber:@(YES)] && [self.game.inLibrary isEqualToNumber:@(NO)])
 				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionStatus]];
-			else if ([self.game.inWishlist isEqualToNumber:@(NO)] && [self.game.inLibrary isEqualToNumber:@(YES)])
-				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:SectionStatus]];
 			break;
 		case SectionDetails:
 			if (indexPath.row == 2){
@@ -553,35 +567,33 @@ typedef NS_ENUM(NSInteger, Section){
 				
 				[Networking updateGame:self.game withResults:responseObject[@"results"] context:self.context];
 				
-				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					// Refresh UI
-					[self refreshContent];
-					[self.tableView reloadData];
-					
-					// Cover image download
-					NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
-					UIImage *coverImage = [UIImage imageWithContentsOfFile:self.game.imagePath];
-					if (!coverImage || !self.game.imagePath || ![self.game.imageURL isEqualToString:coverImageURL]){
-						[self downloadCoverImageWithURL:coverImageURL];
-					}
-					
-					// Download releases
-					[self requestReleasesWithGame:self.game];
-					
-					// Download similar games
-					[self requestSimilarGamesWithGame:self.game];
-					
-					// Download videos
-					[self requestVideosWithGame:self.game];
-					
-					// Download Metascore
-					if (self.game.selectedMetascore){
-						[self requestMetascoreForGame:self.game platform:self.game.selectedMetascore.platform];
-					}
-					else if (self.selectablePlatforms.count > 0 && [self.game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
-						[self requestMetascoreForGame:self.game platform:self.selectablePlatforms.firstObject];
-					}
-				}];
+				// Refresh UI
+				[self refreshContent];
+				[self.tableView reloadData];
+				
+				// Cover image download
+				NSString *coverImageURL = (responseObject[@"results"][@"image"] != [NSNull null]) ? [Tools stringFromSourceIfNotNull:responseObject[@"results"][@"image"][@"super_url"]] : nil;
+				UIImage *coverImage = [UIImage imageWithContentsOfFile:self.game.imagePath];
+				if (!coverImage || !self.game.imagePath || ![self.game.imageURL isEqualToString:coverImageURL]){
+					[self downloadCoverImageWithURL:coverImageURL];
+				}
+				
+				// Download releases
+				[self requestReleasesWithGame:self.game];
+				
+				// Download similar games
+				[self requestSimilarGamesWithGame:self.game];
+				
+				// Download videos
+				[self requestVideosWithGame:self.game];
+				
+				// Download Metascore
+				if (self.game.selectedMetascore){
+					[self requestMetascoreForGame:self.game platform:self.game.selectedMetascore.platform];
+				}
+				else if (self.selectablePlatforms.count > 0 && [self.game.releasePeriod.identifier compare:@(3)] <= NSOrderedSame){
+					[self requestMetascoreForGame:self.game platform:self.selectablePlatforms.firstObject];
+				}
 			}
 		}
 		
@@ -631,10 +643,8 @@ typedef NS_ENUM(NSInteger, Section){
 					[self.game setImagePath:path];
 					[self.game setImageURL:URLString];
 					
-					[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-						[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
-						[self displayCoverImage];
-					}];
+					[[NSNotificationCenter defaultCenter] postNotificationName:@"CoverImageDownloaded" object:nil];
+					[self displayCoverImage];
 				});
 			});
 		}
@@ -684,15 +694,13 @@ typedef NS_ENUM(NSInteger, Section){
 					}
 				}
 				
-				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
-					[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
-					[self.releasesLabel setText:[NSString stringWithFormat:self.game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)self.game.releases.count]];
-					
-					[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
-					[self.tableView beginUpdates];
-					[self.tableView endUpdates];
-				}];
+				[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
+				[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
+				[self.releasesLabel setText:[NSString stringWithFormat:self.game.releases.count > 1 ? @"%lu Releases" : @"%lu Release", (unsigned long)self.game.releases.count]];
+				
+				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionCover] withRowAnimation:UITableViewRowAnimationAutomatic];
+				[self.tableView beginUpdates];
+				[self.tableView endUpdates];
 			}
 		}
 	}];
@@ -720,15 +728,13 @@ typedef NS_ENUM(NSInteger, Section){
 					}
 				}
 				
-				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					self.similarGames = [self orderedSimilarGamesFromGame:game];
-					[self.similarGamesCollectionView setContentOffset:CGPointZero animated:NO];
-					[self.similarGamesCollectionView reloadData];
-					
-					[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionDetails] withRowAnimation:UITableViewRowAnimationAutomatic];
-					[self.tableView beginUpdates];
-					[self.tableView endUpdates];
-				}];
+				self.similarGames = [self orderedSimilarGamesFromGame:game];
+				[self.similarGamesCollectionView setContentOffset:CGPointZero animated:NO];
+				[self.similarGamesCollectionView reloadData];
+				
+				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionDetails] withRowAnimation:UITableViewRowAnimationAutomatic];
+				[self.tableView beginUpdates];
+				[self.tableView endUpdates];
 			}
 		}
 	}];
@@ -795,15 +801,13 @@ typedef NS_ENUM(NSInteger, Section){
 					}
 				}
 				
-				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					self.images = [self orderedImagesFromGame:game];
-					[self.imagesCollectionView setContentOffset:CGPointZero animated:NO];
-					[self.imagesCollectionView reloadData];
-					(self.images.count == 0) ? [self.imagesStatusView setStatus:ContentStatusUnavailable] : [self.imagesStatusView setHidden:YES];
-					
-					[self requestSimilarGamesWithGame:game];
-					[self requestVideosWithGame:game];
-				}];
+				self.images = [self orderedImagesFromGame:game];
+				[self.imagesCollectionView setContentOffset:CGPointZero animated:NO];
+				[self.imagesCollectionView reloadData];
+				(self.images.count == 0) ? [self.imagesStatusView setStatus:ContentStatusUnavailable] : [self.imagesStatusView setHidden:YES];
+				
+				[self requestSimilarGamesWithGame:game];
+				[self requestVideosWithGame:game];
 			}
 		}
 	}];
@@ -841,12 +845,10 @@ typedef NS_ENUM(NSInteger, Section){
 					[video setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"super_url"]]];
 				}
 				
-				[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					self.videos = [self orderedVideosFromGame:game];
-					[self.videosCollectionView setContentOffset:CGPointZero animated:NO];
-					[self.videosCollectionView reloadData];
-					(self.videos.count == 0) ? [self.videosStatusView setStatus:ContentStatusUnavailable] : [self.videosStatusView setHidden:YES];
-				}];
+				self.videos = [self orderedVideosFromGame:game];
+				[self.videosCollectionView setContentOffset:CGPointZero animated:NO];
+				[self.videosCollectionView reloadData];
+				(self.videos.count == 0) ? [self.videosStatusView setStatus:ContentStatusUnavailable] : [self.videosStatusView setHidden:YES];
 			}
 		}
 	}];
@@ -880,13 +882,11 @@ typedef NS_ENUM(NSInteger, Section){
 			[game addMetascoresObject:metascore];
 			[game setSelectedMetascore:metascore];
 			
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self refreshMetascore];
-				
-				[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionDetails] withRowAnimation:UITableViewRowAnimationAutomatic];
-				[self.tableView beginUpdates];
-				[self.tableView endUpdates];
-			}];
+			[self refreshMetascore];
+			
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionDetails] withRowAnimation:UITableViewRowAnimationAutomatic];
+			[self.tableView beginUpdates];
+			[self.tableView endUpdates];
 		}
 	}];
 	[dataTask resume];
@@ -919,10 +919,8 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)releasesController:(ReleasesController *)controller didSelectRelease:(Release *)release{
 	[self.game setSelectedRelease:release];
 	[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
-		[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
-	}];
+	[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
+	[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
 }
 
 - (void)releasesControllerDidDownloadReleases:(ReleasesController *)controller{
@@ -934,9 +932,7 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (void)metascoreController:(MetascoreController *)controller didSelectMetascore:(Metascore *)metascore{
 	[self.game setSelectedMetascore:metascore];
-	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[self refreshMetascore];
-	}];
+	[self refreshMetascore];
 }
 
 #pragma mark - Custom
@@ -1068,13 +1064,13 @@ typedef NS_ENUM(NSInteger, Section){
 }
 
 - (void)refreshAddButtonsAnimated:(BOOL)animated{
-	if (self.platforms.count > 0){
+	if (self.selectablePlatforms.count > 0){
 		[self.wishlistButton setHidden:NO];
 		[self.libraryButton setHidden:NO];
 	}
 	else{
-		[self.wishlistButton setHidden:YES];
-		[self.libraryButton setHidden:YES];
+		[self.wishlistButton setHidden:[self.game.inWishlist isEqualToNumber:@(YES)] ? NO : YES];
+		[self.libraryButton setHidden:[self.game.inLibrary isEqualToNumber:@(YES)] ? NO : YES];
 	}
 	
 	[self.wishlistButton setTitle:[self.game.inWishlist isEqualToNumber:@(YES)] ? @"REMOVE FROM WISHLIST" : @"ADD TO WISHLIST" forState:UIControlStateNormal];
@@ -1124,94 +1120,89 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)addGameToWishlistWithPlatform:(Platform *)platform{
 	[self.game setInWishlist:@(YES)];
 	[self.game setWishlistPlatform:platform];
-	[self saveAndRefreshAfterLocationChange];
+	[self refreshAfterLocationChange];
 }
 
 - (void)addGameToLibraryWithPlatforms:(NSArray *)platforms{
 	[self.game setInLibrary:@(YES)];
 	[self.game setLibraryPlatforms:[NSSet setWithArray:platforms]];
-	[self saveAndRefreshAfterLocationChange];
+	[self refreshAfterLocationChange];
 }
 
 - (void)changeLibraryPlatformsToPlatforms:(NSArray *)platforms{
 	[self.game setLibraryPlatforms:[NSSet setWithArray:platforms]];
-	[self saveAndRefreshAfterLocationChange];
+	[self refreshAfterLocationChange];
 }
 
 - (void)removeGameFromWishlist{
 	[self.game setInWishlist:@(NO)];
 	[self.game setWishlistPlatform:nil];
-	[self saveAndRefreshAfterLocationChange];
+	[self refreshAfterLocationChange];
 }
 
 - (void)removeGameFromLibrary{
 	[self.game setInLibrary:@(NO)];
 	[self.game setLibraryPlatforms:nil];
-	[self saveAndRefreshAfterLocationChange];
+	[self refreshAfterLocationChange];
 }
 
-- (void)saveAndRefreshAfterLocationChange{
-	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-		[self refreshAddButtonsAnimated:YES];
-		
-		// Update selected platforms
-		self.libraryPlatforms = [self orderedLibraryPlatformsFromGame:self.game];
-		[self.selectedPlatformsCollectionView reloadData];
-		
-		// Hide platform change if game not added
-		[self.editPlatformsButton setHidden:self.selectablePlatforms.count <= 1 ? YES : NO];
-		
-		// Auto-select release based on top selected platform and region
-		Platform *platform;
-		
-		if ([self.game.inWishlist isEqualToNumber:@(YES)]){
-			platform = self.game.wishlistPlatform;
-		}
-		else if ([self.game.inLibrary isEqualToNumber:@(YES)]){
-			platform = self.libraryPlatforms.firstObject;
-		}
-		
-		if (platform){
-			for (Release *release in self.game.releases){
-				if (release.platform == platform && release.region == [Session gamer].region){
-					[self.game setSelectedRelease:release];
-					[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
-				}
+- (void)refreshAfterLocationChange{
+	[self refreshAddButtonsAnimated:YES];
+	
+	// Update selected platforms
+	self.libraryPlatforms = [self orderedLibraryPlatformsFromGame:self.game];
+	[self.selectedPlatformsCollectionView reloadData];
+	
+	// Hide platform change if game not added
+	[self.editPlatformsButton setHidden:self.selectablePlatforms.count <= 1 ? YES : NO];
+	
+	// Auto-select release based on top selected platform and region
+	Platform *platform;
+	
+	if ([self.game.inWishlist isEqualToNumber:@(YES)]){
+		platform = self.game.wishlistPlatform;
+	}
+	else if ([self.game.inLibrary isEqualToNumber:@(YES)]){
+		platform = self.libraryPlatforms.firstObject;
+	}
+	
+	if (platform){
+		for (Release *release in self.game.releases){
+			if (release.platform == platform && release.region == [Session gamer].region){
+				[self.game setSelectedRelease:release];
+				[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
 			}
 		}
-		
-		// Update release date
-		[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
-		[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
-		
-		// Update statuses
-		[self.preorderedSwitch setOn:self.game.preordered.boolValue animated:YES];
-		[self.finishedSwitch setOn:self.game.finished.boolValue animated:YES];
-		
-		if ([self.game.lent isEqualToNumber:@(YES)])
-			[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:1];
-		else if ([self.game.borrowed isEqualToNumber:@(YES)])
-			[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:2];
-		else if ([self.game.rented isEqualToNumber:@(YES)])
-			[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:3];
-		else
-			[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
-		
-		[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)] withRowAnimation:UITableViewRowAnimationAutomatic];
-		[self.tableView beginUpdates];
-		[self.tableView endUpdates];
-		
+	}
+	
+	// Update release date
+	[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
+	[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
+	
+	// Update statuses
+	[self.preorderedSwitch setOn:self.game.preordered.boolValue animated:YES];
+	[self.finishedSwitch setOn:self.game.finished.boolValue animated:YES];
+	
+	if ([self.game.lent isEqualToNumber:@(YES)])
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:1];
+	else if ([self.game.borrowed isEqualToNumber:@(YES)])
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:2];
+	else if ([self.game.rented isEqualToNumber:@(YES)])
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:3];
+	else
+		[self.lentBorrowedRentedSegmentedControl setSelectedSegmentIndex:0];
+	
+	[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 2)] withRowAnimation:UITableViewRowAnimationAutomatic];
+	[self.tableView beginUpdates];
+	[self.tableView endUpdates];
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
 		[self.wishlistButton setHighlighted:NO];
 		[self.libraryButton setHighlighted:NO];
-		
-//		// Scroll to last row of status section if game added
-//		if ([self.game.inWishlist isEqualToNumber:@(YES)] || [self.game.inLibrary isEqualToNumber:@(YES)]){
-//			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:SectionStatus] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-//		}
-		
-		if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
-	}];
+	});
+	
+	if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshLibrary" object:nil];
 }
 
 - (void)setupRatingControl{
@@ -1221,12 +1212,12 @@ typedef NS_ENUM(NSInteger, Section){
 	[self.ratingControl setStarFontSize:30];
 	[self.ratingView addSubview:self.ratingControl];
 	
+	[self.ratingControl setRating:self.game.personalRating.floatValue];
+	
 	__block Game *game = self.game;
-	__block NSManagedObjectContext *context = self.context;
 	
 	[self.ratingControl setEditingDidEndBlock:^(NSUInteger rating){
 		[game setPersonalRating:@(rating)];
-		[context MR_saveToPersistentStoreAndWait];
 	}];
 }
 
@@ -1304,8 +1295,6 @@ typedef NS_ENUM(NSInteger, Section){
 				break;
 		}
 	}
-	
-	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 - (IBAction)switchValueChangedAction:(UISwitch *)sender{
@@ -1313,8 +1302,6 @@ typedef NS_ENUM(NSInteger, Section){
 		[self.game setPreordered:@(sender.isOn)];
 	else
 		[self.game setFinished:@(sender.isOn)];
-	
-	[self.context MR_saveToPersistentStoreAndWait];
 }
 
 - (IBAction)refreshBarButtonAction:(UIBarButtonItem *)sender{
