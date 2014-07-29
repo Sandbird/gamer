@@ -1206,6 +1206,8 @@ typedef NS_ENUM(NSInteger, Section){
 }
 
 - (void)setupRatingControl{
+	[self.ratingControl removeFromSuperview];
+	
 	self.ratingControl = [[StarRatingControl alloc] initWithLocation:CGPointMake(5, 0) emptyColor:[UIColor orangeColor] solidColor:[UIColor orangeColor] andMaxRating:5];
 	[self.ratingView setBackgroundColor:[UIColor clearColor]];
 	[self.ratingControl setStarWidthAndHeight:40];
