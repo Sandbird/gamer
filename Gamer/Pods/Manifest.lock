@@ -29,8 +29,8 @@ DEPENDENCIES:
   - MagicalRecord
 
 SPEC CHECKSUMS:
-  AFNetworking: 0121f4b69be3fa58d1ab317866e036e12ac9651d
-  MACircleProgressIndicator: dc497a2c68dd930d4aea837b1a732a56ce4bd6d8
-  MagicalRecord: 95d49d74ef752cd52f6ad87bcb474817fc3978cf
+  AFNetworking: 8dde8c8a6597ad95dac332a593c27e541bc87371
+  MACircleProgressIndicator: 6d7813b78ebb0abfddb85f0e380976c0d694bc29
+  MagicalRecord: 2b471584fc9e3137f3d0a56967917baa4979e224
 
-COCOAPODS: 0.29.0
+COCOAPODS: 0.33.1

@@ -37,7 +37,7 @@
 	NSDictionary *importedDictionary = [NSJSONSerialization JSONObjectWithData:_backupData options:0 error:nil];
 	NSLog(@"%@", importedDictionary);
 	
-	if (importedDictionary[@"games"] != [NSNull null]){
+	if (importedDictionary[@"games"] && importedDictionary[@"games"] != [NSNull null]){
 		_importedWishlistGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
 		_importedLibraryGames = [[NSMutableArray alloc] initWithCapacity:[importedDictionary[@"games"] count]];
 		
@@ -62,7 +62,7 @@
 				[game setOwned:@(YES)];
 			}
 			
-			if (dictionary[@"selectedPlatforms"] != [NSNull null]){
+			if (dictionary[@"selectedPlatforms"] && dictionary[@"selectedPlatforms"] != [NSNull null]){
 				NSMutableArray *selectedPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"selectedPlatforms"] count]];
 				for (NSDictionary *platformDictionary in dictionary[@"selectedPlatforms"]){
 					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:_context];
@@ -185,14 +185,16 @@
 			NSLog(@"Success in %@ - Status code: %ld - Game - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 			_numberOfRunningTasks--;
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
-			
-			[self.tableView reloadData];
-			
-			[self downloadCoverImageForGame:game];
-			
-			if (_numberOfRunningTasks == 0){
-				[self.navigationItem.rightBarButtonItem setEnabled:YES];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+				
+				[self.tableView reloadData];
+				
+				[self downloadCoverImageForGame:game];
+				
+				if (_numberOfRunningTasks == 0){
+					[self.navigationItem.rightBarButtonItem setEnabled:YES];
+				}
 			}
 		}
 	}];

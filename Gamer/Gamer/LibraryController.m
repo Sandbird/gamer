@@ -244,33 +244,35 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 			
 			_numberOfRunningTasks--;
 			
-			[Networking updateGame:game withDataFromJSON:responseObject context:_context];
-			
-			if (_numberOfRunningTasks == 0){
-				[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-					[_collectionView reloadData];
-					
-					BOOL imagesDownloaded = NO;
-					
-					for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++){
-						for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++){
-							Game *fetchedGame = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
-							
-							UIImage *thumbnail = [UIImage imageWithData:fetchedGame.thumbnailLibrary];
-							CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeLibrary];
-							
-							if (!fetchedGame.thumbnailWishlist || !fetchedGame.thumbnailLibrary || !fetchedGame.coverImage.data || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
-								imagesDownloaded = YES;
-								[self downloadCoverImageForGame:fetchedGame];
-							}
-							
-							if (section == _fetchedResultsController.sections.count - 1 && row == [_fetchedResultsController.sections[section] numberOfObjects] - 1 && imagesDownloaded == NO){
-								[_refreshBarButton setEnabled:YES];
-								[_refreshControl endRefreshing];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[Networking updateGame:game withDataFromJSON:responseObject context:_context];
+				
+				if (_numberOfRunningTasks == 0){
+					[_context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+						[_collectionView reloadData];
+						
+						BOOL imagesDownloaded = NO;
+						
+						for (NSInteger section = 0; section < _fetchedResultsController.sections.count; section++){
+							for (NSInteger row = 0; row < ([_fetchedResultsController.sections[section] numberOfObjects]); row++){
+								Game *fetchedGame = [_fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+								
+								UIImage *thumbnail = [UIImage imageWithData:fetchedGame.thumbnailLibrary];
+								CGSize optimalSize = [Session optimalCoverImageSizeForImage:thumbnail type:GameImageTypeLibrary];
+								
+								if (!fetchedGame.thumbnailWishlist || !fetchedGame.thumbnailLibrary || !fetchedGame.coverImage.data || (thumbnail.size.width != optimalSize.width || thumbnail.size.height != optimalSize.height)){
+									imagesDownloaded = YES;
+									[self downloadCoverImageForGame:fetchedGame];
+								}
+								
+								if (section == _fetchedResultsController.sections.count - 1 && row == [_fetchedResultsController.sections[section] numberOfObjects] - 1 && imagesDownloaded == NO){
+									[_refreshBarButton setEnabled:YES];
+									[_refreshControl endRefreshing];
+								}
 							}
 						}
-					}
-				}];
+					}];
+				}
 			}
 		}
 	}];

@@ -92,18 +92,6 @@
 	[_searchBar setShowsSearchResultsButton:YES];
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
-	[_runningTask cancel];
-	
-	[Session setSearchQuery:searchText];
-	
-	if (searchText.length > 0){
-		NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
-		NSString *query = [[searchText componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
-		[self requestGamesWithTitlesContainingQuery:query];
-	}
-}
-
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
 	[searchBar resignFirstResponder];
 	
@@ -111,9 +99,7 @@
 	
 	[Session setSearchQuery:searchBar.text];
 	
-	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
-	NSString *query = [[searchBar.text componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
-	[self requestGamesWithTitlesContainingQuery:query];
+	[self searchGamesWithTitle:searchBar.text];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
@@ -168,23 +154,33 @@
 //			NSLog(@"Success in %@ - Status code: %d - Size: %lld bytes", self, ((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
 //			NSLog(@"%@", responseObject);
 			
-			[_results removeAllObjects];
-			
-			for (NSDictionary *dictionary in responseObject[@"results"]){
-				SearchResult *result = [SearchResult new];
-				[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
-				[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
-				if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"thumb_url"]]];
-				[_results addObject:result];
+			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
+				[_results removeAllObjects];
+				
+				for (NSDictionary *dictionary in responseObject[@"results"]){
+					SearchResult *result = [SearchResult new];
+					[result setIdentifier:[Tools integerNumberFromSourceIfNotNull:dictionary[@"id"]]];
+					[result setTitle:[Tools stringFromSourceIfNotNull:dictionary[@"name"]]];
+					if (dictionary[@"image"] != [NSNull null]) [result setImageURL:[Tools stringFromSourceIfNotNull:dictionary[@"image"][@"thumb_url"]]];
+					[_results addObject:result];
+				}
+				
+				[Session setSearchResults:_results];
+				
+				[_collectionView reloadData];
 			}
-			
-			[Session setSearchResults:_results];
-			
-			[_collectionView reloadData];
 		}
 	}];
 	[dataTask resume];
 	_runningTask = dataTask;
+}
+
+#pragma mark - Custom
+
+- (void)searchGamesWithTitle:(NSString *)title{
+	NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"];
+	NSString *query = [[title componentsSeparatedByCharactersInSet:[alphanumericCharacterSet invertedSet]] componentsJoinedByString:@"%"];
+	[self requestGamesWithTitlesContainingQuery:query];
 }
 
 #pragma mark - Actions
