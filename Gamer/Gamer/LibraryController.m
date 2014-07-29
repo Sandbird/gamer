@@ -126,7 +126,7 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	
 	self.imageCache = [NSCache new];
 	
-	self.guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][1];
+	self.guideView = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][ViewIndexLibraryGuideView];
 	[self.view insertSubview:self.guideView aboveSubview:self.collectionView];
 	[self.guideView setFrame:self.view.frame];
 	[self.guideView setHidden:YES];

@@ -12,7 +12,7 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil][6];
+    self = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil][ViewIndexLibrarySortFilter];
 	[self setFrame:CGRectOffset(self.frame, 0, -50)];
     if (self) {
 		[_sortButton.layer setBorderWidth:1];

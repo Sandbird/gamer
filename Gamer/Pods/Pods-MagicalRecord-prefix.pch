@@ -2,7 +2,7 @@
 #import <UIKit/UIKit.h>
 #endif
 
-#define MR_ENABLE_ACTIVE_RECORD_LOGGING 1
+#define MR_ENABLE_ACTIVE_RECORD_LOGGING 0
 #import "Pods-environment.h"
 #import <CoreData/CoreData.h>
 #import "CoreData+MagicalRecord.h"

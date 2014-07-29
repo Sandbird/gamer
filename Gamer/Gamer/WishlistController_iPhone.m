@@ -88,7 +88,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
 	// Show guide view if table empty
 	if (self.fetchedResultsController.sections.count == 0){
-		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil].firstObject;
+		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil][ViewIndexWishlistGuideView];
 		[tableView setBackgroundView:view];
 	}
 	else

@@ -9,6 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "Gamer.h"
 
+typedef NS_ENUM(NSInteger, ViewIndex){
+	ViewIndexWishlistGuideView,
+	ViewIndexLibraryGuideView,
+	ViewIndexSearchGuideView,
+	ViewIndexBlurHeaderView,
+	ViewIndexContentStatusView,
+	ViewIndexLibrarySortFilter
+};
+
 typedef NS_ENUM(NSInteger, LibrarySize){
 	LibrarySizeSmall = 0,
 	LibrarySizeMedium = 1,

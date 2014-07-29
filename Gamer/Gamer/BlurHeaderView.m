@@ -18,7 +18,7 @@
 @implementation BlurHeaderView
 
 - initWithTitle:(NSString *)title leftMargin:(CGFloat)leftMargin{
-	self = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPhone] ? @"iPhone" : @"iPad" owner:self options:nil][3];
+	self = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPhone] ? @"iPhone" : @"iPad" owner:self options:nil][ViewIndexBlurHeaderView];
 	
 	if (self){
 		UIToolbar *toolBar = [[UIToolbar alloc] initWithFrame:self.frame];

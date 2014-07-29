@@ -47,7 +47,7 @@
 	
 	// Show guide view if no platform is selected
 	if (self.results.count == 0 && [Session gamer].platforms.count == 0){
-		UIView *view = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][2];
+		UIView *view = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPad] ? @"iPad" : @"iPhone" owner:self options:nil][ViewIndexSearchGuideView];
 		[self.tableView setBackgroundView:view];
 		[self.searchBar setUserInteractionEnabled:NO];
 	}

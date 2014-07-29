@@ -11,7 +11,7 @@
 @implementation ContentStatusView
 
 - (id)initWithUnavailableTitle:(NSString *)title{
-	self = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPhone] ? @"iPhone" : @"iPad" owner:self options:nil][[Tools deviceIsiPhone] ? 5 : 3];
+	self = [[NSBundle mainBundle] loadNibNamed:[Tools deviceIsiPhone] ? @"iPhone" : @"iPad" owner:self options:nil][ViewIndexContentStatusView];
 	if (self) {
 		[_statusLabel setText:title];
 	}

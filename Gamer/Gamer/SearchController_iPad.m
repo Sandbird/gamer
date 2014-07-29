@@ -49,7 +49,7 @@
 		self.results = [[NSMutableArray alloc] initWithCapacity:100];
 	
 	// Add guide view to the view
-	self.guideView = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][2];
+	self.guideView = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][ViewIndexSearchGuideView];
 	[self.view insertSubview:self.guideView aboveSubview:self.collectionView];
 	[self.guideView setFrame:self.view.frame];
 	[self.guideView setHidden:YES];
