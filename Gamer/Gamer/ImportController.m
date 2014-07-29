@@ -274,28 +274,24 @@
 			[game setInLibrary:[Tools booleanNumberFromSourceIfNotNull:dictionary[@"inLibrary"] withDefault:NO]];
 			
 			if (dictionary[@"selectedRelease"] && dictionary[@"selectedRelease"] != [NSNull null]){
-				if (dictionary[@"selectedRelease"][@"id"] && dictionary[@"selectedRelease"][@"id"] != [NSNull null]){
-					Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"selectedRelease"][@"id"] inContext:self.context];
-					if (!release) [Release MR_createInContext:self.context];
-					[release setIdentifier:dictionary[@"selectedRelease"][@"id"]];
-					[game addReleasesObject:release];
-					[game setSelectedRelease:release];
-				}
+				Release *release = [Release MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"selectedRelease"] inContext:self.context];
+				if (!release) release = [Release MR_createInContext:self.context];
+				[release setIdentifier:dictionary[@"selectedRelease"]];
+				[game addReleasesObject:release];
+				[game setSelectedRelease:release];
 			}
 			
 			// Wishlist platforms
 			if (dictionary[@"wishlistPlatform"] && dictionary[@"wishlistPlatform"] != [NSNull null]){
-				if (dictionary[@"wishlistPlatform"][@"id"] && dictionary[@"wishlistPlatform"][@"id"] != [NSNull null]){
-					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"wishlistPlatform"][@"id"] inContext:self.context];
-					[game setWishlistPlatform:platform];
-				}
+				Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:dictionary[@"wishlistPlatform"] inContext:self.context];
+				[game setWishlistPlatform:platform];
 			}
 			
 			// Library platforms
 			if (dictionary[@"libraryPlatforms"] && dictionary[@"libraryPlatforms"] != [NSNull null]){
 				NSMutableArray *libraryPlatforms = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"libraryPlatforms"] count]];
 				for (NSDictionary *platformDictionary in dictionary[@"libraryPlatforms"]){
-					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary[@"id"] inContext:self.context];
+					Platform *platform = [Platform MR_findFirstByAttribute:@"identifier" withValue:platformDictionary inContext:self.context];
 					[libraryPlatforms addObject:platform];
 				}
 				[game setLibraryPlatforms:[NSSet setWithArray:libraryPlatforms]];

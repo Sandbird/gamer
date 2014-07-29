@@ -178,18 +178,15 @@ typedef NS_ENUM(NSInteger, Section){
 	NSMutableArray *gameDictionaries = [[NSMutableArray alloc] initWithCapacity:games.count];
 	
 	for (Game *game in games){
-		NSMutableArray *libraryPlatformDictionaries = [[NSMutableArray alloc] initWithCapacity:game.libraryPlatforms.count];
-		for (Platform *platform in game.libraryPlatforms){
-			[libraryPlatformDictionaries addObject:@{@"id":platform.identifier}];
-		}
+		NSArray *libraryPlatformIdentifiers = [game.libraryPlatforms valueForKey:@"identifier"];
 		
 		NSDictionary *gameDictionary = @{@"id":game.identifier,
 										 @"title":game.title ? game.title : @"",
 										 @"inWishlist":game.inWishlist,
 										 @"inLibrary":game.inLibrary,
-										 @"wishlistPlatform":game.wishlistPlatform ? @{@"id":game.wishlistPlatform.identifier} : [NSNull null],
-										 @"libraryPlatforms":libraryPlatformDictionaries ? libraryPlatformDictionaries : [NSNull null],
-										 @"selectedRelease":game.selectedRelease ? @{@"id":game.selectedRelease.identifier} : [NSNull null],
+										 @"wishlistPlatform":game.wishlistPlatform.identifier ? game.wishlistPlatform.identifier : [NSNull null],
+										 @"libraryPlatforms":libraryPlatformIdentifiers ? libraryPlatformIdentifiers : [NSNull null],
+										 @"selectedRelease":game.selectedRelease.identifier ? game.selectedRelease.identifier : [NSNull null],
 										 @"finished":game.finished ? game.finished : @(0),
 										 @"digital":game.digital ? game.digital : @(0),
 										 @"lent":game.lent ? game.lent : @(0),

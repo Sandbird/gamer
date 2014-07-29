@@ -539,11 +539,11 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 }
 
 - (void)refreshLibraryGames{
-//	if (_fetchedResultsController.fetchedObjects.count > 0){
-//		[self.refreshBarButton setEnabled:NO];
-//	}
-	
 	NSArray *platformGames = [self.dataSource valueForKeyPath:@"platform.games"];
+	
+	if (platformGames.count > 0){
+		[self.refreshBarButton setEnabled:NO];
+	}
 	
 	NSMutableArray *games = [[NSMutableArray alloc] init];
 	for (NSArray *array in platformGames){
@@ -555,9 +555,6 @@ typedef NS_ENUM(NSInteger, LibraryFilter){
 	for (NSArray *array in splitArray){
 		[self requestGames:array];
 	}
-	
-//		[self.refreshBarButton setEnabled:YES];
-//		[self.refreshControl endRefreshing];
 }
 
 - (void)showSortOptions{
