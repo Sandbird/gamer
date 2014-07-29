@@ -129,7 +129,7 @@
 			[metascore setPlatform:platform];
 			[game addMetascoresObject:metascore];
 			
-			[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:metascore]] withRowAnimation:UITableViewRowAnimationAutomatic];
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
 			[self.tableView beginUpdates];
 			[self.tableView endUpdates];
 		}
