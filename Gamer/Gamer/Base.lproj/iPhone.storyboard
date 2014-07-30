@@ -1944,10 +1944,10 @@
             </objects>
             <point key="canvasLocation" x="144" y="1469"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Rotation Locked Navigation Controller-->
         <scene sceneID="VI2-44-Sz4">
             <objects>
-                <navigationController storyboardIdentifier="ImportController" definesPresentationContext="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="P37-9M-hQJ" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="ImportController" definesPresentationContext="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="P37-9M-hQJ" customClass="RotationLockedNavigationController" sceneMemberID="viewController">
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Ui0-aV-I0O">
                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
