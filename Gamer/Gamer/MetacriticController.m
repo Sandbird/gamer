@@ -8,7 +8,7 @@
 
 #import "MetacriticController.h"
 
-@interface MetacriticController ()
+@interface MetacriticController () <UIWebViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIWebView *webView;
 

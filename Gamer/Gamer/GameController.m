@@ -37,6 +37,7 @@
 #import "NotesController.h"
 #import "DACircularProgressView+AFNetworking.h"
 #import "BlurHeaderView.h"
+#import "OverviewController.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	SectionCover,
@@ -258,7 +259,7 @@ typedef NS_ENUM(NSInteger, Section){
 			break;
 		}
 		case SectionDetails:
-			return (self.game.metascores.count > 0) + (self.game.platforms.count > 0) + (self.game.similarGames.count > 0) + 2;
+			return (self.game.metascores.count > 0) + (self.game.platforms.count > 0) + (self.game.similarGames.count > 0) + 3;
 			break;
 		default:
 			break;
@@ -295,7 +296,7 @@ typedef NS_ENUM(NSInteger, Section){
 					return 20 + textRect.size.height + 20; // Top padding + description text height + bottom padding
 				}
 				// Info row
-				case 1:{
+				case 2:{
 					if ([Tools deviceIsiPhone]){
 						CGFloat contentHeight = 0;
 						contentHeight += self.game.genres.count > 1 ? 57 : 37; // Labels' height
@@ -329,7 +330,7 @@ typedef NS_ENUM(NSInteger, Section){
 					break;
 				}
 				// Platforms row
-				case 2:
+				case 3:
 					// Similar games row
 					if (self.game.platforms.count == 0 && self.game.metascores.count == 0){
 						return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
@@ -346,7 +347,7 @@ typedef NS_ENUM(NSInteger, Section){
 							return 20 + 17 + 8 + (ceil((double)self.platforms.count/8) * 31) + 20;
 					}
 					break;
-				case 3:
+				case 4:
 					if ((self.game.platforms.count == 0 && self.game.metascores.count > 0) || (self.game.platforms.count > 0 && self.game.metascores.count == 0)){
 						return [super tableView:tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
 					}
@@ -376,20 +377,20 @@ typedef NS_ENUM(NSInteger, Section){
 				return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionStatus]];
 			break;
 		case SectionDetails:
-			if (indexPath.row == 2){
+			if (indexPath.row == 3){
 				if (self.game.platforms.count == 0 && self.game.metascores.count == 0){
 					// Similar games row
-					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
+					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionDetails]];
 				}
 				else if (self.game.platforms.count == 0){
 					// Metascore row
-					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:SectionDetails]];
+					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
 				}
 			}
-			else if (indexPath.row == 3){
+			else if (indexPath.row == 4){
 				if ((self.game.platforms.count == 0 && self.game.metascores.count > 0) || (self.game.platforms.count > 0 && self.game.metascores.count == 0)){
 					// Similar games row
-					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4 inSection:SectionDetails]];
+					return [super tableView:tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:5 inSection:SectionDetails]];
 				}
 			}
 			break;
@@ -426,10 +427,13 @@ typedef NS_ENUM(NSInteger, Section){
 			}
 			break;
 		case SectionDetails:
-			if (indexPath.row == 2 && self.game.platforms.count == 0 && self.game.metascores.count > 0){
+			if (indexPath.row == 1){
+				[self performSegueWithIdentifier:@"OverviewSegue" sender:nil];
+			}
+			else if (indexPath.row == 3 && self.game.platforms.count == 0 && self.game.metascores.count > 0){
 				[self performSegueWithIdentifier:@"MetascoreSegue" sender:nil];
 			}
-			else if (indexPath.row == 3 && self.game.platforms.count > 0 && self.game.metascores.count > 0){
+			else if (indexPath.row == 4 && self.game.platforms.count > 0 && self.game.metascores.count > 0){
 				[self performSegueWithIdentifier:@"MetascoreSegue" sender:nil];
 			}
 			break;
@@ -1343,6 +1347,10 @@ typedef NS_ENUM(NSInteger, Section){
 	}
 	else if ([segue.identifier isEqualToString:@"NotesSegue"]){
 		NotesController *destination = segue.destinationViewController;
+		[destination setGame:self.game];
+	}
+	else if ([segue.identifier isEqualToString:@"OverviewSegue"]){
+		OverviewController *destination = segue.destinationViewController;
 		[destination setGame:self.game];
 	}
 	else if ([segue.identifier isEqualToString:@"MetascoreSegue"]){

@@ -97,6 +97,7 @@
 		25CF6AE9180B697B000E51B2 /* Networking.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CF6AE8180B697B000E51B2 /* Networking.m */; };
 		25CFD2AC17AF05D100FF4B91 /* iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */; };
 		25D2E601178BB22900C7EDDB /* ImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D2E600178BB22900C7EDDB /* ImageViewerController.m */; };
+		25DDC66C1989B1640038C686 /* OverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DDC66B1989B1640038C686 /* OverviewController.m */; };
 		25EB1BDF1784F23900A5A2A8 /* ImageCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */; };
 		25EB1BE2178505AA00A5A2A8 /* VideoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EB1BE1178505AA00A5A2A8 /* VideoCollectionCell.m */; };
 		25EC37111969CC20001ECE94 /* NSArray+Split.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EC37101969CC20001ECE94 /* NSArray+Split.m */; };
@@ -276,6 +277,8 @@
 		25CFD2AB17AF05D100FF4B91 /* iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPad.storyboard; sourceTree = "<group>"; };
 		25D2E5FF178BB22900C7EDDB /* ImageViewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewerController.h; sourceTree = "<group>"; };
 		25D2E600178BB22900C7EDDB /* ImageViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewerController.m; sourceTree = "<group>"; };
+		25DDC66A1989B1640038C686 /* OverviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverviewController.h; sourceTree = "<group>"; };
+		25DDC66B1989B1640038C686 /* OverviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverviewController.m; sourceTree = "<group>"; };
 		25EB1BDD1784F23900A5A2A8 /* ImageCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionCell.h; sourceTree = "<group>"; };
 		25EB1BDE1784F23900A5A2A8 /* ImageCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionCell.m; sourceTree = "<group>"; };
 		25EB1BE0178505AA00A5A2A8 /* VideoCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCollectionCell.h; sourceTree = "<group>"; };
@@ -625,6 +628,8 @@
 				25AC857E18EE3AFF00919A15 /* ReleasesController.m */,
 				25B6274C1916AA9D0053329D /* NotesController.h */,
 				25B6274D1916AA9D0053329D /* NotesController.m */,
+				25DDC66A1989B1640038C686 /* OverviewController.h */,
+				25DDC66B1989B1640038C686 /* OverviewController.m */,
 				25AC858018EE3B0E00919A15 /* MetascoreController.h */,
 				25AC858118EE3B0E00919A15 /* MetascoreController.m */,
 				2593051517C90017001DC04B /* MetacriticController.h */,
@@ -863,6 +868,7 @@
 				2574E558195C6378009107EB /* Genre.m in Sources */,
 				25C9FE4517CD729E00CCDD59 /* HeaderCollectionReusableView.m in Sources */,
 				2574E54F195C6378009107EB /* Metascore.m in Sources */,
+				25DDC66C1989B1640038C686 /* OverviewController.m in Sources */,
 				257880581794EF70004C28E3 /* PlatformCollectionCell.m in Sources */,
 				25AC85A518F031B200919A15 /* MetascoreCell.m in Sources */,
 				25B094051824882E003A0365 /* SearchCollectionCell.m in Sources */,
