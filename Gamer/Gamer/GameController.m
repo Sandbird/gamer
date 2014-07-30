@@ -895,20 +895,17 @@ typedef NS_ENUM(NSInteger, Section){
 #pragma mark - PlatformPicker
 
 - (void)platformPicker:(PlatformPickerController *)picker didSelectPlatforms:(NSArray *)platforms{
-	if (self.wishlistButton.isHighlighted){
+	if (picker.mode == PlatformPickerModeWishlist){
 		if (!platforms || platforms.count == 0)
 			[self removeGameFromWishlist];
 		else
 			[self addGameToWishlistWithPlatform:platforms.firstObject];
 	}
-	else if (self.libraryButton.isHighlighted){
+	else if (picker.mode == PlatformPickerModeLibrary){
 		if (!platforms || platforms.count == 0)
 			[self removeGameFromLibrary];
 		else
 			[self addGameToLibraryWithPlatforms:platforms];
-	}
-	else{
-		[self changeLibraryPlatformsToPlatforms:platforms];
 	}
 	
 	[self dismissViewControllerAnimated:YES completion:nil];
@@ -1127,11 +1124,6 @@ typedef NS_ENUM(NSInteger, Section){
 
 - (void)addGameToLibraryWithPlatforms:(NSArray *)platforms{
 	[self.game setInLibrary:@(YES)];
-	[self.game setLibraryPlatforms:[NSSet setWithArray:platforms]];
-	[self refreshAfterLocationChange];
-}
-
-- (void)changeLibraryPlatformsToPlatforms:(NSArray *)platforms{
 	[self.game setLibraryPlatforms:[NSSet setWithArray:platforms]];
 	[self refreshAfterLocationChange];
 }
