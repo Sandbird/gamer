@@ -921,6 +921,8 @@ typedef NS_ENUM(NSInteger, Section){
 	[self.game setReleasePeriod:[Networking releasePeriodForGameOrRelease:release context:self.context]];
 	[self.releaseDateTitleLabel setText:self.game.selectedRelease ? @"Release" : @"First Release"];
 	[self.releaseDateLabel setText:self.game.selectedRelease ? self.game.selectedRelease.releaseDateText : self.game.releaseDateText];
+	
+	if ([Tools deviceIsiPad]) [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshWishlist" object:nil];
 }
 
 - (void)releasesControllerDidDownloadReleases:(ReleasesController *)controller{
