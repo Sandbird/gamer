@@ -178,7 +178,7 @@ typedef NS_ENUM(NSInteger, Section){
 	NSMutableArray *gameDictionaries = [[NSMutableArray alloc] initWithCapacity:games.count];
 	
 	for (Game *game in games){
-		NSArray *libraryPlatformIdentifiers = [game.libraryPlatforms valueForKey:@"identifier"];
+		NSArray *libraryPlatformIdentifiers = [game.libraryPlatforms.allObjects valueForKey:@"identifier"];
 		
 		NSDictionary *gameDictionary = @{@"id":game.identifier,
 										 @"title":game.title ? game.title : @"",
@@ -202,7 +202,7 @@ typedef NS_ENUM(NSInteger, Section){
 	NSDictionary *backupDictionary = @{@"version":[NSBundle mainBundle].infoDictionary[@"CFBundleVersion"],
 									   @"games":gameDictionaries};
 	
-	NSLog(@"%@", backupDictionary);
+//	NSLog(@"%@", backupDictionary);
 	
 	NSData *backupData = [NSJSONSerialization dataWithJSONObject:backupDictionary options:0 error:nil];
 	

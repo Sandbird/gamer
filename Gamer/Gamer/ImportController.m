@@ -45,7 +45,7 @@
 	
 	[self parseBackupDictionary:importDictionary];
 	
-	NSString *message = [NSString stringWithFormat:@"Information and images for all of your %lu games will be downloaded. You can save before the download is finished and refresh your games later", (unsigned long)self.importedGames.count];
+	NSString *message = [NSString stringWithFormat:@"Information and images for all of your %lu games will be downloaded. You can always save before the download is finished and refresh your games later.", (unsigned long)self.importedGames.count];
 	
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Import" message:message delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Start", nil];
 	[alertView show];
