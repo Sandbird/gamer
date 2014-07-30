@@ -71,6 +71,7 @@
 
 - (void)setupAppearance{
 	[self.window setTintColor:[UIColor orangeColor]];
+	[self.window setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
 	
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 	
