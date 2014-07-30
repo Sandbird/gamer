@@ -202,8 +202,6 @@ typedef NS_ENUM(NSInteger, Section){
 	NSDictionary *backupDictionary = @{@"version":[NSBundle mainBundle].infoDictionary[@"CFBundleVersion"],
 									   @"games":gameDictionaries};
 	
-//	NSLog(@"%@", backupDictionary);
-	
 	NSData *backupData = [NSJSONSerialization dataWithJSONObject:backupDictionary options:0 error:nil];
 	
 	MFMailComposeViewController *mailComposeViewController = [MFMailComposeViewController new];
