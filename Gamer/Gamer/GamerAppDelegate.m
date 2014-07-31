@@ -86,6 +86,7 @@
 	[libraryTab setSelectedImage:[UIImage imageNamed:@"LibraryTabSelected"]];
 	
 	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+	[[UIScrollView appearance] setIndicatorStyle:UIScrollViewIndicatorStyleWhite];
 }
 
 - (void)setupDatabase{

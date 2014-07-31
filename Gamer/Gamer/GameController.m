@@ -418,8 +418,9 @@ typedef NS_ENUM(NSInteger, Section){
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	switch (indexPath.section) {
 		case SectionCover:
-			if (indexPath.row == 2 && self.game.releases.count > 0)
+			if (indexPath.row == 2 && self.game.releases.count > 0){
 				[self performSegueWithIdentifier:@"ReleasesSegue" sender:nil];
+			}
 			break;
 		case SectionStatus:
 			if (indexPath.row == ([tableView numberOfRowsInSection:SectionStatus] - 1)){

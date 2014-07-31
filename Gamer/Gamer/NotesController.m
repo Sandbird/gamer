@@ -21,6 +21,8 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
+	[self.textView setContentInset:UIEdgeInsetsMake(0, 0, 432, 0)];
+	
 	[self.textView setKeyboardAppearance:UIKeyboardAppearanceDark];
 	[self.textView setTextContainerInset:UIEdgeInsetsMake(15, 15, 15, 15)];
 	

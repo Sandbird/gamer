@@ -19,6 +19,8 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	
+	[self setEdgesForExtendedLayout:UIRectEdgeAll];
+	
 	[self requestDescriptionWithGame:self.game];
 }
 

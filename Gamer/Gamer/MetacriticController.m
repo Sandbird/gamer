@@ -19,6 +19,13 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 	
+	[self.webView.scrollView setIndicatorStyle:UIScrollViewIndicatorStyleBlack];
+	
+	if ([Tools deviceIsiPhone]){
+		[self.webView.scrollView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+		[self.webView.scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(64, 0, 0, 0)];
+	}
+	
 	[self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
 }
 
