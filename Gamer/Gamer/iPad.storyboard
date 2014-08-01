@@ -2226,7 +2226,7 @@
                                 <action selector="cancelBarButtonAction:" destination="HHZ-gg-I1I" id="cl6-J9-LMd"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="sg5-dP-XV5">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="sg5-dP-XV5">
                             <connections>
                                 <action selector="doneBarButtonAction:" destination="HHZ-gg-I1I" id="gf1-oa-KTT"/>
                             </connections>

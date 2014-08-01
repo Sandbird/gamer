@@ -2256,7 +2256,7 @@
                                 <action selector="cancelBarButtonAction:" destination="wMj-fs-V9h" id="bgS-S2-9Qz"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="udy-EH-eb0">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="udy-EH-eb0">
                             <connections>
                                 <action selector="doneBarButtonAction:" destination="wMj-fs-V9h" id="mxa-RP-3ik"/>
                             </connections>
