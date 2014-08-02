@@ -7,7 +7,7 @@
 //
 
 #import "AboutController.h"
-#import "AboutCell.h"
+#import "AboutTableCell.h"
 
 @interface AboutController ()
 
@@ -51,7 +51,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSDictionary *aboutDictionary = self.aboutDictionaries[indexPath.row];
 	
-	AboutCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	AboutTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:aboutDictionary[@"title"]];
 	[cell.textView setText:aboutDictionary[@"body"]];
 	return cell;

@@ -48,7 +48,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="pmf-YT-SZI" customClass="WishlistCollectionCell">
-                                        <rect key="frame" x="20" y="110" width="155" height="285"/>
+                                        <rect key="frame" x="20" y="46" width="155" height="285"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="155" height="285"/>
@@ -101,7 +101,7 @@
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Header" id="5rf-W9-Blz" customClass="HeaderCollectionReusableView">
-                                    <rect key="frame" x="0.0" y="64" width="768" height="36"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="768" height="36"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Next Month" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="leb-AT-Mnd" userLabel="Period Label">
@@ -139,10 +139,122 @@
                     <navigationItem key="navigationItem" title="Wishlist" id="fwf-Gh-uFq"/>
                     <connections>
                         <outlet property="collectionView" destination="QR2-YP-18v" id="eT2-xc-UJ0"/>
-                        <segue destination="bcu-BS-SCn" kind="modal" identifier="GameSegue" modalPresentationStyle="formSheet" id="d00-8M-kLX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wWo-ac-yLi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2162" y="141"/>
+        </scene>
+        <!--Wishlist Controller - Wishlist-->
+        <scene sceneID="9aH-2q-aY1">
+            <objects>
+                <tableViewController id="zbc-p0-L9G" customClass="WishlistController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="107" sectionHeaderHeight="30" sectionFooterHeight="22" id="LBX-5t-ren">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="kDJ-py-daF" userLabel="Wishlist Table Cell" customClass="WishlistTableCell">
+                                <rect key="frame" x="0.0" y="94" width="768" height="107"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kDJ-py-daF" id="qNi-SU-qQH">
+                                    <rect key="frame" x="0.0" y="0.0" width="768" height="107"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <collectionView appearanceType="aqua" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="XyX-eY-uNG">
+                                            <rect key="frame" x="0.0" y="0.0" width="768" height="107"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
+                                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="QVj-Aa-Df4">
+                                                <size key="itemSize" width="256" height="107"/>
+                                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                            </collectionViewFlowLayout>
+                                            <cells>
+                                                <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="5Ya-4m-TlT" userLabel="Wishlist Collection Cell" customClass="WishlistCollectionCell">
+                                                    <rect key="frame" x="0.0" y="0.0" width="256" height="107"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                                        <rect key="frame" x="0.0" y="0.0" width="256" height="107"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <subviews>
+                                                            <imageView appearanceType="aqua" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l85-Bg-uMV">
+                                                                <rect key="frame" x="10" y="10" width="69" height="87"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            </imageView>
+                                                            <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="159" translatesAutoresizingMaskIntoConstraints="NO" id="pEG-lJ-Wbh" userLabel="Title Label">
+                                                                <rect key="frame" x="87" y="10" width="159" height="34"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="25 September 2013" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rqu-CG-nzB" userLabel="Release Date Label">
+                                                                <rect key="frame" x="87" y="52" width="159" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="PS4" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h8u-pG-hrC" userLabel="Platform Label">
+                                                                <rect key="frame" x="87" y="77" width="48" height="20"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label appearanceType="aqua" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="95" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OQj-Uf-ZZs" userLabel="Metascore Label">
+                                                                <rect key="frame" x="143" y="77" width="20" height="20"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                                <color key="textColor" red="0.38431372549999998" green="0.80784313730000001" blue="0.12941176469999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    </view>
+                                                    <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <connections>
+                                                        <outlet property="coverImageView" destination="l85-Bg-uMV" id="7Co-mn-LMN"/>
+                                                        <outlet property="dateLabel" destination="rqu-CG-nzB" id="LGw-lC-yfn"/>
+                                                        <outlet property="metascoreLabel" destination="OQj-Uf-ZZs" id="4zJ-rM-QSa"/>
+                                                        <outlet property="platformLabel" destination="h8u-pG-hrC" id="dRs-Zt-7JJ"/>
+                                                        <outlet property="titleLabel" destination="pEG-lJ-Wbh" id="9vE-Uw-yK6"/>
+                                                    </connections>
+                                                </collectionViewCell>
+                                            </cells>
+                                            <connections>
+                                                <outlet property="dataSource" destination="kDJ-py-daF" id="xEL-7b-X85"/>
+                                                <outlet property="delegate" destination="kDJ-py-daF" id="b9Z-hi-CyV"/>
+                                            </connections>
+                                        </collectionView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="XyX-eY-uNG" firstAttribute="top" secondItem="qNi-SU-qQH" secondAttribute="top" id="EoW-oY-A0H"/>
+                                        <constraint firstAttribute="trailing" secondItem="XyX-eY-uNG" secondAttribute="trailing" id="Wm3-Ut-lHA"/>
+                                        <constraint firstAttribute="bottom" secondItem="XyX-eY-uNG" secondAttribute="bottom" id="Zac-VE-55W"/>
+                                        <constraint firstItem="XyX-eY-uNG" firstAttribute="leading" secondItem="qNi-SU-qQH" secondAttribute="leading" id="bnp-u0-ADM"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="collectionView" destination="XyX-eY-uNG" id="gCt-ai-BQ0"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="zbc-p0-L9G" id="vBT-7Y-IdP"/>
+                            <outlet property="delegate" destination="zbc-p0-L9G" id="JwX-O0-dqy"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Wishlist" id="BXA-Qu-KgP"/>
+                    <connections>
+                        <segue destination="bcu-BS-SCn" kind="modal" identifier="GameSegue" modalPresentationStyle="formSheet" id="b1G-s6-h7g"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rmf-im-h6z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1184" y="141"/>
         </scene>
@@ -243,7 +355,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="44" id="4gC-os-6ta" customClass="CustomSelectionCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="44" id="4gC-os-6ta" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="565" width="540" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4gC-os-6ta" id="Axt-Fy-Tph">
@@ -459,7 +571,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="edO-mX-tgF" customClass="CustomSelectionCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="edO-mX-tgF" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="982" width="540" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="edO-mX-tgF" id="V3A-7h-679">
@@ -506,7 +618,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="Gj9-Ez-qLm" customClass="CustomSelectionCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="Gj9-Ez-qLm" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="1166" width="540" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Gj9-Ez-qLm" id="zCJ-5w-zdV">
@@ -740,7 +852,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="160" id="BdF-95-rIi" customClass="MetascoreCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="160" id="BdF-95-rIi" customClass="MetascoreTableCell">
                                         <rect key="frame" x="0.0" y="1545" width="540" height="160"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BdF-95-rIi" id="Axo-18-WLN">
@@ -1170,7 +1282,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="kbm-s8-zlH" kind="relationship" relationship="rootViewController" id="SKg-Wa-cqA"/>
+                        <segue destination="zbc-p0-L9G" kind="relationship" relationship="rootViewController" id="OMC-Ji-Ylc"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O8b-Iw-okw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1445,7 +1557,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="kLK-5q-96l" userLabel="Wishlist Cell" customClass="ImportCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="kLK-5q-96l" userLabel="Wishlist Cell" customClass="GameTableCell">
                                 <rect key="frame" x="0.0" y="163" width="540" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kLK-5q-96l" id="lfV-wr-vR1">
@@ -1533,7 +1645,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" id="2Nf-TG-mjc" userLabel="Platform Cell" customClass="PlatformCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" id="2Nf-TG-mjc" userLabel="Platform Cell" customClass="PlatformTableCell">
                                 <rect key="frame" x="0.0" y="75" width="768" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2Nf-TG-mjc" id="gte-ty-RbR">
@@ -1615,7 +1727,7 @@
                             <tableViewSection headerTitle="Settings" id="7fC-1J-kmV">
                                 <string key="footerTitle">Select your platforms. This affects search results. Reordering affects the Library, the game screen and the auto-selection of releases.</string>
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="HaC-M2-gkz" style="IBUITableViewCellStyleDefault" id="7ME-fG-mUC" userLabel="Button Cell" customClass="CustomSelectionCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="HaC-M2-gkz" style="IBUITableViewCellStyleDefault" id="7ME-fG-mUC" userLabel="Button Cell" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="55" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7ME-fG-mUC" id="X5g-jc-OfN">
@@ -1637,7 +1749,7 @@
                             </tableViewSection>
                             <tableViewSection footerTitle="Select your region. This affects the auto-selection of releases." id="H4l-J3-tu8">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="q29-cL-VqE" style="IBUITableViewCellStyleDefault" id="FHU-tM-TV6" userLabel="Button Cell" customClass="CustomSelectionCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="q29-cL-VqE" style="IBUITableViewCellStyleDefault" id="FHU-tM-TV6" userLabel="Button Cell" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="201" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="FHU-tM-TV6" id="jhR-lL-NSw">
@@ -1659,7 +1771,7 @@
                             </tableViewSection>
                             <tableViewSection footerTitle="Select the size of games in your Library." id="mPS-xr-clG">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="hLX-R8-x4D" userLabel="Slider Cell" customClass="SegmentedControlCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="hLX-R8-x4D" userLabel="Slider Cell">
                                         <rect key="frame" x="0.0" y="314" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hLX-R8-x4D" id="iPa-Oh-KpW">
@@ -1681,15 +1793,12 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
-                                        <connections>
-                                            <outlet property="segmentedControl" destination="P2S-ai-VDF" id="ego-TT-qLr"/>
-                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Feedback" id="y3v-25-mAk">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="ctl-tT-oXM" style="IBUITableViewCellStyleDefault" id="IYf-Eh-97e" userLabel="Button Cell" customClass="CustomSelectionCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="ctl-tT-oXM" style="IBUITableViewCellStyleDefault" id="IYf-Eh-97e" userLabel="Button Cell" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="433" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="IYf-Eh-97e" id="0Id-MW-cN5">
@@ -1707,7 +1816,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.1647058824" green="0.1647058824" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="444-yj-XMn" style="IBUITableViewCellStyleDefault" id="VIJ-lw-zdL" userLabel="Button Cell" customClass="CustomSelectionCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="444-yj-XMn" style="IBUITableViewCellStyleDefault" id="VIJ-lw-zdL" userLabel="Button Cell" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="477" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VIJ-lw-zdL" id="NL4-av-IuA">
@@ -1729,7 +1838,7 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Other Stuff" footerTitle="Save all your games to a backup file. To import just open the file in your iOS device. More info in the About screen." id="0Cu-6b-VgQ">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="vkm-e8-5g4" style="IBUITableViewCellStyleDefault" id="lzc-dF-UrU" userLabel="Button Cell" customClass="CustomSelectionCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="vkm-e8-5g4" style="IBUITableViewCellStyleDefault" id="lzc-dF-UrU" userLabel="Button Cell" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="581" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lzc-dF-UrU" id="Mw5-tJ-X8G">
@@ -1751,7 +1860,7 @@
                             </tableViewSection>
                             <tableViewSection footerTitle="A few details on how some parts of the app work." id="ipi-94-SBu">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="daW-jS-ppu" style="IBUITableViewCellStyleDefault" id="qu2-3t-h7Y" userLabel="Button Cell" customClass="CustomSelectionCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" editingAccessoryType="disclosureIndicator" textLabel="daW-jS-ppu" style="IBUITableViewCellStyleDefault" id="qu2-3t-h7Y" userLabel="Button Cell" customClass="CustomGenericTableCell">
                                         <rect key="frame" x="0.0" y="710" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qu2-3t-h7Y" id="Z7p-8A-ug6">
@@ -1802,7 +1911,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="D5f-jU-6WB" customClass="AboutCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="D5f-jU-6WB" customClass="AboutTableCell">
                                 <rect key="frame" x="0.0" y="116" width="768" height="300"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="D5f-jU-6WB" id="CKf-vG-tKy">
@@ -1865,7 +1974,7 @@
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" rowHeight="60" id="m45-8J-2Ln" userLabel="Platform Cell" customClass="RegionCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" rowHeight="60" id="m45-8J-2Ln" userLabel="Platform Cell" customClass="RegionTableCell">
                                 <rect key="frame" x="0.0" y="119" width="768" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="m45-8J-2Ln" id="WXa-es-BbZ">
@@ -1991,7 +2100,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="Z3C-Jf-3Uw" customClass="MetascoreCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="Z3C-Jf-3Uw" customClass="MetascoreTableCell">
                                 <rect key="frame" x="0.0" y="159" width="540" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Z3C-Jf-3Uw" id="LFr-qZ-X0W">
@@ -2115,7 +2224,7 @@
                         <color key="backgroundColor" red="0.12549019610000001" green="0.12549019610000001" blue="0.12549019610000001" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" id="Jnw-uy-cKb" userLabel="Platform Cell" customClass="ReleaseCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="Cell" id="Jnw-uy-cKb" userLabel="Platform Cell" customClass="GameTableCell">
                                 <rect key="frame" x="0.0" y="99" width="540" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Jnw-uy-cKb" id="0Tq-G7-2Sj">
@@ -2307,7 +2416,7 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="d00-8M-kLX"/>
         <segue reference="Cb3-ZA-M1W"/>
+        <segue reference="b1G-s6-h7g"/>
     </inferredMetricsTieBreakers>
 </document>

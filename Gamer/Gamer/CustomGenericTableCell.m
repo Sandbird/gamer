@@ -1,14 +1,14 @@
 //
-//  ReleaseCell.m
+//  CustomGenericTableCell.m
 //  Gamer
 //
-//  Created by Caio Mello on 05/04/2014.
+//  Created by Caio Mello on 02/08/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
-#import "ReleaseCell.h"
+#import "CustomGenericTableCell.h"
 
-@implementation ReleaseCell
+@implementation CustomGenericTableCell
 
 - (void)awakeFromNib{
 	[super awakeFromNib];

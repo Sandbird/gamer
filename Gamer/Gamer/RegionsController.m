@@ -8,7 +8,7 @@
 
 #import "RegionsController.h"
 #import "Region.h"
-#import "RegionCell.h"
+#import "RegionTableCell.h"
 
 @interface RegionsController ()
 
@@ -47,7 +47,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	Region *region = self.regions[indexPath.row];
 	
-	RegionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	RegionTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.flagImageView setImage:[UIImage imageNamed:region.imageName]];
 	[cell.titleLabel setText:region.name];
 	[cell setAccessoryType:region == [Session gamer].region ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];

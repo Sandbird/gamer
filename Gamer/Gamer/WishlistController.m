@@ -1,13 +1,12 @@
 //
-//  WishlistController_iPhone.m
+//  WishlistController.m
 //  Gamer
 //
-//  Created by Caio Mello on 6/15/13.
+//  Created by Caio Mello on 02/08/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
-#import "WishlistController_iPhone.h"
-#import "WishlistTableCell.h"
+#import "WishlistController.h"
 #import "Game.h"
 #import "Genre.h"
 #import "Platform.h"
@@ -22,64 +21,85 @@
 #import "Metascore.h"
 #import "GameController.h"
 #import <AFNetworking/AFNetworking.h>
-#import "BlurHeaderView.h"
+#import "SearchController_iPad.h"
 #import "NSArray+Split.h"
+#import "WishlistTableCell.h"
+#import "BlurHeaderView.h"
 
-@interface WishlistController_iPhone () <FetchedTableViewDelegate>
+@interface WishlistController () <WishlistTableCellCollectionViewDelegate, UISearchBarDelegate>
 
-@property (nonatomic, strong) NSCache *imageCache;
+@property (nonatomic, strong) UIBarButtonItem *refreshButton;
+@property (nonatomic, strong) UIBarButtonItem *searchBarItem;
+
+@property (nonatomic, strong) UIView *guideView;
+
+@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
 
 @end
 
-@implementation WishlistController_iPhone
+@implementation WishlistController
 
 - (void)viewDidLoad{
-    [super viewDidLoad];
+	[super viewDidLoad];
+	
+	self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshWishlistGames)];
+	
+	UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 256, 44)];
+	[searchBar setPlaceholder:@"Find Games"];
+	[searchBar setDelegate:self];
+	self.searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
+	
+	[self.navigationItem setRightBarButtonItems:@[self.searchBarItem, self.refreshButton] animated:NO];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageDownloadedNotification:) name:@"CoverImageDownloaded" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshWishlistNotification:) name:@"RefreshWishlist" object:nil];
-	
-	[self.refreshControl setTintColor:[UIColor lightGrayColor]];
-	
-//	[self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
 	
 	self.context = [NSManagedObjectContext MR_contextForCurrentThread];
 	
 	self.fetchedResultsController = [self fetchData];
 	
-	self.imageCache = [NSCache new];
+//	self.imageCache = [NSCache new];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
 	[super viewWillAppear:animated];
 	
-	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+	[(UISearchBar *)self.searchBarItem.customView setText:[Session searchQuery]];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
 	[super viewDidAppear:animated];
 	
-	[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-	
 	[self updateGameReleasePeriods];
+}
+
+- (void)viewDidLayoutSubviews{
+	[super viewDidLayoutSubviews];
 	
-	[self.refreshControl endRefreshing];
+	[_guideView setCenter:self.view.center];
 }
 
 - (void)didReceiveMemoryWarning{
-    [super didReceiveMemoryWarning];
+	[super didReceiveMemoryWarning];
+}
+
+#pragma mark - SearchBar
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
+	SearchController_iPad *searchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
+	[self.navigationController pushViewController:searchViewController animated:NO];
+	return NO;
 }
 
 #pragma mark - FetchedResultsController
 
 - (NSFetchedResultsController *)fetchData{
 	if (!self.fetchedResultsController){
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inWishlist = %@", @(YES), @(NO)];
-		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES delegate:self];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inWishlist = %@ AND identifier != nil", @(YES)];
+		self.fetchedResultsController = [Game MR_fetchAllGroupedBy:@"releasePeriod.identifier" withPredicate:predicate sortedBy:@"releasePeriod.identifier,releaseDate,title" ascending:YES];
 	}
-	
 	return self.fetchedResultsController;
 }
 
@@ -88,7 +108,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
 	// Show guide view if table empty
 	if (self.fetchedResultsController.sections.count == 0){
-		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPhone" owner:self options:nil][ViewIndexWishlistGuideView];
+		UIView *view = [[NSBundle mainBundle] loadNibNamed:@"iPad" owner:self options:nil][ViewIndexWishlistGuideView];
 		[tableView setBackgroundView:view];
 	}
 	else
@@ -105,95 +125,23 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return [self.fetchedResultsController.sections[section] numberOfObjects];
+	return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+	NSArray *games = [self.fetchedResultsController.sections[indexPath.section] objects];
+	
 	WishlistTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-	[self configureCell:cell atIndexPath:indexPath];
-    return cell;
+	[cell setDelegate:self];
+	[cell setGames:games];
+	[cell.collectionView reloadData];
+	return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	[self performSegueWithIdentifier:@"GameSegue" sender:nil];
-}
+#pragma mark - WishlistTableCellCollectionView
 
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
-	return UITableViewCellEditingStyleDelete;
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	[game setInWishlist:@(NO)];
-	[game setWishlistPlatform:nil];
-	[self.context MR_saveToPersistentStoreWithCompletion:nil];
-}
-
-#pragma mark - FetchedTableView
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
-	Game *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	
-	WishlistTableCell *customCell = (WishlistTableCell *)cell;
-	
-	UIImage *image = [self.imageCache objectForKey:game.imagePath.lastPathComponent];
-	
-	if (image){
-		[customCell.coverImageView setImage:image];
-		[customCell.coverImageView setBackgroundColor:[UIColor clearColor]];
-	}
-	else{
-		[customCell.coverImageView setImage:nil];
-		
-		__block UIImage *image = [UIImage imageWithContentsOfFile:game.imagePath];
-		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-			CGSize imageSize = [Tools sizeOfImage:image aspectFitToWidth:customCell.coverImageView.frame.size.width];
-			
-			UIGraphicsBeginImageContext(imageSize);
-			[image drawInRect:CGRectMake(0, 0, imageSize.width, imageSize.height)];
-			image = UIGraphicsGetImageFromCurrentImageContext();
-			UIGraphicsEndImageContext();
-			
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[customCell.coverImageView setImage:image];
-				[customCell.coverImageView setBackgroundColor:image ? [UIColor clearColor] : [UIColor darkGrayColor]];
-				
-				if (image){
-					[self.imageCache setObject:image forKey:game.imagePath.lastPathComponent];
-				}
-			});
-		});
-	}
-	
-	[customCell.preorderedIcon setHidden:([game.preordered isEqualToNumber:@(YES)] && [game.released isEqualToNumber:@(NO)]) ? NO : YES];
-	
-	if (game.selectedRelease){
-		[customCell.platformLabel setText:game.selectedRelease.platform.abbreviation];
-		[customCell.platformLabel setBackgroundColor:game.selectedRelease.platform.color];
-		[customCell.titleLabel setText:game.selectedRelease.title];
-		[customCell.dateLabel setText:game.selectedRelease.releaseDateText];
-	}
-	else{
-		Platform *platform = game.wishlistPlatform;
-		[customCell.platformLabel setText:platform.abbreviation];
-		[customCell.platformLabel setBackgroundColor:platform.color];
-		[customCell.titleLabel setText:game.title];
-		[customCell.dateLabel setText:game.releaseDateText];
-	}
-	
-	if (game.selectedMetascore){
-		[customCell.metascoreLabel setText:[game.selectedMetascore.criticScore isEqualToNumber:@(0)] ? nil : [NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]];
-		[customCell.metascoreLabel setTextColor:[Networking colorForMetascore:[NSString stringWithFormat:@"%@", game.selectedMetascore.criticScore]]];
-	}
-	else{
-		[customCell.metascoreLabel setText:nil];
-		[customCell.metascoreLabel setTextColor:[UIColor clearColor]];
-	}
-	
-	// Hide/show cell separator
-	BOOL lastRow = (indexPath.row >= ([self.tableView numberOfRowsInSection:indexPath.section] - 1)) ? YES : NO;
-	[customCell.separatorView setHidden:lastRow];
+- (void)wishlistTableCellCollectionView:(UICollectionView *)collectionView didSelectGame:(Game *)game{
+	[self performSegueWithIdentifier:@"GameSegue" sender:game];
 }
 
 #pragma mark - Networking
@@ -209,7 +157,7 @@
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Games - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-//			NSLog(@"%@", responseObject);
+			//			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
 				for (NSDictionary *dictionary in responseObject[@"results"]){
@@ -238,7 +186,7 @@
 			}
 		}
 		
-		[self.refreshControl endRefreshing];
+		[self.refreshButton setEnabled:YES];
 		[self updateGameReleasePeriods];
 		[self refreshWishlistSelectedReleases];
 	}];
@@ -281,7 +229,8 @@
 					
 					[game setImagePath:path];
 					[game setImageURL:URLString];
-					[self.tableView reloadRowsAtIndexPaths:self.tableView.indexPathsForVisibleRows withRowAnimation:UITableViewRowAnimationNone];
+					
+					[self.tableView reloadData];
 				});
 			});
 		}
@@ -300,7 +249,7 @@
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Releases - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-//			NSLog(@"%@", responseObject);
+			//			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"status_code"] isEqualToNumber:@(1)]) {
 				for (NSDictionary *dictionary in responseObject[@"results"]){
@@ -318,7 +267,7 @@
 			}
 		}
 		
-		[self.refreshControl endRefreshing];
+		[self.refreshButton setEnabled:YES];
 		[self updateGameReleasePeriods];
 	}];
 	[dataTask resume];
@@ -333,7 +282,7 @@
 		}
 		else{
 			NSLog(@"Success in %@ - Status code: %ld - Metascore - Size: %lld bytes", self, (long)((NSHTTPURLResponse *)response).statusCode, response.expectedContentLength);
-//			NSLog(@"%@", responseObject);
+			//			NSLog(@"%@", responseObject);
 			
 			if ([responseObject[@"result"] isKindOfClass:[NSNumber class]])
 				return;
@@ -351,11 +300,7 @@
 			[game addMetascoresObject:metascore];
 			[game setSelectedMetascore:metascore];
 			
-			[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-				[self.tableView reloadRowsAtIndexPaths:@[[self.fetchedResultsController indexPathForObject:game]] withRowAnimation:UITableViewRowAnimationAutomatic];
-				[self.tableView beginUpdates];
-				[self.tableView endUpdates];
-			}];
+			[self.context MR_saveToPersistentStoreWithCompletion:nil];
 		}
 	}];
 	[dataTask resume];
@@ -370,13 +315,16 @@
 		[game setReleasePeriod:[Networking releasePeriodForGameOrRelease:(game.selectedRelease ? game.selectedRelease : game) context:self.context]];
 	}
 	
-	[self.context MR_saveToPersistentStoreWithCompletion:nil];
+	[self.context MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+		self.fetchedResultsController = nil;
+		self.fetchedResultsController = [self fetchData];
+		[self.tableView reloadData];
+	}];
 }
 
 - (void)refreshWishlistGames{
-	// Pop all tabs (in case an opened game is deleted)
-	for (UIViewController *viewController in self.tabBarController.viewControllers){
-		[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
+	if (self.fetchedResultsController.fetchedObjects.count > 0){
+		[self.refreshButton setEnabled:NO];
 	}
 	
 	NSArray *splitArray = [NSArray splitArray:self.fetchedResultsController.fetchedObjects componentsPerSegment:100];
@@ -386,19 +334,26 @@
 }
 
 - (void)refreshWishlistSelectedReleases{
-	NSArray *selectedReleases = [self.fetchedResultsController.fetchedObjects valueForKey:@"selectedRelease"];
+	NSMutableArray *selectedReleases = [[NSMutableArray alloc] initWithCapacity:self.fetchedResultsController.fetchedObjects.count];
+	
+	for (NSInteger section = 0; section < self.fetchedResultsController.sections.count; section++){
+		for (NSInteger row = 0; row < [self.fetchedResultsController.sections[section] numberOfObjects]; row++){
+			Game *game = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+			
+			if (game.selectedRelease)
+				[selectedReleases addObject:game.selectedRelease];
+		}
+	}
 	
 	NSArray *splitReleases = [NSArray splitArray:selectedReleases componentsPerSegment:100];
 	for (NSArray *releases in splitReleases){
 		[self requestReleases:releases];
 	}
+	
+	[self requestReleases:selectedReleases];
 }
 
 #pragma mark - Actions
-
-- (IBAction)refreshControlValueChangedAction:(UIRefreshControl *)sender{
-	[self refreshWishlistGames];
-}
 
 - (void)coverImageDownloadedNotification:(NSNotification *)notification{
 	[self.tableView reloadData];
@@ -410,13 +365,9 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 	if ([segue.identifier isEqualToString:@"GameSegue"]){
-		// Pop other tabs when opening game details
-		for (UIViewController *viewController in self.tabBarController.viewControllers){
-			[((UINavigationController *)viewController) popToRootViewControllerAnimated:NO];
-		}
-		
-		GameController *destination = [segue destinationViewController];
-		[destination setGame:[self.fetchedResultsController objectAtIndexPath:self.tableView.indexPathForSelectedRow]];
+		UINavigationController *navigationController = segue.destinationViewController;
+		GameController *destination = (GameController *)navigationController.topViewController;
+		[destination setGame:sender];
 	}
 }
 

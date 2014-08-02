@@ -10,7 +10,7 @@
 #import "GameController.h"
 #import "SearchResult.h"
 #import "Platform.h"
-#import "SearchCell.h"
+#import "GameTableCell.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
 @interface SearchController_iPhone () <UISearchBarDelegate>
@@ -110,7 +110,7 @@
 	
 	SearchResult *result = self.results[indexPath.row];
 	
-	SearchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	GameTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:result.title];
 	[cell.coverImageView setImageWithURL:[NSURL URLWithString:result.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];
 	[cell setBackgroundColor:[UIColor colorWithRed:.164705882 green:.164705882 blue:.164705882 alpha:1]];

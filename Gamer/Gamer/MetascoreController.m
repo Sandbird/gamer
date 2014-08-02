@@ -9,7 +9,7 @@
 #import "MetascoreController.h"
 #import "Platform.h"
 #import "Metascore.h"
-#import "MetascoreCell.h"
+#import "MetascoreTableCell.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import "Platform+Library.h"
 #import "MetacriticController.h"
@@ -70,7 +70,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	MetascoreCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	MetascoreTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[self configureCell:cell atIndexPath:indexPath];
 	return cell;
 }
@@ -90,7 +90,7 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
 	Metascore *metascore = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	
-	MetascoreCell *customCell = (MetascoreCell *)cell;
+	MetascoreTableCell *customCell = (MetascoreTableCell *)cell;
 	[customCell.criticScoreLabel setText:[metascore.criticScore isEqualToNumber:@(0)] ? @"?" : [NSString stringWithFormat:@"%@", metascore.criticScore]];
 	[customCell.criticScoreLabel setTextColor:[metascore.criticScore isEqualToNumber:@(0)] ? [UIColor lightGrayColor] : [Networking colorForMetascore:customCell.criticScoreLabel.text]];
 	[customCell.userScoreLabel setText:[metascore.userScore isEqual:[NSDecimalNumber zero]] ? @"?" : [NSString stringWithFormat:@"%.1f", metascore.userScore.floatValue]];

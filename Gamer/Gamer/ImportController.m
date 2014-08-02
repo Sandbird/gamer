@@ -7,7 +7,7 @@
 //
 
 #import "ImportController.h"
-#import "ImportCell.h"
+#import "GameTableCell.h"
 #import "Game.h"
 #import "Platform.h"
 #import "Release.h"
@@ -64,7 +64,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	Game *game = self.importedGames[indexPath.row];
 	
-	ImportCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	GameTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:game.title];
 	
 	UIImage *image = [self.imageCache objectForKey:game.imagePath.lastPathComponent];

@@ -8,7 +8,7 @@
 
 #import "PlatformsController.h"
 #import "Platform.h"
-#import "PlatformCell.h"
+#import "PlatformTableCell.h"
 
 typedef NS_ENUM(NSInteger, Section){
 	Section8thGen,
@@ -91,7 +91,7 @@ typedef NS_ENUM(NSInteger, Section){
 		default: break;
 	}
 	
-	PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	PlatformTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:platform.name];
 	[cell.abbreviationLabel setText:platform.abbreviation];
 	[cell.abbreviationLabel setBackgroundColor:platform.color];
@@ -140,7 +140,7 @@ typedef NS_ENUM(NSInteger, Section){
 				
 				[platform setIndex:@(index)];
 				
-				PlatformCell *cell = (PlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+				PlatformTableCell *cell = (PlatformTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 				[cell.switchControl setTag:index];
 			}
 			break;
@@ -156,7 +156,7 @@ typedef NS_ENUM(NSInteger, Section){
 				
 				[platform setIndex:@(index)];
 				
-				PlatformCell *cell = (PlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+				PlatformTableCell *cell = (PlatformTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 				[cell.switchControl setTag:index];
 			}
 			break;
@@ -172,7 +172,7 @@ typedef NS_ENUM(NSInteger, Section){
 				
 				[platform setIndex:@(index)];
 				
-				PlatformCell *cell = (PlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+				PlatformTableCell *cell = (PlatformTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 				[cell.switchControl setTag:index];
 			}
 			break;
@@ -188,7 +188,7 @@ typedef NS_ENUM(NSInteger, Section){
 				
 				[platform setIndex:@(index)];
 				
-				PlatformCell *cell = (PlatformCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+				PlatformTableCell *cell = (PlatformTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 				[cell.switchControl setTag:index];
 			}
 			break;

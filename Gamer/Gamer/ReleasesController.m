@@ -8,7 +8,7 @@
 
 #import "ReleasesController.h"
 #import "Release.h"
-#import "ReleaseCell.h"
+#import "GameTableCell.h"
 #import "Platform.h"
 #import "Region.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
@@ -71,7 +71,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	Release *release = self.dataSource[indexPath.section][@"platform"][@"releases"][indexPath.row];
 	
-	ReleaseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	GameTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:release.title];
 	[cell.dateLabel setText:release.releaseDateText];
 	[cell.coverImageView setImageWithURL:[NSURL URLWithString:release.imageURL] placeholderImage:[Tools imageWithColor:[UIColor darkGrayColor]]];

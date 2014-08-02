@@ -1,14 +1,14 @@
 //
-//  RegionCell.m
+//  RegionTableCell.m
 //  Gamer
 //
-//  Created by Caio Mello on 05/04/2014.
+//  Created by Caio Mello on 02/08/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
-#import "RegionCell.h"
+#import "RegionTableCell.h"
 
-@implementation RegionCell
+@implementation RegionTableCell
 
 - (void)awakeFromNib{
 	[super awakeFromNib];

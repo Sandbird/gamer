@@ -8,7 +8,7 @@
 
 #import "PlatformPickerController.h"
 #import "Platform.h"
-#import "PlatformCell.h"
+#import "PlatformTableCell.h"
 
 @interface PlatformPickerController ()
 
@@ -37,7 +37,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 	Platform *platform = self.selectablePlatforms[indexPath.row];
 	
-	PlatformCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+	PlatformTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 	[cell.titleLabel setText:platform.name];
 	[cell.abbreviationLabel setText:platform.abbreviation];
 	[cell.abbreviationLabel setBackgroundColor:platform.color];

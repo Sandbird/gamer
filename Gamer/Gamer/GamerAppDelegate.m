@@ -104,19 +104,6 @@
 	else if (![previousVersion isEqualToString:currentVersion]){
 		// Not current version
 		
-		// Delete current store
-		NSError *error;
-		NSString *applicationSupportPath = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
-		NSArray *applicationSupportContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:applicationSupportPath error:&error];
-		if (!error){
-			for (NSString *path in applicationSupportContents){
-				[[NSFileManager defaultManager] removeItemAtPath:[applicationSupportPath stringByAppendingPathComponent:path] error:&error];
-			}
-		}
-		
-		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"!" message:@"Due to the changes on the latest update, the app was unable to migrate your games to this version. If you have a backup file, just open it and all your games will be right back where they were before. Sorry for the inconvenience and enjoy the new features!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[alertView show];
-		
 		[defaults setObject:currentVersion forKey:@"AppVersion"];
 		[defaults synchronize];
 	}

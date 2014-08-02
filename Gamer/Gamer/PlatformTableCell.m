@@ -1,14 +1,14 @@
 //
-//  WishlistCell.m
+//  PlatformTableCell.m
 //  Gamer
 //
-//  Created by Caio Mello on 6/15/13.
+//  Created by Caio Mello on 02/08/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
-#import "WishlistCell.h"
+#import "PlatformTableCell.h"
 
-@implementation WishlistCell
+@implementation PlatformTableCell
 
 - (void)awakeFromNib{
 	[super awakeFromNib];
@@ -20,20 +20,20 @@
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated{
-	UIColor *platformColor = self.platformLabel.backgroundColor;
+	UIColor *platformColor = self.abbreviationLabel.backgroundColor;
 	
     [super setSelected:selected animated:animated];
 	
-	[self.platformLabel setBackgroundColor:platformColor];
+	[self.abbreviationLabel setBackgroundColor:platformColor];
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated{
-	UIColor *platformColor = self.platformLabel.backgroundColor;
+	UIColor *platformColor = self.abbreviationLabel.backgroundColor;
 	
 	[super setHighlighted:highlighted animated:animated];
 	
 	if (highlighted){
-		[self.platformLabel setBackgroundColor:platformColor];
+		[self.abbreviationLabel setBackgroundColor:platformColor];
 	}
 }
 

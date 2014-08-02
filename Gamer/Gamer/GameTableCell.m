@@ -1,14 +1,14 @@
 //
-//  SearchCell.m
+//  GameTableCell.m
 //  Gamer
 //
-//  Created by Caio Mello on 03/08/2013.
+//  Created by Caio Mello on 02/08/2014.
 //  Copyright (c) 2014 Caio Mello. All rights reserved.
 //
 
-#import "SearchCell.h"
+#import "GameTableCell.h"
 
-@implementation SearchCell
+@implementation GameTableCell
 
 - (void)awakeFromNib{
 	[super awakeFromNib];
